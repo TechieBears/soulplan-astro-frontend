@@ -1,57 +1,61 @@
-import { formBtn1 } from '../../utils/CustomClass'
-import image2 from '../../assets/arrow.gif'
-import { useGSAP } from '@gsap/react';
-import { gsap } from 'gsap';
-import { SplitText } from 'gsap/all';
+import React, { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import sign from "../../assets/signs.png";
+import space from "../../assets/space.jpg";
 
-const HomeBanner = ({ image, title, description, button, background, onClick }) => {
+export default function HomeBanner() {
+  const [angle, setAngle] = useState(0);
 
-    useGSAP(() => {
-        let split = SplitText.create(".split", { type: "words" });
+  // Animate the zodiac sign clockwise (fan effect)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAngle((prev) => (prev + 1) % 360); // keep between 0–359
+    }, 30);
+    return () => clearInterval(interval);
+  }, []);
 
-        const tl = gsap.timeline({
-            defaults: {
-                duration: 1,
-                ease: "power1.inOut",
-            },
-        });
+  return (
+    <div className="relative w-full h-screen overflow-hidden text-white">
+      {/* Background */}
+      <img
+        src={space}
+        alt="Background"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-black/40" />
 
-        tl.from(split.words, {
-            y: 100,
-            autoAlpha: 0,
-            stagger: 0.05
-        })
+      {/* Navigation Arrows */}
+      <button className="absolute left-6 top-1/2 -translate-y-1/2 bg-black/40 p-3 rounded-full z-10">
+        <ChevronLeft className="w-6 h-6" />
+      </button>
+      <button className="absolute right-6 top-1/2 -translate-y-1/2 bg-black/40 p-3 rounded-full z-10">
+        <ChevronRight className="w-6 h-6" />
+      </button>
 
-        tl.from(".discrption", {
-            y: 100,
-            opacity: 0,
-        })
+      {/* Content */}
+      <div className="relative z-10 flex items-center justify-between h-full px-12">
+        {/* Left text */}
+        <div className="max-w-lg">
+          <h1 className="text-4xl font-bold mb-4">Explore Your Zodiac</h1>
+          <p className="text-lg text-gray-200">
+            Discover astrology insights, planetary movements, and your personal
+            horoscope.
+          </p>
+        </div>
 
-        tl.from(".btn", {
-            y: 100,
-            opacity: 0,
-        })
-    }, [])
-
-    return (
-        <section className='relative flex h-screen items-center justify-center  overflow-hidden' >
-            {background && <div className='absolute inset-0 z-10 h-full w-full overflow-hidden bg-gradient-to-t from-transparent from-30% to-black ' />}
-            <img src={image} alt="Home Banner" className='w-full h-full object-cover' />
-            {/* <video src="https://pikaso.cdnpk.net/public/media/banners/google_veo3_banner.mp4" class="relative w-full size-full object-cover" loop autoPlay playsInline muted>
-            </video>
-            <div class="absolute inset-0 z-0 bg-black/50"></div> */}
-            <div className='absolute inset-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center flex justify-center items-center flex-col space-y-3 container mx-auto z-40 px-4 md:px-8 ' >
-                <h1 className='split text-2xl md:text-4xl lg:text-6xl pb-2  font-tbLex font-bold text-neutral-50 overflow-hidden' >{title}</h1>
-                <p className='discrption text-xs md:text-base font-tbPop font-normal text-white max-w-4xl !mb-5 overflow-hidden' >{description}</p>
-                {button && <button className={`btn ${formBtn1}`} onClick={onClick} >Register to join</button>}
-            </div>
-            {background && <div className='absolute inset-0 z-40 h-full w-full overflow-hidden bg-gradient-to-b from-transparent from-10% via-transparent via-70% to-white to-90% pointer-events-none' />}
-            {button && <div className='absolute  bottom-10 left-1/2 transform -translate-x-1/2 z-40 ' >
-                <img loading="lazy" src={image2} alt="Home Banner" className='w-16 h-16 object-cover' />
-            </div>}
-
-        </section>
-    )
+        {/* Right rotating sign (fan-like) */}
+        <div className="relative w-[400px] h-[400px] flex items-center justify-center">
+          <img
+            src={sign}
+            alt="zodiac sign"
+            className="w-[350px] h-[350px]"
+            style={{
+              transform: `rotate(${angle}deg)`,
+              transformOrigin: "center center", // spin around its center
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
 }
-
-export default HomeBanner
