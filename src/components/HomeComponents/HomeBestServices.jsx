@@ -9,6 +9,7 @@ import service6 from "../../assets/services/service6.png";
 import service7 from "../../assets/services/service7.png";
 import service8 from "../../assets/services/service8.png";
 import curly from "../../assets/services/carddesign.png";
+import corner1 from "../../assets/services/corner1.png";
 
 
 // Service card data
@@ -60,14 +61,14 @@ export default function HomeBestServices() {
     <section className="py-16 bg-[#fff9f5] relative">
       {/* Top corner decoration */}
       <img
-        src="/images/corner-left.png"
+        src={corner1}
         alt="corner"
         className="absolute top-0 left-0 w-24"
       />
       <img
-        src="/images/corner-right.png"
+        src={corner1}
         alt="corner"
-        className="absolute top-0 right-0 w-24"
+        className="absolute top-0 right-0 w-24 rotate-90"
       />
 
       {/* Heading */}
@@ -112,14 +113,14 @@ export default function HomeBestServices() {
 
       {/* Bottom corner decoration */}
       <img
-        src="/images/corner-left.png"
+        src={corner1}
         alt="corner"
-        className="absolute bottom-0 left-0 w-24"
+        className="absolute bottom-0 left-0 w-24 -rotate-90"
       />
       <img
-        src="/images/corner-right.png"
+        src={corner1}
         alt="corner"
-        className="absolute bottom-0 right-0 w-24"
+        className="absolute bottom-0 right-0 w-24 rotate-180"
       />
     </section>
   );

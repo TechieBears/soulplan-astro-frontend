@@ -2,6 +2,7 @@ import React from 'react'
 import HomeBanner from '../../components/HomeComponents/HomeBanner'
 import HomeFooter from '../../components/HomeComponents/HomeFooter'
 import HomeBestServices from '../../components/HomeComponents/HomeBestServices'
+import HomeCertifications from '../../components/HomeComponents/HomeCertifications'
 
 const HomePage = () => {
     return (
@@ -14,6 +15,7 @@ const HomePage = () => {
                 background={true}
                 onClick={() => console.log('Register clicked')}
             />
+            <HomeCertifications />
             <HomeBestServices/>
             {/* <HomeFooter /> */}
         </div>
