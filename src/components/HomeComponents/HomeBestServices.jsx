@@ -10,6 +10,7 @@ import service7 from "../../assets/services/service7.png";
 import service8 from "../../assets/services/service8.png";
 import curly from "../../assets/services/carddesign.png";
 import corner1 from "../../assets/services/corner1.png";
+import underline from "../../assets/undertext.png";
 
 
 // Service card data
@@ -73,12 +74,18 @@ export default function HomeBestServices() {
 
       {/* Heading */}
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-purple-600">
-          Our Best Services
-        </h2>
-        <div className="mt-2 flex justify-center">
-          <div className="w-32 border-b-2 border-pink-400"></div>
-        </div>
+       <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mt-10 text-center leading-snug">
+               <span className="text-blue-600">Professional Qualifications</span>
+               <br />
+               <span className="text-pink-600">& Certifications</span>
+             </h2>
+       
+             {/* Underline */}
+             <img
+               src={underline}
+               alt="Underline"
+               className="w-40 md:w-56 h-10 mt-3 mx-auto"
+             />
       </div>
 
       {/* Grid */}

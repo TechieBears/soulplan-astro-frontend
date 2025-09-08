@@ -54,33 +54,31 @@ export default function Certifications() {
         className="w-40 md:w-56 h-10 mt-3 mx-auto"
       />
 
-      {/* Grid for all certifications */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-16 px-6 mt-10 mb-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-16 gap-x-10 px-6 mt-10 mb-16">
         {certifications.map((cert, index) => (
           <div
             key={index}
-            className="relative flex items-center justify-center text-center w-48 h-48 p-6"
+            className="relative flex items-center justify-center text-center w-64 h-64 p-8"
           >
             {/* Laurel wreath image (background decoration) */}
             <img
               src={star} // 👈 use your laurel wreath asset here
               alt="Wreath"
-              className="absolute inset-0 w-56 h-full object-fill pointer-events-none select-none"
+              className="absolute inset-0 w-72 h-full object-fill pointer-events-none select-none"
             />
 
             {/* Star on top */}
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 text-yellow-500 text-2xl">
+            <div className="absolute -top-0 left-1/2 transform -translate-x-1/2 text-yellow-500 text-5xl">
               ★
             </div>
 
             {/* Text inside */}
-            <p className="relative z-10 text-sm font-medium leading-tight px-2">
+            <p className="relative z-10 text-sm leading-tight px-4">
               {cert.title}
             </p>
           </div>
         ))}
       </div>
-      
     </div>
   );
 }
