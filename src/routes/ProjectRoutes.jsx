@@ -26,6 +26,12 @@ import PrivacyPolicy from "../components/HomeComponents/PrivacyPolicy";
 import ErrorPage from "./ErrorPage";
 // import DeepLinkRedirect from "../pages/DeepLinkRedirect";
 
+
+import AddressPage from "../pages/Home/Profile/address";
+// import  from "../pages/Home/Profile/address";
+// import address from "../pages/Home/Profile/address";
+
+
 const ProjectRoutes = () => {
   const [loading, setLoading] = useState(true);
 
@@ -96,6 +102,7 @@ const ProjectRoutes = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/terms-conditions" element={<TermsConditions />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/profile/address" element={<AddressPage />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
           <HomeFooter />
