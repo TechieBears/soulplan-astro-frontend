@@ -24,12 +24,13 @@ import LoginPage from "../pages/Home/LoginPage";
 import TermsConditions from "../components/HomeComponents/TermsConditions";
 import PrivacyPolicy from "../components/HomeComponents/PrivacyPolicy";
 import ErrorPage from "./ErrorPage";
-// import DeepLinkRedirect from "../pages/DeepLinkRedirect";
+import DeepLinkRedirect from "../pages/DeepLinkRedirect";
 
 
 import AddressPage from "../pages/Home/Profile/address";
-// import  from "../pages/Home/Profile/address";
-// import address from "../pages/Home/Profile/address";
+import ProfilePage from "../pages/Home/Profile/account";
+import CustomerSupport from "../pages/Home/Profile/customersupport";
+import MyOrders from "../pages/Home/Profile/orders";
 
 
 const ProjectRoutes = () => {
@@ -101,8 +102,13 @@ const ProjectRoutes = () => {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/terms-conditions" element={<TermsConditions />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/profile/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/profile/customer-support" element={<CustomerSupport />} />
             <Route path="/profile/address" element={<AddressPage />} />
+            <Route path="/profile/account" element={<ProfilePage />} />
+            <Route path="/profile/my-orders" element={<MyOrders />} />
+
+
             <Route path="*" element={<ErrorPage />} />
           </Routes>
           <HomeFooter />
