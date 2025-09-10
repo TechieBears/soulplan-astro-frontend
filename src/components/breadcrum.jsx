@@ -14,7 +14,7 @@ const Breadcrumbs = () => {
     : "Home";
 
   return (
-    <div className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg py-10 px-6 text-center text-white">
+  <div className="w-full container bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg py-20 px-6 text-center text-white">
       {/* Page Title */}
       <h1 className="text-2xl sm:text-3xl font-bold mb-2">{pageTitle}</h1>
 

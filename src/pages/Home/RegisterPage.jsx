@@ -12,7 +12,7 @@ import TextInput from '../../components/TextInput/TextInput';
 import SelectTextInput from '../../components/TextInput/SelectTextInput';
 import LoadBox from '../../components/Loader/LoadBox';
 import { registerUser } from '../../api';
-import { setLoggedUserDetails } from '../../redux/Slices/loginSlice';
+import { setLoggedUser, setUserDetails } from '../../redux/Slices/loginSlice';
 import { validateEmail, validatePassword, validatePhoneNumber } from '../../utils/validateFunction';
 import { DRAFT_KEY_C, DRAFT_KEY_L, DRAFT_KEY_P } from '../../env';
 
@@ -29,31 +29,30 @@ const RegisterPage = () => {
   const onSubmit = async (data) => {
     try {
       setLoader(true);
-      await registerUser(data)
-        .then((res) => {
-          if (res?.message === 'User created successfully') {
-            document.title = `Hamax : Talent Dashboard | ${res?.user?.baseRole || ''}`;
-            localStorage.removeItem('persist:root');
-            localStorage.removeItem(DRAFT_KEY_C);
-            localStorage.removeItem(DRAFT_KEY_L);
-            localStorage.removeItem(DRAFT_KEY_P);
-            setTimeout(() => {
-              dispatch(setLoggedUserDetails(res?.data || {}));
-              setLoader(false);
-              toast.success('Account created!');
-            }, 100);
-          } else {
-            setLoader(false);
-            toast.error(res?.message || 'Something went wrong');
-          }
-        })
-        .catch((err) => {
-          setLoader(false);
-          toast.error(err?.message || 'Something went wrong');
-        });
+      const response = await registerUser(data);
+      
+      if (response?.message === 'User created successfully' || response?.success) {
+        document.title = `SoulPlan : Dashboard | ${response?.user?.baseRole || ''}`;
+        localStorage.removeItem('persist:root');
+        localStorage.removeItem(DRAFT_KEY_C);
+        localStorage.removeItem(DRAFT_KEY_L);
+        localStorage.removeItem(DRAFT_KEY_P);
+        
+        dispatch(setLoggedUser(true));
+        dispatch(setUserDetails(response?.user || response?.data));
+        toast.success('Account created successfully!');
+        setLoader(false);
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+      } else {
+        setLoader(false);
+        toast.error(response?.message || 'Registration failed');
+      }
     } catch (error) {
       setLoader(false);
-      console.log(error?.message || 'Something went wrong');
+      console.error('Registration error:', error);
+      toast.error(error?.message || 'Something went wrong');
     }
   };
 
@@ -76,8 +75,38 @@ const RegisterPage = () => {
 
         {/* Form */}
         <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleSubmit(onSubmit)}>
-          {/* Full Name */}
+          {/* First Name */}
           <div className="col-span-1">
+            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+              First Name
+            </label>
+            <TextInput
+              id="firstName"
+              placeholder="Enter first name"
+              type="text"
+              registerName="firstName"
+              props={{ ...register('firstName', { required: 'First name is required' }) }}
+              errors={errors.firstName}
+            />
+          </div>
+
+          {/* Last Name */}
+          <div className="col-span-1">
+            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+              Last Name
+            </label>
+            <TextInput
+              id="lastName"
+              placeholder="Enter last name"
+              type="text"
+              registerName="lastName"
+              props={{ ...register('lastName', { required: 'Last name is required' }) }}
+              errors={errors.lastName}
+            />
+          </div>
+
+          {/* Full Name - Commented out as backend expects firstName and lastName */}
+          {/* <div className="col-span-1">
             <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
               Full Name
             </label>
@@ -89,10 +118,10 @@ const RegisterPage = () => {
               props={{ ...register('fullName', { required: 'Full name is required' }) }}
               errors={errors.fullName}
             />
-          </div>
+          </div> */}
 
           {/* Email */}
-          <div className="col-span-1">
+          <div className="col-span-1 md:col-span-2">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
               Email
             </label>

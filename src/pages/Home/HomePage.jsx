@@ -3,7 +3,7 @@ import HomeBanner from '../../components/HomeComponents/HomeBanner'
 import HomeFooter from '../../components/HomeComponents/HomeFooter'
 import HomeBestServices from '../../components/HomeComponents/HomeBestServices'
 import HomeCertifications from '../../components/HomeComponents/HomeCertifications'
-import HomeGooglePlay from '../../components/HomeComponents/HomeGooglePlay'
+import Testimonials from '../../components/testimonial'
 
 const HomePage = () => {
     return (
@@ -18,8 +18,8 @@ const HomePage = () => {
             />
 
             <HomeCertifications />
-            <HomeGooglePlay />
             <HomeBestServices/>
+            <Testimonials/>
             {/* <HomeFooter /> */}
         </div>
     )

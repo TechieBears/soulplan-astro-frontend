@@ -18,6 +18,7 @@ import AdminContactUs from "../pages/Admin/ContactUs/AdminContactUs";
 
 import HomePage from "../pages/Home/HomePage";
 import AboutPage from "../pages/Home/AboutPage";
+import ServicesPage from "../pages/Home/ServicesPage";  
 import ContactPage from "../pages/Home/ContactPage";
 import RegisterPage from "../pages/Home/RegisterPage";
 import LoginPage from "../pages/Home/LoginPage";
@@ -31,6 +32,7 @@ import AddressPage from "../pages/Home/Profile/address";
 import ProfilePage from "../pages/Home/Profile/account";
 import CustomerSupport from "../pages/Home/Profile/customersupport";
 import MyOrders from "../pages/Home/Profile/orders";
+import ResetPasswordPage from "../pages/Home/ResetPasswordPage";
 
 
 const ProjectRoutes = () => {
@@ -98,13 +100,17 @@ const ProjectRoutes = () => {
             {/* <Route path="/actor/:id" element={<DeepLinkRedirect />} />
             <Route path="/casting/:id" element={<DeepLinkRedirect />} /> */}
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/services" element={<ServicesPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/terms-conditions" element={<TermsConditions />} />
             <Route path="/profile/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/profile/customer-support" element={<CustomerSupport />} />
+
             <Route path="/profile/address" element={<AddressPage />} />
+            <Route path="/password/reset/:token" element={<ResetPasswordPage />} />
+
             <Route path="/profile/account" element={<ProfilePage />} />
             <Route path="/profile/my-orders" element={<MyOrders />} />
 

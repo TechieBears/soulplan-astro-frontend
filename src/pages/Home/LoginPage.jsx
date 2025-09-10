@@ -1,29 +1,63 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import TextInput from "../../components/TextInput/TextInput";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF, FaInstagram, FaApple } from "react-icons/fa";
 import ForgetPasswordModal from "../../components/Modals/ForgetPassword/ForgetPasswordModal";
-// import ResetPasswordModal from "../../components/Modals/ResetPassword/ResetPasswordModal";
+import { loginUser } from "../../api";
+import { setLoggedUser, setUserDetails } from "../../redux/Slices/loginSlice";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
   const [showForgetPasswordModal, setShowForgetPasswordModal] = useState(false);
-  // const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    console.log('Input changed:', name, value);
+    setFormData((prev) => {
+      const newData = {
+        ...prev,
+        [name]: value,
+      };
+      console.log('Updated formData:', newData);
+      return newData;
+    });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login attempted with:", formData);
+    setLoading(true);
+    
+    try {
+      const response = await loginUser(formData);
+      console.log('Login response:', response);
+      
+      if (response?.success || response?.message === 'Login successful' || response?.token) {
+        dispatch(setLoggedUser(true));
+        dispatch(setUserDetails(response?.user || response?.data || response));
+        toast.success('Login successful!');
+        navigate('/');
+      } else {
+        toast.error(response?.message || response?.error || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      if (error.code === 'ERR_NETWORK') {
+        toast.error('Network error. Please check your connection or try again later.');
+      } else {
+        toast.error(error?.response?.data?.message || 'Something went wrong. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,13 +76,16 @@ const LoginPage = () => {
               Email *
             </label>
             <TextInput
-              id="email"
-              name="email"
+              // label="Email"
               type="email"
-              placeholder="Enter email address"
-              value={formData.email}
-              onChange={handleChange}
-              required
+              registerName="email"
+              props={{
+                name: "email",
+                value: formData.email,
+                onChange: handleChange,
+                placeholder: "Enter email address",
+                required: true
+              }}
             />
           </div>
 
@@ -58,13 +95,16 @@ const LoginPage = () => {
               Password *
             </label>
             <TextInput
-              id="password"
-              name="password"
+              // label="Password"
               type="password"
-              placeholder="Enter password"
-              value={formData.password}
-              onChange={handleChange}
-              required
+              registerName="password"
+              props={{
+                name: "password",
+                value: formData.password,
+                onChange: handleChange,
+                placeholder: "Enter password",
+                required: true
+              }}
             />
           </div>
 
@@ -93,9 +133,10 @@ const LoginPage = () => {
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full py-3 rounded-md text-white font-semibold bg-gradient-to-r from-blue-600 to-red-500 hover:opacity-90 transition"
+            disabled={loading}
+            className="w-full py-3 rounded-md text-white font-semibold bg-gradient-to-r from-blue-600 to-red-500 hover:opacity-90 transition disabled:opacity-50"
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
 
           {/* Sign up link */}
