@@ -20,6 +20,7 @@ import service16 from "../../assets/services/service16.png";
 import curly from "../../assets/services/carddesign.png";
 import corner1 from "../../assets/services/corner1.png";
 import underline from "../../assets/undertext.png";
+import { formBtn3 } from "../../utils/CustomClass";
 
 // Service card data
 const services = [
@@ -158,7 +159,7 @@ export default function HomeBestServices() {
 
       {/* Button */}
       <div className="text-center mt-12">
-        <button className="px-6 py-3  bg-gradient-to-r from-purple-500 to-red-500 text-white font-medium shadow-lg hover:opacity-90 transition">
+        <button className={`btn ${formBtn3}`}>
           View All Services
         </button>
       </div>

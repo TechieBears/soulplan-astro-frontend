@@ -22,7 +22,7 @@ import corner1 from "../../assets/services/corner1.png";
 import underline from "../../assets/undertext.png";
 import Breadcrumbs from "../../components/breadcrum";
 import Testimonials from "../../components/testimonial";
-// import HomeBestServices from "../../components/HomeComponents/HomeBestServices";
+import HomeBestServices from "../../components/HomeComponents/HomeBestServices";
 
 // Service card data
 const services = [
@@ -116,8 +116,8 @@ const ServicesPage = () => {
     <>
     <div className="container bg-[#fff9f5] mt-12 mx-auto px-4 py-4 mt-20">
       <Breadcrumbs />
-      {/* <HomeBestServices /> */}
-      <section className="py-16  relative">
+      <HomeBestServices />
+      {/* <section className="py-16  relative"> */}
         {/* Top corner decoration */}
         {/* <img
           src={corner1}
@@ -147,7 +147,7 @@ const ServicesPage = () => {
         </div> */}
 
         {/* Grid */}
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 px-6">
+        {/* <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 px-6">
           {services.map((service, idx) => (
             <div
               key={idx}
@@ -167,7 +167,7 @@ const ServicesPage = () => {
               <span className="mt-3 inline-block text-gray-500 text-lg">→</span>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* Button */}
         {/* <div className="text-center mt-12">
@@ -185,9 +185,10 @@ const ServicesPage = () => {
         <img
           src={corner1}
           alt="corner"
+          
           className="absolute bottom-0 right-0 w-24 rotate-180"
         /> */}
-      </section>
+      {/* </section> */}
     </div>
     <Testimonials/>
     </>

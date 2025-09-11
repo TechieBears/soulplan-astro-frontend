@@ -95,8 +95,7 @@ const AddressPage = () => {
         <h1 className="text-2xl font-bold text-gray-800">My Address</h1>
         <button
           onClick={handleAddAddress}
-          className="bg-[#420098] text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-[#5c1bb5] transition"
-        >
+          className={`btn ${formBtn3}`}        >
           Add New Address
         </button>
       </div>
