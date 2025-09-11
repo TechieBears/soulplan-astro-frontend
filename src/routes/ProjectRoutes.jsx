@@ -82,7 +82,7 @@ const ProjectRoutes = () => {
         <div className="min-h-screen transition-all duration-300">
             {loading ? (
                 <Preloaders />
-            ) : !login ? (
+            ) : login ? (
                 // ============ Logged in (Admin or Employee) ============
                 true ? (
                     <Sidebar>
@@ -132,7 +132,7 @@ const ProjectRoutes = () => {
 
                         <Route path="/profile/address" element={<AddressPage />} />
                         <Route path="/password/reset/:token" element={<ResetPasswordPage />} />
-
+                        
                         <Route path="/profile/account" element={<ProfilePage />} />
                         <Route path="/profile/my-orders" element={<MyOrders />} />
                         <Route path="*" element={<ErrorPage />} />

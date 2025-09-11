@@ -39,45 +39,47 @@ export default function Certifications() {
       className="bg-[#f5f0e6] flex flex-col items-center justify-center "
       style={{ backgroundImage: `url(${background}) rotate(90deg)` }}
     >
-      <img src={top_certification} alt="" />
-      {/* Heading */}
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mt-10 text-center leading-snug">
-        <span className="text-blue-600">Professional Qualifications</span>
-        <br />
-        <span className="text-pink-600">& Certifications</span>
-      </h2>
+      <div className=" container mx-auto flex flex-col items-center justify-center pt-10">
+        <img src={top_certification} alt="" />
+        {/* Heading */}
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mt-10 text-center leading-snug">
+          <span className="text-blue-600">Professional Qualifications</span>
+          <br />
+          <span className="text-pink-600">& Certifications</span>
+        </h2>
 
-      {/* Underline */}
-      <img
-        src={underline}
-        alt="Underline"
-        className="w-40 md:w-56 h-10 mt-3 mx-auto"
-      />
+        {/* Underline */}
+        <img
+          src={underline}
+          alt="Underline"
+          className="w-40 md:w-56 h-10 mt-3 mx-auto"
+        />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-16 gap-x-10 px-6 mt-10 mb-16">
-        {certifications.map((cert, index) => (
-          <div
-            key={index}
-            className="relative flex items-center justify-center text-center w-64 h-64 p-8"
-          >
-            {/* Laurel wreath image (background decoration) */}
-            <img
-              src={star} // 👈 use your laurel wreath asset here
-              alt="Wreath"
-              className="absolute inset-0 w-72 h-full object-fill pointer-events-none select-none"
-            />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-16 gap-x-10 px-6 mt-10 mb-16">
+          {certifications.map((cert, index) => (
+            <div
+              key={index}
+              className="relative flex items-center justify-center text-center w-64 h-64 p-8"
+            >
+              {/* Laurel wreath image (background decoration) */}
+              <img
+                src={star} // 👈 use your laurel wreath asset here
+                alt="Wreath"
+                className="absolute inset-0 w-72 h-full object-fill pointer-events-none select-none"
+              />
 
-            {/* Star on top */}
-            <div className="absolute -top-0 left-1/2 transform -translate-x-1/2 text-yellow-500 text-5xl">
-              ★
+              {/* Star on top */}
+              <div className="absolute -top-0 left-1/2 transform -translate-x-1/2 text-yellow-500 text-5xl">
+                ★
+              </div>
+
+              {/* Text inside */}
+              <p className="relative z-10 text-sm leading-tight px-4">
+                {cert.title}
+              </p>
             </div>
-
-            {/* Text inside */}
-            <p className="relative z-10 text-sm leading-tight px-4">
-              {cert.title}
-            </p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

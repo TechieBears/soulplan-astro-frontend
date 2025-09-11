@@ -565,3 +565,15 @@ export const deleteEmployee = async (id) => {
         return err?.response?.data
     }
 }
+
+export const getCustomerBanners = async (data) => {
+    try {
+        const url = `${environment.baseUrl}/api/banners/active?type=website`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log(err);
+        return err?.response?.data
+    }
+}
