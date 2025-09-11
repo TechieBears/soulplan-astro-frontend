@@ -13,7 +13,6 @@ import { setLoggedUserDetails } from '../../redux/Slices/loginSlice';
 import { validateEmail, validatePassword, validatePhoneNumber } from '../../utils/validateFunction';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { DRAFT_KEY_C, DRAFT_KEY_L, DRAFT_KEY_P } from '../../env';
 
 const RegisterPage = () => {
     const [loader, setLoader] = useState(false)
@@ -37,9 +36,6 @@ const RegisterPage = () => {
                 if (res?.message == "User created successfully") {
                     document.title = `Hamax : Talent Dashbaord | ${res?.user?.baseRole || ""}`
                     localStorage.removeItem('persist:root');
-                    localStorage.removeItem(DRAFT_KEY_C);
-                    localStorage.removeItem(DRAFT_KEY_L);
-                    localStorage.removeItem(DRAFT_KEY_P);
                     setTimeout(() => {
                         dispatch(setLoggedUserDetails(res?.data || {}))
                         setLoader(false)

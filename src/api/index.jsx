@@ -17,6 +17,20 @@ export const registerUser = async (data) => {
     }
 };
 
+// ==================== get filtered actors api ====================
+export const adminGetFilteredActors = async (data) => {
+    try {
+        const url = `${environment.baseUrl}admin/filtered-actors?role=${data?.role || ""}&email=${data?.email || ""}&page=${data?.p || 1}&limit=${data?.records || 10}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in adminGetFilteredActors api file", err);
+        return err?.response?.data
+    }
+}
+
+
 export const loginUser = async (data) => {
     const url = `${environment.baseUrl}user/login`;
     try {
@@ -310,61 +324,6 @@ export const uploadToCloudinary = async (file) => {
 };
 
 
-// ========================== After Login User actors page apis ===================
-
-export const getLatestLeadActors = async () => {
-    try {
-        const url = `${environment.baseUrl}user/latest-lead-actors`
-        const response = await axios.get(url)
-        return response.data.data
-    } catch (err) {
-        console.log('error in get Latest Lead Actors api file', err)
-        return err?.response?.data
-    }
-}
-
-export const getProfileDetails = async (id) => {
-    try {
-        const url = `${environment.baseUrl}user/user-details/${id}`
-        const response = await axios.get(url)
-        return response.data.data
-    } catch (err) {
-        console.log('error in get Profile Details api file', err)
-        return err?.response?.data
-    }
-}
-export const getRandomActors = async () => {
-    try {
-        const url = `${environment.baseUrl}user/random-actors`
-        const response = await axios.get(url)
-        return response.data.data
-    } catch (err) {
-        console.log('error in get Random Actors api file', err)
-        return err?.response?.data
-    }
-}
-export const getFilterLeadActors = async (data, page) => {
-    try {
-        const url = `${environment.baseUrl}user/filtered-leadActors?age=${data?.age || ""}&role=${data?.role || ""}&gender=${data?.gender || ""}&page=${page || 1}`
-        const response = await axios.get(url)
-        return response?.data
-    } catch (err) {
-        console.log('error in get Filtered Lead Actors api file', err)
-        return err?.response?.data
-    }
-}
-export const getblacklistedActors = async (data, page) => {
-    try {
-        const url = `${environment.baseUrl}user/blacklisted-user?role=${data?.role || ""}&page=${page || 1}`
-        const response = await axios.get(url)
-        return response?.data
-    } catch (err) {
-        console.log('error in get Filtered Lead Actors api file', err)
-        return err?.response?.data
-    }
-}
-
-
 // ============================== casting page apis =========================
 
 
@@ -390,123 +349,7 @@ export const getFilterCasting = async (role) => {
     }
 }
 
-
-// ============================== production page apis =========================
-
-
-export const getLetestProduction = async () => {
-    try {
-        const url = `${environment.baseUrl}user/lastest-production`
-        const response = await axios.get(url)
-        return response.data.data
-    } catch (err) {
-        console.log('error in get latest production api file', err)
-        return err?.response?.data
-    }
-}
-
-export const getFilterProduction = async (data, page) => {
-    try {
-        const url = `${environment.baseUrl}user/production-pagination?subRole=${data?.subRole || ""}&page=${page || 1}`
-        const response = await axios.get(url)
-        console.log("⚡️🤯 ~ index.jsx:384 ~ getFilterProduction ~ response:", response)
-        return response.data
-    } catch (err) {
-        console.log('error in get Filtered production api file', err)
-        return err?.response?.data
-    }
-}
-export const getDubbingProductionActors = async (data, page) => {
-    try {
-        const url = `${environment.baseUrl}user/getdubbing-actors?gender=${data?.gender || ""}&page=${page || 1}`
-        const response = await axios.get(url)
-        return response.data
-    } catch (err) {
-        console.log('error in get Filtered production api file', err)
-        return err?.response?.data
-    }
-}
-export const getAllActors = async (data, page) => {
-    console.log("⚡️🤯 ~ index.jsx:413 ~ getAllActors ~ data:", data)
-    const url = `${environment.baseUrl}user/actors-pagination?role=${data?.role || ""}&actorType=${data?.actorType || ""}&page=${page || 1}`;
-    try {
-        const response = await axios.get(url)
-        console.log("⚡️🤯 ~ index.jsx:416 ~ getAllActors ~ response:", response)
-        return response?.data
-    }
-    catch (err) {
-        console.log('error in get all Actors  api file', err)
-        return err?.response?.data
-    }
-};
-
-
-
 /* =============== Payment API ================= */
-
-export const paymentOrderId = async (id, data) => {
-    const url = `${environment.baseUrl}user/create-orderId/${id}`;
-    try {
-        const response = await axios.put(url, data)
-        return response.data
-    }
-    catch (err) {
-        console.log("⚡️🤯 ~ index.jsx:415 ~ paymentOrderId ~ err:", err)
-        return err?.response?.data
-    }
-};
-
-
-export const verifyPayment = async (id) => {
-    const url = `${environment.baseUrl}payment/payment-status/${id}`;
-    try {
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log("Api file error get Orders Details ===========>", err);
-    }
-};
-
-
-// ==================== get filtered actors api ====================
-export const adminGetFilteredActors = async (data) => {
-    try {
-        const url = `${environment.baseUrl}admin/filtered-actors?role=${data?.role || ""}&email=${data?.email || ""}&page=${data?.p || 1}&limit=${data?.records || 10}`;
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log("==========error in adminGetFilteredActors api file", err);
-        return err?.response?.data
-    }
-}
-
-// ==================== get filtered casting api ====================
-export const adminGetFilteredCasting = async (data) => {
-    try {
-        const url = `${environment.baseUrl}admin/filtered-casting-production?role=castingTeam&subRole=${data?.subRole || ""}&email=${data?.email || ""}&page=${data?.p || 1}&limit=${data?.records || 10}`;
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log("==========error in adminGetFilteredActors api file", err);
-        return err?.response?.data
-    }
-}
-
-// ==================== get filtered production api ====================
-export const adminGetFilteredProduction = async (data) => {
-    try {
-        const url = `${environment.baseUrl}admin/filtered-casting-production?role=productionTeam&subRole=${data?.subRole || ""}&email=${data?.email || ""}&page=${data?.p || 1}&limit=${data?.records || 10}`;
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log("==========error in adminGetFilteredActors api file", err);
-        return err?.response?.data
-    }
-}
 
 export const adminTransactionPagination = async (data) => {
     const url = `${environment.baseUrl}admin/transaction-pagination?status=${data?.status}&email=${data?.email}&orderId=${data?.orderId}&page=${data?.p || 1}&limit=${data?.records || 10}`;
@@ -584,5 +427,134 @@ export const editProfile = async (id, data) => {
         return response
     } catch (error) {
         console.log('error in edit profile api file', error)
+    }
+}
+
+
+// =============================== Api Binding Start ==============================
+
+// ====================== Product Categories Api ======================
+export const getProductCategories = async (data) => {
+    try {
+        const url = `${environment.baseUrl}product-categories?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log(err);
+        return err?.response?.data
+    }
+}
+
+export const addProductCategory = async (data) => {
+    const url = `${environment.baseUrl}product-categories`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addProductCategory api file", err);
+        return err?.response?.data
+    }
+};
+
+export const editProductCategory = async (id, data) => {
+    const url = `${environment.baseUrl}product-categories/${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editProductCategory api file", err);
+        return err?.response?.data
+    }
+};
+
+
+
+// ======================= Product Sub Categories Api ======================
+export const getProductSubCategories = async (data) => {
+    try {
+        const url = `${environment.baseUrl}product-subcategories?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log(err);
+        return err?.response?.data
+    }
+}
+
+export const addProductSubCategory = async (data) => {
+    const url = `${environment.baseUrl}product-subcategories`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addProductSubCategory api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editProductSubCategory = async (id, data) => {
+    const url = `${environment.baseUrl}product-subcategories/${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editProductSubCategory api file", err);
+        return err?.response?.data
+    }
+}
+
+export const deleteProductSubCategory = async (id) => {
+    const url = `${environment.baseUrl}product-subcategories/${id}`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in deleteProductSubCategory api file", err);
+        return err?.response?.data
+    }
+}
+
+// ==================== Employee Api ====================
+
+export const addEmployee = async (data) => {
+    const url = `${environment.baseUrl}employee-users/register`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addEmployee api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editEmployee = async (id, data) => {
+    const url = `${environment.baseUrl}employee-users/${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editEmployee api file", err);
+        return err?.response?.data
+    }
+}
+
+export const deleteEmployee = async (id) => {
+    const url = `${environment.baseUrl}employee-users/${id}`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in deleteEmployee api file", err);
+        return err?.response?.data
     }
 }

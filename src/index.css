@@ -1,5 +1,5 @@
 :root {
-    --primaryColor: #007bff;
+    --primaryColor: #4f46e5;
     --font-name: 'Plus Jakarta Sans';
     --font-name-pop: 'Poppins';
     --font-name-lex: 'Lexend';
@@ -68,6 +68,16 @@ body::-webkit-scrollbar-thumb {
     background-color: var(--primaryColor);
     border-radius: 1rem;
 }
+
+
+/* global.css */
+.text-p {
+    background: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 
 /* ============ image gallery =============== */
 .pswp__img {

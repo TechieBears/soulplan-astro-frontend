@@ -1,20 +1,18 @@
-import React from 'react'
 import HomeBanner from '../../components/HomeComponents/HomeBanner'
-import HomeFooter from '../../components/HomeComponents/HomeFooter'
 import HomeBestServices from '../../components/HomeComponents/HomeBestServices'
 
 const HomePage = () => {
     return (
         <div>
-            <HomeBanner 
-                image="https://via.placeholder.com/1920x1080" 
-                title="Welcome to Soulplan" 
-                description="Discover your spiritual journey with our comprehensive astrology services" 
+            <HomeBanner
+                image="https://via.placeholder.com/1920x1080"
+                title="Welcome to Soulplan"
+                description="Discover your spiritual journey with our comprehensive astrology services"
                 button={true}
                 background={true}
                 onClick={() => console.log('Register clicked')}
             />
-            <HomeBestServices/>
+            <HomeBestServices />
             {/* <HomeFooter /> */}
         </div>
     )
