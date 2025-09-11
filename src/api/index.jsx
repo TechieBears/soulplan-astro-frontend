@@ -711,19 +711,6 @@ export const deleteBanner = async (id) => {
 //     }
 // };
 
-// ====================CUstomer(User) Banner  Api===================
-export const getCustomerBanners = async (data) => {
-    try {
-        const url = `${environment.baseUrl}banners/active?type=website`;
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-}
-
 
 // ==================== Website APi Binding ====================
 
@@ -786,7 +773,7 @@ export const getCustomerBanners = async (data) => {
 // ====================CUstomer(User) Banner  Api===================
 export const getCustomerBanners = async (data) => {
     try {
-        const url = `${environment.baseUrl}/api/banners/active?type=website`;
+        const url = `${environment.baseUrl}banners/active?type=website`;
         const response = await axios.get(url)
         return response.data
     }
