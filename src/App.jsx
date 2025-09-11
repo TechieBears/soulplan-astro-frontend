@@ -12,7 +12,6 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-cards';
 import gsap from 'gsap';
 import { SplitText, ScrollTrigger } from 'gsap/all';
-import toast from 'react-hot-toast';
 const App = () => {
     gsap.registerPlugin(SplitText, ScrollTrigger);
 

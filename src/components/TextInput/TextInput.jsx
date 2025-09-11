@@ -8,7 +8,7 @@ const TextInput = ({ label, type, props, errors, registerName, style, placeholde
 
     return (
         <>
-            <div className="">
+            <div className="relative">
                 <input
                     type={isPasswordField ? (showPassword ? 'text' : 'password') : type}
                     id={registerName}
