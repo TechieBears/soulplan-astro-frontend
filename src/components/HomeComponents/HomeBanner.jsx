@@ -85,7 +85,7 @@ const HomeBanner = ({ slidesData }) => {
                   </p>
                   {slide.button && (
                     <button
-                      className={`btn ${formBtn3}`}
+                      className={`btn${formBtn3}`}
                       onClick={slide.onClick}
                     >
                       {slide.button}
