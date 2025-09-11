@@ -6,10 +6,12 @@ import { environment } from "../env";
 // ==================== Regiter Api===================
 
 export const registerUser = async (data) => {
-    const url = `${environment.baseUrl}user/add-user `;
+    const url = `${environment.baseUrl}/api/customer-users/register`;
     try {
+        console.log('Register Data:', data);
         const response = await axios.post(url, data)
         return response.data
+
     }
     catch (err) {
         console.log("==========error in Register User api file", err);
@@ -32,18 +34,21 @@ export const adminGetFilteredActors = async (data) => {
 
 
 export const loginUser = async (data) => {
-    const url = `${environment.baseUrl}user/login`;
+    const url = `${environment.baseUrl}/api/auth/login`;
+    console.log('Login URL:', url);
+    console.log('Login Data:', data);
     try {
         const response = await axios.post(url, data)
         return response.data
     }
     catch (err) {
         console.log("==========error in login User api file", err);
+        console.log('Error response:', err?.response?.data);
         return err?.response?.data
     }
 };
 export const forgetUser = async (data) => {
-    const url = `${environment.baseUrl}user/verification-code`;
+    const url = `${environment.baseUrl}/api/customer-users/forgot-password`;
     try {
         const response = await axios.post(url, data)
         return response.data
@@ -54,13 +59,15 @@ export const forgetUser = async (data) => {
     }
 };
 export const resetPassword = async (data) => {
-    const url = `${environment.baseUrl}user/forgot-password`;
+    const url = `${environment.baseUrl}/api/customer-users/reset-password`;
+    console.log('Reset password data:', data);
     try {
         const response = await axios.post(url, data)
         return response.data
     }
     catch (err) {
-        console.log("==========error in forget User api file", err.response.data);
+        console.log("==========error in reset password api file", err);
+        console.log('Reset password error response:', err?.response?.data);
         return err?.response?.data
     }
 };

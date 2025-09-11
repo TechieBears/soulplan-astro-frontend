@@ -1,5 +1,7 @@
 import HomeBanner from '../../components/HomeComponents/HomeBanner'
 import HomeBestServices from '../../components/HomeComponents/HomeBestServices'
+import HomeCertifications from '../../components/HomeComponents/HomeCertifications'
+import Testimonials from '../../components/testimonial'
 
 const HomePage = () => {
     return (
@@ -12,7 +14,10 @@ const HomePage = () => {
                 background={true}
                 onClick={() => console.log('Register clicked')}
             />
+
+            <HomeCertifications />
             <HomeBestServices />
+            <Testimonials />
             {/* <HomeFooter /> */}
         </div>
     )

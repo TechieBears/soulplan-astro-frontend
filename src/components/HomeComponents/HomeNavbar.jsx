@@ -149,16 +149,16 @@ const HomeNavbar = () => {
             <div className="hidden lg:flex items-center gap-4">
               <button
                 onClick={() => navigate("/login")}
-                className="px-4 py-2 border rounded-md hover:bg-gray-100"
+                className="w-full py-3 px-4  text-white font-semibold bg-gradient-to-r from-blue-600 to-red-500 hover:opacity-90 transition"
               >
-                Login
+                Login / Register
               </button>
-              <button
+              {/* <button
                 onClick={() => navigate("/register")}
-                className="px-4 py-2 border rounded-md hover:bg-gray-100"
+                className="w-full py-3  px-4 rounded-md text-white font-semibold bg-gradient-to-r from-blue-600 to-red-500 hover:opacity-90 transition"
               >
                 Register
-              </button>
+              </button> */}
             </div>
           )}
 

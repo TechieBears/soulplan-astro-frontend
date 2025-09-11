@@ -8,8 +8,8 @@ export const environment = {
     // production: false
 
     // -------------------- Devlopment Server Api URL --------------------
-    // baseUrl: 'https://dev-api.hamax.in/api/',
-    // production: false,
+    // baseUrl: 'https://soulplan-astro-backend.vercel.app',
+    // production: true,
 
 
     // -------------------- Live Server Api URL --------------------
