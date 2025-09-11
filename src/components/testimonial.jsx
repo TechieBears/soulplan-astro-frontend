@@ -6,7 +6,7 @@ import "swiper/css/navigation";
 import { FaQuoteLeft } from "react-icons/fa";
 import playstore from "../../src/assets/google-play-black.png";
 import phoneMockup from "../../src/assets/phone-mockup.png";
-import { formBtn3 } from "../utils/CustomClass";
+import { formBtn2 } from "../utils/CustomClass";
 const testimonials = [
   {
     name: "Shilpa Handergule",
@@ -148,22 +148,22 @@ const Testimonials = () => {
         </div>
       </section>
 
-      <section className="bg-[#ffe9cc] py-16 px-4">
+      <section className="bg-[#ffe9cc] py-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
           {/* Small Heading */}
-          <p className="text-sm font-semibold tracking-wide text-red-600 mb-2">
+          <p className="text-p font-semibold tracking-wide mb-2">
             DISCOVER YOUR SELF
           </p>
 
           {/* Main Heading */}
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 mb-6">
             Explore a complete range of spiritual{" "}
             <br className="hidden sm:block" />
             and healing services.
           </h2>
 
           {/* Button */}
-          <button className={`btn ${formBtn3}`}>
+          <button className={`btn ${formBtn2}`}>
             Book Your Session
           </button>
         </div>

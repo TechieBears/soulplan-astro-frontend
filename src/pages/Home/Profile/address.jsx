@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar"; // adjust import path if needed
+import { formBtn2 } from "../../../utils/CustomClass";
 
 const AddressPage = () => {
   const [addresses, setAddresses] = useState([
@@ -95,7 +96,7 @@ const AddressPage = () => {
         <h1 className="text-2xl font-bold text-gray-800">My Address</h1>
         <button
           onClick={handleAddAddress}
-          className={`btn ${formBtn3}`}        >
+          className={`btn ${formBtn2}`}        >
           Add New Address
         </button>
       </div>

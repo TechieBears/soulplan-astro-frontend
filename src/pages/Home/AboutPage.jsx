@@ -82,8 +82,7 @@ const AboutPage = () => {
 
           {/* Title */}
           <h2 className="text-center text-2xl md:text-3xl font-semibold mb-10">
-            <span className="text-blue-600">Why Trust </span>
-            <span className="text-red-500">Our Platform</span>
+            <span className="text-p">Why Trust Our Platform</span>
           </h2>
 
           {/* Features Grid */}

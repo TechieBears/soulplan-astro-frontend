@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { formBtn3 } from "../../utils/CustomClass";
+import { formBtn2 } from "../../utils/CustomClass";
 import { environment } from "../../env"; // contains imageBaseUrl
 
 const HomeBanner = ({ slidesData }) => {
@@ -85,7 +85,7 @@ const HomeBanner = ({ slidesData }) => {
                   </p>
                   {slide.button && (
                     <button
-                      className={`btn${formBtn3}`}
+                      className={`btn${formBtn2}`}
                       onClick={slide.onClick}
                     >
                       {slide.button}

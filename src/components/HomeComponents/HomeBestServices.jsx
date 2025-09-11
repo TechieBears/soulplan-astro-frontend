@@ -20,7 +20,7 @@ import service16 from "../../assets/services/service16.png";
 import curly from "../../assets/services/carddesign.png";
 import corner1 from "../../assets/services/corner1.png";
 import underline from "../../assets/undertext.png";
-import { formBtn3 } from "../../utils/CustomClass";
+import { formBtn2 } from "../../utils/CustomClass";
 
 // Service card data
 const services = [
@@ -121,9 +121,7 @@ export default function HomeBestServices() {
       {/* Heading */}
       <div className="text-center mb-12">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mt-10 text-center leading-snug">
-          <span className="text-blue-600">Professional Qualifications</span>
-          <br />
-          <span className="text-pink-600">& Certifications</span>
+          <span className="text-p">Our Best Services</span>
         </h2>
 
         {/* Underline */}
@@ -159,7 +157,7 @@ export default function HomeBestServices() {
 
       {/* Button */}
       <div className="text-center mt-12">
-        <button className={`btn ${formBtn3}`}>
+        <button className={`btn ${formBtn2}`}>
           View All Services
         </button>
       </div>
