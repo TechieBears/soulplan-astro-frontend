@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { NavLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -7,14 +7,12 @@ import gsap from 'gsap';
 import toast from 'react-hot-toast';
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF, FaInstagram, FaApple } from "react-icons/fa";
-
 import TextInput from '../../components/TextInput/TextInput';
 import SelectTextInput from '../../components/TextInput/SelectTextInput';
 import LoadBox from '../../components/Loader/LoadBox';
 import { registerUser } from '../../api';
 import { setLoggedUser, setUserDetails } from '../../redux/Slices/loginSlice';
 import { validateEmail, validatePassword, validatePhoneNumber } from '../../utils/validateFunction';
-import { DRAFT_KEY_C, DRAFT_KEY_L, DRAFT_KEY_P } from '../../env';
 
 const RegisterPage = () => {
     const [loader, setLoader] = useState(false);
@@ -34,10 +32,6 @@ const RegisterPage = () => {
             if (response?.message === 'User created successfully' || response?.success) {
                 document.title = `SoulPlan : Dashboard | ${response?.user?.baseRole || ''}`;
                 localStorage.removeItem('persist:root');
-                localStorage.removeItem(DRAFT_KEY_C);
-                localStorage.removeItem(DRAFT_KEY_L);
-                localStorage.removeItem(DRAFT_KEY_P);
-
                 dispatch(setLoggedUser(true));
                 dispatch(setUserDetails(response?.user || response?.data));
                 toast.success('Account created successfully!');
