@@ -4,7 +4,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { FaQuoteLeft } from "react-icons/fa";
-import playstore from "../../src/assets/google-play-black.png"; 
+import playstore from "../../src/assets/google-play-black.png";
 import phoneMockup from "../../src/assets/phone-mockup.png";
 const testimonials = [
   {
@@ -110,10 +110,10 @@ const Testimonials = () => {
       </section>
 
       <section>
-        <div className="w-full bg-[#fff6ef] px-6 md:px-16 py-16">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
+        <div className="w-full bg-[#fff6ef] px-6 md:px-16">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-stretch justify-between gap-12">
             {/* Left Side - Text */}
-            <div className="text-center md:text-left max-w-lg">
+            <div className="text-center md:text-left max-w-lg py-16 flex-1 flex flex-col justify-center">
               <h2 className="text-2xl md:text-4xl font-bold leading-snug">
                 <span className="bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">
                   Download Our Astrologer
@@ -135,9 +135,8 @@ const Testimonials = () => {
               </div>
             </div>
 
-            {/* Right Side - Phone Mockup */}
-            <div className="relative flex justify-center md:justify-end">
-              {/* Background phones */}
+            {/* Right Side - Phone Mockup (bottom aligned, no padding) */}
+            <div className="relative flex items-end justify-end flex-1">
               <img
                 src={phoneMockup}
                 alt="App Preview"
@@ -147,6 +146,7 @@ const Testimonials = () => {
           </div>
         </div>
       </section>
+
       <section className="bg-[#ffe9cc] py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           {/* Small Heading */}

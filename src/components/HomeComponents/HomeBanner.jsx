@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { formBtn1 } from "../../utils/CustomClass";
+import { formBtn3 } from "../../utils/CustomClass";
 import { environment } from "../../env"; // contains imageBaseUrl
 
 const HomeBanner = ({ slidesData }) => {
@@ -38,7 +38,7 @@ const HomeBanner = ({ slidesData }) => {
   return (
     <div className=" relative">
       {/* Slider Container */}
-      <div className="relative overflow-hidden">
+      <div className="relative justify-center overflow-hidden">
         <div
           className="flex transition-transform duration-1000 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -48,7 +48,7 @@ const HomeBanner = ({ slidesData }) => {
               <section className="relative flex h-[100vh] md:h-screen items-center justify-center overflow-hidden">
                 {/* Background Gradient Overlay */}
                 {slide.background && (
-                  <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                  <div className="absolute  inset-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                 )}
 
                 {/* Image */}
@@ -76,7 +76,7 @@ const HomeBanner = ({ slidesData }) => {
                 <div className="absolute inset-0 z-20 bg-black/40"></div>
 
                 {/* Content */}
-                <div className="absolute inset-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center flex justify-center items-center flex-col space-y-3 container mx-auto z-30 px-4 md:px-8">
+                <div className="absolute inset-0 flex justify-center items-center flex-col space-y-3 container mx-auto z-30 px-4 md:px-8" style={{textAlign: 'center'}}>
                   <h1 className="split text-2xl md:text-4xl lg:text-6xl pb-2 font-tbLex font-bold text-neutral-50">
                     {slide.title}
                   </h1>
@@ -85,7 +85,7 @@ const HomeBanner = ({ slidesData }) => {
                   </p>
                   {slide.button && (
                     <button
-                      className={`btn ${formBtn1}`}
+                      className={`btn ${formBtn3}`}
                       onClick={slide.onClick}
                     >
                       {slide.button}

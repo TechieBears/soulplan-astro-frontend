@@ -33,14 +33,14 @@ const certifications = [
   },
 ];
 
-export default function Certifications() {
+export default function Certifications({ showTopImage = true }) {
   return (
     <div
       className="bg-[#f5f0e6] flex flex-col items-center justify-center "
       style={{ backgroundImage: `url(${background}) rotate(90deg)` }}
     >
-      <div className=" container mx-auto flex flex-col items-center justify-center pt-10">
-        <img src={top_certification} alt="" />
+      <div className=" container mx-auto flex flex-col items-center justify-center">
+        {showTopImage && <img src={top_certification} alt="" />}
         {/* Heading */}
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mt-10 text-center leading-snug">
           <span className="text-blue-600">Professional Qualifications</span>
