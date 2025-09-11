@@ -1,12 +1,12 @@
 import axios from "axios";
 import { environment } from "../env";
 
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true;
 
 // ==================== Regiter Api===================
 
 export const registerUser = async (data) => {
-    const url = `${environment.baseUrl}/api/customer-users/register`;
+    const url = `${environment.baseUrl}customer-users/register`;
     try {
         console.log('Register Data:', data);
         const response = await axios.post(url, data)
@@ -34,9 +34,7 @@ export const adminGetFilteredActors = async (data) => {
 
 
 export const loginUser = async (data) => {
-    const url = `${environment.baseUrl}/api/auth/login`;
-    console.log('Login URL:', url);
-    console.log('Login Data:', data);
+    const url = `${environment.baseUrl}auth/login`;
     try {
         const response = await axios.post(url, data)
         return response.data
@@ -48,7 +46,7 @@ export const loginUser = async (data) => {
     }
 };
 export const forgetUser = async (data) => {
-    const url = `${environment.baseUrl}/api/customer-users/forgot-password`;
+    const url = `${environment.baseUrl}customer-users/forgot-password`;
     try {
         const response = await axios.post(url, data)
         return response.data
@@ -59,7 +57,7 @@ export const forgetUser = async (data) => {
     }
 };
 export const resetPassword = async (data) => {
-    const url = `${environment.baseUrl}/api/customer-users/reset-password`;
+    const url = `${environment.baseUrl}customer-users/reset-password`;
     console.log('Reset password data:', data);
     try {
         const response = await axios.post(url, data)
@@ -660,6 +658,65 @@ export const deleteBanner = async (id) => {
 
 // ==================== Authendication Api===================
 // export const registerUser = async (data) => {
+//     const url = `${environment.baseUrl}customer-users/register`;
+//     try {
+//         console.log('Register Data:', data);
+//         const response = await axios.post(url, data)
+//         return response.data
+
+//     }
+//     catch (err) {
+//         console.log("==========error in Register User api file", err);
+//         return err?.response?.data
+//     }
+// };
+
+// export const loginUser = async (data) => {
+//     const url = `${environment.baseUrl}auth/login`;
+//     console.log('Login URL:', url);
+//     console.log('Login Data:', data);
+//     try {
+//         const response = await axios.post(url, data)
+//         return response.data
+//     }
+//     catch (err) {
+//         console.log("==========error in login User api file", err);
+//         console.log('Error response:', err?.response?.data);
+//         return err?.response?.data
+//     }
+// };
+
+// export const forgetUser = async (data) => {
+//     const url = `${environment.baseUrl}customer-users/forgot-password`;
+//     try {
+//         const response = await axios.post(url, data)
+//         return response.data
+//     }
+//     catch (err) {
+//         console.log("==========error in forget User api file", err.response.data);
+//         return err?.response?.data
+//     }
+// };
+// export const resetPassword = async (data) => {
+//     const url = `${environment.baseUrl}customer-users/reset-password`;
+//     console.log('Reset password data:', data);
+//     try {
+//         const response = await axios.post(url, data)
+//         return response.data
+//     }
+//     catch (err) {
+//         console.log("==========error in reset password api file", err);
+//         console.log('Reset password error response:', err?.response?.data);
+//         return err?.response?.data
+//     }
+// };
+
+
+// ==================== Website APi Binding ====================
+
+
+// ==================== Authendication Api===================
+// export const registerUser = async (data) => {
 //     const url = `${environment.baseUrl}/api/customer-users/register`;
 //     try {
 //         console.log('Register Data:', data);
@@ -716,7 +773,7 @@ export const deleteBanner = async (id) => {
 // ====================CUstomer(User) Banner  Api===================
 export const getCustomerBanners = async (data) => {
     try {
-        const url = `${environment.baseUrl}/api/banners/active?type=website`;
+        const url = `${environment.baseUrl}banners/active?type=website`;
         const response = await axios.get(url)
         return response.data
     }

@@ -45,16 +45,14 @@ import ProfilePage from "../pages/Home/Profile/account";
 import CustomerSupport from "../pages/Home/Profile/customersupport";
 import MyOrders from "../pages/Home/Profile/orders";
 import ResetPasswordPage from "../pages/Home/ResetPasswordPage";
+import AdminProfile from "../pages/Admin/UserProfile/UserProfile";
 
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
-
-    const login = useSelector((state) => state.user.isLogged);
     const user = useSelector((state) => state.user.userDetails);
 
     console.log("⚡️🤯 ~ ProjectRoutes.jsx ~ user:", user);
-
     // ============ Page Loader ============
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 2800);
@@ -82,37 +80,29 @@ const ProjectRoutes = () => {
         <div className="min-h-screen transition-all duration-300">
             {loading ? (
                 <Preloaders />
-            ) : login ? (
+            ) : (user?.role == "admin" || user?.role == "employee") ? (
                 // ============ Logged in (Admin or Employee) ============
-                true ? (
-                    <Sidebar>
-                        <Routes>
-                            <Route path="/" element={<Dashboard />} />
-                            <Route path="/bookings" element={<Bookings />} />
-                            <Route path="/calender" element={<BookingCalender />} />
-                            <Route path="/all-products" element={<AllProducts />} />
-                            <Route path="/product-categories" element={<ProductCategories />} />
-                            <Route path="/all-services" element={<AllServices />} />
-                            <Route path="/all-employees" element={<Employees />} />
-                            <Route path="/all-users" element={<AllUserProfiles />} />
-                            <Route path="/user-transaction" element={<UserTransactios />} />
-                            <Route path="/banner" element={<Banner />} />
-                            <Route path="/notifications" element={<Notifications />} />
-                            <Route path="/offersCoupons" element={<OffersCoupons />} />
-                            <Route path="/referEarn" element={<ReferEarn />} />
-                            <Route path="/testimonials" element={<Testimonials />} />
-                            <Route path="*" element={<ErrorPage />} />
-                        </Routes>
-                    </Sidebar>
-                ) : (
-                    <Sidebar>
-                        <Routes>
-                            <Route path="/" element={<EmployeeDashboard />} />
-                            <Route path="/profile" element={<UserProfile />} />
-                            <Route path="*" element={<ErrorPage />} />
-                        </Routes>
-                    </Sidebar>
-                )
+                <Sidebar>
+                    <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/bookings" element={<Bookings />} />
+                        <Route path="/calender" element={<BookingCalender />} />
+                        <Route path="/all-products" element={<AllProducts />} />
+
+                        <Route path="/product-categories" element={<ProductCategories />} />
+                        <Route path="/all-services" element={<AllServices />} />
+                        <Route path="/all-employees" element={<Employees />} />
+                        <Route path="/all-users" element={<AllUserProfiles />} />
+                        <Route path="/user-transaction" element={<UserTransactios />} />
+                        <Route path="/banner" element={<Banner />} />
+                        <Route path="/notifications" element={<Notifications />} />
+                        <Route path="/offersCoupons" element={<OffersCoupons />} />
+                        <Route path="/referEarn" element={<ReferEarn />} />
+                        <Route path="/testimonials" element={<Testimonials />} />
+                        <Route path="/admin-profile" element={<AdminProfile />} />
+                        <Route path="*" element={<ErrorPage />} />
+                    </Routes>
+                </Sidebar>
             ) : (
                 // ============ Guest / Before Login ============
                 <main className="min-h-screen w-full overflow-x-hidden">
@@ -132,7 +122,7 @@ const ProjectRoutes = () => {
 
                         <Route path="/profile/address" element={<AddressPage />} />
                         <Route path="/password/reset/:token" element={<ResetPasswordPage />} />
-                        
+
                         <Route path="/profile/account" element={<ProfilePage />} />
                         <Route path="/profile/my-orders" element={<MyOrders />} />
                         <Route path="*" element={<ErrorPage />} />

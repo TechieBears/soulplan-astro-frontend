@@ -464,8 +464,21 @@ body::-webkit-scrollbar-thumb {
 }
 
 
+/* Custom gradient utilities */
 .linear-grid {
     background: linear-gradient(90deg, rgb(8, 168, 245) 0%, 50%, rgb(16, 63, 199) 100%);
+}
+
+.bg-primary-gradient {
+    background: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+}
+
+.bg-blue-red-gradient {
+    background: linear-gradient(90deg, #2563eb 0%, #dc2626 100%);
+}
+
+.bg-purple-red-gradient {
+    background: linear-gradient(90deg, #9333ea 0%, #dc2626 100%);
 }
 
 .max-w {
