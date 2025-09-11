@@ -88,6 +88,7 @@ const ProjectRoutes = () => {
                         <Route path="/bookings" element={<Bookings />} />
                         <Route path="/calender" element={<BookingCalender />} />
                         <Route path="/all-products" element={<AllProducts />} />
+
                         <Route path="/product-categories" element={<ProductCategories />} />
                         <Route path="/all-services" element={<AllServices />} />
                         <Route path="/all-employees" element={<Employees />} />
