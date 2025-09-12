@@ -58,9 +58,9 @@ const ProfileSidebar = ({ children }) => {
                     {item.path.startsWith("/") ? (
                       <Link
                         to={item.path}
-                        className={`flex items-center justify-between px-3 py-3 rounded-lg font-medium transition ${
+                        className={`flex items-center justify-between px-3 py-3 font-medium transition ${
                           isActive(item.path)
-                            ? "bg-purple-100 text-purple-600 border-b"
+                            ? "text-white bg-primary border-b"
                             : "hover:bg-gray-100 text-[#1d2e36]"
                         }`}
                       >

@@ -6,7 +6,7 @@ import "swiper/css/navigation";
 import { FaQuoteLeft } from "react-icons/fa";
 import playstore from "../../src/assets/google-play-black.png";
 import phoneMockup from "../../src/assets/phone-mockup.png";
-import { formBtn2 } from "../utils/CustomClass";
+import { formBtn3 } from "../utils/CustomClass";
 const testimonials = [
   {
     name: "Shilpa Handergule",
@@ -163,7 +163,7 @@ const Testimonials = () => {
           </h2>
 
           {/* Button */}
-          <button className={`btn ${formBtn2}`}>
+          <button className={`btn ${formBtn3}`}>
             Book Your Session
           </button>
         </div>
