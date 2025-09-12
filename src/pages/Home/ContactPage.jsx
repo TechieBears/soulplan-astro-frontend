@@ -96,7 +96,7 @@ const ContactPage = () => {
             <h1 className="text-xl sm:text-2xl md:text-3xl text-p font-bold mb-6 sm:mb-10">
               Find Us on <span className="text-red-500">Google Maps</span>
             </h1>
-              <div className="w-full h-[500px] rounded-lg overflow-hidden shadow-md">
+              <div className="w-full h-[500px] rounded-xl overflow-hidden shadow-md">
               <iframe
                 title="Google Maps"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3608.990798153229!2d55.27078241501025!3d25.204849983898388!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f434f1e0e4e0f%3A0xa7b5b89cfba3e7e0!2sDubai!5e0!3m2!1sen!2sae!4v1674834000000!5m2!1sen!2sae"
