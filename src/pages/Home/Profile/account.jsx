@@ -3,7 +3,9 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
 import { formBtn3 } from "../../../utils/CustomClass";
-
+import TextInput from "../../../components/TextInput/TextInput";
+import { inputClass, labelClass } from "../../../utils/CustomClass";
+import ImageUploadInput from "../../../components/TextInput/ImageUploadInput";
 
 // Temporary placeholder components
 const Private = ({ children }) => children;
@@ -134,13 +136,13 @@ export default function AccountPage() {
                 {!isEditable && (
                   <button
                     onClick={() => setIsEditable(true)}
-                    className="px-4 py-2 bg-[#420098] text-white rounded-lg hover:bg-[#5c1bb5]"
+                    className={`${formBtn3} border-b`}
                   >
                     Edit Profile
                   </button>
                 )}
                 <button
-                  className="px-4 py-2 bg-[#420098] text-white rounded-lg hover:bg-[#5c1bb5]"
+                  className={`${formBtn3} border-b`}
                   onClick={() => setShowChangePasswordModal(true)}
                 >
                   Change Password
@@ -150,98 +152,98 @@ export default function AccountPage() {
 
             {/* Change Password Modal */}
             {showChangePasswordModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <div className="bg-white w-full max-w-md p-6 rounded-xl shadow-lg relative">
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white w-full max-w-md p-6 rounded-xl shadow-lg relative">
+                  <button
+                    onClick={() => setShowChangePasswordModal(false)}
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                  >
+                    ✕
+                  </button>
+
+                  <h2 className="text-xl font-semibold mb-4">
+                    Change Password
+                  </h2>
+
+                  <form onSubmit={handlePasswordSubmit}>
+                    {/* Old Password */}
+                    <div className="mb-4">
+                      <label className={labelClass}>Old Password</label>
+                      <div className="relative">
+                        <TextInput
+                          type={showOldPassword ? "text" : "password"}
+                          value={passwordForm.oldPassword}
+                          onChange={handlePasswordInputChange}
+                          registerName="oldPassword"
+                          style={inputClass + " pr-10"}
+                          placeholder="Enter old password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowOldPassword(!showOldPassword)}
+                          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
+                        >
+                          {showOldPassword ? "👁️" : "🙈"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* New Password */}
+                    <div className="mb-4">
+                      <label className={labelClass}>New Password</label>
+                      <div className="relative">
+                        <TextInput
+                          type={showNewPassword ? "text" : "password"}
+                          value={passwordForm.newPassword}
+                          onChange={handlePasswordInputChange}
+                          registerName="newPassword"
+                          style={inputClass + " pr-10"}
+                          placeholder="Enter new password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowNewPassword(!showNewPassword)}
+                          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
+                        >
+                          {showNewPassword ? "👁️" : "🙈"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Confirm Password */}
+                    <div className="mb-4">
+                      <label className={labelClass}>Confirm Password</label>
+                      <div className="relative">
+                        <TextInput
+                          type={showConfirmPassword ? "text" : "password"}
+                          value={passwordForm.confirmPassword}
+                          onChange={handlePasswordInputChange}
+                          registerName="confirmPassword"
+                          style={inputClass + " pr-10"}
+                          placeholder="Enter confirm password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
+                        >
+                          {showConfirmPassword ? "👁️" : "🙈"}
+                        </button>
+                      </div>
+                    </div>
+
                     <button
-                      onClick={() => setShowChangePasswordModal(false)}
-                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                      type="submit"
+                      className="bg-[#420098] text-white px-4 py-2 rounded hover:bg-[#5c1bb5]"
+                      disabled={isLoading}
                     >
-                      ✕
+                      {isLoading ? "Changing..." : "Submit"}
                     </button>
-
-                    <h2 className="text-xl font-semibold mb-4">
-                      Change Password
-                    </h2>
-
-                    <form onSubmit={handlePasswordSubmit}>
-                      {/* Old Password */}
-                      <div className="mb-4">
-                          <label className={labelClass}>Old Password</label>
-                          <div className="relative">
-                            <TextInput
-                              type={showOldPassword ? "text" : "password"}
-                              value={passwordForm.oldPassword}
-                              onChange={handlePasswordInputChange}
-                              registerName="oldPassword"
-                              style={inputClass + ' pr-10'}
-                              placeholder="Enter old password"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowOldPassword(!showOldPassword)}
-                              className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
-                            >
-                              {showOldPassword ? "👁️" : "🙈"}
-                            </button>
-                          </div>
-                      </div>
-
-                      {/* New Password */}
-                      <div className="mb-4">
-                          <label className={labelClass}>New Password</label>
-                          <div className="relative">
-                            <TextInput
-                              type={showNewPassword ? "text" : "password"}
-                              value={passwordForm.newPassword}
-                              onChange={handlePasswordInputChange}
-                              registerName="newPassword"
-                              style={inputClass + ' pr-10'}
-                              placeholder="Enter new password"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowNewPassword(!showNewPassword)}
-                              className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
-                            >
-                              {showNewPassword ? "👁️" : "🙈"}
-                            </button>
-                          </div>
-                      </div>
-
-                      {/* Confirm Password */}
-                      <div className="mb-4">
-                          <label className={labelClass}>Confirm Password</label>
-                          <div className="relative">
-                            <TextInput
-                              type={showConfirmPassword ? "text" : "password"}
-                              value={passwordForm.confirmPassword}
-                              onChange={handlePasswordInputChange}
-                              registerName="confirmPassword"
-                              style={inputClass + ' pr-10'}
-                              placeholder="Enter confirm password"
-                            />
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setShowConfirmPassword(!showConfirmPassword)
-                              }
-                              className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
-                            >
-                              {showConfirmPassword ? "👁️" : "🙈"}
-                            </button>
-                          </div>
-                      </div>
-
-                      <button
-                        type="submit"
-                        className="bg-[#420098] text-white px-4 py-2 rounded hover:bg-[#5c1bb5]"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? "Changing..." : "Submit"}
-                      </button>
-                    </form>
-                  </div>
+                  </form>
                 </div>
+              </div>
             )}
 
             {/* Profile Form */}
@@ -251,7 +253,9 @@ export default function AccountPage() {
             >
               {/* First Name */}
               <div>
-                <label className={labelClass} htmlFor="firstName">First Name</label>
+                <label className={labelClass} htmlFor="firstName">
+                  First Name
+                </label>
                 <TextInput
                   type="text"
                   registerName="firstName"
@@ -265,7 +269,9 @@ export default function AccountPage() {
 
               {/* Last Name */}
               <div>
-                <label className={labelClass} htmlFor="lastName">Last Name *</label>
+                <label className={labelClass} htmlFor="lastName">
+                  Last Name *
+                </label>
                 <TextInput
                   type="text"
                   registerName="lastName"
@@ -279,7 +285,9 @@ export default function AccountPage() {
 
               {/* Email */}
               <div>
-                <label className={labelClass} htmlFor="email">Email address *</label>
+                <label className={labelClass} htmlFor="email">
+                  Email address *
+                </label>
                 <TextInput
                   type="email"
                   registerName="email"
@@ -293,7 +301,9 @@ export default function AccountPage() {
 
               {/* Phone */}
               <div>
-                <label className={labelClass} htmlFor="phone">Phone Number *</label>
+                <label className={labelClass} htmlFor="phone">
+                  Phone Number *
+                </label>
                 <TextInput
                   type="tel"
                   registerName="phone"
@@ -310,12 +320,16 @@ export default function AccountPage() {
 
               {/* Profile Image */}
               <div className="md:col-span-2">
-                <label className={labelClass} htmlFor="profileImage">Profile Image</label>
+                <label className={labelClass} htmlFor="profileImage">
+                  Profile Image
+                </label>
                 <ImageUploadInput
                   label="Profile Image"
                   registerName="profileImage"
                   defaultValue={user?.profileImg}
-                  setValue={(name, value) => setFormData((prev) => ({ ...prev, [name]: value }))}
+                  setValue={(name, value) =>
+                    setFormData((prev) => ({ ...prev, [name]: value }))
+                  }
                   disabled={!isEditable}
                 />
                 {/* Show existing or preview image */}

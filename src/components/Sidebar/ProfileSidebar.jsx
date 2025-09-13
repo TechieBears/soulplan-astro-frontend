@@ -8,6 +8,7 @@ import {
 } from "../../redux/Slices/loginSlice";
 import toast from "react-hot-toast";
 import { Profile } from "iconsax-reactjs";
+import { formBtn3 } from "../../utils/CustomClass";
 
 const ProfileSidebar = ({ children }) => {
   const user = useSelector((state) => state.user);
@@ -60,7 +61,7 @@ const ProfileSidebar = ({ children }) => {
                         to={item.path}
                         className={`flex items-center justify-between px-3 py-3 font-medium transition ${
                           isActive(item.path)
-                            ? "text-white bg-primary border-b"
+                            ? `${formBtn3} border-b`
                             : "hover:bg-gray-100 text-[#1d2e36]"
                         }`}
                       >

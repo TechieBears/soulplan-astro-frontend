@@ -328,7 +328,7 @@ const AddressPage = () => {
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  className="bg-[#420098] text-white px-6 py-2 rounded-md hover:bg-[#5c1bb5] transition"
+                  className={`btn ${formBtn3}`}
                 >
                   {editingAddress ? "Update Address" : "Add Address"}
                 </button>
