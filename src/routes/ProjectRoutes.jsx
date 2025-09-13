@@ -11,9 +11,6 @@ import HomeFooter from "../components/HomeComponents/HomeFooter";
 
 // ============ Pages ============
 import Dashboard from "../pages/Admin/Dashboard/Dashboard";
-import EmployeeDashboard from "../pages/Employee/Dashboard/EmployeeDashboard";
-import UserProfile from "../pages/Admin/UserProfile/UserProfile";
-
 import HomePage from "../pages/Home/HomePage";
 import AboutPage from "../pages/Home/AboutPage";
 import ServicesPage from "../pages/Home/ServicesPage";
@@ -37,7 +34,6 @@ import Notifications from '../pages/Admin/Master/Notifications';
 import OffersCoupons from "../pages/Admin/Master/OffersCoupons";
 import ReferEarn from "../pages/Admin/Master/ReferEarn";
 import Testimonials from '../pages/Admin/Master/Testimonials';
-import DeepLinkRedirect from "../pages/DeepLinkRedirect";
 
 
 import AddressPage from "../pages/Home/Profile/address";

@@ -68,6 +68,7 @@ const LoginPage = () => {
                 setLoading(false)
                 dispatch(setLoggedUser(true))
                 dispatch(setRoleIs(response?.data?.user?.role))
+                localStorage.setItem('token', response?.data?.token)
 
                 if (!rememberMe) {
                     reset()
@@ -174,7 +175,7 @@ const LoginPage = () => {
                     </div>
 
                     {/* Login Button */}
-                    {loading ? <LoadBox /> : <button
+                    {loading ? <LoadBox className={formBtn3} /> : <button
                         type="submit"
                         className={`${formBtn3}`}
                     >

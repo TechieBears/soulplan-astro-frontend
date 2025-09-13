@@ -1,8 +1,21 @@
 import axios from "axios";
 import { environment } from "../env";
 
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = environment?.production;
 
+
+axios.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 // ==================== Regiter Api===================
 
 export const registerUser = async (data) => {
@@ -41,7 +54,6 @@ export const loginUser = async (data) => {
     }
     catch (err) {
         console.log("==========error in login User api file", err);
-        console.log('Error response:', err?.response?.data);
         return err?.response?.data
     }
 };
@@ -285,8 +297,8 @@ export const userContactUs = async (data) => {
 
 
 export const uploadToCloudinary = async (file) => {
-    const cloudName = 'hamax';
-    const apiKey = '567326273964993';
+    const cloudName = 'astroguid';
+    const apiKey = import.meta.env.VITE_CLOUDINARY_KEY;
     const uploadPreset = 'ml_default';
 
     const formData = new FormData();
@@ -441,7 +453,18 @@ export const editProfile = async (id, data) => {
 // ====================== Product Categories Api ======================
 export const getProductCategories = async (data) => {
     try {
-        const url = `${environment.baseUrl}product-categories?page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}product-categories/get-all?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log(err);
+        return err?.response?.data
+    }
+}
+export const getProductCategoriesDropdown = async () => {
+    try {
+        const url = `${environment.baseUrl}product-categories/dropdown`;
         const response = await axios.get(url)
         return response.data
     }
@@ -480,7 +503,7 @@ export const editProductCategory = async (id, data) => {
 // ======================= Product Sub Categories Api ======================
 export const getProductSubCategories = async (data) => {
     try {
-        const url = `${environment.baseUrl}product-subcategories?page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}product-subcategories/get-all?page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -529,7 +552,7 @@ export const deleteProductSubCategory = async (id) => {
 // ======================= Products Api ======================
 export const getProducts = async (data) => {
     try {
-        const url = `${environment.baseUrl}products?page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}product/get-all?page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -540,7 +563,7 @@ export const getProducts = async (data) => {
 }
 
 export const addProduct = async (data) => {
-    const url = `${environment.baseUrl}products/create`;
+    const url = `${environment.baseUrl}product/create`;
     try {
         const response = await axios.post(url, data)
         return response.data
@@ -552,7 +575,7 @@ export const addProduct = async (data) => {
 }
 
 export const editProduct = async (id, data) => {
-    const url = `${environment.baseUrl}products/update?id=${id}`;
+    const url = `${environment.baseUrl}product/update?id=${id}`;
     try {
         const response = await axios.put(url, data)
         return response.data
@@ -564,7 +587,7 @@ export const editProduct = async (id, data) => {
 }
 
 export const deleteProduct = async (id) => {
-    const url = `${environment.baseUrl}products/delete?id=${id}`;
+    const url = `${environment.baseUrl}product/delete?id=${id}`;
     try {
         const response = await axios.delete(url)
         return response.data
@@ -576,6 +599,18 @@ export const deleteProduct = async (id) => {
 }
 
 // ==================== Employee Api ====================
+
+export const getAllEmployees = async (data) => {
+    try {
+        const url = `${environment.baseUrl}employee-users/get-all?name=${data?.name}&page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllEmployees api file", err);
+        return err?.response?.data
+    }
+}
 
 export const addEmployee = async (data) => {
     const url = `${environment.baseUrl}employee-users/register`;
@@ -597,6 +632,20 @@ export const editEmployee = async (id, data) => {
     }
     catch (err) {
         console.log("==========error in editEmployee api file", err);
+        return err?.response?.data
+    }
+}
+
+// ==================== Customer Api ====================
+
+export const getAllCustomers = async (data) => {
+    try {
+        const url = `${environment.baseUrl}customer-users/get-all?name=${data?.name}&page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllCustomers api file", err);
         return err?.response?.data
     }
 }
