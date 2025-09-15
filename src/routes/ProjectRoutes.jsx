@@ -42,6 +42,7 @@ import CustomerSupport from "../pages/Home/Profile/customersupport";
 import MyOrders from "../pages/Home/Profile/orders";
 import ResetPasswordPage from "../pages/Home/ResetPasswordPage";
 import AdminProfile from "../pages/Admin/UserProfile/UserProfile";
+import ServicesCategories from "../pages/Admin/Services/ServicesCategories";
 
 
 const ProjectRoutes = () => {
@@ -84,9 +85,9 @@ const ProjectRoutes = () => {
                         <Route path="/bookings" element={<Bookings />} />
                         <Route path="/calender" element={<BookingCalender />} />
                         <Route path="/all-products" element={<AllProducts />} />
-
                         <Route path="/product-categories" element={<ProductCategories />} />
                         <Route path="/all-services" element={<AllServices />} />
+                        <Route path="/service-categories" element={<ServicesCategories />} />
                         <Route path="/all-employees" element={<Employees />} />
                         <Route path="/all-users" element={<AllUserProfiles />} />
                         <Route path="/user-transaction" element={<UserTransactios />} />

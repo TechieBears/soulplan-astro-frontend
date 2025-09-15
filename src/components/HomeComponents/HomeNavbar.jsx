@@ -57,7 +57,7 @@ const HomeNavbar = () => {
 
     return (
         <>
-            <nav className="navbar fixed top-0 left-0 z-[900] bg-white w-full shadow-sm">
+            <nav className={`navbar fixed top-0 left-0 z-[900] bg-white w-full right-0 transition-colors duration-500 ${isScrolled ? "bg-white/20  shadow-md text-black backdrop-blur-lg " : ""}`}>
                 <div className="flex items-center justify-between container mx-auto px-6 py-3">
                     {/* ===== Left: Logo and Brand ===== */}
                     <button
