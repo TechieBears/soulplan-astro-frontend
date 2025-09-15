@@ -43,9 +43,7 @@ export default function Certifications({ showTopImage = true }) {
         {showTopImage && <img src={top_certification} alt="" />}
         {/* Heading */}
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mt-10 text-center leading-snug">
-          <span className="text-blue-600">Professional Qualifications</span>
-          <br />
-          <span className="text-pink-600">& Certifications</span>
+          <span className="text-p">Professional Qualifications & Certifications</span>
         </h2>
 
         {/* Underline */}

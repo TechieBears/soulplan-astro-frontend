@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
+import { formBtn3 } from "../../../utils/CustomClass";
+import TextInput from "../../../components/TextInput/TextInput";
+import { inputClass, labelClass } from "../../../utils/CustomClass";
+import ImageUploadInput from "../../../components/TextInput/ImageUploadInput";
 
 // Temporary placeholder components
 const Private = ({ children }) => children;
@@ -62,7 +66,7 @@ export default function AccountPage() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async () => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -132,13 +136,13 @@ export default function AccountPage() {
                 {!isEditable && (
                   <button
                     onClick={() => setIsEditable(true)}
-                    className="px-4 py-2 bg-[#420098] text-white rounded-lg hover:bg-[#5c1bb5]"
+                    className={`${formBtn3} border-b`}
                   >
                     Edit Profile
                   </button>
                 )}
                 <button
-                  className="px-4 py-2 bg-[#420098] text-white rounded-lg hover:bg-[#5c1bb5]"
+                  className={`${formBtn3} border-b`}
                   onClick={() => setShowChangePasswordModal(true)}
                 >
                   Change Password
@@ -148,98 +152,98 @@ export default function AccountPage() {
 
             {/* Change Password Modal */}
             {showChangePasswordModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <div className="bg-white w-full max-w-md p-6 rounded-xl shadow-lg relative">
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white w-full max-w-md p-6 rounded-xl shadow-lg relative">
+                  <button
+                    onClick={() => setShowChangePasswordModal(false)}
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                  >
+                    ✕
+                  </button>
+
+                  <h2 className="text-xl font-semibold mb-4">
+                    Change Password
+                  </h2>
+
+                  <form onSubmit={handlePasswordSubmit}>
+                    {/* Old Password */}
+                    <div className="mb-4">
+                      <label className={labelClass}>Old Password</label>
+                      <div className="relative">
+                        <TextInput
+                          type={showOldPassword ? "text" : "password"}
+                          value={passwordForm.oldPassword}
+                          onChange={handlePasswordInputChange}
+                          registerName="oldPassword"
+                          style={inputClass + " pr-10"}
+                          placeholder="Enter old password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowOldPassword(!showOldPassword)}
+                          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
+                        >
+                          {showOldPassword ? "👁️" : "🙈"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* New Password */}
+                    <div className="mb-4">
+                      <label className={labelClass}>New Password</label>
+                      <div className="relative">
+                        <TextInput
+                          type={showNewPassword ? "text" : "password"}
+                          value={passwordForm.newPassword}
+                          onChange={handlePasswordInputChange}
+                          registerName="newPassword"
+                          style={inputClass + " pr-10"}
+                          placeholder="Enter new password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowNewPassword(!showNewPassword)}
+                          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
+                        >
+                          {showNewPassword ? "👁️" : "🙈"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Confirm Password */}
+                    <div className="mb-4">
+                      <label className={labelClass}>Confirm Password</label>
+                      <div className="relative">
+                        <TextInput
+                          type={showConfirmPassword ? "text" : "password"}
+                          value={passwordForm.confirmPassword}
+                          onChange={handlePasswordInputChange}
+                          registerName="confirmPassword"
+                          style={inputClass + " pr-10"}
+                          placeholder="Enter confirm password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
+                        >
+                          {showConfirmPassword ? "👁️" : "🙈"}
+                        </button>
+                      </div>
+                    </div>
+
                     <button
-                      onClick={() => setShowChangePasswordModal(false)}
-                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                      type="submit"
+                      className="bg-[#420098] text-white px-4 py-2 rounded hover:bg-[#5c1bb5]"
+                      disabled={isLoading}
                     >
-                      ✕
+                      {isLoading ? "Changing..." : "Submit"}
                     </button>
-
-                    <h2 className="text-xl font-semibold mb-4">
-                      Change Password
-                    </h2>
-
-                    <form onSubmit={handlePasswordSubmit}>
-                      {/* Old Password */}
-                      <div className="mb-4">
-                        <label className="block mb-1">Old Password</label>
-                        <div className="relative">
-                          <input
-                            name="oldPassword"
-                            type={showOldPassword ? "text" : "password"}
-                            value={passwordForm.oldPassword}
-                            onChange={handlePasswordInputChange}
-                            className="w-full p-2 pr-10 border border-gray-300 rounded"
-                            required
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setShowOldPassword(!showOldPassword)}
-                            className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
-                          >
-                            {showOldPassword ? "👁️" : "🙈"}
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* New Password */}
-                      <div className="mb-4">
-                        <label className="block mb-1">New Password</label>
-                        <div className="relative">
-                          <input
-                            name="newPassword"
-                            type={showNewPassword ? "text" : "password"}
-                            value={passwordForm.newPassword}
-                            onChange={handlePasswordInputChange}
-                            className="w-full p-2 pr-10 border border-gray-300 rounded"
-                            required
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setShowNewPassword(!showNewPassword)}
-                            className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
-                          >
-                            {showNewPassword ? "👁️" : "🙈"}
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Confirm Password */}
-                      <div className="mb-4">
-                        <label className="block mb-1">Confirm Password</label>
-                        <div className="relative">
-                          <input
-                            name="confirmPassword"
-                            type={showConfirmPassword ? "text" : "password"}
-                            value={passwordForm.confirmPassword}
-                            onChange={handlePasswordInputChange}
-                            className="w-full p-2 pr-10 border border-gray-300 rounded"
-                            required
-                          />
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setShowConfirmPassword(!showConfirmPassword)
-                            }
-                            className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
-                          >
-                            {showConfirmPassword ? "👁️" : "🙈"}
-                          </button>
-                        </div>
-                      </div>
-
-                      <button
-                        type="submit"
-                        className="bg-[#420098] text-white px-4 py-2 rounded hover:bg-[#5c1bb5]"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? "Changing..." : "Submit"}
-                      </button>
-                    </form>
-                  </div>
+                  </form>
                 </div>
+              </div>
             )}
 
             {/* Profile Form */}
@@ -249,78 +253,66 @@ export default function AccountPage() {
             >
               {/* First Name */}
               <div>
-                  <label
-                    htmlFor="firstName"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    First Name
-                  </label>
-                  <input
-                    required
-                    id="firstName"
-                    type="text"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    disabled={!isEditable}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
-                  />
+                <label className={labelClass} htmlFor="firstName">
+                  First Name
+                </label>
+                <TextInput
+                  type="text"
+                  registerName="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  disabled={!isEditable}
+                  style={inputClass}
+                  placeholder="Enter First Name"
+                />
               </div>
 
               {/* Last Name */}
               <div>
-                  <label
-                    htmlFor="lastName"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Last Name *
-                  </label>
-                  <input
-                    required
-                    id="lastName"
-                    type="text"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    disabled={!isEditable}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
-                  />
+                <label className={labelClass} htmlFor="lastName">
+                  Last Name *
+                </label>
+                <TextInput
+                  type="text"
+                  registerName="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  disabled={!isEditable}
+                  style={inputClass}
+                  placeholder="Enter Last Name"
+                />
               </div>
 
               {/* Email */}
               <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Email address *
-                  </label>
-                  <input
-                    required
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    disabled={!isEditable}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
-                  />
+                <label className={labelClass} htmlFor="email">
+                  Email address *
+                </label>
+                <TextInput
+                  type="email"
+                  registerName="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  disabled={!isEditable}
+                  style={inputClass}
+                  placeholder="Enter Email"
+                />
               </div>
 
               {/* Phone */}
               <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Phone Number *
-                  </label>
-                  <input
-                    required
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    disabled={!isEditable}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
-                  />
+                <label className={labelClass} htmlFor="phone">
+                  Phone Number *
+                </label>
+                <TextInput
+                  type="tel"
+                  registerName="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  disabled={!isEditable}
+                  style={inputClass}
+                  placeholder="Enter Phone Number"
+                />
                 {apiError.toLowerCase().includes("phone") && (
                   <p className="text-red-600 text-sm mt-1">{apiError}</p>
                 )}
@@ -328,21 +320,18 @@ export default function AccountPage() {
 
               {/* Profile Image */}
               <div className="md:col-span-2">
-                  <label
-                    htmlFor="profileImage"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Profile Image
-                  </label>
-                  <input
-                    id="profileImage"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleChange}
-                    disabled={!isEditable}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
-                  />
-
+                <label className={labelClass} htmlFor="profileImage">
+                  Profile Image
+                </label>
+                <ImageUploadInput
+                  label="Profile Image"
+                  registerName="profileImage"
+                  defaultValue={user?.profileImg}
+                  setValue={(name, value) =>
+                    setFormData((prev) => ({ ...prev, [name]: value }))
+                  }
+                  disabled={!isEditable}
+                />
                 {/* Show existing or preview image */}
                 {(previewImage || user?.profileImg) && (
                   <div className="mt-4">
@@ -361,7 +350,7 @@ export default function AccountPage() {
                 <div className="md:col-span-2 flex justify-center">
                   <button
                     type="submit"
-                    className="mt-4 px-6 py-2 bg-[#420098] text-white font-medium rounded-lg hover:bg-[#5c1bb5]"
+                    className={`btn${formBtn3}`}
                     disabled={isLoading}
                   >
                     {isLoading ? "Saving..." : "Save Changes"}

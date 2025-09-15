@@ -107,74 +107,83 @@ const services = [
   },
 ];
 
-export default function HomeBestServices() {
+export default function HomeBestServices({ limit = 8, showCorners = true, showbestservicetext=true }) {
   return (
     <section className="py-16 bg-[#fff9f5] relative">
       {/* Top corner decoration */}
-      <img src={corner1} alt="corner" className="absolute top-0 left-0 w-24" />
-      <img
-        src={corner1}
-        alt="corner"
-        className="absolute top-0 right-0 w-24 rotate-90"
-      />
+      {showCorners && (
+        <>
+          <img src={corner1} alt="corner" className="absolute top-0 left-0 w-24" />
+          <img
+            src={corner1}
+            alt="corner"
+            className="absolute top-0 right-0 w-24 rotate-90"
+          />
+        </>
+      )}
 
       {/* Heading */}
       <div className="text-center mb-12">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mt-10 text-center leading-snug">
-          <span className="text-blue-600">Professional Qualifications</span>
-          <br />
-          <span className="text-pink-600">& Certifications</span>
+        
+        {showbestservicetext && (
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mt-10 text-center leading-snug">
+          <span className="text-p">Our Best Services</span>
         </h2>
-
-        {/* Underline */}
+,
         <img
-          src={underline}
-          alt="Underline"
-          className="w-40 md:w-56 h-10 mt-3 mx-auto"
-        />
+        src={underline}
+        alt="Underline"
+        className="w-40 md:w-56 h-10 mt-3 mx-auto"
+        /> 
+
+      )}
       </div>
 
       {/* Grid */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 px-6">
-        {services.map((service, idx) => (
-          <div
-            key={idx}
-            className="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 hover:shadow-lg transition"
-          >
-            <img
-              src={service.img}
-              alt={service.title}
-              className="w-full h-30 object-cover rounded-md"
-            />
-            <h3 className="mt-4 text-xl font-semibold">{service.title}</h3>
-            <img
-              className="justify-self-center w-30 h-10 object-fit rounded-md"
-              src={curly}
-            />
-            <p className="text-gray-600 mt-2 text-sm">{service.desc}</p>
-            <span className="mt-3 inline-block text-gray-500 text-lg">→</span>
-          </div>
-        ))}
-      </div>
+    <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 px-6">
+      {services.slice(0, limit).map((service, idx) => (
+        <div
+          key={idx}
+          className="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 hover:shadow-lg transition"
+        >
+          <img
+            src={service.img}
+            alt={service.title}
+            className="w-full h-30 object-cover rounded-md"
+          />
+          <h3 className="mt-4 text-xl font-semibold">{service.title}</h3>
+          <img
+            className="justify-self-center w-30 h-10 object-fit rounded-md"
+            src={curly}
+            alt="divider"
+          />
+          <p className="text-gray-600 mt-2 text-sm">{service.desc}</p>
+          <span className="mt-3 inline-block text-gray-500 text-lg">→</span>
+        </div>
+      ))}
+    </div>
+
 
       {/* Button */}
-      <div className="text-center mt-12">
-        <button className={`btn ${formBtn3}`}>
-          View All Services
-        </button>
+      <div className="text-center  justify-self-center mt-12">
+        <button className={` ${formBtn3}`}>View All Services</button>
       </div>
 
       {/* Bottom corner decoration */}
-      <img
-        src={corner1}
-        alt="corner"
-        className="absolute bottom-0 left-0 w-24 -rotate-90"
-      />
-      <img
-        src={corner1}
-        alt="corner"
-        className="absolute bottom-0 right-0 w-24 rotate-180"
-      />
+      {showCorners && (
+        <>
+          <img
+            src={corner1}
+            alt="corner"
+            className="absolute bottom-0 left-0 w-24 -rotate-90"
+          />
+          <img
+            src={corner1}
+            alt="corner"
+            className="absolute bottom-0 right-0 w-24 rotate-180"
+          />
+        </>
+      )}
     </section>
   );
 }

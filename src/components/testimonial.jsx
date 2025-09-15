@@ -40,7 +40,7 @@ const Testimonials = () => {
 
   return (
     <>
-      <section className="py-12 sm:py-20 bg-white">
+      <section className="py-16 sm:py-24 bg-white">
         <div className="container mx-auto px-4 text-center">
           {/* Title */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-12">
@@ -57,20 +57,20 @@ const Testimonials = () => {
             slidesPerView={1}
             centeredSlides={true}
             loop={true}
+            className="pb-12 overflow-visible"
             breakpoints={{
               768: { slidesPerView: 2, centeredSlides: true },
               1024: { slidesPerView: 3, centeredSlides: true },
             }}
-            className="pb-10"
             onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
           >
             {testimonials.map((t, index) => (
-              <SwiperSlide key={index}>
+              <SwiperSlide key={index} className="flex h-full">
                 <div
-                  className={`p-6 rounded-xl shadow-md h-full flex flex-col items-center text-center transition-all duration-300 ${
+                  className={`w-full p-6 rounded-2xl transition-all duration-300 flex flex-col items-center justify-between text-center shadow-md min-h-[320px] ${
                     activeIndex === index
-                      ? "bg-gradient-to-r rounded-2xl from-blue-500 via-purple-500 to-red-500 text-white scale-105 shadow-xl z-10"
-                      : "bg-white border text-gray-700 scale-100 opacity-80"
+                      ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white scale-105 shadow-xl z-10"
+                      : "bg-white border text-gray-700 opacity-80"
                   }`}
                 >
                   {/* Quote Icon */}
@@ -84,10 +84,12 @@ const Testimonials = () => {
                   />
 
                   {/* Testimonial Text */}
-                  <p className="text-sm sm:text-base mb-4">{t.text}</p>
+                  <p className="text-sm sm:text-base mb-4 flex-grow">
+                    {t.text}
+                  </p>
 
                   {/* Stars */}
-                  <div className="flex rounded-full justify-center mb-2">
+                  <div className="flex justify-center mb-2">
                     {Array.from({ length: t.rating }).map((_, i) => (
                       <span key={i} className="text-yellow-400 text-lg">
                         ★
@@ -110,62 +112,67 @@ const Testimonials = () => {
         </div>
       </section>
 
-      <section>
-        <div className="w-full bg-[#fff6ef] px-6 md:px-16">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-stretch justify-between gap-12">
-            {/* Left Side - Text */}
-            <div className="text-center md:text-left max-w-lg py-16 flex-1 flex flex-col justify-center">
-              <h2 className="text-2xl md:text-4xl font-bold leading-snug">
-                <span className="bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">
-                  Download Our Astrologer
-                </span>
-                <br />
-                <span className="bg-gradient-to-r from-purple-600 to-red-500 bg-clip-text text-transparent">
-                  App Today
-                </span>
-              </h2>
-              <p className="text-gray-600 mt-4 text-base md:text-lg">
-                For a seamless experience, download our apps on your phone
-              </p>
-
-              {/* Play Store Button */}
-              <div className="mt-6 flex justify-center md:justify-start">
-                <a href="#" target="_blank" rel="noopener noreferrer">
-                  <img src={playstore} alt="Google Play" className="h-14" />
-                </a>
-              </div>
-            </div>
-
-            {/* Right Side - Phone Mockup (bottom aligned, no padding) */}
-            <div className="relative flex items-end justify-end flex-1">
-              <img
-                src={phoneMockup}
-                alt="App Preview"
-                className="w-60 md:w-72 lg:w-80 relative z-10"
-              />
-            </div>
+      <section className="bg-[#fff6ef]">
+        <div className="w-full px-6 md:px-16 py-16">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {[{
+              title1: "Download Our Astrologer",
+              title2: "App Today",
+              desc: "For a seamless experience, download our apps on your phone",
+              playstore,
+              phoneMockup
+            }].map((item, idx) => (
+              <React.Fragment key={idx}>
+                {/* Left Side - Text */}
+                <div className="text-left max-w-lg flex flex-col justify-center">
+                  <h2 className="text-2xl md:text-4xl font-bold leading-snug">
+                    <span className="bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">
+                      {item.title1}
+                    </span>
+                    <br />
+                    <span className="bg-gradient-to-r from-purple-600 to-red-500 bg-clip-text text-transparent">
+                      {item.title2}
+                    </span>
+                  </h2>
+                  <p className="text-gray-600 mt-4 text-base md:text-lg">
+                    {item.desc}
+                  </p>
+                  <div className="mt-6 flex justify-start">
+                    <a href="#" target="_blank" rel="noopener noreferrer">
+                      <img src={item.playstore} alt="Google Play" className="h-14" />
+                    </a>
+                  </div>
+                </div>
+                {/* Right Side - Phone Mockup (always visible) */}
+                <div className="relative flex items-end justify-end w-full min-h-[300px]">
+                  <img
+                    src={item.phoneMockup}
+                    alt="App Preview"
+                    className="w-72 sm:w-96 md:w-[28rem] lg:w-[32rem] relative z-10"
+                  />
+                </div>
+              </React.Fragment>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-[#ffe9cc] py-16 px-4">
+      <section className="bg-[#ffe9cc] py-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
           {/* Small Heading */}
-          <p className="text-sm font-semibold tracking-wide text-red-600 mb-2">
+          <p className="text-p font-semibold tracking-wide mb-2">
             DISCOVER YOUR SELF
           </p>
 
           {/* Main Heading */}
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 mb-6">
             Explore a complete range of spiritual{" "}
             <br className="hidden sm:block" />
             and healing services.
           </h2>
 
           {/* Button */}
-          <button className={`btn ${formBtn3}`}>
-            Book Your Session
-          </button>
+          <button className={`btn justify-self-center ${formBtn3}`}>Book Your Session</button>
         </div>
       </section>
       <section />

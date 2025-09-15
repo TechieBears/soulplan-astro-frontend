@@ -4,11 +4,12 @@ import logo from "../../assets/logo.png";
 import { formBtn1 } from "../../utils/CustomClass";
 import { List, X } from "@phosphor-icons/react";
 import { useSelector } from "react-redux";
-import { LoginCurve, Profile } from "iconsax-reactjs";
+import { LoginCurve, Profile, I24Support } from "iconsax-reactjs";
 import { formatRole } from "../../helper/Helper";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ChevronDown } from "lucide-react";
+import { Icon } from "@iconify/react";
 
 const HomeNavbar = () => {
     const navLinks = [
@@ -75,13 +76,19 @@ const HomeNavbar = () => {
                     <div className="hidden lg:flex items-center gap-8">
                         {navLinks.map((link, i) =>
                             link.dropdown ? (
-                                <div key={i} className="relative">
-                                    <button
-                                        onClick={() => setOpenDropdown(!openDropdown)}
+                                <div
+                                    key={i}
+                                    className="relative group"
+                                    onMouseEnter={() => setOpenDropdown(true)}
+                                    onMouseLeave={() => setOpenDropdown(false)}
+                                >
+                                    <NavLink
+                                        to="/services"
                                         className="flex items-center gap-1 font-medium text-gray-800 hover:text-blue-600"
+                                        onClick={() => setIsMenuOpen(false)}
                                     >
                                         Services <ChevronDown size={16} />
-                                    </button>
+                                    </NavLink>
                                     {openDropdown && (
                                         <ul className="absolute top-full left-0 mt-2 bg-white shadow-md rounded-lg py-2 w-40">
                                             <li>
@@ -186,17 +193,60 @@ const ProfileSection = ({ card, setCard, logout }) => {
                 } bg-white/90 backdrop-blur-lg transition-all ease-in-out duration-500 fixed z-[100] rounded-xl hidden lg:block`}
         >
             <div className="absolute -top-2 right-6 bg-white h-4 w-4 rotate-45" />
-            <div className="w-48 py-3 rounded-xl shadow-xl">
+            <div className="w-56 py-3 rounded-xl shadow-xl">
                 <ul>
+
                     <li>
                         <NavLink
-                            to="/profile"
+                            to="/profile/account"
                             onClick={() => setCard(!card)}
                             className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
                         >
-                            <Profile size={20} /> My Profile
+                            <Profile size={20} /> My Account
                         </NavLink>
                     </li>
+
+                    <li>
+                        <NavLink
+                            to="/profile/address"
+                            onClick={() => setCard(!card)}
+                            className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+                        >
+                            <Icon
+                                icon="bitcoin-icons:address-book-outline"
+                                className="w-5 h-5"
+                            />
+                            My Address
+                        </NavLink>
+                    </li>
+
+
+
+                    <li>
+                        <NavLink
+                            //   to="/profile/account"
+                            onClick={() => setCard(!card)}
+                            className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+                        >
+                            <Icon
+                                icon="material-symbols-light:orders-outline"
+                                className="w-5 h-5"
+                            />
+                            My Address
+                        </NavLink>
+                    </li>
+
+                    <li>
+                        <NavLink
+                            to="/profile/customer-support"
+                            onClick={() => setCard(!card)}
+                            className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+                        >
+                            <I24Support size={20} />
+                            Customer Support
+                        </NavLink>
+                    </li>
+
                     <li>
                         <button
                             onClick={logout}

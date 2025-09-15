@@ -3,10 +3,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formBtn3 } from "../../utils/CustomClass";
 import { environment } from "../../env"; // contains imageBaseUrl
 
+// Spinner image (you can replace with your own)
+import spinnerImg from "../../assets/signs.png";
+
 const HomeBanner = ({ slidesData }) => {
-  // Only log the raw backend data (slidesData)
   useEffect(() => {
-    console.log('Backend banner data:', slidesData);
+    console.log("Backend banner data:", slidesData);
   }, [slidesData]);
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -27,7 +29,9 @@ const HomeBanner = ({ slidesData }) => {
     setCurrentSlide((prev) => (prev + 1) % slidesData.length);
 
   const prevSlide = () =>
-    setCurrentSlide((prev) => (prev - 1 + slidesData.length) % slidesData.length);
+    setCurrentSlide(
+      (prev) => (prev - 1 + slidesData.length) % slidesData.length
+    );
 
   const goToSlide = (index) => setCurrentSlide(index);
 
@@ -36,7 +40,7 @@ const HomeBanner = ({ slidesData }) => {
   }
 
   return (
-    <div className=" relative">
+    <div className="relative">
       {/* Slider Container */}
       <div className="relative justify-center overflow-hidden">
         <div
@@ -48,7 +52,7 @@ const HomeBanner = ({ slidesData }) => {
               <section className="relative flex h-[100vh] md:h-screen items-center justify-center overflow-hidden">
                 {/* Background Gradient Overlay */}
                 {slide.background && (
-                  <div className="absolute  inset-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                  <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                 )}
 
                 {/* Image */}
@@ -76,7 +80,7 @@ const HomeBanner = ({ slidesData }) => {
                 <div className="absolute inset-0 z-20 bg-black/40"></div>
 
                 {/* Content */}
-                <div className="absolute inset-0 flex justify-center items-center flex-col space-y-3 container mx-auto z-30 px-4 md:px-8" style={{textAlign: 'center'}}>
+                <div className="absolute inset-0 flex justify-center items-center flex-col space-y-3 container mx-auto z-30 px-4 md:px-8 text-center">
                   <h1 className="split text-2xl md:text-4xl lg:text-6xl pb-2 font-tbLex font-bold text-neutral-50">
                     {slide.title}
                   </h1>
@@ -88,9 +92,19 @@ const HomeBanner = ({ slidesData }) => {
                       className={`btn${formBtn3}`}
                       onClick={slide.onClick}
                     >
-                      {slide.button}
+                      <span className="text-white">Button</span>
                     </button>
                   )}
+                </div>
+
+                {/* 🔥 Right Side Spinner */}
+                <div className="absolute width right-10 top-1/2 -translate-y-1/2 z-30 hidden md:block">
+                  <img
+                    src={spinnerImg}
+                    alt="Spinner"
+                    className="w-64 h-64 animate-spin object-contain" // ⬅️ bigger size
+                    style={{ animationDuration: "10s" }} // slower spin
+                  />
                 </div>
               </section>
             </div>
