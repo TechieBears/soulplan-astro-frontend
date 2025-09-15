@@ -55,21 +55,21 @@ const LoginPage = () => {
             localStorage.removeItem('rememberedCredentials');
         }
     };
- 
+
     const onSubmit = async (data) => {
         setLoading(true);
+        const playload = {
+            ...data,
+            fcmToken: localStorage.getItem('token')
+        }
         try {
-            const response = await loginUser(data);
-            console.log("⚡️🤯 ~ LoginPage.jsx:63 ~ onSubmit ~ response:", response)
+            const response = await loginUser(playload);
             if (response?.success) {
                 saveCredentials(data.email, data.password, rememberMe);
-
                 dispatch(setUserDetails(response?.data?.user))
                 setLoading(false)
                 dispatch(setLoggedUser(true))
                 dispatch(setRoleIs(response?.data?.user?.role))
-                localStorage.setItem('token', response?.data?.token)
-
                 if (!rememberMe) {
                     reset()
                     setRememberMe(false);

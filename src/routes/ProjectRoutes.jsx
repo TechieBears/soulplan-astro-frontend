@@ -20,7 +20,6 @@ import LoginPage from "../pages/Home/LoginPage";
 import TermsConditions from "../components/HomeComponents/TermsConditions";
 import PrivacyPolicy from "../components/HomeComponents/PrivacyPolicy";
 import ErrorPage from "./ErrorPage";
-import Bookings from "../pages/Admin/Bookings/Bookings";
 import BookingCalender from "../pages/Admin/Bookings/BookingCalender";
 import AllProducts from "../pages/Admin/AllProducts/AllProducts";
 import ProductCategories from "../pages/Admin/AllProducts/ProductCategories";
@@ -43,6 +42,8 @@ import MyOrders from "../pages/Home/Profile/orders";
 import ResetPasswordPage from "../pages/Home/ResetPasswordPage";
 import AdminProfile from "../pages/Admin/UserProfile/UserProfile";
 import ServicesCategories from "../pages/Admin/Services/ServicesCategories";
+import ProductBookings from "../pages/Admin/Bookings/ProductBookings";
+import ServiceBookings from "../pages/Admin/Bookings/ServiceBookings";
 
 
 const ProjectRoutes = () => {
@@ -82,8 +83,9 @@ const ProjectRoutes = () => {
                 <Sidebar>
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
-                        <Route path="/bookings" element={<Bookings />} />
                         <Route path="/calender" element={<BookingCalender />} />
+                        <Route path="/product-bookings" element={<ProductBookings />} />
+                        <Route path="/service-bookings" element={<ServiceBookings />} />
                         <Route path="/all-products" element={<AllProducts />} />
                         <Route path="/product-categories" element={<ProductCategories />} />
                         <Route path="/all-services" element={<AllServices />} />

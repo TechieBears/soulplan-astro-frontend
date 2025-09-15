@@ -463,6 +463,12 @@ body::-webkit-scrollbar-thumb {
     color: #000 !important;
 }
 
+.jodit_theme_summer {
+    --jd-color-background-default: #eff2fa;
+    /* --jd-color-border: #eff2fa; */
+    --jd-color-panel: #fff;
+    --jd-color-icon: #000;
+}
 
 /* Custom gradient utilities */
 .linear-grid {
