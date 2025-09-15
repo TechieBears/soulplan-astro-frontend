@@ -90,29 +90,53 @@ const HomeNavbar = () => {
                     Services <ChevronDown size={16} />
                   </NavLink>
                   {openDropdown && (
-                    <ul className="absolute top-full left-0 mt-2 bg-white shadow-md rounded-lg py-2 w-40">
+                    <ul className="absolute top-full left-0 mt-2 bg-white shadow-md rounded-lg py-2 w-48 max-h-60 overflow-y-auto">
                       <li>
                         <NavLink
-                          to="/services/reading"
-                          className="block px-4 py-2 hover:bg-gray-100"
+                          to="/services/palmistry"
+                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
                         >
-                          Reading
+                          Palmistry
                         </NavLink>
                       </li>
                       <li>
                         <NavLink
-                          to="/services/coaching"
-                          className="block px-4 py-2 hover:bg-gray-100"
+                          to="/services/astrology"
+                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
                         >
-                          Coaching
+                          Astrology
                         </NavLink>
                       </li>
                       <li>
                         <NavLink
-                          to="/services/consulting"
-                          className="block px-4 py-2 hover:bg-gray-100"
+                          to="/services/tarot"
+                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
                         >
-                          Consulting
+                          Tarot Reading
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to="/services/numerology"
+                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
+                        >
+                          Numerology
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to="/services/theta"
+                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
+                        >
+                          Theta Healing
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to="/services/crystal"
+                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
+                        >
+                          Crystal Healing
                         </NavLink>
                       </li>
                     </ul>
