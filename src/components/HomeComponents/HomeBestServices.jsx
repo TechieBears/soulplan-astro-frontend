@@ -21,6 +21,7 @@ import curly from "../../assets/services/carddesign.png";
 import corner1 from "../../assets/services/corner1.png";
 import underline from "../../assets/undertext.png";
 import { formBtn3 } from "../../utils/CustomClass";
+import { useNavigate } from "react-router-dom";
 
 // Service card data
 const services = [
@@ -108,6 +109,33 @@ const services = [
 ];
 
 export default function HomeBestServices({ limit = 8, showCorners = true, showbestservicetext=true }) {
+  const navigate = useNavigate();
+
+  const handleServiceClick = (title) => {
+    const serviceRoutes = {
+      "Palmistry": "/services/palmistry",
+      "Astrology": "/services/astrology", 
+      "Tarot Card Reading": "/services/tarot-card",
+      "Numerology Consultation": "/services/numerology",
+      "Theta Healing": "/services/theta-healing",
+      "Pranic Healing": "/services/pranic-healing",
+      "Crystal Healing": "/services/crystal-healing",
+      "Spiritual Meditation": "/services/spiritual-meditation",
+      "Akashic Records Reading": "/services/akashic-records",
+      "Past Life Regression Therapy": "/services/past-life-regression",
+      "Inner Child & Subconscious Mind": "/services/inner-child",
+      "Angel Therapy Oracle Card Reading": "/services/angel-therapy",
+      "Reiki Healing": "/services/reiki-healing",
+      "Pychicological Counseling": "/services/psychological-counseling",
+      "Autowriting Services": "/services/autowriting",
+      "Vastu Consultation": "/services/vastu"
+    };
+    
+    const route = serviceRoutes[title];
+    if (route) {
+      navigate(route);
+    }
+  };
   return (
     <section className="py-16 bg-[#fff9f5] relative">
       {/* Top corner decoration */}
@@ -144,7 +172,8 @@ export default function HomeBestServices({ limit = 8, showCorners = true, showbe
       {services.slice(0, limit).map((service, idx) => (
         <div
           key={idx}
-          className="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 hover:shadow-lg transition"
+          onClick={() => handleServiceClick(service.title)}
+          className="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 hover:shadow-lg transition cursor-pointer transform hover:scale-105"
         >
           <img
             src={service.img}
