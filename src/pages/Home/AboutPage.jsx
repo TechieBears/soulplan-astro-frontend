@@ -65,7 +65,7 @@ const features = [
 
 const AboutPage = () => {
   return (
-    <div className="container mx-auto px-4 mt-20">
+    <div className="container mx-auto bg-white px-4 mt-20">
       <Breadcrumbs />
       {/* <ArrowBtn /> */}
       <Certifications showTopImage={false} />

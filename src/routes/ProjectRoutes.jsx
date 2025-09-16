@@ -11,9 +11,6 @@ import HomeFooter from "../components/HomeComponents/HomeFooter";
 
 // ============ Pages ============
 import Dashboard from "../pages/Admin/Dashboard/Dashboard";
-import EmployeeDashboard from "../pages/Employee/Dashboard/EmployeeDashboard";
-import UserProfile from "../pages/Admin/UserProfile/UserProfile";
-
 import HomePage from "../pages/Home/HomePage";
 import AboutPage from "../pages/Home/AboutPage";
 import ServicesPage from "../pages/Home/ServicesPage";
@@ -23,7 +20,6 @@ import LoginPage from "../pages/Home/LoginPage";
 import TermsConditions from "../components/HomeComponents/TermsConditions";
 import PrivacyPolicy from "../components/HomeComponents/PrivacyPolicy";
 import ErrorPage from "./ErrorPage";
-import Bookings from "../pages/Admin/Bookings/Bookings";
 import BookingCalender from "../pages/Admin/Bookings/BookingCalender";
 import AllProducts from "../pages/Admin/AllProducts/AllProducts";
 import ProductCategories from "../pages/Admin/AllProducts/ProductCategories";
@@ -37,7 +33,6 @@ import Notifications from '../pages/Admin/Master/Notifications';
 import OffersCoupons from "../pages/Admin/Master/OffersCoupons";
 import ReferEarn from "../pages/Admin/Master/ReferEarn";
 import Testimonials from '../pages/Admin/Master/Testimonials';
-import DeepLinkRedirect from "../pages/DeepLinkRedirect";
 
 
 import AddressPage from "../pages/Home/Profile/address";
@@ -50,6 +45,9 @@ import ResetPasswordPage from "../pages/Home/ResetPasswordPage";
 import ServiceSidebar from "../components/Sidebar/ServiceSidebar";
 import BookingPage from "../pages/Home/BookingPage";
 import AdminProfile from "../pages/Admin/UserProfile/UserProfile";
+import ServicesCategories from "../pages/Admin/Services/ServicesCategories";
+import ProductBookings from "../pages/Admin/Bookings/ProductBookings";
+import ServiceBookings from "../pages/Admin/Bookings/ServiceBookings";
 
 
 const ProjectRoutes = () => {
@@ -89,12 +87,13 @@ const ProjectRoutes = () => {
                 <Sidebar>
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
-                        <Route path="/bookings" element={<Bookings />} />
                         <Route path="/calender" element={<BookingCalender />} />
+                        <Route path="/product-bookings" element={<ProductBookings />} />
+                        <Route path="/service-bookings" element={<ServiceBookings />} />
                         <Route path="/all-products" element={<AllProducts />} />
-
                         <Route path="/product-categories" element={<ProductCategories />} />
                         <Route path="/all-services" element={<AllServices />} />
+                        <Route path="/service-categories" element={<ServicesCategories />} />
                         <Route path="/all-employees" element={<Employees />} />
                         <Route path="/all-users" element={<AllUserProfiles />} />
                         <Route path="/user-transaction" element={<UserTransactios />} />
