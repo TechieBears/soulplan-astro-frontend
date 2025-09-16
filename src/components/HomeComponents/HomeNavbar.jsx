@@ -8,7 +8,7 @@ import { LoginCurve, Profile, I24Support } from "iconsax-reactjs";
 import { formatRole } from "../../helper/Helper";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ShoppingCart } from "lucide-react";
 import { Icon } from "@iconify/react";
 
 const HomeNavbar = () => {
@@ -16,7 +16,7 @@ const HomeNavbar = () => {
         { name: "Home", path: "/" },
         { name: "About", path: "/about" },
         { name: "Services", dropdown: true },
-        { name: "Shop", path: "/shop" },
+        { name: "Shop", path: "/products" },
         { name: "Contact Us", path: "/contact" },
     ];
 
@@ -160,31 +160,42 @@ const HomeNavbar = () => {
                         )}
                     </div>
 
-                    {/* ===== Right: Profile Image ===== */}
-                    {login ? (
-                        <div
-                            className="hidden lg:flex items-center gap-4 cursor-pointer"
-                            onClick={() => setCard(!card)}
+                    {/* ===== Right: Cart & Profile ===== */}
+                    <div className="hidden lg:flex items-center gap-4">
+                        {/* Cart Icon */}
+                        <button
+                            onClick={() => navigate("/cart")}
+                            className="relative p-2 text-gray-800 hover:text-blue-600 transition-colors"
                         >
-                            <img
-                                src={
-                                    user?.user?.profilePicture ||
-                                    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                }
-                                alt="profile"
-                                className="w-10 h-10 rounded-full border-2 border-gray-300 object-cover"
-                            />
-                        </div>
-                    ) : (
-                        <div className="hidden lg:flex items-center gap-4">
+                            <ShoppingCart size={24} />
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                0
+                            </span>
+                        </button>
+
+                        {login ? (
+                            <div
+                                className="flex items-center gap-4 cursor-pointer"
+                                onClick={() => setCard(!card)}
+                            >
+                                <img
+                                    src={
+                                        user?.user?.profilePicture ||
+                                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                    }
+                                    alt="profile"
+                                    className="w-10 h-10 rounded-full border-2 border-gray-300 object-cover"
+                                />
+                            </div>
+                        ) : (
                             <button
                                 onClick={() => navigate("/login")}
                                 className={`${formBtn1} w-full h-[51px] py-3 rounded-md text-white font-semibold !text-base bg-primary-gradient hover:opacity-90 transition disabled:opacity-50`}
                             >
                                 Login / Register
                             </button>
-                        </div>
-                    )}
+                        )}
+                    </div>
 
                     {/* ===== Mobile Menu Icon ===== */}
                     <div className="flex items-center gap-3 lg:hidden">

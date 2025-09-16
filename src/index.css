@@ -487,6 +487,39 @@ body::-webkit-scrollbar-thumb {
     background: linear-gradient(90deg, #9333ea 0%, #dc2626 100%);
 }
 
+/* Product page specific styles */
+.bg-slate1 {
+    background-color: #f8fafc;
+}
+
+.bg-gradient-orange {
+    background: linear-gradient(90deg, #f97316 0%, #ea580c 100%);
+}
+
+.bg-button-diagonal-gradient-orange {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.text-base-font {
+    color: #374151;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
 .max-w {
     inline-size: min(100% - var(--pad-inner) * 2, var(--innerWidth));
     margin-inline: auto;

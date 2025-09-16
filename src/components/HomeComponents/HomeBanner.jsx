@@ -129,24 +129,10 @@ const HomeBanner = ({ slidesData }) => {
             className="absolute right-4 sm:right-6 lg:right-8 top-1/2 transform -translate-y-1/2 bg-orange-500 bg-opacity-80 hover:bg-opacity-100 text-white p-3 sm:p-2 rounded-full transition-all duration-300 backdrop-blur-sm hover:scale-110 group shadow-lg z-50"
             aria-label="Next slide"
           >
-            <ChevronRight className="w-6 h-6 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
+          <ChevronRight className="w-6 h-6 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
           </button>
 
-          {/* Indicators */}
-          <div className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3 z-50">
-            {slidesData.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
-                  index === currentSlide
-                    ? "bg-orange-400 scale-125 shadow-lg"
-                    : "bg-white bg-opacity-60 hover:bg-orange-300"
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
+         
         </>
       )}
     </div>
