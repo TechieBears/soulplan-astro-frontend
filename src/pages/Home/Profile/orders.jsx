@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
+import product1 from "../../../assets/shop/product1.png";
 
 // Temporary placeholder components
 const Private = ({ children }) => children;
@@ -30,6 +31,9 @@ export default function MyOrders() {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
 
+  // 🔹 Tab state
+  const [activeTab, setActiveTab] = useState("products");
+
   // Mock data for demonstration
   const data = {
     orders: [
@@ -37,8 +41,8 @@ export default function MyOrders() {
         _id: "1",
         items: [
           {
-            name: "Sample Product",
-            image: "/placeholder-image.jpg",
+            name: "Amber Crystal",
+            image: product1,
             sellingPrice: 999,
             mrpPrice: 1299,
             quantity: 1,
@@ -49,8 +53,8 @@ export default function MyOrders() {
         _id: "2",
         items: [
           {
-            name: "Another Product",
-            image: "/placeholder-image.jpg",
+            name: "Amber Crystal",
+            image: product1,
             sellingPrice: 1499,
             mrpPrice: 1999,
             quantity: 2,
@@ -59,127 +63,153 @@ export default function MyOrders() {
       },
     ],
   };
+
+  // 🔹 Mock services data
+  const services = [
+    {
+      id: "s1",
+      type: "Palmistry",
+      duration: "30–60 minutes",
+      date: "15th Sep, 2025 / 12:00PM – 01:00PM",
+      mode: "Online",
+      link: "zoommtg://zoom.us/join?confno=8529015",
+    },
+    {
+      id: "s2",
+      type: "Palmistry",
+      duration: "30–60 minutes",
+      date: "15th Sep, 2025 / 12:00PM – 01:00PM",
+      mode: "In-person",
+    },
+  ];
+
   const isLoading = false;
-
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
-
-  // useEffect(() => {
-  //   if (!user?.isLogged) {
-  //     navigate("/");
-  //   }
-  // }, [user, navigate]);
-
-  // if (!user?.isLogged) return null;
 
   return (
     <>
       <Private>
         <UserDashboard>
           <ProfileSidebar>
-            {/* Heading */}
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">
-              My Orders
-            </h1>
+            <div className="flex justify-between">
+              <h1 className="text-gray-900 mb-6 text-2xl py-4 font-medium text-secondary">
+                My Orders
+              </h1>
 
+              {/* 🔹 Tabs */}
+              <div className="flex items-center bg-gray-100 rounded-full space-x-4 px-2 mb-6">
+                <button
+                  onClick={() => setActiveTab("services")}
+                  className={`px-8 py-2 rounded-full font-medium ${
+                    activeTab === "services"
+                      ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  Services
+                </button>
+                <button
+                  onClick={() => setActiveTab("products")}
+                  className={`px-8 py-2 rounded-full font-medium ${
+                    activeTab === "products"
+                      ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  Products
+                </button>
+              </div>
+            </div>
+            {/* 🔹 Loader */}
             {isLoading ? (
               <div className="flex justify-center items-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#420098]"></div>
               </div>
-            ) : data?.orders?.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <Icon
-                  icon="mdi:package-variant"
-                  className="text-gray-300 text-6xl mb-4"
-                />
-                <h2 className="text-xl font-medium text-gray-600 mb-2">
-                  No orders yet
-                </h2>
-                <p className="text-gray-500 mb-6">
-                  You haven't placed any orders yet.
-                </p>
-                <button
-                  onClick={() => navigate("/products")}
-                  className="bg-[#420098] text-white px-6 py-2 rounded-lg hover:bg-[#2d0066] transition-colors"
-                >
-                  Start Shopping
-                </button>
-              </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                {data?.orders?.map((order) => (
-                  <div
-                    key={order._id}
-                    className="bg-[#F4F6F7] rounded-2xl p-4 flex items-start gap-4 cursor-pointer hover:shadow-md transition-shadow border border-gray-200"
-                    onClick={() => setSelectedOrderId(order._id)}
-                  >
-                    {/* Product Image */}
-                    <div className="w-20 h-20 relative flex-shrink-0 bg-white rounded-lg p-2">
-                      <img
-                        src={order.items[0].image}
-                        alt={order.items[0].name}
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          e.target.src =
-                            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjRjRGNkY3Ii8+CjxwYXRoIGQ9Ik0zMCAzNkMzMy4zMTM3IDM2IDM2IDMzLjMxMzcgMzYgMzBDMzYgMjYuNjg2MyAzMy4zMTM3IDI0IDMwIDI0QzI2LjY4NjMgMjQgMjQgMjYuNjg2MyAyNCAzMEMyNCAzMy4zMTM3IDI2LjY4NjMgMzYgMzAgMzZaIiBmaWxsPSIjQ0RDRENEIi8+CjxwYXRoIGQ9Ik0zMCAxNkMzMi4yMDkxIDE2IDM0IDE3Ljc5MDkgMzQgMjBDMzQgMjIuMjA5MSAzMi4yMDkxIDI0IDMwIDI0QzI3Ljc5MDkgMjQgMjYgMjIuMjA5MSAyNiAyMEMyNiAxNy43OTA5IDI3Ljc5MDkgMTYgMzAgMTZaIiBmaWxsPSIjQ0RDRENEIi8+CjxwYXRoIGQ9Ik0zMCA0MEMzNi42Mjc0IDQwIDQyIDM0LjYyNzQgNDIgMjhDNDIgMjEuMzcyNiAzNi42Mjc0IDE2IDMwIDE2QzIzLjM3MjYgMTYgMTggMjEuMzcyNiAxOCAyOEMxOCAzNC42Mjc0IDIzLjM3MjYgNDAgMzAgNDBaIiBzdHJva2U9IiNDRENEQ0QiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4K";
-                        }}
-                      />
-                    </div>
-
-                    {/* Details Section */}
-                    <div className="flex flex-col gap-1 text-left flex-1 min-w-0">
-                      {/* Product Name */}
-                      <h2 className="text-base font-semibold text-[#1d2e36] truncate">
-                        {order.items[0].name}
-                      </h2>
-
-                      {/* Selling Price + Savings */}
-                      <div className="text-sm text-[#1d2e36] font-semibold">
-                        ₹{order.items[0].sellingPrice.toLocaleString()}
-                        <span className="text-xs text-green-600 font-normal ml-2">
-                          (Saved ₹
-                          {(
-                            order.items[0].mrpPrice -
-                            order.items[0].sellingPrice
-                          ).toLocaleString()}
-                          )
-                        </span>
+              <>
+                {/* 🔹 Services Tab */}
+                {activeTab === "services" && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {services.map((s) => (
+                      <div
+                        key={s.id}
+                        className="bg-[#9E52D8] rounded-lg p-4 text-white"
+                      >
+                        <h3 className="font-bold text-lg mb-2">
+                          Service Type: {s.type}
+                        </h3>
+                        <p>⏰ Session Duration: {s.duration}</p>
+                        <p>📅 Date: {s.date}</p>
+                        <p>📍 Mode: {s.mode}</p>
+                        {s.link && (
+                          <a
+                            href={s.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline block mt-2"
+                          >
+                            {s.link}
+                          </a>
+                        )}
                       </div>
-
-                      {/* MRP */}
-                      <div className="text-sm text-gray-500">
-                        MRP{" "}
-                        <span className="line-through">
-                          ₹{order.items[0].mrpPrice.toLocaleString()}
-                        </span>
-                      </div>
-
-                      {/* Quantity */}
-                      <div className="text-sm text-gray-500">
-                        Qty: {order.items[0].quantity}
-                      </div>
-
-                      {/* View Details Button */}
-                      <button className="text-[#420098] text-xs font-medium mt-2 text-left hover:text-[#2d0066]">
-                        View Details →
-                      </button>
-                    </div>
-
-                    {/* Multiple items indicator */}
-                    {order.items.length > 1 && (
-                      <div className="absolute bottom-3 right-3 w-6 h-6 bg-[#420098] text-white text-xs rounded-full flex items-center justify-center shadow-md">
-                        +{order.items.length - 1}
-                      </div>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
-            {/* Order Details Modal */}
-            {selectedOrderId && (
-              <OrderDetailsModal
-                orderId={selectedOrderId}
-                onClose={() => setSelectedOrderId(null)}
-              />
+                )}
+
+                {/* 🔹 Products Tab */}
+                {activeTab === "products" && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {data?.orders?.map((order) => (
+                      <div
+                        key={order._id}
+                        className="bg-[#9E52D8] rounded-lg p-4 flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 cursor-pointer hover:bg-[#8A47C4] transition-colors"
+                        onClick={() => navigate(`/orders/${order._id}`)}
+                      >
+                        {/* Image */}
+                        <div className="w-full sm:w-20 h-40 sm:h-20 bg-white rounded-md overflow-hidden flex-shrink-0 relative">
+                          <img
+                            src={order.items[0].image}
+                            alt={order.items[0].name}
+                            className="w-full h-full object-contain p-2"
+                          />
+                        </div>
+
+                        {/* Details */}
+                        <div className="flex-1 w-full">
+                          <h3 className="font-bold text-white text-lg mb-1 sm:pr-6">
+                            {order.items[0].name}
+                          </h3>
+                          <div className="space-y-1">
+                            <div className="font-medium text-lg text-white">
+                              ₹{order.items[0].sellingPrice.toLocaleString()}
+                            </div>
+                            <div className="text-white text-sm">
+                              <span>
+                                MRP{" "}
+                                <span className="line-through">
+                                  ₹{order.items[0].mrpPrice.toLocaleString()}
+                                </span>
+                              </span>
+                              <span className="ml-1">(incl. of all taxes)</span>
+                            </div>
+                            <div className="text-white text-sm">
+                              Quantity: {order.items[0].quantity}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Controls */}
+                        <div className="flex flex-col items-end space-y-2 mt-2 sm:mt-0">
+                          {order.items.length > 1 && (
+                            <div className="px-3 py-1 bg-white text-[#9E52D8] rounded-full text-xs font-medium">
+                              +{order.items.length - 1} more items
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </ProfileSidebar>
         </UserDashboard>

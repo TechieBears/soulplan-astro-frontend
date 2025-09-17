@@ -45,6 +45,7 @@ export default function AccountPage() {
     lastName: "",
     email: "",
     phone: "",
+    gender: "",
     profileImage: null,
   });
 
@@ -66,7 +67,7 @@ export default function AccountPage() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -130,7 +131,7 @@ export default function AccountPage() {
           <ProfileSidebar>
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-              <h2 className="text-2xl font-bold text-gray-900">My Account</h2>
+              <h2 className="text-2xl font-medium text-secondary">My Account</h2>
 
               <div className="flex gap-3">
                 {!isEditable && (
@@ -141,12 +142,12 @@ export default function AccountPage() {
                     Edit Profile
                   </button>
                 )}
-                <button
+                {/* <button
                   className={`${formBtn3} border-b`}
                   onClick={() => setShowChangePasswordModal(true)}
                 >
                   Change Password
-                </button>
+                </button> */}
               </div>
             </div>
 
@@ -260,8 +261,9 @@ export default function AccountPage() {
                   type="text"
                   registerName="firstName"
                   value={formData.firstName}
-                  onChange={handleChange}
+                  onChange={isEditable ? handleChange : undefined}
                   disabled={!isEditable}
+                  readOnly={!isEditable}
                   style={inputClass}
                   placeholder="Enter First Name"
                 />
@@ -276,8 +278,9 @@ export default function AccountPage() {
                   type="text"
                   registerName="lastName"
                   value={formData.lastName}
-                  onChange={handleChange}
+                  onChange={isEditable ? handleChange : undefined}
                   disabled={!isEditable}
+                  readOnly={!isEditable}
                   style={inputClass}
                   placeholder="Enter Last Name"
                 />
@@ -292,8 +295,9 @@ export default function AccountPage() {
                   type="email"
                   registerName="email"
                   value={formData.email}
-                  onChange={handleChange}
+                  onChange={isEditable ? handleChange : undefined}
                   disabled={!isEditable}
+                  readOnly={!isEditable}
                   style={inputClass}
                   placeholder="Enter Email"
                 />
@@ -308,8 +312,9 @@ export default function AccountPage() {
                   type="tel"
                   registerName="phone"
                   value={formData.phone}
-                  onChange={handleChange}
+                  onChange={isEditable ? handleChange : undefined}
                   disabled={!isEditable}
+                  readOnly={!isEditable}
                   style={inputClass}
                   placeholder="Enter Phone Number"
                 />
@@ -319,7 +324,7 @@ export default function AccountPage() {
               </div>
 
               {/* Profile Image */}
-              <div className="md:col-span-2">
+              <div className="col-span-1">
                 <label className={labelClass} htmlFor="profileImage">
                   Profile Image
                 </label>
@@ -327,8 +332,8 @@ export default function AccountPage() {
                   label="Profile Image"
                   registerName="profileImage"
                   defaultValue={user?.profileImg}
-                  setValue={(name, value) =>
-                    setFormData((prev) => ({ ...prev, [name]: value }))
+                  setValue={isEditable ? (name, value) =>
+                    setFormData((prev) => ({ ...prev, [name]: value })) : undefined
                   }
                   disabled={!isEditable}
                 />
@@ -345,12 +350,40 @@ export default function AccountPage() {
                 )}
               </div>
 
-              {/* Save Button */}
+              {/* Gender */}
+              <div className="col-span-1">
+                <label htmlFor="gender" className={labelClass}>
+                  Gender
+                </label>
+                <select
+                  id="gender"
+                  value={formData.gender || ''}
+                  onChange={isEditable ? (e) => {
+                    setFormData(prev => ({ ...prev, gender: e.target.value }));
+                  } : undefined}
+                  disabled={!isEditable}
+                  className={inputClass}
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              {/* Action Buttons */}
               {isEditable && (
-                <div className="md:col-span-2 flex justify-center">
+                <div className="md:col-span-2 flex gap-4 justify-self-end">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditable(false)}
+                    className="px-6 py-2 border border-gray-900 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
                   <button
                     type="submit"
-                    className={`btn${formBtn3}`}
+                    className={`${formBtn3}`}
                     disabled={isLoading}
                   >
                     {isLoading ? "Saving..." : "Save Changes"}

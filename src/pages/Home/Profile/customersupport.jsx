@@ -14,14 +14,14 @@ export default function CustomerSupport() {
       <Private>
         <UserDashboard>
           <ProfileSidebar>
-            <div className="bg-white py-10 px-4 sm:px-8 lg:px-16">
+            <div className="bg-white ">
               {/* Title */}
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-10 text-center lg:text-left">
+              <h2 className="text-2xl py-4 font-m text-gray-800 mb-10 text-left font-medium ">
                 Customer Care
               </h2>
 
               {/* Container */}
-              <div className="flex flex-col lg:flex-row items-center lg:items-center justify-center gap-12 lg:gap-20">
+              <div className="flex flex-col py-10 px-4 sm:px-8 lg:px-16 lg:flex-row items-center lg:items-center justify-center gap-12 lg:gap-20">
                 {/* Left Image */}
                 <div className="w-full max-w-sm flex justify-center">
                   <img
