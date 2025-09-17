@@ -40,6 +40,11 @@ import ProfilePage from "../pages/Home/Profile/account";
 import CustomerSupport from "../pages/Home/Profile/customersupport";
 import MyOrders from "../pages/Home/Profile/orders";
 import ResetPasswordPage from "../pages/Home/ResetPasswordPage";
+import ProductsPage from "../pages/Home/Profile/productspage";
+import ProductDetail from "../pages/Home/ProductDetail";
+import Cart from "../pages/Home/Cart";
+import TestProducts from "../pages/Home/TestProducts";
+import PaymentSuccess from "../pages/Home/PaymentSuccess";
 
 // Service Pages
 import ServiceSidebar from "../components/Sidebar/ServiceSidebar";
@@ -135,6 +140,11 @@ const ProjectRoutes = () => {
 
                         <Route path="/profile/account" element={<ProfilePage />} />
                         <Route path="/profile/my-orders" element={<MyOrders />} />
+                        <Route path="/products" element={<ProductsPage />} />
+                        <Route path="/product/:id" element={<ProductDetail />} />
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/payment-success" element={<PaymentSuccess />} />
+                        <Route path="/test-products" element={<TestProducts />} />
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
                     <HomeFooter />
