@@ -25,194 +25,193 @@ import { useNavigate } from "react-router-dom";
 
 // Service card data
 const services = [
-  {
-    title: "Palmistry",
-    img: service1,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Astrology",
-    img: service2,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Tarot Card Reading",
-    img: service3,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Numerology Consultation",
-    img: service4,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Theta Healing",
-    img: service5,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Pranic Healing",
-    img: service6,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Crystal Healing",
-    img: service7,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Spiritual Meditation",
-    img: service8,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Akashic Records Reading",
-    img: service9,
-    desc: "Your hands hold the story of your life.",
-  },
+    {
+        title: "Palmistry",
+        img: service1,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Astrology",
+        img: service2,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Tarot Card Reading",
+        img: service3,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Numerology Consultation",
+        img: service4,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Theta Healing",
+        img: service5,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Pranic Healing",
+        img: service6,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Crystal Healing",
+        img: service7,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Spiritual Meditation",
+        img: service8,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Akashic Records Reading",
+        img: service9,
+        desc: "Your hands hold the story of your life.",
+    },
 
-  {
-    title: "Past Life Regression Therapy",
-    img: service10,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Inner Child & Subconscious Mind",
-    img: service11,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Angel Therapy Oracle Card Reading",
-    img: service12,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Reiki Healing",
-    img: service13,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Pychicological Counseling",
-    img: service14,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Autowriting Services",
-    img: service15,
-    desc: "Your hands hold the story of your life.",
-  },
-  {
-    title: "Vastu Consultation",
-    img: service16,
-    desc: "Your hands hold the story of your life.",
-  },
+    {
+        title: "Past Life Regression Therapy",
+        img: service10,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Inner Child & Subconscious Mind",
+        img: service11,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Angel Therapy Oracle Card Reading",
+        img: service12,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Reiki Healing",
+        img: service13,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Pychicological Counseling",
+        img: service14,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Autowriting Services",
+        img: service15,
+        desc: "Your hands hold the story of your life.",
+    },
+    {
+        title: "Vastu Consultation",
+        img: service16,
+        desc: "Your hands hold the story of your life.",
+    },
 ];
 
-export default function HomeBestServices({ limit = 8, showCorners = true, showbestservicetext=true }) {
-  const navigate = useNavigate();
+export default function HomeBestServices({ limit = 8, showCorners = true, showbestservicetext = true }) {
+    const navigate = useNavigate();
 
-  const handleServiceClick = (title) => {
-    const serviceRoutes = {
-      "Palmistry": "/services/palmistry",
-      "Astrology": "/services/astrology", 
-      "Tarot Card Reading": "/services/tarot-card",
-      "Numerology Consultation": "/services/numerology",
-      "Theta Healing": "/services/theta-healing",
-      "Pranic Healing": "/services/pranic-healing",
-      "Crystal Healing": "/services/crystal-healing",
-      "Spiritual Meditation": "/services/spiritual-meditation",
-      "Akashic Records Reading": "/services/akashic-records",
-      "Past Life Regression Therapy": "/services/past-life-regression",
-      "Inner Child & Subconscious Mind": "/services/inner-child",
-      "Angel Therapy Oracle Card Reading": "/services/angel-therapy",
-      "Reiki Healing": "/services/reiki-healing",
-      "Pychicological Counseling": "/services/psychological-counseling",
-      "Autowriting Services": "/services/autowriting",
-      "Vastu Consultation": "/services/vastu"
+    const handleServiceClick = (title) => {
+        const serviceRoutes = {
+            "Palmistry": "/services/palmistry",
+            "Astrology": "/services/astrology",
+            "Tarot Card Reading": "/services/tarot-card",
+            "Numerology Consultation": "/services/numerology",
+            "Theta Healing": "/services/theta-healing",
+            "Pranic Healing": "/services/pranic-healing",
+            "Crystal Healing": "/services/crystal-healing",
+            "Spiritual Meditation": "/services/spiritual-meditation",
+            "Akashic Records Reading": "/services/akashic-records",
+            "Past Life Regression Therapy": "/services/past-life-regression",
+            "Inner Child & Subconscious Mind": "/services/inner-child",
+            "Angel Therapy Oracle Card Reading": "/services/angel-therapy",
+            "Reiki Healing": "/services/reiki-healing",
+            "Pychicological Counseling": "/services/psychological-counseling",
+            "Autowriting Services": "/services/autowriting",
+            "Vastu Consultation": "/services/vastu"
+        };
+
+        const route = serviceRoutes[title];
+        if (route) {
+            navigate(route);
+        }
     };
-    
-    const route = serviceRoutes[title];
-    if (route) {
-      navigate(route);
-    }
-  };
-  return (
-    <section className="py-16 bg-[#fff9f5] relative">
-      {/* Top corner decoration */}
-      {showCorners && (
-        <>
-          <img src={corner1} alt="corner" className="absolute top-0 left-0 w-24" />
-          <img
-            src={corner1}
-            alt="corner"
-            className="absolute top-0 right-0 w-24 rotate-90"
-          />
-        </>
-      )}
+    return (
+        <section className="py-16 !bg-[#FFF9EF] relative">
+            {showCorners && (
+                <>
+                    <img src={corner1} alt="corner" className="absolute top-0 left-0 w-16 md:w-20 xl:w-24" />
+                    <img
+                        src={corner1}
+                        alt="corner"
+                        className="absolute top-0 right-0 w-16 md:w-20 xl:w-24 rotate-90"
+                    />
+                </>
+            )}
 
-      {/* Heading */}
-      <div className="text-center mb-12">
-        
-        {showbestservicetext && (
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mt-10 text-center leading-snug">
-          <span className="text-p">Our Best Services</span>
-        </h2>
-,
-        <img
-        src={underline}
-        alt="Underline"
-        className="w-40 md:w-56 h-10 mt-3 mx-auto"
-        /> 
+            {/* Heading */}
+            <div className="text-center mb-12">
 
-      )}
-      </div>
+                {showbestservicetext && (
+                    <>
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold  text-center leading-snug">
+                            <span className="text-p">Our Best Services</span>
+                        </h2>
+                        <img
+                            src={underline}
+                            alt="Underline"
+                            className="w-40 md:w-56 h-10 mt-3 mx-auto"
+                        />
+                    </>
+                )}
+            </div>
 
-      {/* Grid */}
-    <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 px-6">
-      {services.slice(0, limit).map((service, idx) => (
-        <div
-          key={idx}
-          onClick={() => handleServiceClick(service.title)}
-          className="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 hover:shadow-lg transition cursor-pointer transform hover:scale-105"
-        >
-          <img
-            src={service.img}
-            alt={service.title}
-            className="w-full h-30 object-cover rounded-md"
-          />
-          <h3 className="mt-4 text-xl font-semibold">{service.title}</h3>
-          <img
-            className="justify-self-center w-30 h-10 object-fit rounded-md"
-            src={curly}
-            alt="divider"
-          />
-          <p className="text-gray-600 mt-2 text-sm">{service.desc}</p>
-          <span className="mt-3 inline-block text-gray-500 text-lg">→</span>
-        </div>
-      ))}
-    </div>
+            {/* Grid */}
+            <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-5 xl:px-0">
+                {services.slice(0, limit).map((service, idx) => (
+                    <div
+                        key={idx}
+                        onClick={() => handleServiceClick(service.title)}
+                        className=" rounded-lg border border-gray-200 overflow-hidden text-center p-4 transition-all duration-500 cursor-pointer transform hover:scale-[1.02] ease-in-out"
+                    >
+                        <img
+                            src={service.img}
+                            alt={service.title}
+                            className="w-full h-30 object-cover rounded-md"
+                        />
+                        <h3 className="mt-4 text-xl font-semibold font-tbLex">{service.title}</h3>
+                        <img
+                            className="justify-self-center w-30 h-10 object-fit rounded-md"
+                            src={curly}
+                            alt="divider"
+                        />
+                        <p className="text-slate-600 mt-2 px-4 text-sm font-tbPop font-normal">{service.desc}</p>
+                        <span className="mt-3 inline-block text-gray-500 text-lg">→</span>
+                    </div>
+                ))}
+            </div>
 
 
-      {/* Button */}
-      <div className="text-center  justify-self-center mt-12">
-        <button className={` ${formBtn3}`}>View All Services</button>
-      </div>
+            {/* Button */}
+            <div className="text-center  justify-self-center mt-12">
+                <button className={` ${formBtn3}`}>View All Services</button>
+            </div>
 
-      {/* Bottom corner decoration */}
-      {showCorners && (
-        <>
-          <img
-            src={corner1}
-            alt="corner"
-            className="absolute bottom-0 left-0 w-24 -rotate-90"
-          />
-          <img
-            src={corner1}
-            alt="corner"
-            className="absolute bottom-0 right-0 w-24 rotate-180"
-          />
-        </>
-      )}
-    </section>
-  );
+            {/* Bottom corner decoration */}
+            {showCorners && (
+                <>
+                    <img
+                        src={corner1}
+                        alt="corner"
+                        className="absolute bottom-0 left-0 w-24 -rotate-90"
+                    />
+                    <img
+                        src={corner1}
+                        alt="corner"
+                        className="absolute bottom-0 right-0 w-24 rotate-180"
+                    />
+                </>
+            )}
+        </section>
+    );
 }

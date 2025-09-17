@@ -244,7 +244,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                             </div>
 
                                             <footer className="py-3 flex bg-slate-100 justify-end px-4 space-x-3">
-                                                {loader ? <LoadBox className="relative block w-auto px-5 transition-colors font-tb tracking-wide duration-200 py-2.5 overflow-hidden text-base font-semibold text-center text-white rounded-lg bg-primary hover:bg-primary capitalize" /> : <button type='submit' className={formBtn1}>submit</button>}
+                                                {loader ? <LoadBox className={formBtn1} /> : <button type='submit' className={formBtn1}>submit</button>}
                                             </footer>
                                         </form>
                                     </div>

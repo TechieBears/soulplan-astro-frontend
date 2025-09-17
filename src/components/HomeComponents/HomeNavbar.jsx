@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { formBtn1 } from "../../utils/CustomClass";
-import { List, X } from "@phosphor-icons/react";
+import { formBtn1, formBtn3 } from "../../utils/CustomClass";
+import { CaretDown, List } from "@phosphor-icons/react";
 import { useSelector } from "react-redux";
-import { LoginCurve, Profile, I24Support } from "iconsax-reactjs";
-import { formatRole } from "../../helper/Helper";
+import { LoginCurve, Profile, I24Support, ArrowDown2, User } from "iconsax-reactjs";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ChevronDown } from "lucide-react";
 import { Icon } from "@iconify/react";
+import { getActiveServiceCategories, getServiceCategoriesDropdown } from "../../api";
 
 const HomeNavbar = () => {
     const navLinks = [
         { name: "Home", path: "/" },
         { name: "About", path: "/about" },
-        { name: "Services", dropdown: true },
+        { name: "Services", dropdown: true, path: "/services/:id" },
         { name: "Shop", path: "/shop" },
         { name: "Contact Us", path: "/contact" },
     ];
@@ -28,6 +27,7 @@ const HomeNavbar = () => {
     const login = useSelector((state) => state.user.isLogged);
     const user = useSelector((state) => state.user.userDetails);
     const navigate = useNavigate();
+    const location = useLocation();
     const [prevScrollPos, setPrevScrollPos] = useState(0);
 
     useEffect(() => {
@@ -56,10 +56,42 @@ const HomeNavbar = () => {
         });
     }, []);
 
+
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const trigger = useRef(null);
+    const dropdown = useRef(null);
+
+    // close on click outside
+    useEffect(() => {
+        const clickHandler = ({ target }) => {
+            if (!dropdown.current) return;
+            if (
+                !dropdownOpen ||
+                dropdown.current.contains(target) ||
+                trigger.current.contains(target)
+            )
+                return;
+            setDropdownOpen(false);
+        };
+        document.addEventListener("click", clickHandler);
+        return () => document.removeEventListener("click", clickHandler);
+    });
+
+    // close if the esc key is pressed
+    useEffect(() => {
+        const keyHandler = ({ keyCode }) => {
+            if (!dropdownOpen || keyCode !== 27) return;
+            setDropdownOpen(false);
+        };
+        document.addEventListener("keydown", keyHandler);
+        return () => document.removeEventListener("keydown", keyHandler);
+    });
+
     return (
         <>
             <nav className={`navbar fixed top-0 left-0 z-[900] bg-white w-full right-0 transition-colors duration-500 ${isScrolled ? "bg-white/20  shadow-md text-black backdrop-blur-lg " : ""}`}>
-                <div className="flex items-center justify-between container mx-auto px-6 py-3">
+                <div className="flex items-center justify-between container mx-auto px-5 xl:px-0 py-3">
                     {/* ===== Left: Logo and Brand ===== */}
                     <button
                         onClick={() => {
@@ -68,89 +100,46 @@ const HomeNavbar = () => {
                         }}
                         className="flex items-center gap-2"
                     >
-                        <img src={logo} alt="logo" className="h-10 w-10" />
-                        <h2 className="text-xl font-bold text-gray-800">SOUL PLAN</h2>
+                        <img src={logo} alt="logo" className="h-11 w-11" />
+                        <h2 className="text-2xl font-tbLex tracking-tight font-bold text-gray-800">SOUL PLAN</h2>
                     </button>
 
                     {/* ===== Center: Nav Links ===== */}
                     <div className="hidden lg:flex items-center gap-8">
                         {navLinks.map((link, i) =>
                             link.dropdown ? (
-                                <div
-                                    key={i}
-                                    className="relative group"
-                                    onMouseEnter={() => setOpenDropdown(true)}
-                                    onMouseLeave={() => setOpenDropdown(false)}
-                                >
-                                    <NavLink
-                                        to="/services"
-                                        className="flex items-center gap-1 font-medium text-gray-800 hover:text-blue-600"
-                                        onClick={() => setIsMenuOpen(false)}
+                                <div className="relative inline-block">
+                                    <button
+                                        ref={trigger}
+                                        onClick={() => { setDropdownOpen(!dropdownOpen), window.scrollTo(0, 0, { behavior: "smooth" }) }}
+                                        className="font-medium font-tbPop text-base !transition-all !duration-500 group"
                                     >
-                                        Services <ChevronDown size={16} />
-                                    </NavLink>
-                  {openDropdown && (
-                    <ul className="absolute top-full left-0 mt-2 bg-white shadow-md rounded-lg py-2 w-48 max-h-60 overflow-y-auto">
-                      <li>
-                        <NavLink
-                          to="/services/palmistry"
-                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
-                        >
-                          Palmistry
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
-                          to="/services/astrology"
-                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
-                        >
-                          Astrology
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
-                          to="/services/tarot"
-                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
-                        >
-                          Tarot Reading
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
-                          to="/services/numerology"
-                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
-                        >
-                          Numerology
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
-                          to="/services/theta"
-                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
-                        >
-                          Theta Healing
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
-                          to="/services/crystal"
-                          className="block px-4 py-2 hover:bg-gray-100 text-sm"
-                        >
-                          Crystal Healing
-                        </NavLink>
-                      </li>
-                    </ul>
-                                    )}
+                                        <div className="flex items-center space-x-1 cursor-pointer">
+                                            <h5 className={`font-medium font-tbPop text-base transition-all duration-500 ${location.pathname.startsWith('/services')
+                                                ? "text-p font-bold"
+                                                : "text-gray-800 hover:text-p"
+                                                }`}>{link.name}</h5>
+                                            <span className={dropdownOpen ? "-rotate-180 duration-300 transition-all" : "rotate-0 duration-300 transition-all"}>
+                                                <CaretDown size="20" className={`transition-all duration-300 ${dropdownOpen
+                                                    ? 'text-p'
+                                                    : location.pathname.startsWith('/services')
+                                                        ? 'text-p'
+                                                        : 'text-slate-800 group-hover:text-p'
+                                                    }`} weight="bold" />
+                                            </span>
+                                        </div>
+                                    </button>
+                                    <ServiceDropdown dropdownOpen={dropdownOpen} setDropdownOpen={setDropdownOpen} dropdown={dropdown} trigger={trigger} link={link} />
                                 </div>
                             ) : (
                                 <NavLink
                                     key={i}
                                     to={link.path}
-                                    onClick={() => setIsMenuOpen(false)}
+                                    onClick={() => { setIsMenuOpen(false), window.scrollTo(0, 0, { behavior: "smooth" }) }}
                                     className={({ isActive }) =>
-                                        `font-medium ${isActive
-                                            ? "text-blue-600 font-bold"
-                                            : "text-gray-800 hover:text-blue-600"
+                                        `font-medium font-tbPop text-base !transition-all !duration-500 ${isActive
+                                            ? "text-p font-bold"
+                                            : "text-gray-800 text-hover-p"
                                         }`
                                     }
                                 >
@@ -179,7 +168,7 @@ const HomeNavbar = () => {
                         <div className="hidden lg:flex items-center gap-4">
                             <button
                                 onClick={() => navigate("/login")}
-                                className={`${formBtn1} w-full h-[51px] py-3 rounded-md text-white font-semibold !text-base bg-primary-gradient hover:opacity-90 transition disabled:opacity-50`}
+                                className={`${formBtn3}`}
                             >
                                 Login / Register
                             </button>
@@ -199,6 +188,7 @@ const HomeNavbar = () => {
 
             {/* Profile Section Popup */}
             <ProfileSection card={card} setCard={setCard} logout={logout} />
+
         </>
     );
 };
@@ -275,5 +265,46 @@ const ProfileSection = ({ card, setCard, logout }) => {
         </div>
     );
 };
+
+
+const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) => {
+    const [Searvice, setSearvice] = useState([]);
+
+    useEffect(() => {
+        const fetchServiceCategories = async () => {
+            const response = await getActiveServiceCategories();
+            setSearvice(response?.data);
+        }
+        fetchServiceCategories();
+    }, []);
+
+    return (
+        <div
+            ref={dropdown}
+            onFocus={() => setDropdownOpen(true)}
+            onBlur={() => setDropdownOpen(false)}
+            className={`absolute left-0 top-14 w-[240px] pb-3 overflow-hidden rounded-lg z-50 bg-white shadow-lg border border-slate-100 transition-all ease-in-out duration-500 ${dropdownOpen ? "block opacity-100 transition-all ease-in-out duration-500" : "hidden opacity-0 transition-all ease-in-out duration-500"}`}
+        >
+            <div>
+                {Searvice?.map((item, i) => (
+                    <NavLink
+                        to={`/services/${item.name?.toLowerCase()}`}
+                        key={i}
+                        className={({ isActive }) =>
+                            `flex items-center gap-2 px-4 py-2 hover:bg-gray-100 !transition-all !duration-500 !ease-in-out ${isActive ? "text-p font-bold" : "text-gray-800 hover:text-p"
+                            }`
+                        }
+                        onClick={() => { setDropdownOpen(false), window.scrollTo(0, 0, { behavior: "smooth" }) }}
+                    >
+                        <h4 className="font-medium font-tbPop text-base">
+                            {item.name}
+                        </h4>
+                    </NavLink>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 
 export default HomeNavbar;

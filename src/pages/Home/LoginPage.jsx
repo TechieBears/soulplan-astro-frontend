@@ -177,7 +177,7 @@ const LoginPage = () => {
                     {/* Login Button */}
                     {loading ? <LoadBox className={formBtn3} /> : <button
                         type="submit"
-                        className={`${formBtn3}`}
+                        className={`${formBtn3} !rounded`}
                     >
                         Login
                     </button>}

@@ -572,6 +572,17 @@ export const getServiceCategoriesDropdown = async () => {
         return err?.response?.data
     }
 }
+export const getActiveServiceCategories = async () => {
+    try {
+        const url = `${environment.baseUrl}service-categories/active`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log(err);
+        return err?.response?.data
+    }
+}
 
 export const addServiceCategory = async (data) => {
     const url = `${environment.baseUrl}service-categories/create`;

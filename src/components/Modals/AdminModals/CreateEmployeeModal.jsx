@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { formBtn1, tableBtn } from '../../../utils/CustomClass';
+import { formBtn1, tableBtn, formBtn3 } from '../../../utils/CustomClass';
 import LoadBox from '../../Loader/LoadBox';
 import TextInput from '../../TextInput/TextInput';
 import { validateAlphabets, validateEmail, validatePhoneNumber } from '../../../utils/validateFunction';
@@ -175,7 +175,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                             </div>
 
                                             <footer className="py-3 flex bg-slate-100 justify-end px-4 space-x-3">
-                                                {loader ? <LoadBox className="relative block w-auto px-5 transition-colors font-tb tracking-wide duration-200 py-2.5 overflow-hidden text-base font-semibold text-center text-white rounded-lg bg-primary hover:bg-primary capitalize" /> : <button type='submit' className={formBtn1}>submit</button>}
+                                                {loader ? <LoadBox className={formBtn1} /> : <button type='submit' className={formBtn1}>submit</button>}
                                             </footer>
                                         </form>
                                     </div>
