@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { formBtn3 } from "../../utils/CustomClass";
-import { CaretDown, List } from "@phosphor-icons/react";
+import { AddressBookIcon, CaretDown, List } from "@phosphor-icons/react";
 import { useSelector } from "react-redux";
-import { LoginCurve, Profile, I24Support } from "iconsax-reactjs";
+import { LoginCurve, I24Support, User, Setting2 } from "iconsax-reactjs";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { Icon } from "@iconify/react";
@@ -18,6 +18,14 @@ const HomeNavbar = () => {
         { name: "Services", dropdown: true, path: "/services/:id" },
         { name: "Shop", path: "/products" },
         { name: "Contact Us", path: "/contact" },
+    ];
+
+    const profileNavLinks = [
+        { name: "My Account", path: "/profile/account" },
+        { name: "My Orders", path: "/profile/my-orders" },
+        { name: "My Address", path: "/profile/address" },
+        { name: "Customer Support", path: "/profile/customer-support" },
+        { name: "Privacy Policy", path: "/privacy-policy" },
     ];
 
     const [isScrolled, setIsScrolled] = useState(false);
@@ -164,18 +172,8 @@ const HomeNavbar = () => {
                         </button>
 
                         {login ? (
-                            <div
-                                className="flex items-center gap-4 cursor-pointer"
-                                onClick={() => setCard(!card)}
-                            >
-                                <img
-                                    src={
-                                        user?.user?.profilePicture ||
-                                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                    }
-                                    alt="profile"
-                                    className="w-10 h-10 rounded-full border-2 border-gray-300 object-cover"
-                                />
+                            <div className="relative">
+                                <ProfileSection card={card} setCard={setCard} logout={logout} />
                             </div>
                         ) : (
                             <button
@@ -196,87 +194,221 @@ const HomeNavbar = () => {
                         />
                     </div>
                 </div>
+
+                {/* ===== Mobile Menu ===== */}
+                {isMenuOpen && (
+                    <div className="lg:hidden bg-white border-t">
+                        <div className="container mx-auto px-5 py-4">
+                            {/* Regular Nav Links */}
+                            <div className="space-y-2 mb-4">
+                                {navLinks.map((link, i) => (
+                                    <NavLink
+                                        key={i}
+                                        to={link.path}
+                                        onClick={() => setIsMenuOpen(false)}
+                                        className={({ isActive }) =>
+                                            `block py-2 px-3 rounded font-medium transition ${isActive ? "text-p bg-p/10" : "text-gray-800 hover:text-p"
+                                            }`
+                                        }
+                                    >
+                                        {link.name}
+                                    </NavLink>
+                                ))}
+                            </div>
+
+                            {/* Profile Links (only show if logged in) */}
+                            {login && (
+                                <>
+                                    <div className="border-t pt-4 mb-4">
+                                        <h3 className="text-sm font-semibold text-gray-600 mb-2">Profile</h3>
+                                        <div className="space-y-2">
+                                            {profileNavLinks.map((link, i) => (
+                                                <NavLink
+                                                    key={i}
+                                                    to={link.path}
+                                                    onClick={() => setIsMenuOpen(false)}
+                                                    className={({ isActive }) =>
+                                                        `block py-2 px-3 rounded font-medium transition ${isActive ? "text-p bg-p/10" : "text-gray-700 hover:text-p"
+                                                        }`
+                                                    }
+                                                >
+                                                    {link.name}
+                                                </NavLink>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => { logout(); setIsMenuOpen(false); }}
+                                        className="w-full text-left py-2 px-3 rounded font-medium text-red-600 hover:bg-red-50 transition"
+                                    >
+                                        Logout
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                )}
             </nav>
 
+
             {/* Profile Section Popup */}
-            <ProfileSection card={card} setCard={setCard} logout={logout} />
+
 
         </>
     );
 };
 
-const ProfileSection = ({ card, setCard, logout }) => {
-    const user = useSelector((state) => state.user.userDetails);
+const ProfileSection = () => {
+
+    const user = useSelector((state) => state.user.userDetails)
+
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const trigger = useRef(null);
+    const dropdown = useRef(null);
+
+    // close on click outside
+    useEffect(() => {
+        const clickHandler = ({ target }) => {
+            if (!dropdown.current) return;
+            if (
+                !dropdownOpen ||
+                dropdown.current.contains(target) ||
+                trigger.current.contains(target)
+            )
+                return;
+            setDropdownOpen(false);
+        };
+        document.addEventListener("click", clickHandler);
+        return () => document.removeEventListener("click", clickHandler);
+    });
+
+    // close if the esc key is pressed
+    useEffect(() => {
+        const keyHandler = ({ keyCode }) => {
+            if (!dropdownOpen || keyCode !== 27) return;
+            setDropdownOpen(false);
+        };
+        document.addEventListener("keydown", keyHandler);
+        return () => document.removeEventListener("keydown", keyHandler);
+    });
+
+    const logout = () => {
+        setDropdownOpen(!dropdownOpen)
+        localStorage.removeItem("persist:root");
+        window.location.href = "/";
+    }
+
     return (
-        <div
-            className={`${card ? "-top-96 right-0 opacity-0" : "top-20 right-6 opacity-100"
-                } bg-white/90 backdrop-blur-lg transition-all ease-in-out duration-500 fixed z-[100] rounded-xl hidden lg:block`}
-        >
-            <div className="absolute -top-2 right-6 bg-white h-4 w-4 rotate-45" />
-            <div className="w-56 py-3 rounded-xl shadow-xl">
-                <ul>
-                    <li>
-                        <NavLink
-                            to="/profile/account"
-                            onClick={() => setCard(!card)}
-                            className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+        <section className=" ">
+            <div className="container">
+                <div className="flex justify-center">
+                    <div className="relative inline-block">
+                        <div className="" ref={trigger}
+                            onClick={() => setDropdownOpen(!dropdownOpen)}>
+                            <div className="bg-white rounded-full px-1.5 pr-2 py-1 w-full flex items-center space-x-2 cursor-pointer">
+                                <img loading="lazy" className="h-10 w-10 rounded-full object-cover bg-slate1 " src={user?.user?.profilePicture || "https://bootstrapdemos.wrappixel.com/materialM/dist/assets/images/profile/user-1.jpg"} alt="user" />
+                            </div>
+                        </div>
+                        <div
+                            ref={dropdown}
+                            onFocus={() => setDropdownOpen(true)}
+                            onBlur={() => setDropdownOpen(false)}
+                            className={`absolute right-0 top-16 w-[240px] pb-3 overflow-hidden rounded-xl z-50 bg-white shadow-lg border border-slate-100 transition-all ease-in-out duration-500 ${dropdownOpen ? "block opacity-100 transition-all ease-in-out duration-500" : "hidden opacity-0 transition-all ease-in-out duration-500"}`}
                         >
-                            <Profile size={20} /> My Account
-                        </NavLink>
-                    </li>
-
-                    <li>
-                        <NavLink
-                            to="/profile/address"
-                            onClick={() => setCard(!card)}
-                            className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
-                        >
-                            <Icon
-                                icon="bitcoin-icons:address-book-outline"
-                                className="w-5 h-5"
-                            />
-                            My Address
-                        </NavLink>
-                    </li>
-
-                    <li>
-                        <NavLink
-                            to="/profile/my-orders"
-                            onClick={() => setCard(!card)}
-                            className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
-                        >
-                            <Icon
-                                icon="material-symbols-light:orders-outline"
-                                className="w-5 h-5"
-                            />
-                            My Orders
-                        </NavLink>
-                    </li>
-
-                    <li>
-                        <NavLink
-                            to="/profile/customer-support"
-                            onClick={() => setCard(!card)}
-                            className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
-                        >
-                            <I24Support size={20} />
-                            Customer Support
-                        </NavLink>
-                    </li>
-
-                    <li>
-                        <button
-                            onClick={logout}
-                            className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-100 text-red-600"
-                        >
-                            <LoginCurve size={20} /> Logout
-                        </button>
-                    </li>
-                </ul>
+                            <div className="flex items-center gap-3 px-4 py-3">
+                                <div className="relative aspect-square w-16 rounded-full">
+                                    <img
+                                        src={user?.user?.profilePicture || "https://cdn.tailgrids.com/assets/images/core-components/account-dropdowns/image-1.jpg"}
+                                        alt="account"
+                                        className="w-full rounded-full object-cover object-center"
+                                    />
+                                    <span className="absolute right-0 top-1 block h-3.5 w-3.5 rounded-full border-2 border-white bg-green-500 "></span>
+                                </div>
+                                <div>
+                                    <p className="text-base font-tbLex font-semibold text-black capitalize">
+                                        {user?.user?.firstName || "Guest"} {user?.user?.lastName || "User"}
+                                    </p>
+                                    <p className="text-xs font-tbPop text-slate-500 ">
+                                        {user?.user?.email || "Guest Email"}
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <NavLink
+                                    to="/profile/account"
+                                    className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium font-tbLex text-black hover:bg-gray-50 " onClick={() => setDropdownOpen(!dropdownOpen)}
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <User size={22} variant="TwoTone" />
+                                        View profile
+                                    </span>
+                                </NavLink>
+                                <NavLink
+                                    to="/profile/my-orders"
+                                    className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium font-tbLex text-black hover:bg-gray-50"
+                                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <Icon icon="material-symbols-light:orders-outline" className="w-5 h-5" />
+                                        My Orders
+                                    </span>
+                                </NavLink>
+                                <NavLink
+                                    to="/profile/address"
+                                    className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium font-tbLex text-black hover:bg-gray-50"
+                                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <AddressBookIcon size={22} variant="TwoTone" />
+                                        My Address
+                                    </span>
+                                </NavLink>
+                                <NavLink
+                                    to="/profile/customer-support"
+                                    className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium font-tbLex text-black hover:bg-gray-50"
+                                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <I24Support size={22} variant="TwoTone" />
+                                        Costumer Care
+                                    </span>
+                                </NavLink>
+                                <NavLink
+                                    to="/privacy-policy"
+                                    className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium font-tbLex text-black hover:bg-gray-50"
+                                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <Icon icon="material-symbols:privacy-tip-outline" className="w-5 h-5" />
+                                        Privacy Policy
+                                    </span>
+                                </NavLink>
+                                <NavLink
+                                    to="/profile/settings"
+                                    className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium font-tbLex text-black hover:bg-gray-50 " onClick={() => setDropdownOpen(!dropdownOpen)}
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <Setting2 size={22} variant="TwoTone" />
+                                        Settings
+                                    </span>
+                                </NavLink>
+                            </div>
+                            <div>
+                                <button onClick={logout} className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium font-tbLex text-red-500 hover:bg-gray-50 ">
+                                    <span className="flex items-center gap-2">
+                                        <LoginCurve size={22} variant="TwoTone" />
+                                        Log out
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
     );
-};
+}
 
 
 
