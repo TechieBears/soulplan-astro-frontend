@@ -279,6 +279,7 @@ const ProfileSection = ({ card, setCard, logout }) => {
 };
 
 
+
 const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) => {
     const [Searvice, setSearvice] = useState([]);
 
@@ -317,6 +318,5 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
         </div>
     );
 }
-
 
 export default HomeNavbar;

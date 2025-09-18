@@ -18,7 +18,7 @@ import ContactPage from "../pages/Home/ContactPage";
 import RegisterPage from "../pages/Home/RegisterPage";
 import LoginPage from "../pages/Home/LoginPage";
 import TermsConditions from "../components/HomeComponents/TermsConditions";
-import PrivacyPolicy from "../components/HomeComponents/PrivacyPolicy";
+import PrivacyPolicy from "../pages/Home/Profile/privacypolicy";
 import ErrorPage from "./ErrorPage";
 import BookingCalender from "../pages/Admin/Bookings/BookingCalender";
 import AllProducts from "../pages/Admin/AllProducts/AllProducts";
@@ -27,13 +27,12 @@ import AllServices from "../pages/Admin/Services/AllServices";
 import AllUserProfiles from "../pages/Admin/UserManagement/AllUserProfiles";
 import UserTransactios from "../pages/Admin/Transactios/UserTransactios";
 // import DeepLinkRedirect from "../pages/DeepLinkRedirect";
-import Employees from '../pages/Admin/UserManagement/Employees';
+import Employees from "../pages/Admin/UserManagement/Employees";
 import Banner from "../pages/Admin/Master/Banner";
-import Notifications from '../pages/Admin/Master/Notifications';
+import Notifications from "../pages/Admin/Master/Notifications";
 import OffersCoupons from "../pages/Admin/Master/OffersCoupons";
 import ReferEarn from "../pages/Admin/Master/ReferEarn";
-import Testimonials from '../pages/Admin/Master/Testimonials';
-
+import Testimonials from "../pages/Admin/Master/Testimonials";
 
 import AddressPage from "../pages/Home/Profile/address";
 import ProfilePage from "../pages/Home/Profile/account";
@@ -53,7 +52,6 @@ import AdminProfile from "../pages/Admin/UserProfile/UserProfile";
 import ServicesCategories from "../pages/Admin/Services/ServicesCategories";
 import ProductBookings from "../pages/Admin/Bookings/ProductBookings";
 import ServiceBookings from "../pages/Admin/Bookings/ServiceBookings";
-
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
@@ -87,7 +85,7 @@ const ProjectRoutes = () => {
         <div className="min-h-screen transition-all duration-300">
             {loading ? (
                 <Preloaders />
-            ) : (user?.role == "admin" || user?.role == "employee") ? (
+            ) : user?.role == "admin" || user?.role == "employee" ? (
                 // ============ Logged in (Admin or Employee) ============
                 <Sidebar>
                     <Routes>
@@ -98,7 +96,10 @@ const ProjectRoutes = () => {
                         <Route path="/all-products" element={<AllProducts />} />
                         <Route path="/product-categories" element={<ProductCategories />} />
                         <Route path="/all-services" element={<AllServices />} />
-                        <Route path="/service-categories" element={<ServicesCategories />} />
+                        <Route
+                            path="/service-categories"
+                            element={<ServicesCategories />}
+                        />
                         <Route path="/all-employees" element={<Employees />} />
                         <Route path="/all-users" element={<AllUserProfiles />} />
                         <Route path="/user-transaction" element={<UserTransactios />} />
@@ -125,8 +126,17 @@ const ProjectRoutes = () => {
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/terms-conditions" element={<TermsConditions />} />
-                        <Route path="/profile/privacy-policy" element={<PrivacyPolicy />} />
-                        <Route path="/profile/customer-support" element={<CustomerSupport />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route
+                            path="/profile/customer-support"
+                            element={<CustomerSupport />}
+                        />
+
+                        <Route path="/profile/address" element={<AddressPage />} />
+                        <Route
+                            path="/password/reset/:token"
+                            element={<ResetPasswordPage />}
+                        />
 
                         <Route path="/profile/address" element={<AddressPage />} />
                         <Route path="/password/reset/:token" element={<ResetPasswordPage />} />
