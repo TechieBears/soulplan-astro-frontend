@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
 import product1 from "../../../assets/shop/product1.png";
+import { FaRegTrashAlt, FaChevronUp, FaChevronDown } from "react-icons/fa";
+import { Mobile, Calendar, Timer1, Zoom } from "iconsax-reactjs";
 
 // Temporary placeholder components
 const Private = ({ children }) => children;
@@ -61,6 +63,30 @@ export default function MyOrders() {
           },
         ],
       },
+      {
+        _id: "4",
+        items: [
+          {
+            name: "Amber Crystal",
+            image: product1,
+            sellingPrice: 1499,
+            mrpPrice: 1999,
+            quantity: 2,
+          },
+        ],
+      },
+      {
+        _id: "3",
+        items: [
+          {
+            name: "Amber Crystal",
+            image: product1,
+            sellingPrice: 1499,
+            mrpPrice: 1999,
+            quantity: 2,
+          },
+        ],
+      },
     ],
   };
 
@@ -90,13 +116,13 @@ export default function MyOrders() {
       <Private>
         <UserDashboard>
           <ProfileSidebar>
-            <div className="flex justify-between">
-              <h1 className="text-gray-900 mb-6 text-2xl py-4 font-medium text-secondary">
+            <div className="flex flex-col sm:flex-row justify-between">
+              <h1 className="text-gray-900 mb-6 sm:mb-6 mb-0 sm:text-left text-center text-2xl py-4 font-medium text-secondary">
                 My Orders
               </h1>
 
               {/* 🔹 Tabs */}
-              <div className="flex items-center bg-gray-100 rounded-full space-x-4 px-2 mb-6">
+              <div className="flex items-center bg-gray-100 rounded-full space-x-4 px-2 mb-6 justify-center sm:justify-start">
                 <button
                   onClick={() => setActiveTab("services")}
                   className={`px-8 py-2 rounded-full font-medium ${
@@ -128,27 +154,43 @@ export default function MyOrders() {
               <>
                 {/* 🔹 Services Tab */}
                 {activeTab === "services" && (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:leading-[1.8] ">
                     {services.map((s) => (
                       <div
                         key={s.id}
                         className="bg-[#9E52D8] rounded-lg p-4 text-white"
                       >
-                        <h3 className="font-bold text-lg mb-2">
+                        <h3 className="font-medium font-dm text-lg mb-4">
                           Service Type: {s.type}
                         </h3>
-                        <p>⏰ Session Duration: {s.duration}</p>
-                        <p>📅 Date: {s.date}</p>
-                        <p>📍 Mode: {s.mode}</p>
+
+                        <p className="flex items-center gap-4 mb-2">
+                          <Timer1 className="w-6 h-6" />
+                          <span>Session Duration: {s.duration}</span>
+                        </p>
+
+                        <p className="flex items-center gap-4 mb-2">
+                          <Calendar className="w-6 h-6" />
+                          <span>Date: {s.date}</span>
+                        </p>
+
+                        <p className="flex items-center gap-4 mb-2">
+                          <Icon icon="ph:device-mobile" className="w-6 h-6" />
+                          <span>Mode: {s.mode}</span>
+                        </p>
+
                         {s.link && (
-                          <a
-                            href={s.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="underline block mt-2"
-                          >
-                            {s.link}
-                          </a>
+                          <div className="flex items-center gap-4 mt-3">
+                            <Zoom className="w-6 h-6" />
+                            <a
+                              href={s.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm break-words"
+                            >
+                              {s.link}
+                            </a>
+                          </div>
                         )}
                       </div>
                     ))}
@@ -161,49 +203,38 @@ export default function MyOrders() {
                     {data?.orders?.map((order) => (
                       <div
                         key={order._id}
-                        className="bg-[#9E52D8] rounded-lg p-4 flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 cursor-pointer hover:bg-[#8A47C4] transition-colors"
+                        className="bg-[#9E52D8] rounded-lg p-4 cursor-pointer hover:bg-[#8A47C4] transition-colors 
+                   flex flex-col sm:flex-row items-left sm:items-start gap-4"
                         onClick={() => navigate(`/orders/${order._id}`)}
                       >
-                        {/* Image */}
-                        <div className="w-full sm:w-20 h-40 sm:h-20 bg-white rounded-md overflow-hidden flex-shrink-0 relative">
+                        <div className="sm:w-28 sm:h-32 w-full  bg-white rounded-lg overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
                           <img
                             src={order.items[0].image}
                             alt={order.items[0].name}
-                            className="w-full h-full object-contain p-2"
+                            className="w-full h-full object-fill sm:object-contain p-2"
+                            loading="lazy"
                           />
                         </div>
 
                         {/* Details */}
-                        <div className="flex-1 w-full">
-                          <h3 className="font-bold text-white text-lg mb-1 sm:pr-6">
+                        <div className="flex-1 min-w-0 text-left justify-self-start">
+                          <h3 className="font-bold text-white font-dm text-lg mb-1">
                             {order.items[0].name}
                           </h3>
-                          <div className="space-y-1">
-                            <div className="font-medium text-lg text-white">
-                              ₹{order.items[0].sellingPrice.toLocaleString()}
-                            </div>
-                            <div className="text-white text-sm">
-                              <span>
-                                MRP{" "}
-                                <span className="line-through">
-                                  ₹{order.items[0].mrpPrice.toLocaleString()}
-                                </span>
-                              </span>
-                              <span className="ml-1">(incl. of all taxes)</span>
-                            </div>
-                            <div className="text-white text-sm">
-                              Quantity: {order.items[0].quantity}
-                            </div>
+                          <div className="font-medium text-lg text-white mb-1">
+                            ₹
+                            {order.items[0].sellingPrice?.toLocaleString() || 0}
                           </div>
-                        </div>
-
-                        {/* Controls */}
-                        <div className="flex flex-col items-end space-y-2 mt-2 sm:mt-0">
-                          {order.items.length > 1 && (
-                            <div className="px-3 py-1 bg-white text-[#9E52D8] rounded-full text-xs font-medium">
-                              +{order.items.length - 1} more items
-                            </div>
-                          )}
+                          <div className="text-white text-sm">
+                            MRP{" "}
+                            <span className="line-through">
+                              ₹{order.items[0].mrpPrice?.toLocaleString() || 0}
+                            </span>{" "}
+                            (incl. of all taxes)
+                          </div>
+                          <div className="text-white text-sm mt-4 font-medium">
+                            QTY: {order.items[0].quantity}
+                          </div>
                         </div>
                       </div>
                     ))}
