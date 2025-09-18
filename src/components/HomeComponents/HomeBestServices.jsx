@@ -151,7 +151,6 @@ export default function HomeBestServices({ limit = 8, showCorners = true, showbe
 
             {/* Heading */}
             <div className="text-center mb-12">
-
                 {showbestservicetext && (
                     <>
                         <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold  text-center leading-snug">

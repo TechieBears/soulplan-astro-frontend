@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { formBtn1, formBtn3 } from "../../utils/CustomClass";
+import { formBtn3 } from "../../utils/CustomClass";
 import { CaretDown, List } from "@phosphor-icons/react";
 import { useSelector } from "react-redux";
-import { LoginCurve, Profile, I24Support, ArrowDown2, User } from "iconsax-reactjs";
+import { LoginCurve, Profile, I24Support } from "iconsax-reactjs";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { Icon } from "@iconify/react";
-import { getActiveServiceCategories, getServiceCategoriesDropdown } from "../../api";
+import { getActiveServiceCategories } from "../../api";
 import { ShoppingCart } from "lucide-react";
 
 const HomeNavbar = () => {
@@ -16,7 +16,7 @@ const HomeNavbar = () => {
         { name: "Home", path: "/" },
         { name: "About", path: "/about" },
         { name: "Services", dropdown: true, path: "/services/:id" },
-        { name: "Shop", path: "/shop" },
+        { name: "Shop", path: "/products" },
         { name: "Contact Us", path: "/contact" },
     ];
 
@@ -101,8 +101,8 @@ const HomeNavbar = () => {
                         }}
                         className="flex items-center gap-2"
                     >
-                        <img src={logo} alt="logo" className="h-11 w-11" />
-                        <h2 className="text-2xl font-tbLex tracking-tight font-bold text-gray-800">SOUL PLAN</h2>
+                        <img src={logo} alt="logo" className="w-8 h-8 md:w-10 md:h-10" />
+                        <h2 className="text-lg md:text-xl lg:text-2xl font-tbLex tracking-tight font-bold text-gray-800">SOUL PLAN</h2>
                     </button>
 
                     {/* ===== Center: Nav Links ===== */}

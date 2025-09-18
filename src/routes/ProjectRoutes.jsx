@@ -130,13 +130,13 @@ const ProjectRoutes = () => {
 
                         <Route path="/profile/address" element={<AddressPage />} />
                         <Route path="/password/reset/:token" element={<ResetPasswordPage />} />
-            
-            {/* Service Routes */}
-            <Route path="/services/palmistry" element={<ServiceSidebar />} />
-            <Route path="/services/astrology" element={<ServiceSidebar />} />
-            <Route path="/services/tarot-card" element={<ServiceSidebar />} />
-            <Route path="/services/numerology" element={<ServiceSidebar />} />
-            <Route path="/booking" element={<BookingPage />} />
+
+                        {/* Service Routes */}
+                        <Route path="/services/palmistry" element={<ServiceSidebar />} />
+                        <Route path="/services/astrology" element={<ServiceSidebar />} />
+                        <Route path="/services/tarot-card" element={<ServiceSidebar />} />
+                        <Route path="/services/numerology" element={<ServiceSidebar />} />
+                        <Route path="/booking" element={<BookingPage />} />
 
                         <Route path="/profile/account" element={<ProfilePage />} />
                         <Route path="/profile/my-orders" element={<MyOrders />} />

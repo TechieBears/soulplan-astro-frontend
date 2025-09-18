@@ -65,18 +65,18 @@ const features = [
 
 const AboutPage = () => {
     return (
-        <div className="bg-[#FFF9EF]  pt-16">
+        <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
             <Breadcrumbs />
             {/* <ArrowBtn /> */}
             <Certifications showTopImage={false} />
 
-            <section className="w-full  py-16 px-6 md:px-16">
+            <section className="w-full  py-16 px-5 xl:px-0">
                 <div className="container mx-auto ">
                     {/* Stats Section */}
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-40 pt-20 pb-28">
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20 lg:gap-30 xl:gap-40 pt-10 lg:pt-20 pb-28">
                         {stats.map((stat, index) => (
                             <div key={index} className="text-left">
-                                <h6 className='text-red-500 font-tbLex font-bold text-9xl text-center tracking-tighter flex justify-center items-center'>
+                                <h6 className='text-red-500 font-tbLex font-bold text-9xl md:text-8xl  xl:text-9xl text-center tracking-tighter flex justify-center items-center'>
                                     <AnimatedNumbers
                                         animateToNumber={stat.value}
                                         fontStyle={{ textAlign: "center", letterSpacing: -5 }}
@@ -115,19 +115,19 @@ const AboutPage = () => {
 function FeatureCard({ feature }) {
     return (
         <div
-            className={`shadow-lg bg-white rounded-md tra p-8 flex flex-col items-start justify-center cursor-pointer border transition-all duration-500 border-gray-100 group hover:bg-linear-gradient group space-y-2`}
-            style={{ minHeight: 300 }}
+            className={`shadow-lg bg-white rounded-md p-4 md:p-6 xl:p-8 h-[230px] md:h-[260px] xl:h-[270px] flex flex-col items-start justify-center cursor-pointer border transition-all duration-500 border-gray-100 group hover:bg-linear-gradient group space-y-2`}
+
         >
             <div className=" flex items-center justify-start w-full">
                 <img
                     src={feature.image}
                     alt={feature.title}
-                    className={`w-32 h-32 object-contain transition-transform duration-500 drop-shadow-lg group-hover:scale-110`}
+                    className={`w-32 md:w-28 h-32 md:h-28 xl:w-32 xl:h-32 object-contain transition-transform duration-500 drop-shadow-lg group-hover:scale-110`}
                 />
             </div>
             <div className="space-y-1">
-                <h3 className={`font-semibold font-tbLex tracking-tight text-xl text-left  text-black group-hover:text-white`}>{feature.title}</h3>
-                <p className={`text-sm font-tbPop text-left text-slate-400 group-hover:text-white`}>{feature.desc}</p>
+                <h3 className={`font-semibold font-tbLex tracking-tight text-base md:text-xl text-left  text-black group-hover:text-white`}>{feature.title}</h3>
+                <p className={`text-xs xl:text-sm font-tbPop text-left text-slate-400 group-hover:text-white`}>{feature.desc}</p>
             </div>
         </div>
     );

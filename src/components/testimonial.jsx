@@ -42,7 +42,7 @@ const Testimonials = () => {
     return (
         <>
             <section className="py-16 bg-white">
-                <div className="container mx-auto px-5 xl:px-0 text-center space-y-6 xl:space-y-10">
+                <div className="container mx-auto px-8 md:px-6 xl:px-0 text-center space-y-6 xl:space-y-10">
                     {/* Title */}
                     <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-center leading-snug text-p">
                         What Our Clients Are Saying
@@ -111,17 +111,17 @@ const Testimonials = () => {
             </section>
 
             <section className="bg-[#fff6ef]">
-                <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center justify-between pt-20 gap-10">
-                    <div className="text-left flex flex-col justify-center space-y-3">
-                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-p">
+                <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center justify-between pt-16 md:pt-20 gap-10 xl:gap-10 px-5 xl:px-0">
+                    <div className="text-left flex flex-col justify-center items-center md:items-start space-y-3">
+                        <h2 className="text-xl md:text-2xl xl:text-4xl font-bold text-p text-center md:text-left">
                             Download Our Astrologer <br /> App Today
                         </h2>
-                        <p className="text-gray-600 text-sm md:text-base">
+                        <p className="text-gray-600 text-sm lg:text-base text-center md:text-left">
                             For a sameless experience, download our apps <br /> on your phone
                         </p>
                         <div className="flex justify-start">
                             <a href="#" target="_blank" rel="noopener noreferrer">
-                                <img src={playstore} alt="Google Play" className="h-14" />
+                                <img src={playstore} alt="Google Play" className="h-10 lg:h-14" />
                             </a>
                         </div>
                     </div>

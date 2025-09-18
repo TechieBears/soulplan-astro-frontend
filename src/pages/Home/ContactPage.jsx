@@ -15,27 +15,27 @@ const ContactPage = () => {
 
     }
     return (
-        <div className="bg-[#FFF9EF]  pt-16">
+        <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
             <Breadcrumbs />
-            <section className="w-full py-16 px-6 md:px-16">
+            <section className="w-full  lg:py-2 xl:py-4 px-5 xl:px-0">
                 <div className="container mx-auto ">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 ">
-                        <div className=" text-gray-700 flex justify-between flex-col">
-                            <div className="bg-white rounded-lg p-10 ">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-8 xl:gap-10 ">
+                        <div className=" text-gray-700 flex justify-between flex-col space-y-2  xl:space-y-10">
+                            <div className="bg-white rounded-lg p-6 lg:p-10 ">
                                 <h4 className="text-base font-medium font-tbLex text-black">Phone</h4>
                                 <p className="mt-1 font-medium text-sm break-words font-tbPop tracking-tight text-slate-500">
                                     +97 147654321
                                 </p>
                             </div>
 
-                            <div className="bg-white rounded-lg p-10 ">
+                            <div className="bg-white rounded-lg p-6 lg:p-10 ">
                                 <h4 className="text-base font-medium font-tbLex text-black">Email</h4>
                                 <p className="mt-1 font-medium text-sm break-words font-tbPop tracking-tight text-slate-500">
                                     booking@Astro.com
                                 </p>
                             </div>
 
-                            <div className="bg-white rounded-lg p-10 ">
+                            <div className="bg-white rounded-lg p-6 lg:p-10 ">
                                 <h4 className="text-base font-medium font-tbLex text-black">Address</h4>
                                 <p className="mt-1 font-medium text-sm break-words font-tbPop tracking-tight text-slate-500">
                                     Germany — 785 15th Street, Office 478 <br />
@@ -46,7 +46,8 @@ const ContactPage = () => {
 
                         {/* Right Side - Form */}
                         <form onSubmit={handleSubmit(onSubmit)} >
-                            <div className='bg-white p-8 rounded-lg grid grid-cols-2 gap-5 items-center' >
+                            <div className='bg-white p-3 md:p-5 xl:p-8 rounded-lg
+                            grid  md:grid-cols-2 gap-5 items-center' >
                                 <div className="">
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
@@ -107,7 +108,7 @@ const ContactPage = () => {
                                         errors={errors.mobileNo}
                                     />
                                 </div>
-                                <div className="col-span-2">
+                                <div className="md:col-span-2">
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
@@ -139,7 +140,7 @@ const ContactPage = () => {
                     </div>
 
                     {/* Google Maps */}
-                    <div className="mt-12 sm:mt-16 text-center">
+                    <div className="mt-12 pb-10 text-center">
                         <h1 className="text-xl sm:text-2xl md:text-3xl text-p font-medium mb-6 sm:mb-10 font-tbLex tracking-tight">
                             Find Us on Google Maps
                         </h1>
