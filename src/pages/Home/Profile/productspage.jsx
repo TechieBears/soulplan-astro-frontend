@@ -12,7 +12,8 @@ import img4 from "../../../assets/shop/product4.png";
 import img5 from "../../../assets/shop/product5.png";
 import img6 from "../../../assets/shop/product6.png";
 import Breadcrumbs from "../../../components/breadcrum";
-
+import sun1 from '../../../assets/helperImages/sun1.png'
+import moon from '../../../assets/helperImages/moon.png'
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 
@@ -193,8 +194,14 @@ const ProductsPage = () => {
     const totalPages = Math.ceil(filtered.length / itemsPerPage);
 
     return (
-        <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
+        <div className="bg-[#FFF9EF]  pt-10 lg:pt-16 relative">
             <Breadcrumbs />
+            <div className="absolute top-56 left-0 scale-75  ">
+                <img src={moon} alt="" className="w-full h-full object-fill" />
+            </div>
+            <div className="absolute bottom-40 -right-10 rotate-180 scale-75">
+                <img src={sun1} alt="" className="w-full h-full object-fill" />
+            </div>
             <section className="w-full lg:py-2 xl:py-4 px-5 xl:px-0 container mx-auto">
                 <div className="grid lg:grid-cols-12 gap-4 md:gap-6">
                     <div className="lg:col-span-9 order-2 lg:order-1">

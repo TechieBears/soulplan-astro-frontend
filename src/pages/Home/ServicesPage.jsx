@@ -1,41 +1,98 @@
-"use client";
-import React from "react";
-import service1 from "../../assets/services/service1.png";
-import service2 from "../../assets/services/service2.png";
-import service3 from "../../assets/services/service3.png";
-import service4 from "../../assets/services/service4.png";
-import service5 from "../../assets/services/service5.png";
-import service6 from "../../assets/services/service6.png";
-import service7 from "../../assets/services/service7.png";
-import service8 from "../../assets/services/service8.png";
-import service9 from "../../assets/services/service9.png";
-import service10 from "../../assets/services/service10.png";
-import service11 from "../../assets/services/service11.png";
-import service12 from "../../assets/services/service12.png";
-import service13 from "../../assets/services/service13.png";
-import service14 from "../../assets/services/service14.png";
-import service15 from "../../assets/services/service15.png";
-import service16 from "../../assets/services/service16.png";
-
-import curly from "../../assets/services/carddesign.png";
-import corner1 from "../../assets/services/corner1.png";
-import underline from "../../assets/undertext.png";
 import Breadcrumbs from "../../components/breadcrum";
 import Testimonials from "../../components/testimonial";
-import HomeBestServices from "../../components/HomeComponents/HomeBestServices";
-import { ListMinus } from "lucide-react";
-
+import leftImage from "../../assets/helperImages/leftDesign.png"
+import rightImage from "../../assets/helperImages/rightDesign.png"
+import { useState, useEffect } from "react";
+import { getPublicServices } from "../../api";
+import ServicesCard from "../../components/Cards/ServicesCard";
+import { formBtn3 } from "../../utils/CustomClass";
+import { PulseLoader } from "react-spinners";
 
 const ServicesPage = () => {
-  return (
-    <>
-    <div className="container bg-[#fff9f5] mx-auto px-4">
-      <Breadcrumbs />
-  <HomeBestServices limit={16} showCorners={false} showbestservicetext={false} />
-    </div>
-    <Testimonials/>
-    </>
-  );
+    const [services, setServices] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const recordsPerPage = 12;
+
+    const fetchServices = async (page = 1, isLoadMore = false) => {
+        try {
+            setLoading(true);
+            const response = await getPublicServices({
+                p: page,
+                records: recordsPerPage,
+                search: '',
+            });
+
+            if (response?.data) {
+                if (isLoadMore) {
+                    setServices(prev => [...prev, ...response.data]);
+                } else {
+                    setServices(response.data);
+                }
+                setHasMore(response.data.length === recordsPerPage);
+            }
+        } catch (error) {
+            console.error('Error fetching services:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleLoadMore = () => {
+        const nextPage = currentPage + 1;
+        setCurrentPage(nextPage);
+        fetchServices(nextPage, true);
+    };
+
+
+    useEffect(() => {
+        fetchServices();
+    }, []);
+    return (
+        <div className="bg-[#FFF9EF]  pt-10 lg:pt-16 relative">
+            <div className="absolute top-56 left-0 opacity-30  ">
+                <img src={rightImage} className="w-full h-full object-fill" />
+            </div>
+            <div className="absolute top-1/4 -right-10 scale-75 opacity-30 ">
+                <img src={leftImage} className="w-full h-full object-fill" />
+            </div>
+            <Breadcrumbs />
+
+            <section className="w-full lg:py-2 xl:py-4 px-5 xl:px-0 container mx-auto z-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                    {services && services?.map((service, idx) => (
+                        <ServicesCard service={service} idx={idx} />
+                    ))}
+                </div>
+
+                {services?.length === 0 && !loading && (
+                    <div className="text-center py-12">
+                        <p className="text-gray-500 text-lg">No services found.</p>
+                    </div>
+                )}
+
+                {hasMore && services?.length > 0 && (
+                    <div className="text-center mt-12">
+                        <button
+                            onClick={handleLoadMore}
+                            disabled={loading}
+                            className={`${formBtn3} ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            {loading ? 'Loading...' : 'Load More Services'}
+                        </button>
+                    </div>
+                )}
+
+                {loading && services?.length === 0 && (
+                    <div className="flex justify-center py-12">
+                        <PulseLoader color="#000" size={4} />
+                    </div>
+                )}
+            </section>
+            <Testimonials />
+        </div>
+    );
 };
 
 export default ServicesPage;

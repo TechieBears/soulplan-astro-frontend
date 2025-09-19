@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { formBtn3 } from "../../utils/CustomClass";
-import { AddressBookIcon, CaretDown, List } from "@phosphor-icons/react";
+import { CaretDown, List } from "@phosphor-icons/react";
 import { useSelector } from "react-redux";
-import { LoginCurve, I24Support, User, Setting2 } from "iconsax-reactjs";
+import { LoginCurve, User, Box, Building4, CallCalling, Information } from "iconsax-reactjs";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { Icon } from "@iconify/react";
 import { getActiveServiceCategories } from "../../api";
 import { ShoppingCart } from "lucide-react";
 
@@ -15,7 +14,7 @@ const HomeNavbar = () => {
     const navLinks = [
         { name: "Home", path: "/" },
         { name: "About", path: "/about" },
-        { name: "Services", dropdown: true, path: "/services/:id" },
+        { name: "Services", dropdown: true, path: "/services" },
         { name: "Shop", path: "/products" },
         { name: "Contact Us", path: "/contact" },
     ];
@@ -118,26 +117,28 @@ const HomeNavbar = () => {
                         {navLinks.map((link, i) =>
                             link.dropdown ? (
                                 <div className="relative inline-block">
-                                    <button
+                                    <NavLink
+                                        key={i}
+                                        to={link.path}
                                         ref={trigger}
                                         onClick={() => { setDropdownOpen(!dropdownOpen), window.scrollTo(0, 0, { behavior: "smooth" }) }}
-                                        className="font-medium font-tbPop text-base !transition-all !duration-500 group"
-                                    >
-                                        <div className="flex items-center space-x-1 cursor-pointer">
-                                            <h5 className={`font-medium font-tbPop text-base transition-all duration-500 ${location.pathname.startsWith('/services')
+                                        className={({ isActive }) =>
+                                            `font-medium font-tbPop flex items-center space-x-1 cursor-pointer text-base !transition-all !duration-500 ${isActive
                                                 ? "text-p font-bold"
-                                                : "text-gray-800 hover:text-p"
-                                                }`}>{link.name}</h5>
-                                            <span className={dropdownOpen ? "-rotate-180 duration-300 transition-all" : "rotate-0 duration-300 transition-all"}>
-                                                <CaretDown size="20" className={`transition-all duration-300 ${dropdownOpen
+                                                : "text-gray-800 text-hover-p"
+                                            }`
+                                        }
+                                    >
+                                        <span >{link.name}</span>
+                                        <span className={dropdownOpen ? "-rotate-180 duration-300 transition-all" : "rotate-0 duration-300 transition-all"}>
+                                            <CaretDown size="20" className={`transition-all duration-300 ${dropdownOpen
+                                                ? 'text-p'
+                                                : location.pathname.startsWith('/services')
                                                     ? 'text-p'
-                                                    : location.pathname.startsWith('/services')
-                                                        ? 'text-p'
-                                                        : 'text-slate-800 group-hover:text-p'
-                                                    }`} weight="bold" />
-                                            </span>
-                                        </div>
-                                    </button>
+                                                    : 'text-slate-800 group-hover:text-p'
+                                                }`} weight="bold" />
+                                        </span>
+                                    </NavLink>
                                     <ServiceDropdown dropdownOpen={dropdownOpen} setDropdownOpen={setDropdownOpen} dropdown={dropdown} trigger={trigger} link={link} />
                                 </div>
                             ) : (
@@ -161,7 +162,7 @@ const HomeNavbar = () => {
                     {/* ===== Right: Cart & Profile ===== */}
                     <div className="hidden lg:flex items-center gap-4">
                         {/* Cart Icon */}
-                        <button
+                        {login && <button
                             onClick={() => navigate("/cart")}
                             className="relative p-2 text-gray-800 hover:text-blue-600 transition-colors"
                         >
@@ -169,7 +170,7 @@ const HomeNavbar = () => {
                             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                                 0
                             </span>
-                        </button>
+                        </button>}
 
                         {login ? (
                             <div className="relative">
@@ -306,8 +307,8 @@ const ProfileSection = () => {
                     <div className="relative inline-block">
                         <div className="" ref={trigger}
                             onClick={() => setDropdownOpen(!dropdownOpen)}>
-                            <div className="bg-white rounded-full px-1.5 pr-2 py-1 w-full flex items-center space-x-2 cursor-pointer">
-                                <img loading="lazy" className="h-10 w-10 rounded-full object-cover bg-slate1 " src={user?.user?.profilePicture || "https://bootstrapdemos.wrappixel.com/materialM/dist/assets/images/profile/user-1.jpg"} alt="user" />
+                            <div className=" rounded-full border-2 border-white w-full flex items-center space-x-2 cursor-pointer">
+                                <img loading="lazy" className="h-10 w-10 rounded-full object-cover bg-slate1 " src={user?.profilePicture || "https://bootstrapdemos.wrappixel.com/materialM/dist/assets/images/profile/user-1.jpg"} alt="user" />
                             </div>
                         </div>
                         <div
@@ -319,18 +320,18 @@ const ProfileSection = () => {
                             <div className="flex items-center gap-3 px-4 py-3">
                                 <div className="relative aspect-square w-16 rounded-full">
                                     <img
-                                        src={user?.user?.profilePicture || "https://cdn.tailgrids.com/assets/images/core-components/account-dropdowns/image-1.jpg"}
+                                        src={user?.profilePicture || "https://cdn.tailgrids.com/assets/images/core-components/account-dropdowns/image-1.jpg"}
                                         alt="account"
                                         className="w-full rounded-full object-cover object-center"
                                     />
                                     <span className="absolute right-0 top-1 block h-3.5 w-3.5 rounded-full border-2 border-white bg-green-500 "></span>
                                 </div>
-                                <div>
-                                    <p className="text-base font-tbLex font-semibold text-black capitalize">
-                                        {user?.user?.firstName || "Guest"} {user?.user?.lastName || "User"}
+                                <div className="overflow-hidden">
+                                    <p className="text-base font-tbLex font-semibold text-black capitalize overflow-hidden text-ellipsis whitespace-nowrap">
+                                        {user?.firstName || "Guest"} {user?.lastName || "User"}
                                     </p>
-                                    <p className="text-xs font-tbPop text-slate-500 ">
-                                        {user?.user?.email || "Guest Email"}
+                                    <p className="text-xs font-tbPop text-slate-500 overflow-hidden text-ellipsis whitespace-nowrap">
+                                        {user?.email || "Guest Email"}
                                     </p>
                                 </div>
                             </div>
@@ -350,7 +351,7 @@ const ProfileSection = () => {
                                     onClick={() => setDropdownOpen(!dropdownOpen)}
                                 >
                                     <span className="flex items-center gap-2">
-                                        <Icon icon="material-symbols-light:orders-outline" className="w-5 h-5" />
+                                        <Box size={22} variant="TwoTone" />
                                         My Orders
                                     </span>
                                 </NavLink>
@@ -360,7 +361,7 @@ const ProfileSection = () => {
                                     onClick={() => setDropdownOpen(!dropdownOpen)}
                                 >
                                     <span className="flex items-center gap-2">
-                                        <AddressBookIcon size={22} variant="TwoTone" />
+                                        <Building4 size={22} variant="TwoTone" />
                                         My Address
                                     </span>
                                 </NavLink>
@@ -370,7 +371,7 @@ const ProfileSection = () => {
                                     onClick={() => setDropdownOpen(!dropdownOpen)}
                                 >
                                     <span className="flex items-center gap-2">
-                                        <I24Support size={22} variant="TwoTone" />
+                                        <CallCalling size={22} variant="TwoTone" />
                                         Costumer Care
                                     </span>
                                 </NavLink>
@@ -380,17 +381,8 @@ const ProfileSection = () => {
                                     onClick={() => setDropdownOpen(!dropdownOpen)}
                                 >
                                     <span className="flex items-center gap-2">
-                                        <Icon icon="material-symbols:privacy-tip-outline" className="w-5 h-5" />
+                                        <Information size={22} variant="TwoTone" />
                                         Privacy Policy
-                                    </span>
-                                </NavLink>
-                                <NavLink
-                                    to="/profile/settings"
-                                    className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium font-tbLex text-black hover:bg-gray-50 " onClick={() => setDropdownOpen(!dropdownOpen)}
-                                >
-                                    <span className="flex items-center gap-2">
-                                        <Setting2 size={22} variant="TwoTone" />
-                                        Settings
                                     </span>
                                 </NavLink>
                             </div>
@@ -418,6 +410,7 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
     useEffect(() => {
         const fetchServiceCategories = async () => {
             const response = await getActiveServiceCategories();
+            console.log("⚡️🤯 ~ HomeNavbar.jsx:413 ~ fetchServiceCategories ~ response:", response)
             setSearvice(response?.data);
         }
         fetchServiceCategories();

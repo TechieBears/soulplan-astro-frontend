@@ -83,6 +83,15 @@ body::-webkit-scrollbar-thumb {
     transition: all 0.4s ease-in-out;
 }
 
+.image-flip {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+
 .border-p {
     border: 1px solid;
     border-image-source: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);

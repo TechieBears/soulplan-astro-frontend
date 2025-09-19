@@ -16,7 +16,7 @@ const Breadcrumbs = ({ currentService }) => {
         <div className="pt-10 pb-8 md:pt-10 md:pb-10 container mx-auto px-5 xl:px-0">
             <div className="bg-linear-gradient  rounded-lg py-5 md:py-10 lg:py-16 xl:py-20 px-6 text-center text-white">
                 {/* Page Title */}
-                <h1 className="text-xl lg:text-2xl xl:text-3xl font-medium font-tbLex mb-2">{pageTitle}</h1>
+                <h1 className="text-xl lg:text-2xl xl:text-3xl font-medium font-tbLex mb-2 capitalize">{pageTitle}</h1>
 
                 {/* Breadcrumb Nav */}
                 <nav className="text-sm md:text-base flex justify-center items-center space-x-1 font-tbLex font-medium">

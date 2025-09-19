@@ -1,407 +1,380 @@
-import React, { useState } from "react";
-import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar"; // adjust import path if needed
-import { formBtn3 } from "../../../utils/CustomClass";
-
+import { useState } from "react";
+import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
+import { formBtn1, formBtn3 } from "../../../utils/CustomClass";
+import { validateAlphabets, validatePhoneNumber } from "../../../utils/validateFunction";
+import TextInput from "../../../components/TextInput/TextInput";
+import { Controller, useForm } from "react-hook-form";
+import SelectTextInput from "../../../components/TextInput/SelectTextInput";
+import CustomTextArea from '../../../components/TextInput/CustomTextArea';
+import { CaretRight, NotePencil, Power, Trash } from "@phosphor-icons/react";
 const AddressPage = () => {
-  const [addresses, setAddresses] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      phone: "+1 234-567-8900",
-      address: "123 Main Street, Apt 4B",
-      city: "New York",
-      state: "NY",
-      postalCode: "10001",
-      country: "USA",
-      type: "Home",
-      isDefault: true,
-    },
-  ]);
 
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [editingAddress, setEditingAddress] = useState(null);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "India",
-    type: "Home",
-    isDefault: false,
-  });
+    const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
+    const [showAddForm, setShowAddForm] = useState(false);
+    const [addresses, setAddresses] = useState([
+        {
+            id: 1,
+            name: "John Doe",
+            phone: "1234567890",
+            type: "Home",
+            isDefault: true,
+            address: "123 Main St, Anytown, USA",
+            city: "Anytown",
+            state: "Anytown",
+            postalCode: "123456",
+            country: "USA",
+        },
+    ]);
 
-  const handleAddAddress = () => {
-    setFormData({
-      firstName: "",
-      lastName: "",
-      phone: "",
-      address: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "India",
-      type: "Home",
-      isDefault: false,
-    });
-    setEditingAddress(null);
-    setShowAddForm(true);
-  };
+    const formSubmit = (data) => {
+        console.log(data);
+    };
 
-  const handleEditAddress = (address) => {
-    setFormData(address);
-    setEditingAddress(address.id);
-    setShowAddForm(true);
-  };
+    return (
+        <ProfileSidebar>
+            <div className="flex justify-between items-center gap-4 mb-6">
+                <h2 className="text-2xl font-medium text-secondary">My Address</h2>
 
-  const handleDeleteAddress = (id) => {
-    if (window.confirm("Are you sure you want to delete this address?")) {
-      setAddresses(addresses.filter((addr) => addr.id !== id));
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // If setting as default, remove default from other addresses
-    if (formData.isDefault) {
-      setAddresses(prev => prev.map(addr => ({ ...addr, isDefault: false })));
-    }
-
-    if (editingAddress) {
-      setAddresses(
-        addresses.map((addr) =>
-          addr.id === editingAddress
-            ? { ...formData, id: editingAddress, name: `${formData.firstName} ${formData.lastName}` }
-            : addr
-        )
-      );
-    } else {
-      const newAddress = {
-        ...formData,
-        id: Date.now(),
-        name: `${formData.firstName} ${formData.lastName}`,
-      };
-      setAddresses([...addresses, newAddress]);
-    }
-
-    setShowAddForm(false);
-    setEditingAddress(null);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  return (
-    <ProfileSidebar>
-      <div className="flex justify-between items-center gap-4 mb-6">
-        <h2 className="text-2xl font-medium text-secondary">My Address</h2>
-
-        <div className="flex gap-3">
-          <button
-            className={`${formBtn3} border-b`}
-            onClick={handleAddAddress}
-          >
-            Add New Address
-          </button>
-        </div>
-      </div>
-
-      {/* Address List */}
-      {addresses.length > 0 && !showAddForm && (
-        <div className="space-y-4 mb-6">
-          {addresses.map((address) => (
-            <div
-              key={address.id}
-              className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm"
-            >
-              <div className="flex flex-col md:flex-row justify-between items-start gap-3">
-                <div className="flex-1">
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <h3 className="font-semibold text-gray-800">
-                      {address.name}
-                    </h3>
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                      {address.type}
-                    </span>
-                    {address.isDefault && (
-                      <span className="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">
-                        Default
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-gray-600 mb-1">{address.phone}</p>
-                  <p className="text-gray-600 mb-1">{address.address}</p>
-                  <p className="text-gray-600">
-                    {address.city}, {address.state} {address.postalCode},{" "}
-                    {address.country}
-                  </p>
-                </div>
                 <div className="flex gap-3">
-                  <button
-                    onClick={() => handleEditAddress(address)}
-                    className="text-[#420098] hover:text-[#5c1bb5] text-sm font-medium"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteAddress(address.id)}
-                    className="text-red-600 hover:text-red-700 text-sm font-medium"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {addresses.length === 0 && !showAddForm && (
-          <div className="text-center py-16">
-            <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-16 h-16 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-            </div>
-            <p className="text-gray-600 mb-4">
-              No saved address. Add a new address to get started.
-            </p>
-          </div>
-      )}
-
-      {/* Add/Edit Address Form */}
-      {showAddForm && (
-        <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4">
-            {editingAddress ? "Edit Address" : "Add New Address"}
-          </h2>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* First Name + Last Name */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter first name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter last name"
-                />
-              </div>
-            </div>
-
-            {/* Phone + Address Type */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter phone number"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Address Type
-                </label>
-                <div className="flex gap-2">
-                  {["Home", "Office", "Friend", "Other"].map((type) => (
                     <button
-                      key={type}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, type })}
-                      className={`px-4 py-2 rounded-md text-sm font-medium border ${
-                        formData.type === type
-                          ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
+                        className={`${formBtn3} border-b`}
+                        onClick={() => setShowAddForm(true)}
                     >
-                      {type}
+                        Add New Address
                     </button>
-                  ))}
                 </div>
-              </div>
             </div>
 
-            {/* Address */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Address
-              </label>
-              <textarea
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                required
-                rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="Enter address"
-              />
-            </div>
+            {/* Address List */}
+            {addresses?.length > 0 && !showAddForm && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-scroll">
+                    {addresses.map((address) => (
+                        <AddressCard key={address?.id} address={address} setShowAddForm={setShowAddForm} />
+                    ))}
+                </div>
+            )}
 
-            {/* State, City, Zip */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  State
-                </label>
-                <select
-                  name="state"
-                  value={formData.state}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                >
-                  <option value="">Select state</option>
-                  <option value="Andhra Pradesh">Andhra Pradesh</option>
-                  <option value="Delhi">Delhi</option>
-                  <option value="Gujarat">Gujarat</option>
-                  <option value="Karnataka">Karnataka</option>
-                  <option value="Kerala">Kerala</option>
-                  <option value="Maharashtra">Maharashtra</option>
-                  <option value="Punjab">Punjab</option>
-                  <option value="Rajasthan">Rajasthan</option>
-                  <option value="Tamil Nadu">Tamil Nadu</option>
-                  <option value="Uttar Pradesh">Uttar Pradesh</option>
-                  <option value="West Bengal">West Bengal</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  City
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter city name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Zip Code / Postal Code
-                </label>
-                <input
-                  type="text"
-                  name="postalCode"
-                  value={formData.postalCode}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter zip code"
-                />
-              </div>
-            </div>
+            {addresses?.length === 0 && !showAddForm && (
+                <div className="flex flex-col items-center justify-center h-full space-y-6">
+                    <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto">
+                        <svg
+                            className="w-16 h-16 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                        </svg>
+                    </div>
+                    <p className="text-slate-500 mb-4 font-tbPop font-normal">
+                        No saved address. Add a new address to get started.
+                    </p>
+                </div>
+            )}
 
-            {/* Country */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Country
-                </label>
-                <select
-                  name="country"
-                  value={formData.country}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                >
-                  <option value="">Select country</option>
-                  <option value="India">India</option>
-                  <option value="USA">United States</option>
-                  <option value="Canada">Canada</option>
-                </select>
-              </div>
-            </div>
+            {showAddForm && (
+                <div className="bg-white rounded-lg">
+                    <h2 className="text-lg font-semibold mb-4">
+                        {showAddForm ? "Edit Address" : "Add New Address"}
+                    </h2>
 
-            {/* Default Address */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="isDefault"
-                checked={formData.isDefault}
-                onChange={handleInputChange}
-                className="mr-2 h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-              />
+                    <form onSubmit={handleSubmit(formSubmit)} className="space-y-6">
+                        {/* First Name + Last Name */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="">
+                                <h4
+                                    className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                >
+                                    First Name
+                                </h4>
+                                <TextInput
+                                    label="Enter First Name*"
+                                    placeholder="Enter First Name"
+                                    type="text"
+                                    registerName="firstName"
+                                    style="!bg-slate-100"
+                                    props={{ ...register('firstName', { required: "First name is required", validate: validateAlphabets }), minLength: 3 }}
+                                    errors={errors.firstName}
+                                />
+                            </div>
+                            <div className="">
+                                <h4
+                                    className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                >
+                                    Last Name
+                                </h4>
+                                <TextInput
+                                    label="Enter Last Name*"
+                                    placeholder="Enter Last Name"
+                                    type="text"
+                                    style="!bg-slate-100"
+                                    registerName="lastName"
+                                    props={{ ...register('lastName', { required: "Last name is required", validate: validateAlphabets }), minLength: 3 }}
+                                    errors={errors.lastName}
+                                />
+                            </div>
+                        </div>
 
-              <label className="text-sm text-gray-700 cursor-pointer">
-                Set as default address
-              </label>
-            </div>
+                        {/* Phone + Address Type */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h4
+                                    className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                >
+                                    Phone Number
+                                </h4>
+                                <TextInput
+                                    label="Enter Your Phone Number"
+                                    placeholder="Enter Your Phone Number"
+                                    type="tel"
+                                    style="!bg-slate-100"
+                                    registerName="mobileNo"
+                                    props={{ ...register('mobileNo', { validate: validatePhoneNumber, required: true }), maxLength: 10, minLength: 10 }}
+                                    errors={errors.mobileNo}
+                                />
+                            </div>
+                            <div>
+                                <h4
+                                    className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                >
+                                    Address Type
+                                </h4>
+                                <div className="flex gap-2">
+                                    {["Home", "Office", "Friend", "Other"].map((type) => (
+                                        <Controller
+                                            name="type"
+                                            control={control}
+                                            render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                                <button
+                                                    key={type}
+                                                    type="button"
+                                                    onClick={() => onChange(type)}
+                                                    className={`px-5 font-tbLex py-3.5 rounded-md text-sm font-medium ${value === type
+                                                        ? "bg-linear-gradient text-white"
+                                                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                                        }`}
+                                                >
+                                                    {type}
+                                                </button>
+                                            )}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
 
-            {/* Actions */}
-            <div className="flex justify-end gap-3 pt-4 justify-self-end">
-              <button
-                type="button"
-                onClick={() => setShowAddForm(false)}
-                className="px-6 py-2 rounded-md border border-gray-900 text-gray-900 bg-white hover:bg-gray-100 transition"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className={`${formBtn3}`}
-              >
-                {editingAddress ? "Save Changes" : "Add Address"}
-              </button>
+                        <div className="">
+                            <h4
+                                className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
+                            >
+                                Address
+                            </h4>
+                            <CustomTextArea
+                                label="Enter Address"
+                                placeholder="Enter Address"
+                                style="!bg-slate-100"
+                                registerName="address"
+                                props={{
+                                    ...register('address', {
+                                        required: "Message is required",
+                                        minLength: {
+                                            value: 10,
+                                            message: "Address must be at least 10 characters"
+                                        }
+                                    })
+                                }}
+                                errors={errors.address}
+                            />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <h4
+                                    className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                >
+                                    City
+                                </h4>
+                                <TextInput
+                                    label="Enter City"
+                                    placeholder="Enter City"
+                                    type="text"
+                                    style="!bg-slate-100"
+                                    registerName="city"
+                                    props={{
+                                        ...register('city', {
+                                            pattern: {
+                                                value: /^[a-zA-Z\s]*$/,
+                                                message: "City name can only contain letters"
+                                            }
+                                        })
+                                    }}
+                                    errors={errors.city}
+                                />
+                            </div>
+                            <div>
+                                <h4
+                                    className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                >
+                                    Zip Code / Postal Code
+                                </h4>
+                                <TextInput
+                                    label="Enter Postal Code"
+                                    placeholder="Enter Postal Code"
+                                    type="tel"
+                                    style="!bg-slate-100"
+                                    registerName="postalCode"
+                                    props={{
+                                        ...register('postalCode', {
+                                            pattern: {
+                                                value: /^[1-9][0-9]{5}$/,
+                                                message: "Invalid pincode format"
+                                            },
+                                            minLength: {
+                                                value: 6,
+                                                message: "Postal Code must be at least 6 characters",
+                                            },
+                                            maxLength: {
+                                                value: 6,
+                                                message: "Postal Code cannot exceed 6 characters",
+                                            },
+                                        }),
+                                        maxLength: 6,
+                                        minLength: 6
+                                    }}
+                                    errors={errors.postalCode}
+                                />
+                            </div>
+                            <div className="">
+                                <h4
+                                    className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                >
+                                    State
+                                </h4>
+                                <div className="">
+                                    <TextInput
+                                        label="Enter State"
+                                        placeholder="Enter State"
+                                        type="text"
+                                        style="!bg-slate-100"
+                                        registerName="state"
+                                        props={{
+                                            ...register('state', {
+                                                pattern: {
+                                                    value: /^[a-zA-Z\s]*$/,
+                                                    message: "State name can only contain letters"
+                                                }
+                                            })
+                                        }}
+                                        errors={errors.state}
+                                    />
+                                </div>
+                            </div>
+                            <div className="">
+                                <h4
+                                    className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                >
+                                    Country
+                                </h4>
+                                <div className="">
+                                    <SelectTextInput
+                                        style="!bg-slate-100"
+                                        label="Select Country"
+                                        registerName="country"
+                                        options={[
+                                            { value: 'India', label: 'India' },
+                                            { value: 'USA', label: 'USA' },
+                                            { value: 'Canada', label: 'Canada' },
+                                            { value: 'other', label: 'Other' },
+                                        ]}
+                                        placeholder="Select Country"
+                                        props={{
+                                            ...register('country', { required: true }),
+                                            value: watch('country') || ''
+                                        }}
+                                        errors={errors.country}
+                                    />
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex justify-end gap-3 pt-4 justify-self-end">
+                            <button
+                                type="button"
+                                onClick={() => setShowAddForm(false)}
+                                className="px-6 py-2 rounded-md border border-gray-900 text-gray-900 bg-white hover:bg-gray-100 transition"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className={`${formBtn3}`}
+                            >
+                                {showAddForm ? "Save Changes" : "Add Address"}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
+        </ProfileSidebar>
+    );
+};
+
+const AddressCard = ({ address, setShowAddForm }) => {
+    return (
+        <div
+            key={address?.id}
+            className="bg-slate-100 rounded-lg p-4 "
+        >
+            <div className="flex flex-col md:flex-row justify-between items-start gap-3">
+                <div className="flex-1 space-y-1">
+                    <div className="flex justify-between items-center">
+                        <h3 className="font-medium font-tbLex text-slate-800">
+                            {address?.name}
+                        </h3>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowAddForm(true)}
+                                className={"flex items-center justify-center border rounded border-black bg-transparent !racking-tight !text-black px-3.5 py-2 font-tbLex text-sm"}
+                            >
+                                <NotePencil size={20} className="mr-1 text-slate-700" />
+                                Edit
+                            </button>
+
+                            <button
+                                disabled
+                                className={"flex items-center justify-center !racking-tight  px-3.5 py-2 !bg-red-500 !text-white rounded font-tbLex text-sm"}
+                            >
+                                <Trash size={20} className="mr-1 text-white" />
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    <p className="text-slate-500 font-tbPop font-normal text-sm">{address?.phone}</p>
+                    <p className="text-slate-500 font-tbPop font-normal text-sm">{address?.address}</p>
+                    <p className="text-slate-500 font-tbPop font-normal text-sm">
+                        {address?.city}, {address?.state} {address?.postalCode},{" "}
+                        {address?.country}
+                    </p>
+                </div>
             </div>
-          </form>
+            <div className="flex justify-between items-center pt-3">
+                <p className="text-slate-600 font-tbPop font-normal text-sm">• Default Address</p>
+                <p className="text-slate-600 font-tbPop font-normal text-sm">• {address?.type}</p>
+            </div>
         </div>
-      )}
-    </ProfileSidebar>
-  );
+    );
 };
 
 export default AddressPage;

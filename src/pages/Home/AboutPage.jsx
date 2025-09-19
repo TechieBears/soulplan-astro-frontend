@@ -16,7 +16,10 @@ import trustg3 from "../../assets/about/Astrology Application Nisha/trust-g3.png
 import trustg4 from "../../assets/about/Astrology Application Nisha/trust-g4.png";
 import trustg5 from "../../assets/about/Astrology Application Nisha/trust-g5.png";
 import trustg6 from "../../assets/about/Astrology Application Nisha/trust-g6.png";
-
+import moon from "../../assets/helperImages/moon.png"
+import sun from "../../assets/helperImages/sun.png"
+import leftImage from "../../assets/helperImages/leftDesign.png"
+import rightImage from "../../assets/helperImages/rightDesign.png"
 
 const stats = [
     { value: 15, label: "Services" },
@@ -66,11 +69,24 @@ const features = [
 const AboutPage = () => {
     return (
         <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
+
             <Breadcrumbs />
             {/* <ArrowBtn /> */}
             <Certifications showTopImage={false} />
 
-            <section className="w-full  py-16 px-5 xl:px-0">
+            <section className="w-full  py-16 px-5 xl:px-0 relative">
+                <div className="absolute top-56 left-0 opacity-30  ">
+                    <img src={rightImage} alt="" className="w-full h-full object-fill" />
+                </div>
+                <div className="absolute top-3/3 -right-10 scale-75 opacity-30 ">
+                    <img src={leftImage} alt="" className="w-full h-full object-fill" />
+                </div>
+                <div className="absolute bottom-10 -left-20 scale-75  ">
+                    <img src={sun} alt="" className="w-full h-full object-fill" />
+                </div>
+                <div className="absolute bottom-5 -right-10 scale-75">
+                    <img src={moon} alt="" className="w-full h-full object-fill" />
+                </div>
                 <div className="container mx-auto ">
                     {/* Stats Section */}
                     <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20 lg:gap-30 xl:gap-40 pt-10 lg:pt-20 pb-28">
@@ -115,7 +131,7 @@ const AboutPage = () => {
 function FeatureCard({ feature }) {
     return (
         <div
-            className={`shadow-lg bg-white rounded-md p-4 md:p-6 xl:p-8 h-[230px] md:h-[260px] xl:h-[270px] flex flex-col items-start justify-center cursor-pointer border transition-all duration-500 border-gray-100 group hover:bg-linear-gradient group space-y-2`}
+            className={`shadow-lg bg-white rounded-md p-4 md:p-6 xl:p-8 h-[230px] md:h-[260px] xl:h-[270px] flex flex-col items-start justify-center cursor-pointer border transition-all duration-500 border-gray-100 group hover:bg-linear-gradient group space-y-2 z-10`}
 
         >
             <div className=" flex items-center justify-start w-full">

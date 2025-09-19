@@ -1,18 +1,41 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Breadcrumbs from "../../components/breadcrum";
 import TextInput from "../../components/TextInput/TextInput";
-import { inputClass, labelClass, formBtn3 } from "../../utils/CustomClass";
+import { formBtn3 } from "../../utils/CustomClass";
 import { useForm } from "react-hook-form";
 import { validateAlphabets, validateEmail, validatePhoneNumber } from '../../utils/validateFunction';
 import LoadBox from '../../components/Loader/LoadBox';
 import CustomTextArea from "../../components/TextInput/CustomTextArea";
+import toast from "react-hot-toast";
+import { addFeedback } from "../../api";
 
 const ContactPage = () => {
-    const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const [loader, setLoader] = useState()
-    const onSubmit = () => {
-
+    const onSubmit = async (data) => {
+        try {
+            setLoader(true);
+            const payload = {
+                ...data,
+                subject: "anonymous",
+                source: "website"
+            }
+            await addFeedback(payload).then(res => {
+                if (res?.success) {
+                    setLoader(false);
+                    reset();
+                    toast.success(res?.message || "Feedback Sent Successfully");
+                } else {
+                    setLoader(false);
+                    toast.error(res?.message || "Something went wrong");
+                }
+            })
+        } catch (error) {
+            console.log('Error submitting form:', error);
+            setLoader(false);
+            toast.error("Failed to add Feedback");
+        }
     }
     return (
         <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
@@ -48,34 +71,20 @@ const ContactPage = () => {
                         <form onSubmit={handleSubmit(onSubmit)} >
                             <div className='bg-white p-3 md:p-5 xl:p-8 rounded-lg
                             grid  md:grid-cols-2 gap-5 items-center' >
-                                <div className="">
+                                <div className="col-span-2">
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        First Name
+                                        Full Name
                                     </h4>
                                     <TextInput
-                                        label="Enter First Name*"
-                                        placeholder="Enter First Name"
+                                        label="Enter Full Name*"
+                                        placeholder="Enter Full Name"
                                         type="text"
-                                        registerName="firstName"
-                                        props={{ ...register('firstName', { required: "First name is required", validate: validateAlphabets }), minLength: 3 }}
-                                        errors={errors.firstName}
-                                    />
-                                </div>
-                                <div className="">
-                                    <h4
-                                        className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
-                                    >
-                                        Last Name
-                                    </h4>
-                                    <TextInput
-                                        label="Enter Last Name*"
-                                        placeholder="Enter Last Name"
-                                        type="text"
-                                        registerName="lastName"
-                                        props={{ ...register('lastName', { required: "Last name is required", validate: validateAlphabets }), minLength: 3 }}
-                                        errors={errors.lastName}
+                                        style="!bg-slate-100"
+                                        registerName="fullName"
+                                        props={{ ...register('fullName', { required: "Full name is required" }), minLength: 3 }}
+                                        errors={errors.fullName}
                                     />
                                 </div>
                                 <div className="">
@@ -88,6 +97,7 @@ const ContactPage = () => {
                                         label="Enter Your Email"
                                         placeholder="Enter Your Email"
                                         type="text"
+                                        style="!bg-slate-100"
                                         registerName="email"
                                         props={{ ...register('email'), valdate: validateEmail, required: "Email is required" }}
                                         errors={errors.email}
@@ -103,9 +113,10 @@ const ContactPage = () => {
                                         label="Enter Your Phone Number"
                                         placeholder="Enter Your Phone Number"
                                         type="tel"
-                                        registerName="mobileNo"
-                                        props={{ ...register('mobileNo', { validate: validatePhoneNumber, required: true }), maxLength: 10, minLength: 10 }}
-                                        errors={errors.mobileNo}
+                                        style="!bg-slate-100"
+                                        registerName="mobileNumber"
+                                        props={{ ...register('mobileNumber', { validate: validatePhoneNumber, required: true }), maxLength: 10, minLength: 10 }}
+                                        errors={errors.mobileNumber}
                                     />
                                 </div>
                                 <div className="md:col-span-2">
@@ -117,6 +128,7 @@ const ContactPage = () => {
                                     <CustomTextArea
                                         label="Enter Message"
                                         placeholder="Enter Message"
+                                        style="!bg-slate-100"
                                         registerName="message"
                                         props={{
                                             ...register('message', {
@@ -131,7 +143,7 @@ const ContactPage = () => {
                                     />
                                 </div>
                                 <div className="flex justify-start">
-                                    {loader ? <LoadBox className={formBtn3} /> : <button type='submit' className={`${formBtn3} !w-auto`}>submit</button>}
+                                    {loader ? <LoadBox className={`${formBtn3} !w-auto`} /> : <button type='submit' className={`${formBtn3} !w-auto`}>submit</button>}
                                 </div>
                             </div>
 

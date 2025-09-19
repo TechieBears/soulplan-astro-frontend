@@ -121,7 +121,6 @@ const ProjectRoutes = () => {
                         {/* <Route path="/actor/:id" element={<DeepLinkRedirect />} />
             <Route path="/casting/:id" element={<DeepLinkRedirect />} /> */}
                         <Route path="/about" element={<AboutPage />} />
-                        <Route path="/services" element={<ServiceSidebar />} />
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/login" element={<LoginPage />} />
@@ -142,12 +141,9 @@ const ProjectRoutes = () => {
                         <Route path="/password/reset/:token" element={<ResetPasswordPage />} />
 
                         {/* Service Routes */}
-                        <Route path="/services/palmistry" element={<ServiceSidebar />} />
-                        <Route path="/services/astrology" element={<ServiceSidebar />} />
-                        <Route path="/services/tarot-card" element={<ServiceSidebar />} />
-                        <Route path="/services/numerology" element={<ServiceSidebar />} />
+                        <Route path="/services" element={<ServicesPage />} />
+                        <Route path="/services/:id" element={<ServiceSidebar />} />
                         <Route path="/booking" element={<BookingPage />} />
-
                         <Route path="/profile/account" element={<ProfilePage />} />
                         <Route path="/profile/my-orders" element={<MyOrders />} />
                         <Route path="/products" element={<ProductsPage />} />

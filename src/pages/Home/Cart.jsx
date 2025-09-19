@@ -9,6 +9,7 @@ import product1 from "../../assets/shop/product3.png";
 import backgroundImage from "../../assets/shop/card-bg.png";
 import { Edit } from "iconsax-reactjs";
 import { ArrowLeft } from "@phosphor-icons/react";
+import star from '../../assets/helperImages/star.png'
 
 const CartPage = () => {
     const navigate = useNavigate();
@@ -66,7 +67,13 @@ const CartPage = () => {
     const [activeTab, setActiveTab] = useState("products");
 
     return (
-        <div className="min-h-screen bg-[#FFF9EF]  pt-16 lg:pt-24">
+        <div className="min-h-screen bg-[#FFF9EF]  pt-16 lg:pt-24 relative">
+            <div className="absolute top-24 left-1/4 scale-50 ">
+                <img src={star} alt="" className="w-full h-full object-fill" />
+            </div>
+            <div className="absolute bottom-40 right-0 rotate-45 scale-75">
+                <img src={star} alt="" className="w-full h-full object-fill" />
+            </div>
             <div className="container mx-auto px-5 xl:px-0 py-8">
                 {/* Header */}
                 <div className="relative flex items-center justify-center mb-8">
@@ -80,11 +87,11 @@ const CartPage = () => {
                         </button>
                     </div>
 
-                    <h1 className="text-xl md:text-2xl font-tbLex font-normal text-slate-800">
+                    <h1 className="text-xl md:text-2xl hidden sm:block font-tbLex font-normal text-slate-800">
                         Cart
                     </h1>
 
-                    <div className="absolute right-0 hidden sm:flex bg-white rounded-full p-1.5 space-x-1.5">
+                    <div className="absolute right-0 sm:flex bg-white rounded-full p-1.5 space-x-1.5">
                         <button className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${activeTab === "services" ? "bg-linear-gradient text-white" : ""}`} onClick={() => setActiveTab("services")}>
                             Services
                         </button>

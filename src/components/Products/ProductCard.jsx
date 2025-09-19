@@ -49,7 +49,7 @@ const ProductCard = ({ product }) => {
                     {/* Left side - Title & Rating */}
 
                     <div className="flex flex-col w-full">
-                        <h3 className="text-base md:text-sm lg:text-base font-normal font-tbLex tracking-tight text-slate-800 line-clamp-2 mb-1 sm:mb-2 text-ellipsis overflow-hidde text-nowrap w-[150px] xl:w-52">
+                        <h3 className="text-base md:text-sm lg:text-base text-left font-normal font-tbLex tracking-tight text-slate-800 line-clamp-2 mb-1 sm:mb-2 text-ellipsis overflow-hidde text-nowrap w-[150px] xl:w-52">
                             {title}
                         </h3>
 
@@ -91,4 +91,4 @@ const ProductCard = ({ product }) => {
     );
 };
 
-export default React.memo(ProductCard);
+export default ProductCard

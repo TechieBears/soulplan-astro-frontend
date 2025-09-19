@@ -3,11 +3,11 @@ import HomeBestServices from '../../components/HomeComponents/HomeBestServices'
 import HomeCertifications from '../../components/HomeComponents/HomeCertifications'
 import Testimonials from '../../components/testimonial'
 import { useEffect, useState } from 'react';
-import { getCustomerBanners } from '../../api';
-import { environment } from '../../env';
+import { getCustomerBanners, getPublicServices } from '../../api';
 
 const HomePage = () => {
     const [banners, setBanners] = useState([]);
+
     useEffect(() => {
         async function fetchBanners() {
             const res = await getCustomerBanners();
@@ -71,6 +71,7 @@ const HomePage = () => {
             onClick: () => console.log("Slide 3 button clicked")
         }
     ];
+
     return (
         <div>
             <HomeBanner slidesData={slidesData} />

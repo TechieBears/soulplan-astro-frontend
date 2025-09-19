@@ -574,7 +574,7 @@ export const getServiceCategoriesDropdown = async () => {
 }
 export const getActiveServiceCategories = async () => {
     try {
-        const url = `${environment.baseUrl}service-categories/active`;
+        const url = `${environment.baseUrl}service-categories/public/active`;
         const response = await axios.get(url)
         return response.data
     }
@@ -612,6 +612,17 @@ export const editServiceCategory = async (id, data) => {
 export const getServices = async (data) => {
     try {
         const url = `${environment.baseUrl}service/get-all?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getServices api file", err);
+        return err?.response?.data
+    }
+}
+export const getPublicServices = async (data) => {
+    try {
+        const url = `${environment.baseUrl}service/public/get-all?page=${data?.p || 1}&limit=${data?.records || 10}&search=${data?.search || ''}&category=${data?.category || ''}&minPrice=${data?.minPrice || ''}&maxPrice=${data?.maxPrice || ''}&durationInMinutes=${data?.durationInMinutes || ''}&serviceType=${data?.serviceType || ''}&isActive=${data?.isActive || ''}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -939,6 +950,18 @@ export const getCustomerBanners = async (data) => {
     }
     catch (err) {
         console.log(err);
+        return err?.response?.data
+    }
+}
+
+export const addFeedback = async (data) => {
+    const url = `${environment.baseUrl}feedback/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addFeedback api file", err);
         return err?.response?.data
     }
 }

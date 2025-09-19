@@ -8,6 +8,8 @@ import playstore from "../../src/assets/google-play-black.png";
 import phoneMockup from "../../src/assets/phone-mockup.png";
 import { formBtn3 } from "../utils/CustomClass";
 import { QuoteUp } from "iconsax-reactjs";
+import handImage from '../assets/helperImages/handImage.png'
+
 const testimonials = [
     {
         name: "Shilpa Handergule",
@@ -41,7 +43,13 @@ const Testimonials = () => {
 
     return (
         <>
-            <section className="py-16 bg-white">
+            <section className="py-16 bg-white relative">
+                <div className="absolute top-10 left-0 ">
+                    <img src={handImage} alt="" className="w-full h-full object-fill" />
+                </div>
+                <div className="absolute bottom-10 right-0 image-flip">
+                    <img src={handImage} alt="" className="w-full h-full object-fill" />
+                </div>
                 <div className="container mx-auto px-8 md:px-6 xl:px-0 text-center space-y-6 xl:space-y-10">
                     {/* Title */}
                     <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-center leading-snug text-p">
@@ -82,7 +90,7 @@ const Testimonials = () => {
                                         />
 
                                         {/* Testimonial Text */}
-                                        <p className="text-sm mb-4 leading-relaxed font-tbPop !font-normal">
+                                        <p className="text-sm mb-4 leading-relaxed font-tbPop !font-normal line-clamp-3">
                                             {t.text}
                                         </p>
 
@@ -97,7 +105,7 @@ const Testimonials = () => {
 
                                         {/* Name */}
                                         <h4
-                                            className={`font-normal tracking-tight capitalize font-tbLex ${activeIndex === index ? "text-white" : "text-gray-700"
+                                            className={`font-normal tracking-tight capitalize font-tbLex line-clamp-1 ${activeIndex === index ? "text-white" : "text-gray-700"
                                                 }`}
                                         >
                                             {t.name}
