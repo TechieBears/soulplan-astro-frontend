@@ -419,7 +419,7 @@ const ProductDetail = () => {
                                 <div className="flex gap-3 !w-full flex-row-reverse md:flex-row">
                                     <button className={`${formBtn3} `}>Buy Now</button>
                                     <button
-                                        className={`h-[48px] lg:h-[46px] xl:h-[51px] py-3 text-white !font-medium !tracking-normal text-sm xl:text-base bg-primary-gradient hover:opacity-90  disabled:opacity-50  transition  w-full rounded relative `}
+                                        className={`h-[48px] lg:h-[46px] xl:h-[51px] py-3 px-5 text-white !font-medium !tracking-normal text-sm xl:text-base bg-primary-gradient hover:opacity-90  disabled:opacity-50  transition  w-full rounded relative `}
                                         onClick={handleAddToCart}
                                         style={{
                                             background: `linear-gradient(90deg, rgba(0, 121, 208, 0.6) -12.5%, rgba(158, 82, 216, 0.6) 30.84%, rgba(218, 54, 92, 0.6) 70.03%, rgba(208, 73, 1, 0.6) 111%)`
@@ -452,7 +452,7 @@ const ProductDetail = () => {
                     {/* Tabs Section */}
                     <div className="mt-8 lg:mt-12 w-full">
                         <div className="border-b border-slate-200/60">
-                            <nav className="flex space-x-4 lg:space-x-8">
+                            <nav className="flex sm:space-x-4 lg:space-x-8">
                                 <button
                                     onClick={() => setActiveTab("description")}
                                     className={`relative py-3 px-1 text-sm lg:text-base font-medium transition-colors ${activeTab === "description"

@@ -34,7 +34,7 @@ const HomeFooter = () => {
                     </div>
 
                     {/* ===== Center: Logo + Tagline ===== */}
-                    <div className="flex flex-col items-center text-center">
+                    <div className="flex flex-col sm:items-center sm:text-center">
                         <img src={logo} alt="Soulplane Logo" className="h-14 w-14 mb-3 rounded-full" />
                         <h2 className="text-xl font-medium font-tbLex">SOULPLANE</h2>
                         <p className="text-sm mt-2 max-w-xs font-tbPop font-normal text-slate-300">
@@ -43,7 +43,7 @@ const HomeFooter = () => {
                     </div>
 
                     {/* ===== Right: Social Links ===== */}
-                    <div className="flex flex-col items-center md:items-end">
+                    <div className="flex flex-col sm:items-center md:items-end">
                         <h3 className="text-lg mb-4 font-tbLex font-medium">Social Links</h3>
                         <div className="flex gap-4">
                             <a href="#" className="p-2 bg-white text-black rounded-full hover:bg-gray-200">

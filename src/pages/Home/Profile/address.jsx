@@ -150,7 +150,7 @@ const AddressPage = () => {
                                 >
                                     Address Type
                                 </h4>
-                                <div className="flex gap-2">
+                                <div className="sm:flex sm:gap-2 space-x-2 space-y-2 sm:space-y-0">
                                     {["Home", "Office", "Friend", "Other"].map((type) => (
                                         <Controller
                                             name="type"
@@ -339,7 +339,7 @@ const AddressCard = ({ address, setShowAddForm }) => {
         >
             <div className="flex flex-col md:flex-row justify-between items-start gap-3">
                 <div className="flex-1 space-y-1">
-                    <div className="flex justify-between items-center">
+                    <div className="sm:flex space-y-3 sm:space-y-0 justify-between items-center">
                         <h3 className="font-medium font-tbLex text-slate-800">
                             {address?.name}
                         </h3>

@@ -10,11 +10,11 @@ const PrivacyPolicy = () => {
                 <UserDashboard>
                     <ProfileSidebar>
                         <div className="bg-white">
-                            <h1 className="text-lg font-medium text-left text-gray-800  p-4 font-tbLex">
+                            <h1 className="text-lg font-medium text-center text-gray-800  p-4 font-tbLex sm:text-left">
                                 Privacy Policy
                             </h1>
 
-                            <div className="p-8">
+                            <div className="sm:p-8">
                                 <p className="text-md text-gray-700 mb-6 font-tbPop">
                                     At AstroMax, we take your privacy seriously. This
                                     Privacy Policy outlines the types of personal information we
