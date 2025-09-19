@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import product1 from "../../assets/shop/product1.png";
+import moon from "../../assets/moon.png";
 import { FaCheckCircle } from "react-icons/fa";
+import verify from "../../assets/verify.png";
+import { Icon } from "@iconify/react";
+import { Calendar, Timer1, Zoom } from "iconsax-reactjs";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("products");
 
   const orderItems = [
     {
@@ -25,71 +30,188 @@ const PaymentSuccess = () => {
     },
   ];
 
+  const serviceItems = [
+    {
+      id: "S001",
+      type: "Palmistry",
+      duration: "30–60 minutes",
+      date: "15th Sep, 2025 / 12:00PM – 01:00PM",
+      mode: "Online",
+      price: 1500,
+      link: "zoommtg://zoom.us/join?confno=8529015",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#FFF9EF] flex items-center justify-center px-4">
-      <div className="bg-white rounded-xl  shadow-lg w-full max-w-md p-6 space-y-6">
+    <div className="min-h-screen bg-[#FFF9EF] flex items-center mt-20 sm:mt-0 justify-center px-4">
+      {/* <div className="absolute top-48 right-[450px] w-20 h-20 ">
+        <img
+          src={moon}
+          alt="background"
+          className="w-full h-full object-contain"
+        />
+       
+      </div> */}
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl p-6 space-y-6">
         {/* Header */}
-        <div className="text-center">
-          <div className="flex items-center justify-center space-x-2 mb-3">
-            <FaCheckCircle className="text-green-500 text-2xl" />
-            <h1 className="text-lg md:text-xl font-semibold text-gray-800">
-              Booking Confirmed
-            </h1>
+        <div className={activeTab === "services" ? "text-left" : "text-center"}>
+          <div
+            className={`flex flex-col ${
+              activeTab === "services" ? "items-start" : "items-center"
+            } justify-center mb-3 space-y-6`}
+          >
+            {/* Icon + Title */}
+            <div className="flex items-center gap-2">
+              <img
+                src={verify}
+                alt="Verified"
+                className="w-6 h-6 sm:w-7 sm:h-7"
+              />
+              <h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800">
+                Booking Confirmed
+              </h1>
+            </div>
+
+            {/* Description */}
+            <p className="text-gray-800 text-xs sm:text-sm md:text-base font-dm max-w-xs sm:max-w-sm md:max-w-md">
+              Thank you for your order! Your total amount has been successfully
+              processed.
+            </p>
           </div>
-          <p className="text-gray-600 text-sm md:text-base">
-            Thank you for your order! Your total amount has been successfully
-            processed.
-          </p>
         </div>
+
+        {/* Tabs */}
+        {/* <div className="flex items-center bg-gray-100 rounded-full space-x-2 px-2 mb-4">
+          <button
+            onClick={() => setActiveTab("products")}
+            className={`px-6 py-2 rounded-full font-medium text-sm ${
+              activeTab === "products"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            Products
+          </button>
+          <button
+            onClick={() => setActiveTab("services")}
+            className={`px-6 py-2 rounded-full font-medium text-sm ${
+              activeTab === "services"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            Services
+          </button>
+        </div> */}
 
         {/* Order Items */}
         <div className="space-y-4">
-          {orderItems.map((item) => (
-            <div
-              key={item.id}
-              className="bg-[#9E52D8] rounded-lg p-4 flex items-center justify-between"
-            >
-              {/* Left: Image + Details */}
-              <div className="flex items-center space-x-4">
-                {/* Product Image */}
-                <div className="w-14 h-14 bg-white rounded-md overflow-hidden flex-shrink-0">
+          {activeTab === "products" &&
+            orderItems.map((item) => (
+              <div
+                key={item.id}
+                className="bg-[#9E52D8] rounded-lg p-4 cursor-pointer hover:bg-[#8A47C4] transition-colors 
+                   flex flex-col sm:flex-row items-left sm:items-start gap-4"
+                onClick={() => navigate(`/orders/${item.id}`)}
+              >
+                <div className="sm:w-24 sm:h-24 w-full bg-white rounded-lg overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
                   <img
                     src={item.image}
                     alt={item.name}
                     className="w-full h-full object-contain p-2"
+                    loading="lazy"
                   />
                 </div>
 
-                {/* Product Details */}
-                <div>
-                  <h3 className="text-white font-medium text-base">
+                {/* Details */}
+                <div className="flex-1 min-w-0 text-left justify-self-start">
+                  <h3 className="font-bold text-white font-dm text-lg mb-1">
                     {item.name}
                   </h3>
-                  <div className="text-white font-bold text-lg">₹{item.price}</div>
-                  <div className="text-white text-xs">
-                    MRP <span className="line-through">₹{item.mrp}</span>{" "}
-                    (incl. of all taxes)
+                  <div className="font-medium text-lg text-white mb-1">
+                    ₹{item.price?.toLocaleString() || 0}
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="text-white text-sm">
+                      MRP{" "}
+                      <span className="line-through">
+                        ₹{item.mrp?.toLocaleString() || 0}
+                      </span>{" "}
+                      (incl. of all taxes)
+                    </div>
+                    <div className="text-white text-sm font-medium">
+                      QTY: {item.quantity}
+                    </div>
                   </div>
                 </div>
               </div>
+            ))}
 
-              {/* Right: Quantity */}
-              <div className="text-white font-medium text-sm">
-                QTY : {item.quantity}
+          {activeTab === "services" &&
+            serviceItems.map((service) => (
+              <div
+                key={service.id}
+                className="relative rounded-lg p-4 text-black cursor-pointer transition-colors overflow-hidden"
+                onClick={() => navigate(`/orders/${service.id}`)}
+              >
+                <h3 className="font-medium font-dm text-lg mb-4">
+                  Service Type:{" "}
+                  <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 bg-clip-text text-transparent">
+                    {service.type}
+                  </span>
+                </h3>
+                <p className="flex items-center gap-4 mb-2">
+                  <Timer1 className="w-6 h-6" />
+                  <span>Session Duration: {service.duration}</span>
+                </p>
+                <p className="flex items-center gap-4 mb-2">
+                  <Calendar className="w-6 h-6" />
+                  <span>Date: {service.date}</span>
+                </p>
+                <p className="flex items-center gap-4 ">
+                  <Icon icon="ph:device-mobile" className="w-6 h-6" />
+                  <span>Mode: {service.mode}</span>
+                </p>
+
+                {service.link && (
+                  <div className="flex items-center gap-4 mt-2">
+                    <Zoom className="w-6 h-6" />
+                    <a
+                      href={service.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm break-words"
+                    >
+                      {service.link}
+                    </a>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            ))}
         </div>
 
-        {/* View My Orders Button */}
         <button
-          onClick={() => navigate("/profile/my-orders")}
-          className="w-full border border-orange-500 text-orange-500 py-3 rounded-lg font-medium hover:bg-orange-50 transition-colors"
+          className={`h-[48px] lg:h-[46px] xl:h-[51px] py-3 text-white !font-medium !tracking-normal text-sm xl:text-base bg-primary-gradient hover:opacity-90  disabled:opacity-50  transition  w-full rounded relative `}
+          style={{
+            background: `linear-gradient(90deg, rgba(0, 121, 208, 0.6) -12.5%, rgba(158, 82, 216, 0.6) 30.84%, rgba(218, 54, 92, 0.6) 70.03%, rgba(208, 73, 1, 0.6) 111%)`,
+          }}
         >
-          View My Orders
+          <div className="flex items-center justify-center space-x-1.5 bg-white  rounded absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[46px] lg:h-[43px] xl:h-[48px] w-[99%] z-10">
+            <span className="text-base xl:text-lg font-tbPop text-p">
+              View My Orders
+            </span>
+          </div>
         </button>
       </div>
+       {/* <div className="absolute bottom-48 left-[450px] w-20 h-20 ">
+        <img
+          src={moon}
+          alt="background"
+          className="w-full h-full object-contain"
+        />
+        </div> */}
     </div>
+
   );
 };
 
