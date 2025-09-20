@@ -4,10 +4,12 @@ import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
 import loginSlice from "./Slices/loginSlice";
 import rootSlice from "./Slices/rootSlice";
+import cartSlice from "./Slices/cartSlice";
 
 const reducers = combineReducers({
     user: loginSlice,
-    appRoot: rootSlice
+    appRoot: rootSlice,
+    cart: cartSlice
 });
 
 const persistConfig = {

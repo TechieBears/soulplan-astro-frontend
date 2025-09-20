@@ -52,6 +52,7 @@ import AdminProfile from "../pages/Admin/UserProfile/UserProfile";
 import ServicesCategories from "../pages/Admin/Services/ServicesCategories";
 import ProductBookings from "../pages/Admin/Bookings/ProductBookings";
 import ServiceBookings from "../pages/Admin/Bookings/ServiceBookings";
+import CustomerFeedback from "../pages/Admin/CustomerFeedback/CustomerFeedback";
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
@@ -104,6 +105,7 @@ const ProjectRoutes = () => {
                         <Route path="/all-users" element={<AllUserProfiles />} />
                         <Route path="/user-transaction" element={<UserTransactios />} />
                         <Route path="/banner" element={<Banner />} />
+                        <Route path="/customerFeedback" element={<CustomerFeedback />} />
                         <Route path="/notifications" element={<Notifications />} />
                         <Route path="/offersCoupons" element={<OffersCoupons />} />
                         <Route path="/referEarn" element={<ReferEarn />} />

@@ -658,6 +658,42 @@ export const editService = async (id, data) => {
 
 
 // ======================= Products Api ======================
+
+export const getPublicProducts = async (data) => {
+    try {
+        const url = `${environment.baseUrl}service/public/get-all?page=${data?.p || 1}&limit=${data?.records || 10}&search=${data?.search || ''}&category=${data?.category || ''}&subcategory=${data?.subcategory || ''}&minPrice=${data?.minPrice || ''}&maxPrice=${data?.maxPrice || ''}&inStock=${data?.inStock || ''}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getPublicProducts api file", err);
+        return err?.response?.data
+    }
+}
+export const getPublicProductsSingle = async (id) => {
+    try {
+        const url = `${environment.baseUrl}product/public/active-single?id=${id}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getPublicProductsSingle api file", err);
+        return err?.response?.data
+    }
+}
+
+export const getPublicProductsFilter = async () => {
+    try {
+        const url = `${environment.baseUrl}product/public/filter`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getPublicProductsFilter api file", err);
+        return err?.response?.data
+    }
+}
+
 export const getProducts = async (data) => {
     console.log('data', data)
     try {
@@ -954,6 +990,85 @@ export const getCustomerBanners = async (data) => {
     }
 }
 
+// =========================== Product Cart Api ====================
+
+export const addProductToCart = async (data) => {
+    const url = `${environment.baseUrl}product-cart/public/add`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addProductToCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const getProductFromCart = async (data) => {
+    const url = `${environment.baseUrl}product-cart/public/get`;
+    try {
+        const response = await axios.get(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getProductFromCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const removeProductFromCart = async (data) => {
+    const url = `${environment.baseUrl}product-cart/public/remove-item`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in removeProductFromCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const updateProductInCart = async (data) => {
+    const url = `${environment.baseUrl}product-cart/public/update`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in updateProductInCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const clearCart = async () => {
+    const url = `${environment.baseUrl}product-cart/public/clear`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in clearCart api file", err);
+        return err?.response?.data
+    }
+}
+
+
+
+// ================== Customer Feedback Api ==================
+
+export const getAllFeedback = async (data) => {
+    try {
+        const url = `${environment.baseUrl}feedback/get-all?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllFeedback api file", err);
+        return err?.response?.data
+    }
+}
+
+
 export const addFeedback = async (data) => {
     const url = `${environment.baseUrl}feedback/create`;
     try {
@@ -962,6 +1077,79 @@ export const addFeedback = async (data) => {
     }
     catch (err) {
         console.log("==========error in addFeedback api file", err);
+        return err?.response?.data
+    }
+}
+
+export const respondFeedback = async (id, data) => {
+    const url = `${environment.baseUrl}feedback/respond`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in respondFeedback api file", err);
+        return err?.response?.data
+    }
+}
+
+export const deleteFeedback = async (id) => {
+    const url = `${environment.baseUrl}/feedback/delete?id=${id}`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in deleteFeedback api file", err);
+        return err?.response?.data
+    }
+}
+// ========================= Address Api ========================
+
+export const getAllAddress = async () => {
+    const url = `${environment.baseUrl}customer-address/get-all`;
+    try {
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllAddress api file", err);
+        return err?.response?.data
+    }
+}
+
+export const addAddress = async (data) => {
+    const url = `${environment.baseUrl}customer-address/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addAddress api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editAddress = async (id, data) => {
+    const url = `${environment.baseUrl}customer-address/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editAddress api file", err);
+        return err?.response?.data
+    }
+}
+
+export const deleteAddress = async (id) => {
+    const url = `${environment.baseUrl}customer-address/delete?id=${id}`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in deleteAddress api file", err);
         return err?.response?.data
     }
 }

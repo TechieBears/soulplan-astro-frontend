@@ -15,6 +15,8 @@ import {
     Gallery,
     Send2,
     Star1,
+    Grammerly,
+    UserTick,
 } from "iconsax-reactjs";
 
 export const SidebarAdminApi = [
@@ -102,6 +104,11 @@ export const SidebarAdminApi = [
         title: 'Transaction',
         icon: <Money2 size="24" variant="TwoTone" />,
         link: '/user-transaction',
+    },
+    {
+        title: 'Enquiries',
+        icon: <UserTick size="24" variant="TwoTone" />,
+        link: '/customerFeedback',
     },
     {
         title: 'Masters',

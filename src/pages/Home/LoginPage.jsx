@@ -74,7 +74,7 @@ const LoginPage = () => {
                     reset()
                     setRememberMe(false);
                 }
-
+                localStorage.setItem('token', response?.data?.token);
                 toast.success("Login Successfully 🥳");
                 navigate('/', { replace: true });
             } else {

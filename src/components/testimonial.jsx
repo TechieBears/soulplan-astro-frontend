@@ -9,6 +9,7 @@ import phoneMockup from "../../src/assets/phone-mockup.png";
 import { formBtn3 } from "../utils/CustomClass";
 import { QuoteUp } from "iconsax-reactjs";
 import handImage from '../assets/helperImages/handImage.png'
+import { useNavigate } from "react-router-dom";
 
 const testimonials = [
     {
@@ -39,6 +40,7 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
+    const navigate = useNavigate();
     const [activeIndex, setActiveIndex] = React.useState(0);
 
     return (
@@ -153,7 +155,7 @@ const Testimonials = () => {
                         <br className="hidden sm:block" />
                         and healing services.
                     </h2>
-                    <button className={`btn justify-self-center ${formBtn3} !w-fit`}>Book Your Session</button>
+                    <button className={`btn justify-self-center ${formBtn3} !w-fit`} onClick={() => { navigate('/services'), window.scrollTo(0, 0, { behavior: 'smooth' }) }}>Book Your Session</button>
                 </div>
             </section>
             <section />

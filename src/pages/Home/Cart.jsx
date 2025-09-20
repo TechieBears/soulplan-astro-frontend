@@ -10,51 +10,51 @@ import backgroundImage from "../../assets/shop/card-bg.png";
 import { Edit } from "iconsax-reactjs";
 import { ArrowLeft } from "@phosphor-icons/react";
 import star from '../../assets/helperImages/star.png'
+import { getProductFromCart, removeProductFromCart, updateProductInCart } from "../../api";
+import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 const CartPage = () => {
     const navigate = useNavigate();
-    const [cartItems, setCartItems] = useState([
-        {
-            id: "P4000",
-            name: "Amber Crystal",
-            price: 3520,
-            mrp: 4000,
-            quantity: 1,
-            image: product1,
-            gst: 18,
-        },
-        {
-            id: "P4001",
-            name: "Amber Crystal",
-            price: 3520,
-            mrp: 4000,
-            quantity: 1,
-            image: product1,
-            gst: 18,
-        },
-    ]);
+    const [cartItems, setCartItems] = useState([]);
 
-    const updateQuantity = (id, newQty) => {
-        setCartItems((prevItems) =>
-            prevItems.map((item) =>
-                item.id === id ? { ...item, quantity: Math.max(1, newQty) } : item
-            )
-        );
+    const updateQuantity = async (id, newQty) => {
+        try {
+            const res = await updateProductInCart({ itemId: id, quantity: newQty })
+            if (res?.success) {
+                fetchProductCart()
+                toast.success(res?.message)
+            } else {
+                toast.error(res?.message || "Something went wrong")
+            }
+        } catch (error) {
+            console.log("update quantity ======>", error)
+        }
     };
 
-    const removeItem = (id) => {
-        setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    const removeItem = async (id) => {
+        try {
+            const res = await removeProductFromCart(id)
+            if (res?.success) {
+                fetchProductCart()
+                toast.success(res?.message)
+            } else {
+                toast.error(res?.message || "Something went wrong")
+            }
+        } catch (error) {
+            console.log("remove item ======>", error)
+        }
     };
 
     const calculateSubtotal = () => {
-        return cartItems.reduce(
+        return cartItems?.reduce(
             (total, item) => total + item.price * item.quantity,
             0
         );
     };
 
     const calculateGST = () => {
-        return cartItems.reduce((total, item) => {
+        return cartItems?.reduce((total, item) => {
             const itemTotal = item.price * item.quantity;
             return total + (itemTotal * item.gst) / 100;
         }, 0);
@@ -63,6 +63,21 @@ const CartPage = () => {
     const subtotal = calculateSubtotal();
     const gstAmount = calculateGST();
     const total = subtotal + gstAmount;
+
+    const fetchProductCart = async () => {
+        try {
+            const res = await getProductFromCart();
+            setCartItems(res?.data?.items);
+        } catch (err) {
+            toast.error(err.message || 'Failed to fetch product cart');
+            console.error('Error fetching product cart', err);
+        }
+    }
+
+    useEffect(() => {
+        fetchProductCart();
+        window.scrollTo(0, 0);
+    }, []);
 
     const [activeTab, setActiveTab] = useState("products");
 
@@ -114,11 +129,11 @@ const ProductTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 p-3 lg:p-5 xl:p-6 bg-white rounded-lg">
             {/* Cart Items */}
             <div className="lg:col-span-7 space-y-4">
-                {cartItems.map((item) => (
+                {cartItems?.map((item) => (
                     <div
-                        key={item.id}
+                        key={item._id}
                         className="bg-[#9E52D8] rounded-lg p-4 flex flex-col md:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4"
-                        onClick={() => navigate(`/product-detail/${item.id}`)}
+                    // onClick={() => navigate(`/product-detail/${item.id}`)}
                     >
                         {/* Image */}
                         <div className="relative w-full md:w-36 h-44 md:h-36  mx-auto aspect-square rounded-lg overflow-hidden" style={{ background: `linear-gradient(90deg, rgba(0, 121, 208, 0.2) -12.5%, rgba(158, 82, 216, 0.2) 30.84%, rgba(218, 54, 92, 0.2) 70.03%, rgba(208, 73, 1, 0.2) 111%);` }}>
@@ -137,13 +152,13 @@ const ProductTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
                             </h3>
                             <div className="space-y-1">
                                 <div className="font-medium text-lg text-white">
-                                    ₹{item.price.toLocaleString()}
+                                    ₹{item?.price?.toLocaleString()}
                                 </div>
                                 <div className="text-white text-sm">
                                     <span>
                                         MRP{" "}
                                         <span className="line-through">
-                                            ₹{item.mrp.toLocaleString()}
+                                            ₹{item?.mrp?.toLocaleString()}
                                         </span>
                                     </span>
                                     <span className="ml-1">(incl. of all taxes)</span>
@@ -155,7 +170,7 @@ const ProductTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
                         <div className="flex w-full md:w-auto flex-row-reverse justify-between  md:flex-col md:items-end space-y-2 md:mt-2 ">
                             {/* Delete Button */}
                             <button
-                                onClick={() => removeItem(item.id)}
+                                onClick={() => removeItem(item?.id)}
                                 className="p-2 text-white hover:bg-[#8B3FC1] rounded-md transition-colors flex-shrink-0"
                             >
                                 <FaRegTrashAlt className="w-4 h-4" />
@@ -166,12 +181,12 @@ const ProductTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
                                 <span className="text-white text-sm font-medium">QTY:</span>
                                 <div className="flex  items-center rounded-md bg-white overflow-hidden w-20 justify-between">
                                     <div className="px-3 py-1 text-center font-medium text-gray-900 ">
-                                        {item.quantity}
+                                        {item?.quantity}
                                     </div>
                                     <div className="flex flex-col">
                                         <button
                                             onClick={() =>
-                                                updateQuantity(item.id, item.quantity + 1)
+                                                updateQuantity(item?._id, item?.quantity + 1)
                                             }
                                             className="w-full px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors flex items-center justify-center"
                                         >
@@ -179,7 +194,7 @@ const ProductTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
                                         </button>
                                         <button
                                             onClick={() =>
-                                                updateQuantity(item.id, item.quantity - 1)
+                                                updateQuantity(item?._id, item?.quantity - 1)
                                             }
                                             className="w-full px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors flex items-center justify-center"
                                         >
@@ -221,7 +236,7 @@ const ProductTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
                     <div className="space-y-3 mb-6 bg-gray-100 p-4 rounded-lg">
                         <div className="flex justify-between items-center">
                             <span className="text-gray-600">
-                                Product {cartItems.reduce((t, i) => t + i.quantity, 0)}x
+                                Product {cartItems?.reduce((t, i) => t + i.quantity, 0)}x
                                 (incl. GST)
                             </span>
                             <span className="font-medium">
@@ -262,7 +277,7 @@ const ServiceTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 p-3 lg:p-5 xl:p-6 bg-white rounded-lg">
             {/* Cart Items */}
             <div className="lg:col-span-7 space-y-4">
-                {cartItems.map((item) => (
+                {cartItems?.map((item) => (
                     <div
                         key={item.id}
                         className="bg-[#9E52D8] rounded-lg p-4 flex flex-col md:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4"
@@ -281,17 +296,17 @@ const ServiceTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
                         {/* Details */}
                         <div className="flex-1 w-full">
                             <h3 className="font-bold text-white text-lg mb-1 sm:pr-6">
-                                {item.name}
+                                {item?.name}
                             </h3>
                             <div className="space-y-1">
                                 <div className="font-medium text-lg text-white">
-                                    ₹{item.price.toLocaleString()}
+                                    ₹{item?.price?.toLocaleString()}
                                 </div>
                                 <div className="text-white text-sm">
                                     <span>
                                         MRP{" "}
                                         <span className="line-through">
-                                            ₹{item.mrp.toLocaleString()}
+                                            ₹{item?.mrp?.toLocaleString()}
                                         </span>
                                     </span>
                                     <span className="ml-1">(incl. of all taxes)</span>
@@ -303,7 +318,7 @@ const ServiceTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
                         <div className="flex w-full md:w-auto flex-row-reverse justify-between  md:flex-col md:items-end space-y-2 md:mt-2 ">
                             {/* Delete Button */}
                             <button
-                                onClick={() => removeItem(item.id)}
+                                onClick={() => removeItem(item?.id)}
                                 className="p-2 text-white hover:bg-[#8B3FC1] rounded-md transition-colors flex-shrink-0"
                             >
                                 <FaRegTrashAlt className="w-4 h-4" />
@@ -314,7 +329,7 @@ const ServiceTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
                                 <span className="text-white text-sm font-medium">QTY:</span>
                                 <div className="flex  items-center rounded-md bg-white overflow-hidden w-20 justify-between">
                                     <div className="px-3 py-1 text-center font-medium text-gray-900 ">
-                                        {item.quantity}
+                                        {item?.quantity}
                                     </div>
                                     <div className="flex flex-col">
                                         <button
@@ -369,7 +384,7 @@ const ServiceTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
                     <div className="space-y-3 mb-6 bg-gray-100 p-4 rounded-lg">
                         <div className="flex justify-between items-center">
                             <span className="text-gray-600">
-                                Product {cartItems.reduce((t, i) => t + i.quantity, 0)}x
+                                Product {cartItems?.reduce((t, i) => t + i.quantity, 0)}x
                                 (incl. GST)
                             </span>
                             <span className="font-medium">

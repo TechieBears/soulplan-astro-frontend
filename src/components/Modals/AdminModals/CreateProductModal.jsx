@@ -113,7 +113,7 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                         title={edit ? "Edit Product" : "Create New Product"}
                                         toggle={toggle}
                                     />
-                                    <div className=" bg-slate1">
+                                    <div className="">
                                         {/* React Hook Form */}
                                         <form onSubmit={handleSubmit(formSubmit)} >
                                             <div className="bg-white px-4 pb-5 pt-5 sm:p-6 sm:pb-4">
