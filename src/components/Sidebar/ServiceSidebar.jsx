@@ -179,7 +179,7 @@ const MainSection = ({ content }) => {
                 <img
                     src={content.img}
                     alt={content.title}
-                    className="w-full h-[60vh] object-cover rounded-md"
+                    className="w-full sm:h-[60vh] object-cover rounded-md"
                 />
 
                 <div className="bg-[#FFF2DB] p-6 rounded-md space-y-3 ">

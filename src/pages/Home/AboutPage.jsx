@@ -89,10 +89,10 @@ const AboutPage = () => {
                 </div>
                 <div className="container mx-auto ">
                     {/* Stats Section */}
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20 lg:gap-30 xl:gap-40 pt-10 lg:pt-20 pb-28">
+                    <div className="flex sm:flex-col md:flex-row items-center justify-center gap-5 sm:gap-10 md:gap-20 lg:gap-30 xl:gap-40 pt-10 lg:pt-20 pb-28">
                         {stats.map((stat, index) => (
                             <div key={index} className="text-left">
-                                <h6 className='text-red-500 font-tbLex font-bold text-9xl md:text-8xl  xl:text-9xl text-center tracking-tighter flex justify-center items-center'>
+                                <h6 className='text-red-500 font-tbLex font-bold text-6xl sm:text-9xl md:text-8xl  xl:text-9xl text-center tracking-tighter flex justify-center items-center'>
                                     <AnimatedNumbers
                                         animateToNumber={stat.value}
                                         fontStyle={{ textAlign: "center", letterSpacing: -5 }}

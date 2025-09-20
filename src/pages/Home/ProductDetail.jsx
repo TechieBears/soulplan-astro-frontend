@@ -298,7 +298,7 @@ const ProductDetail = () => {
                     {/* Tabs Section */}
                     <div className="mt-8 lg:mt-12 w-full">
                         <div className="border-b border-slate-200/60">
-                            <nav className="flex space-x-4 lg:space-x-8">
+                            <nav className="flex sm:space-x-4 lg:space-x-8">
                                 <button
                                     onClick={() => setActiveTab("description")}
                                     className={`relative py-3 px-1 text-sm lg:text-base font-medium transition-colors ${activeTab === "description"
