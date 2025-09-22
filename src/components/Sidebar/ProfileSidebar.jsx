@@ -41,11 +41,11 @@ const ProfileSidebar = ({ children }) => {
             path: "/profile/customer-support",
             icon: "material-symbols:support-agent",
         },
-        {
-            label: "Privacy Policy",
-            path: "/privacy-policy",
-            icon: "material-symbols:privacy-tip-outline",
-        },
+        // {
+        //     label: "Privacy Policy",
+        //     path: "/privacy-policy",
+        //     icon: "material-symbols:privacy-tip-outline",
+        // },
     ];
 
     const handleLogout = async () => {
