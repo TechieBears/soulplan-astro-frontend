@@ -247,10 +247,10 @@ const ProductsPage = () => {
               </div>
             ) : error ? (
               <div className="text-center py-10">
-                <p className="text-red-500 text-lg mb-4">{error}</p>
+                <p className="text-slate-600 text-lg mb-4">{error}</p>
                 <button
                   onClick={() => window.location.reload()}
-                  className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
+                  className="px-4 py-2 bg-linear-gradient text-white rounded-sm transition-colors"
                 >
                   Try Again
                 </button>
@@ -270,7 +270,7 @@ const ProductsPage = () => {
                         ) {
                           return;
                         }
-                        navigate(`/products/${product._id}`);
+                        navigate(`/product/${product._id}`);
                       }}
                     >
                       <ProductCard product={product} />
@@ -284,7 +284,7 @@ const ProductsPage = () => {
                     </p>
                     <button
                       onClick={resetFilters}
-                      className="mt-4 px-4 py-2 bg-slate-500 text-white rounded-md hover:bg-orange-600 transition-colors"
+                      className="mt-4 px-4 py-2 bg-slate-500 text-white rounded-sm transition-colors"
                     >
                       Reset Filters
                     </button>
