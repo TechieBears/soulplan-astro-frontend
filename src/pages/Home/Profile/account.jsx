@@ -7,6 +7,8 @@ import ImageUploadInput from "../../../components/TextInput/ImageUploadInput";
 import { validateAlphabets, validateEmail, validatePhoneNumber } from '../../../utils/validateFunction';
 import { useForm } from "react-hook-form";
 import SelectTextInput from "../../../components/TextInput/SelectTextInput";
+import { editUserCustomer } from "../../../api";
+import toast from "react-hot-toast";
 const Private = ({ children }) => children;
 const UserDashboard = ({ children }) => children;
 
@@ -16,7 +18,18 @@ export default function AccountPage() {
     const user = useSelector((state) => state.user.userDetails);
 
     const formSubmit = async (data) => {
-        console.log(data);
+        const payload = {
+            ...data,
+            id: user?._id
+        }
+        await editUserCustomer(payload).then(res => {
+            if (res?.success) {
+                toast.success(res?.message);
+                reset();
+            } else {
+                toast.error(res?.message || "Something went wrong");
+            }
+        })
     }
 
     useEffect(() => {
@@ -90,7 +103,7 @@ export default function AccountPage() {
                                 <h4
                                     className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                 >
-                                    Email
+                                    Email <span className="text-yellow-500 font-tbPop font-normal text-xs">(Read Only)</span>
                                 </h4>
                                 <TextInput
                                     label="Enter Your Email"
@@ -99,7 +112,7 @@ export default function AccountPage() {
                                     registerName="email"
                                     style="!bg-slate-100"
                                     value={user?.email}
-                                    props={{ ...register('email'), valdate: validateEmail, required: "Email is required", disabled: !isEditable, readOnly: !isEditable }}
+                                    props={{ ...register('email'), valdate: validateEmail, required: "Email is required", disabled: true, readOnly: true }}
                                     errors={errors.email}
                                 />
                             </div>

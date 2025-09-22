@@ -10,6 +10,7 @@ import SelectTextInput from '../../../components/TextInput/SelectTextInput'
 import TextInput from '../../../components/TextInput/TextInput'
 import { formBtn1 } from '../../../utils/CustomClass'
 import usePagination from '../../../utils/customHooks/usePagination'
+import SendFeedbackReplay from '../../../components/Modals/AdminModals/SendFeedbackReplay';
 
 const initialFilterState = {
     name: '',
@@ -55,6 +56,9 @@ export default function CustomerFeedback() {
         toast.success('Filters cleared');
     };
 
+    const actionBodyTemplate = (row) => <div className="flex items-center gap-2">
+        <SendFeedbackReplay edit={true} userData={row} setRefreshTrigger={setRefreshTrigger} refreshTrigger={refreshTrigger} />
+    </div>
 
 
     const columns = [
@@ -64,8 +68,9 @@ export default function CustomerFeedback() {
         { field: 'source', header: 'Reason Type', style: true, sortable: true },
         { field: 'subject', header: 'Subject', style: true, sortable: true },
         { field: 'createdAt', header: 'Enquiry Date', body: (row) => <>{moment(row?.createdAt)?.format('DD-MM-YYYY') || "---- -----"}</>, style: true, sortable: true },
-        { field: 'Message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.Message || "---- -----"}</div>, style: true, sortable: true },
-        { field: 'status', header: 'Status', body: (row) => <h6 className={`${row?.status == 'rejected' ? 'text-red-500 bg-red-200' : row?.status == 'accepted' ? 'text-green-500 bg-green-200' : 'text-yellow-500 bg-yellow-100/80'} p-2 text-center rounded-full capitalize px-5`}>{row?.status}</h6>, style: true },
+        { field: 'Message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true, sortable: true },
+        { field: 'isRead', header: 'Status', body: (row) => <h6 className={`${!row?.isRead ? 'text-red-500 bg-red-200' : 'text-green-500 bg-green-200'} p-2 text-center rounded-full capitalize px-5`}>{row?.isRead ? 'Read' : 'Unread'}</h6>, style: true },
+        { field: "action", header: "Action", body: actionBodyTemplate, style: true, sortable: true },
     ];
     return (
         <div className="space-y-5">

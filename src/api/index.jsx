@@ -57,6 +57,17 @@ export const loginUser = async (data) => {
         return err?.response?.data
     }
 };
+export const logoutUser = async (data) => {
+    const url = `${environment.baseUrl}auth/logout`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in logout User api file", err);
+        return err?.response?.data
+    }
+};
 export const forgetUser = async (data) => {
     const url = `${environment.baseUrl}customer-users/forgot-password`;
     try {
@@ -670,6 +681,17 @@ export const getPublicProducts = async (data) => {
         return err?.response?.data
     }
 }
+export const getActiveProducts = async () => {
+    const url = `${environment.baseUrl}product/public/active`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching active products:', error);
+        throw error;
+    }
+};
+
 export const getPublicProductsSingle = async (id) => {
     try {
         const url = `${environment.baseUrl}product/public/active-single?id=${id}`;
@@ -791,6 +813,18 @@ export const getAllCustomers = async (data) => {
     }
     catch (err) {
         console.log("==========error in getAllCustomers api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editUserCustomer = async (data) => {
+    const url = `${environment.baseUrl}/customer-users/update`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in edit Customer api file", err);
         return err?.response?.data
     }
 }

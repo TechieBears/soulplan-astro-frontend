@@ -138,8 +138,6 @@ const ProjectRoutes = () => {
                             path="/password/reset/:token"
                             element={<ResetPasswordPage />}
                         />
-
-                        <Route path="/profile/address" element={<AddressPage />} />
                         <Route path="/password/reset/:token" element={<ResetPasswordPage />} />
 
                         {/* Service Routes */}

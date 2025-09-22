@@ -1,28 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formBtn3 } from "../../utils/CustomClass";
 import { Mobile } from 'iconsax-reactjs';
 import Breadcrumbs from "../../components/breadcrum";
 import { CaretRight, ClockCountdown } from "@phosphor-icons/react";
+import { getActiveServiceCategories } from "../../api";
+import { useLocation } from "react-router-dom";
 
-// Sidebar + Content Data
-const services = [
-    { id: "palmistry", title: "Palmistry" },
-    { id: "astrology", title: "Astrology" },
-    { id: "tarot", title: "Tarot Reading" },
-    { id: "numerology", title: "Numerology Consultation" },
-    { id: "theta", title: "Theta Healing" },
-    { id: "pranic", title: "Pranic Healing" },
-    { id: "crystal", title: "Crystal Healing" },
-    { id: "meditational", title: "Spiritual Meditational" },
-    { id: "akashic", title: "Akashic Record Reading" },
-    { id: "pastlife", title: "Post Life Regression Therapy" },
-    { id: "innerchild", title: "Inner Child & Subconscious Mind" },
-    { id: "angel", title: "Angel Therapy Oracle Card Reading" },
-    { id: "reiki", title: "Reiki Healing" },
-    { id: "counselling", title: "Psychological Counselling" },
-    { id: "auto", title: "Auto writing Service" },
-    { id: "vastu", title: "Vastu Consultation" },
-];
 
 // Dynamic Content for each service
 const serviceDetails = {
@@ -131,7 +114,20 @@ const serviceDetails = {
 };
 
 const SidebarLayout = () => {
-    const [active, setActive] = useState("palmistry");
+    const params = useLocation();
+    console.log("⚡️🤯 ~ SidebarLayout.jsx:117 ~ params:", params)
+    const [active, setActive] = useState(params?.pathname?.split("/")?.slice(-1)?.[0]?.replace(/-/g, " ") || "");
+    const [services, setServices] = useState([]);
+
+
+    useEffect(() => {
+        const fetchServiceCategories = async () => {
+            const response = await getActiveServiceCategories();
+            setServices(response?.data);
+        }
+        fetchServiceCategories();
+    }, []);
+
     return (
         <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
             <Breadcrumbs currentService={active} />
@@ -140,7 +136,7 @@ const SidebarLayout = () => {
                 <SideBar services={services} active={active} setActive={setActive} />
 
                 {/* Main Content */}
-                <MainSection content={serviceDetails[active]} />
+                <MainSection content={serviceDetails[active?.toLowerCase()]} active={active} />
             </div>
         </div>
     );
@@ -151,19 +147,19 @@ const SideBar = ({ services, active, setActive }) => {
         <aside className="w-full lg:w-1/4 space-y-2 pb-14 lg:pb-0">
             <ul className="">
                 {services.map((service) => (
-                    <li key={service.id}>
+                    <li key={service.name}>
                         <button
-                            onClick={() => setActive(service.id)}
-                            className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${active === service.id
+                            onClick={() => setActive(service.name)}
+                            className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${active === service.name
                                 ? "text-p bg-[#ffecd2]"
                                 : "hover:bg-[#ffecd2]/50 text-slate-700"
                                 }`}
                         >
                             <div className="flex items-center justify-between overflow-hidden text-nowrap">
-                                <span className="text-ellipsis overflow-hidden">{service.title}</span>
+                                <span className="text-ellipsis overflow-hidden">{service.name}</span>
                                 <span className="text-p"><CaretRight size={20} className="text-black" /></span>
                             </div>
-                            {active === service.id ? <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-linear-gradient rounded-3xl transition-colors duration-300" /> : <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-slate-200 rounded-full" />}
+                            {active === service.name ? <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-linear-gradient rounded-3xl transition-colors duration-300" /> : <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-slate-200 rounded-full" />}
                         </button>
                     </li>
                 ))}

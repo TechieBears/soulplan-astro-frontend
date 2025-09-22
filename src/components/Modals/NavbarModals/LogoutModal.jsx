@@ -4,17 +4,27 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setLoggedUser, setLoggedUserDetails, setRoleIs } from '../../../redux/Slices/loginSlice';
+import { logoutUser } from '../../../api';
+import toast from 'react-hot-toast';
 
 export default function LogoutModal({ open, setOpen }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     // ============================= logout user dashbaord ================================
-    const logOut = () => {
-        dispatch(setLoggedUserDetails(undefined))
-        dispatch(setRoleIs(undefined))
-        dispatch(setLoggedUser(false))
-        setOpen(!open)
-        navigate('/')
+    const logOut = async () => {
+        await logoutUser().then((res) => {
+            console.log(res)
+            dispatch(setLoggedUserDetails(undefined))
+            dispatch(setRoleIs(undefined))
+            dispatch(setLoggedUser(false))
+            setOpen(!open)
+            toast.success(res?.message || res?.success || 'Logout successfully')
+            navigate('/')
+        })
+            .catch((err) => {
+                console.log(err)
+                toast.error(err?.message || err?.error || 'Logout failed')
+            })
     }
     const cancelButtonRef = useRef(null)
 

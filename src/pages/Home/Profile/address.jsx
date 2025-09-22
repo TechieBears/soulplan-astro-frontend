@@ -1,34 +1,102 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
-import { formBtn1, formBtn3 } from "../../../utils/CustomClass";
+import { formBtn3 } from "../../../utils/CustomClass";
 import { validateAlphabets, validatePhoneNumber } from "../../../utils/validateFunction";
 import TextInput from "../../../components/TextInput/TextInput";
 import { Controller, useForm } from "react-hook-form";
 import SelectTextInput from "../../../components/TextInput/SelectTextInput";
 import CustomTextArea from '../../../components/TextInput/CustomTextArea';
-import { CaretRight, NotePencil, Power, Trash } from "@phosphor-icons/react";
-const AddressPage = () => {
+import { NotePencil, Trash } from "@phosphor-icons/react";
+import { getAllAddress, addAddress, editAddress, deleteAddress } from "../../../api";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setAddresses } from "../../../redux/Slices/cartSlice";
 
+const AddressPage = () => {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
     const [showAddForm, setShowAddForm] = useState(false);
-    const [addresses, setAddresses] = useState([
-        {
-            id: 1,
-            name: "John Doe",
-            phone: "1234567890",
-            type: "Home",
-            isDefault: true,
-            address: "123 Main St, Anytown, USA",
-            city: "Anytown",
-            state: "Anytown",
-            postalCode: "123456",
-            country: "USA",
-        },
-    ]);
+    const [editingAddress, setEditingAddress] = useState(null);
+    const [addresses, setAddress] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch()
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const formSubmit = async (data) => {
+        try {
+            setLoading(true);
+            const addressData = {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                phoneNumber: data.mobileNo,
+                addressType: data.type?.toLowerCase() || 'home',
+                address: data.address,
+                city: data.city,
+                postalCode: data.postalCode,
+                state: data.state,
+                country: data.country
+            };
 
-    const formSubmit = (data) => {
-        console.log(data);
+            let response;
+            if (editingAddress) {
+                response = await editAddress(editingAddress._id, addressData);
+            } else {
+                response = await addAddress(addressData);
+            }
+
+            if (response?.success) {
+                toast.success(response?.message || `Address ${editingAddress ? 'updated' : 'added'} successfully`);
+                setShowAddForm(false);
+                setEditingAddress(null);
+                reset();
+                fetchAddresses();
+            } else {
+                toast.error(response?.message || "Something went wrong");
+            }
+        } catch (error) {
+            console.error('Error submitting address form:', error);
+            toast.error("Failed to save address");
+        } finally {
+            setLoading(false);
+        }
     };
+
+    const handleShowForm = (addressData = null) => {
+        setEditingAddress(addressData);
+        setShowAddForm(true);
+    };
+
+    useEffect(() => {
+        if (editingAddress) {
+            setValue('firstName', editingAddress.firstName || '');
+            setValue('lastName', editingAddress.lastName || '');
+            setValue('mobileNo', editingAddress.phoneNumber || '');
+            setValue('type', editingAddress.addressType ?
+                editingAddress.addressType.charAt(0).toUpperCase() + editingAddress.addressType.slice(1) : '');
+            setValue('address', editingAddress.address || '');
+            setValue('city', editingAddress.city || '');
+            setValue('postalCode', editingAddress.postalCode || '');
+            setValue('state', editingAddress.state || '');
+            setValue('country', editingAddress.country || '');
+        } else {
+            reset();
+        }
+    }, [editingAddress, setValue, reset]);
+
+    const fetchAddresses = async () => {
+        try {
+            const res = await getAllAddress();
+            // dispatch(setAddresses(res?.data?.filter(item => item?.isDefault)))
+            setAddress(res?.data);
+        } catch (err) {
+            setAddress([]);
+            toast.error(err.message || 'Failed to fetch addresses');
+            console.error('Error fetching addresses', err);
+        }
+    }
+
+    useEffect(() => {
+        fetchAddresses();
+        window.scrollTo(0, 0);
+    }, [editingAddress]);
 
     return (
         <ProfileSidebar>
@@ -38,7 +106,7 @@ const AddressPage = () => {
                 <div className="flex gap-3">
                     <button
                         className={`${formBtn3} border-b`}
-                        onClick={() => setShowAddForm(true)}
+                        onClick={() => handleShowForm()}
                     >
                         Add New Address
                     </button>
@@ -49,7 +117,7 @@ const AddressPage = () => {
             {addresses?.length > 0 && !showAddForm && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-scroll">
                     {addresses.map((address) => (
-                        <AddressCard key={address?.id} address={address} setShowAddForm={setShowAddForm} />
+                        <AddressCard key={address?._id} address={address} onEdit={handleShowForm} fetchAddresses={fetchAddresses} />
                     ))}
                 </div>
             )}
@@ -86,7 +154,7 @@ const AddressPage = () => {
             {showAddForm && (
                 <div className="bg-white rounded-lg">
                     <h2 className="text-lg font-semibold mb-4">
-                        {showAddForm ? "Edit Address" : "Add New Address"}
+                        {editingAddress ? "Edit Address" : "Add New Address"}
                     </h2>
 
                     <form onSubmit={handleSubmit(formSubmit)} className="space-y-6">
@@ -153,11 +221,11 @@ const AddressPage = () => {
                                 <div className="sm:flex sm:gap-2 space-x-2 space-y-2 sm:space-y-0">
                                     {["Home", "Office", "Friend", "Other"].map((type) => (
                                         <Controller
+                                            key={type}
                                             name="type"
                                             control={control}
                                             render={({ field: { onChange, value }, fieldState: { error } }) => (
                                                 <button
-                                                    key={type}
                                                     type="button"
                                                     onClick={() => onChange(type)}
                                                     className={`px-5 font-tbLex py-3.5 rounded-md text-sm font-medium ${value === type
@@ -187,7 +255,7 @@ const AddressPage = () => {
                                 registerName="address"
                                 props={{
                                     ...register('address', {
-                                        required: "Message is required",
+                                        required: "Address is required",
                                         minLength: {
                                             value: 10,
                                             message: "Address must be at least 10 characters"
@@ -305,23 +373,27 @@ const AddressPage = () => {
                                     />
                                 </div>
                             </div>
-
                         </div>
 
                         {/* Actions */}
                         <div className="flex justify-end gap-3 pt-4 justify-self-end">
                             <button
                                 type="button"
-                                onClick={() => setShowAddForm(false)}
+                                onClick={() => {
+                                    setShowAddForm(false);
+                                    setEditingAddress(null);
+                                    reset();
+                                }}
                                 className="px-6 py-2 rounded-md border border-gray-900 text-gray-900 bg-white hover:bg-gray-100 transition"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className={`${formBtn3}`}
+                                disabled={loading}
+                                className={`${formBtn3} ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
-                                {showAddForm ? "Save Changes" : "Add Address"}
+                                {loading ? 'Saving...' : (editingAddress ? "Save Changes" : "Add Address")}
                             </button>
                         </div>
                     </form>
@@ -331,21 +403,25 @@ const AddressPage = () => {
     );
 };
 
-const AddressCard = ({ address, setShowAddForm }) => {
+const AddressCard = ({ address, onEdit, fetchAddresses }) => {
+    const fullName = `${address?.firstName || ''} ${address?.lastName || ''}`.trim();
+    const capitalizedAddressType = address?.addressType ?
+        address.addressType.charAt(0).toUpperCase() + address.addressType.slice(1) : '';
+
     return (
         <div
-            key={address?.id}
+            key={address?._id}
             className="bg-slate-100 rounded-lg p-4 "
         >
             <div className="flex flex-col md:flex-row justify-between items-start gap-3">
                 <div className="flex-1 space-y-1">
                     <div className="sm:flex space-y-3 sm:space-y-0 justify-between items-center">
                         <h3 className="font-medium font-tbLex text-slate-800">
-                            {address?.name}
+                            {fullName || 'No Name'}
                         </h3>
                         <div className="flex gap-3">
                             <button
-                                onClick={() => setShowAddForm(true)}
+                                onClick={() => onEdit(address)}
                                 className={"flex items-center justify-center border rounded border-black bg-transparent !racking-tight !text-black px-3.5 py-2 font-tbLex text-sm"}
                             >
                                 <NotePencil size={20} className="mr-1 text-slate-700" />
@@ -353,15 +429,25 @@ const AddressCard = ({ address, setShowAddForm }) => {
                             </button>
 
                             <button
-                                disabled
-                                className={"flex items-center justify-center !racking-tight  px-3.5 py-2 !bg-red-500 !text-white rounded font-tbLex text-sm"}
+                                onClick={async () => {
+                                    await deleteAddress(address?._id).then(res => {
+                                        if (res?.success) {
+                                            toast.success(res?.message);
+                                            fetchAddresses();
+                                        } else {
+                                            toast.error(res?.message);
+                                        }
+                                    })
+                                }
+                                }
+                                className={"flex items-center justify-center !racking-tight  px-3.5 py-2 !bg-red-500 !text-white rounded font-tbLex text-sm disabled:opacity-50 disabled:cursor-not-allowed"}
                             >
                                 <Trash size={20} className="mr-1 text-white" />
                                 Delete
                             </button>
                         </div>
                     </div>
-                    <p className="text-slate-500 font-tbPop font-normal text-sm">{address?.phone}</p>
+                    <p className="text-slate-500 font-tbPop font-normal text-sm">{address?.phoneNumber}</p>
                     <p className="text-slate-500 font-tbPop font-normal text-sm">{address?.address}</p>
                     <p className="text-slate-500 font-tbPop font-normal text-sm">
                         {address?.city}, {address?.state} {address?.postalCode},{" "}
@@ -370,8 +456,10 @@ const AddressCard = ({ address, setShowAddForm }) => {
                 </div>
             </div>
             <div className="flex justify-between items-center pt-3">
-                <p className="text-slate-600 font-tbPop font-normal text-sm">• Default Address</p>
-                <p className="text-slate-600 font-tbPop font-normal text-sm">• {address?.type}</p>
+                {address?.isDefault && (
+                    <p className="text-slate-600 font-tbPop font-normal text-sm">• Default Address</p>
+                )}
+                <p className="text-slate-600 font-tbPop font-normal text-sm">• {capitalizedAddressType}</p>
             </div>
         </div>
     );

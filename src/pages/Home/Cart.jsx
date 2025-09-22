@@ -13,6 +13,7 @@ import star from '../../assets/helperImages/star.png'
 import { getProductFromCart, removeProductFromCart, updateProductInCart } from "../../api";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const CartPage = () => {
     const navigate = useNavigate();
@@ -124,7 +125,15 @@ const CartPage = () => {
 };
 
 const ProductTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount, total }) => {
+    const addresses = useSelector((state) => state.cart?.addresses);
     const navigate = useNavigate();
+    if (cartItems?.length == 0) {
+        return (
+            <div className="flex items-center justify-center h-screen w-full">
+                <h2 className="text-xl font-tbLex font-semibold">Cart is empty!</h2>
+            </div>
+        )
+    }
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 p-3 lg:p-5 xl:p-6 bg-white rounded-lg">
             {/* Cart Items */}
@@ -215,15 +224,18 @@ const ProductTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
                         {/* Left: Delivery Info */}
                         <div className="flex-1 flex flex-col">
                             <h3 className="text-sm font-semibold font-tbLex text-gray-800">
-                                Deliver to: <span className="font-medium">Sid Sriram</span>
+                                Deliver to: <span className="font-medium">{addresses?.firstName || "------"} {addresses?.lastName || "------"}</span>
+                            </h3>
+                            <h3 className="text-sm font-semibold font-tbLex text-gray-800">
+                                {addresses?.mobileNo || "----- ------"}
                             </h3>
                             <p className="text-gray-500 text-sm font-tbPop mt-1">
-                                8520 Varaladevi road near Darshan Hotel, Bhiwandi – 421305
+                                {addresses?.address || "------"} {addresses?.city || "------"} {addresses?.state || "------"} {addresses?.country || "------"} - {addresses?.postalCode || "------"}
                             </p>
                         </div>
 
                         {/* Right: Change Button */}
-                        <button className="flex items-center gap-1 border border-gray-900 rounded px-4 py-2 text-sm font-tbLex text-slate-600 hover:bg-gray-50 transition-colors mt-2 sm:mt-0">
+                        <button onClick={() => navigate('/profile/address')} className="flex items-center gap-1 border border-gray-900 rounded px-4 py-2 text-sm font-tbLex text-slate-600 hover:bg-gray-50 transition-colors mt-2 sm:mt-0">
                             <Edit className="w-4 h-4" />
                             Change
                         </button>
@@ -240,7 +252,7 @@ const ProductTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
                                 (incl. GST)
                             </span>
                             <span className="font-medium">
-                                ₹ {subtotal.toLocaleString()}
+                                ₹ {subtotal?.toLocaleString()}
                             </span>
                         </div>
 
@@ -272,6 +284,7 @@ const ProductTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount
     )
 }
 const ServiceTab = ({ cartItems, removeItem, updateQuantity, subtotal, gstAmount, total }) => {
+    const addresses = useSelector((state) => state.cart?.addresses);
     const navigate = useNavigate();
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 p-3 lg:p-5 xl:p-6 bg-white rounded-lg">

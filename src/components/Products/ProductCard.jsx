@@ -30,7 +30,7 @@ const ProductCard = ({ product }) => {
             className="h-full flex flex-col bg-white p-3 rounded-lg shadow-lg  hover:shadow-xl hover:scale-[1.02] transition-all duration-300 overflow-hidden border border-gray-100 cursor-pointer"
             onClick={handleCardClick}
         >
-            <div className="relative w-full max-w-sm mx-auto aspect-square bg-gray-50 rounded-lg overflow-hidden" style={{ background: `linear-gradient(90deg, rgba(0, 121, 208, 0.2) -12.5%, rgba(158, 82, 216, 0.2) 30.84%, rgba(218, 54, 92, 0.2) 70.03%, rgba(208, 73, 1, 0.2) 111%)` }}>
+            <div className="relative w-full max-w-sm mx-auto aspect-square rounded-lg overflow-hidden" style={{ background: `linear-gradient(90deg, rgba(0, 121, 208, 0.2) -12.5%, rgba(158, 82, 216, 0.2) 30.84%, rgba(218, 54, 92, 0.2) 70.03%, rgba(208, 73, 1, 0.2) 111%)` }}>
                 <img
                     src={images?.[0]}
                     alt={name}

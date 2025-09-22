@@ -96,6 +96,21 @@ const HomeNavbar = () => {
         return () => document.removeEventListener("keydown", keyHandler);
     });
 
+
+
+    useEffect(() => {
+        const fetchAddress = async () => {
+            try {
+                const res = await getProductFromCart();
+                setCartItems(res?.data?.items);
+            } catch (err) {
+                toast.error(err.message || 'Failed to fetch product cart');
+                console.error('Error fetching product cart', err);
+            }
+        }
+        fetchAddress();
+    }, []);
+
     return (
         <>
             <nav className={`navbar fixed top-0 left-0 z-[900] bg-white w-full right-0 transition-colors duration-500 ${isScrolled ? "bg-white/20  shadow-md text-black backdrop-blur-lg " : ""}`}>
@@ -218,7 +233,7 @@ const HomeNavbar = () => {
                             </div>
 
                             {/* Profile Links (only show if logged in) */}
-                            {login && (
+                            {login ? (
                                 <>
                                     <div className="border-t pt-4 mb-4">
                                         <h3 className="text-sm font-semibold text-gray-600 mb-2">Profile</h3>
@@ -245,6 +260,13 @@ const HomeNavbar = () => {
                                         Logout
                                     </button>
                                 </>
+                            ) : (
+                                <button
+                                    onClick={() => navigate("/login")}
+                                    className={`${formBtn3}`}
+                                >
+                                    Login / Register
+                                </button>
                             )}
                         </div>
                     </div>
