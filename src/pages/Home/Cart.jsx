@@ -1,12 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegTrashAlt, FaChevronUp, FaChevronDown } from "react-icons/fa";
-import { BsArrowLeft } from "react-icons/bs";
 import { formBtn3 } from "../../utils/CustomClass";
 
-// Import product images
-import product1 from "../../assets/shop/product3.png";
-import backgroundImage from "../../assets/shop/card-bg.png";
 import { Edit } from "iconsax-reactjs";
 import { ArrowLeft } from "@phosphor-icons/react";
 import star from '../../assets/helperImages/star.png'

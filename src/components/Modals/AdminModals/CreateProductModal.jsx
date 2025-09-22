@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { formBtn1, tableBtn } from '../../../utils/CustomClass';
 import LoadBox from '../../Loader/LoadBox';
 import TextInput from '../../TextInput/TextInput';
@@ -12,6 +12,7 @@ import { addProduct, editProduct } from '../../../api';
 import { TableTitle } from '../../../helper/Helper';
 import CustomTextArea from '../../TextInput/CustomTextArea';
 import { useSelector } from 'react-redux';
+import MultiSelectTextInput from '../../TextInput/MultiSelectTextInput';
 
 function CreateProductModal({ edit, userData, setRefreshTrigger }) {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
@@ -65,7 +66,9 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
             setValue('category', userData?.category?.name);
             setValue('subcategory', userData?.subcategory?.name);
             setValue('description', userData?.description);
+            setValue('highlights', userData?.highlights);
             setValue('additionalInfo', userData?.additionalInfo);
+            setValue('specification', userData?.specification);
             setValue('stock', userData?.stock);
             setValue('sellingPrice', userData?.sellingPrice);
             setValue('stock', userData?.stock);
@@ -108,7 +111,7 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                 leaveFrom="opacity-100 scale-100"
                                 leaveTo="opacity-0 scale-95"
                             >
-                                <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-lg bg-white  text-left align-middle shadow-xl transition-all">
+                                <Dialog.Panel className="w-full max-w-7xl transform overflow-hidden rounded-lg bg-white  text-left align-middle shadow-xl transition-all">
                                     <TableTitle
                                         title={edit ? "Edit Product" : "Create New Product"}
                                         toggle={toggle}
@@ -117,7 +120,7 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                         {/* React Hook Form */}
                                         <form onSubmit={handleSubmit(formSubmit)} >
                                             <div className="bg-white px-4 pb-5 pt-5 sm:p-6 sm:pb-4">
-                                                <div className='grid grid-cols-2 gap-x-3 gap-y-5' >
+                                                <div className='grid grid-cols-3 gap-x-3 gap-y-5' >
                                                     <div className="">
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
@@ -177,11 +180,11 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
-                                                            Product Image
+                                                            Product Image (multiple)
                                                         </h4>
                                                         <ImageUploadInput
                                                             label="Upload Product Image"
-                                                            multiple={false}
+                                                            multiple={true}
                                                             registerName="image"
                                                             errors={errors.image}
                                                             {...register("image", { required: "Product Image is required" })}
@@ -251,6 +254,37 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
+                                                            Product Specification
+                                                        </h4>
+                                                        <div className="">
+                                                            <Controller
+                                                                name="specification"
+                                                                control={control}
+                                                                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                                                    <MultiSelectTextInput
+                                                                        label="Select Product Specification"
+                                                                        options={
+                                                                            [
+                                                                                { value: 'color', label: 'Color' },
+                                                                                { value: 'size', label: 'Size' },
+                                                                                { value: 'material', label: 'Material' },
+                                                                                { value: 'weight', label: 'Weight' },
+                                                                                { value: 'dimension', label: 'Dimension' },
+                                                                            ]
+                                                                        }
+                                                                        key={'specification'}
+                                                                        value={value || []}
+                                                                        onChange={onChange}
+                                                                        errors={errors.specification}
+                                                                    />
+                                                                )}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="">
+                                                        <h4
+                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                        >
                                                             Description
                                                         </h4>
                                                         <CustomTextArea
@@ -274,17 +308,39 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
+                                                            Product highlights
+                                                        </h4>
+                                                        <CustomTextArea
+                                                            label="Enter Product Highlights"
+                                                            placeholder="Enter Product Highlights"
+                                                            registerName="highlights"
+                                                            props={{
+                                                                ...register('highlights', {
+                                                                    minLength: {
+                                                                        value: 10,
+                                                                        message: "Highlights must be at least 10 characters"
+                                                                    }
+                                                                })
+                                                            }}
+                                                            errors={errors.highlights}
+                                                        />
+                                                    </div>
+                                                    <div className="">
+
+                                                        <h4
+                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                        >
                                                             Product Additional Information
                                                         </h4>
                                                         <CustomTextArea
                                                             label="Enter Product Additional Information"
-                                                            placeholder="Enter Description"
+                                                            placeholder="Enter Product Additional Information"
                                                             registerName="additionalInfo"
                                                             props={{
                                                                 ...register('additionalInfo', {
                                                                     minLength: {
                                                                         value: 10,
-                                                                        message: "Description must be at least 10 characters"
+                                                                        message: "Additional Information must be at least 10 characters"
                                                                     }
                                                                 })
                                                             }}

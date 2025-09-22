@@ -34,24 +34,26 @@ export default function MultiSelectTextInput({ label, options, value, onChange, 
                 sx={{
                     '& .MuiOutlinedInput-root': {
                         borderRadius: '8px',
+                        backgroundColor: '#f1f5f9',
                         '& fieldset': {
                             color: 'red',
-                            border: '1.5px solid #cbd5e1',
-                            borderColor: errors ? '#ef4444' : '#cbd5e1',
+                            border: '1.5px solid #f1f5f9',
+                            borderColor: errors ? '#ef4444' : '#f1f5f9',
                         },
                         '&:hover fieldset': {
-                            border: '1.5px solid #cbd5e1',
-                            borderColor: errors ? '#ef4444' : '#cbd5e1',
+                            border: '1.5px solid #f1f5f9',
+                            borderColor: errors ? '#ef4444' : '#f1f5f9',
                         },
                         '&.Mui-focused fieldset': {
-                            borderColor: '#007bff',
+                            borderColor: '#fff',
                         },
                     },
                 }}
                 renderInput={(params) => (
                     <TextField
                         {...params}
-                        label={label}
+                        // label={label}
+                        placeholder={label}
                         className='[&>div]:!rounded-lg [&>div]:hover:!border-primary [&>div]:!py-[8px] [&>div]:!border-slate-300 [&>label]:!text-base [&>label]:!font-tbLex [&>label]:!text-slate-400 [&>label]:!px-2'
                     />
                 )}

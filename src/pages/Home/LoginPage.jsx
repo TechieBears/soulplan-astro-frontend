@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import TextInput from "../../components/TextInput/TextInput";
 import { FcGoogle } from "react-icons/fc";
 import ForgetPasswordModal from "../../components/Modals/ForgetPassword/ForgetPasswordModal";
-import { loginUser } from "../../api";
+import { loginUser, registerUser } from "../../api";
 import { setLoggedUser, setRoleIs, setUserDetails } from "../../redux/Slices/loginSlice";
 import { validateEmail, validatePassword } from "../../utils/validateFunction";
 import { useForm } from "react-hook-form";
@@ -30,6 +30,7 @@ const LoginPage = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const savedCredentials = localStorage.getItem('rememberedCredentials');
@@ -76,7 +77,10 @@ const LoginPage = () => {
                 }
                 localStorage.setItem('token', response?.data?.token);
                 toast.success("Login Successfully 🥳");
-                navigate('/', { replace: true });
+
+                // Redirect to the intended destination or home page
+                const from = location.state?.from || '/';
+                navigate(from, { replace: true });
             } else {
                 toast.error(response?.message || response?.error || 'Login failed');
             }
@@ -101,10 +105,45 @@ const LoginPage = () => {
         })
     }, [])
 
-    const handerGoogleSignIn = () => {
+    const handerGoogleSignIn = async () => {
         const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider).then((result) => {
-            console.log(result);
+        signInWithPopup(auth, provider).then(async (result) => {
+            setLoading(true);
+            const playload = {
+                firstName: result?.user?.displayName?.split(' ')[0] || '',
+                lastName: result?.user?.displayName?.split(' ')[1] || '',
+                email: result?.user?.email || '',
+                phoneNumber: result?.user?.providerData[0]?.phoneNumber || '',
+                profileImage: result?.user?.photoURL || '',
+                gender: result?.user?.providerData[0]?.gender || 'other' || '',
+                registerType: 'google'
+            }
+            try {
+                const response = await registerUser(playload);
+                if (response?.success) {
+                    dispatch(setUserDetails(response?.data?.user))
+                    setLoading(false)
+                    dispatch(setLoggedUser(true))
+                    dispatch(setRoleIs(response?.data?.user?.role))
+                    localStorage.setItem('token', response?.data?.token);
+                    toast.success("Login Successfully 🥳");
+
+                    // Redirect to the intended destination or home page
+                    const from = location.state?.from || '/';
+                    navigate(from, { replace: true });
+                } else {
+                    toast.error(response?.message || response?.error || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                if (error.code === 'ERR_NETWORK') {
+                    toast.error('Network error. Please check your connection or try again later.');
+                } else {
+                    toast.error(error || 'Something went wrong. Please try again.');
+                }
+            } finally {
+                setLoading(false);
+            }
         }).catch((error) => {
             console.log(error);
         });

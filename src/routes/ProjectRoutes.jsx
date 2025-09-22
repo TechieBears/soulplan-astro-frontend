@@ -8,6 +8,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import Preloaders from "../components/Loader/Preloaders";
 import HomeNavbar from "../components/HomeComponents/HomeNavbar";
 import HomeFooter from "../components/HomeComponents/HomeFooter";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 // ============ Pages ============
 import Dashboard from "../pages/Admin/Dashboard/Dashboard";
@@ -42,7 +43,6 @@ import ResetPasswordPage from "../pages/Home/ResetPasswordPage";
 import ProductsPage from "../pages/Home/Profile/productspage";
 import ProductDetail from "../pages/Home/ProductDetail";
 import Cart from "../pages/Home/Cart";
-import TestProducts from "../pages/Home/TestProducts";
 import PaymentSuccess from "../pages/Home/PaymentSuccess";
 
 // Service Pages
@@ -130,27 +130,70 @@ const ProjectRoutes = () => {
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                         <Route
                             path="/profile/customer-support"
-                            element={<CustomerSupport />}
+                            element={
+                                <ProtectedRoute>
+                                    <CustomerSupport />
+                                </ProtectedRoute>
+                            }
                         />
 
-                        <Route path="/profile/address" element={<AddressPage />} />
+                        <Route
+                            path="/profile/address"
+                            element={
+                                <ProtectedRoute>
+                                    <AddressPage />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route
                             path="/password/reset/:token"
                             element={<ResetPasswordPage />}
                         />
                         <Route path="/password/reset/:token" element={<ResetPasswordPage />} />
-
-                        {/* Service Routes */}
                         <Route path="/services" element={<ServicesPage />} />
                         <Route path="/services/:id" element={<ServiceSidebar />} />
-                        <Route path="/booking" element={<BookingPage />} />
-                        <Route path="/profile/account" element={<ProfilePage />} />
-                        <Route path="/profile/my-orders" element={<MyOrders />} />
+                        <Route
+                            path="/booking"
+                            element={
+                                <ProtectedRoute>
+                                    <BookingPage />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/profile/account"
+                            element={
+                                <ProtectedRoute>
+                                    <ProfilePage />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/profile/my-orders"
+                            element={
+                                <ProtectedRoute>
+                                    <MyOrders />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route path="/products" element={<ProductsPage />} />
                         <Route path="/product/:id" element={<ProductDetail />} />
-                        <Route path="/cart" element={<Cart />} />
-                        <Route path="/payment-success" element={<PaymentSuccess />} />
-                        <Route path="/test-products" element={<TestProducts />} />
+                        <Route
+                            path="/cart"
+                            element={
+                                <ProtectedRoute>
+                                    <Cart />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/payment-success"
+                            element={
+                                <ProtectedRoute>
+                                    <PaymentSuccess />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
                     <HomeFooter />

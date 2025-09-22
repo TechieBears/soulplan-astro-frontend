@@ -26,9 +26,13 @@ const RegisterPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const onSubmit = async (data) => {
+        const playload = {
+            ...data,
+            registerType: 'normal'
+        }
         try {
             setLoader(true);
-            const response = await registerUser(data);
+            const response = await registerUser(playload);
             if (response?.message === 'User created successfully' || response?.success) {
                 document.title = `SoulPlan : Dashboard | ${response?.user?.role || ''}`;
                 dispatch(setLoggedUser(true));

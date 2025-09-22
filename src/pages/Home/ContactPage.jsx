@@ -8,6 +8,7 @@ import LoadBox from '../../components/Loader/LoadBox';
 import CustomTextArea from "../../components/TextInput/CustomTextArea";
 import toast from "react-hot-toast";
 import { addFeedback } from "../../api";
+import SelectTextInput from "../../components/TextInput/SelectTextInput";
 
 const ContactPage = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
@@ -18,7 +19,6 @@ const ContactPage = () => {
             setLoader(true);
             const payload = {
                 ...data,
-                subject: "anonymous",
                 source: "website"
             }
             await addFeedback(payload).then(res => {
@@ -71,7 +71,7 @@ const ContactPage = () => {
                         <form onSubmit={handleSubmit(onSubmit)} >
                             <div className='bg-white p-3 md:p-5 xl:p-8 rounded-lg
                             grid  md:grid-cols-2 gap-5 items-center' >
-                                <div className="col-span-2">
+                                <div className="">
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
@@ -86,6 +86,29 @@ const ContactPage = () => {
                                         props={{ ...register('fullName', { required: "Full name is required" }), minLength: 3 }}
                                         errors={errors.fullName}
                                     />
+                                </div>
+                                <div className="">
+                                    <h4
+                                        className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
+                                    >
+                                        Subject
+                                    </h4>
+                                    <div className="">
+                                        <SelectTextInput
+                                            label="Select Subject"
+                                            registerName="subject"
+                                            options={[
+                                                { value: 'Feedback', label: 'Feedback' },
+                                                { value: 'Complaint', label: 'Complaint' },
+                                                { value: 'Other', label: 'Other' },
+                                            ]}
+                                            placeholder="Select Subject"
+                                            props={{
+                                                ...register('subject')
+                                            }}
+                                            errors={errors.subject}
+                                        />
+                                    </div>
                                 </div>
                                 <div className="">
                                     <h4

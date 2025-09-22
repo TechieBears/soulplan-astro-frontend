@@ -1187,3 +1187,31 @@ export const deleteAddress = async (id) => {
         return err?.response?.data
     }
 }
+
+
+// =========================== admin product order api ====================
+
+export const getAllProductOrders = async (data) => {
+    console.log('data', data)
+    try {
+        const url = `${environment.baseUrl}product-order/get-all?orderId=${data?.orderId || ""}&date=${data?.date || ""}&status=${data?.status || ""}&page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllProductOrders api file", err);
+        return err?.response?.data
+    }
+}
+
+export const updateProductOrder = async (orderId, data) => {
+    try {
+        const url = `${environment.baseUrl}product-order/update-status/${orderId}`;
+        const response = await axios.put(url, data);
+        return response.data;
+    }
+    catch (err) {
+        console.log("==========error in updateProductOrderStatus api file", err);
+        return err?.response?.data;
+    }
+}
