@@ -138,7 +138,12 @@ function FeatureCard({ feature }) {
                 <img
                     src={feature.image}
                     alt={feature.title}
-                    className={`w-32 md:w-28 h-32 md:h-28 xl:w-32 xl:h-32 object-contain transition-transform duration-500 drop-shadow-lg group-hover:scale-110`}
+                    className={`w-32 md:w-28 h-32 md:h-28 xl:w-32 xl:h-32 object-contain transition-all duration-500 drop-shadow-lg group-hover:scale-110 group-hover:hidden`}
+                />
+                <img
+                    src={feature.hoverimage}
+                    alt={feature.title}
+                    className={`w-32 md:w-28 h-32 md:h-28 xl:w-32 xl:h-32 object-contain transition-all duration-500 drop-shadow-lg group-hover:scale-110 hidden group-hover:block`}
                 />
             </div>
             <div className="space-y-1">
