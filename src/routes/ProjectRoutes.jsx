@@ -18,7 +18,7 @@ import ContactPage from "../pages/Home/ContactPage";
 import RegisterPage from "../pages/Home/RegisterPage";
 import LoginPage from "../pages/Home/LoginPage";
 import TermsConditions from "../components/HomeComponents/TermsConditions";
-import PrivacyPolicy from "../pages/Home/Profile/privacypolicy";
+import PrivacyPolicy from "../pages/Home/PrivacyPolicy";
 import ErrorPage from "./ErrorPage";
 import BookingCalender from "../pages/Admin/Bookings/BookingCalender";
 import AllProducts from "../pages/Admin/AllProducts/AllProducts";

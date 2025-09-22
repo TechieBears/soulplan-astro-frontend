@@ -73,7 +73,7 @@ const HomeFooter = () => {
                             Privacy Policy
                         </button>
                         <button
-                            onClick={() => navigate("/support")}
+                            onClick={() => navigate("/contact")}
                             className="hover:underline"
                         >
                             Customer Support

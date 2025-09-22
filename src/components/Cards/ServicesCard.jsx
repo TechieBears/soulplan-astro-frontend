@@ -1,4 +1,4 @@
-import { ArrowRight } from '@phosphor-icons/react';
+import { ArrowRight } from 'iconsax-reactjs';
 import { useNavigate } from 'react-router-dom';
 import curly from "../../assets/services/carddesign.png";
 
