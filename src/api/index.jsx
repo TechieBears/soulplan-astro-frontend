@@ -818,7 +818,7 @@ export const getAllCustomers = async (data) => {
 }
 
 export const editUserCustomer = async (data) => {
-    const url = `${environment.baseUrl}/customer-users/update`;
+    const url = `${environment.baseUrl}customer-users/update`;
     try {
         const response = await axios.put(url, data)
         return response.data

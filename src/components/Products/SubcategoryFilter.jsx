@@ -22,8 +22,8 @@ const SubcategoryFilter = ({
                             aria-label={`Filter by ${subcategory.name}`}
                         >
                             <span className={`flex-shrink-0 w-4 h-4 border-2 rounded ${isChecked
-                                    ? 'bg-orange-400 border-orange-400 flex items-center justify-center'
-                                    : 'border-gray-300 group-hover:border-orange-200'
+                                    ? 'bg-linear-gradient border-linear-gradient flex items-center justify-center'
+                                    : 'border-gray-300 group-hover:border-linear-gradient'
                                 } transition-colors`}>
                                 {isChecked && (
                                     <svg
@@ -41,7 +41,7 @@ const SubcategoryFilter = ({
                                     </svg>
                                 )}
                             </span>
-                            <span className={`text-sm flex items-center gap-1 ${isChecked ? 'text-orange-600 font-medium' : 'text-gray-600 group-hover:text-orange-500'
+                            <span className={`text-sm flex items-center gap-1 ${isChecked ? 'text-slate-700 text-base' : 'text-slate-700 text-base'
                                 } transition-colors`}>
                                 {subcategory.name}
                             </span>
