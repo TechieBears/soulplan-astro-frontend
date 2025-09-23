@@ -56,7 +56,7 @@ const HomePage = () => {
             background: true,
             video: null,
             onClick: () => {
-              window.location.href = '/';
+              window.location.href = '/services';
             },
             onImageError: (e) => {
               console.error("Image failed to load:", finalImageUrl);
