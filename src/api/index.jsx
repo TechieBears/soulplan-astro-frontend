@@ -1012,17 +1012,15 @@ export const deleteBanner = async (id) => {
 // };
 
 // ====================CUstomer(User) Banner  Api===================
-export const getCustomerBanners = async (data) => {
+export const getActiveBanners = async (type = "website") => {
     try {
-        const url = `${environment.baseUrl}banners/active?type=website`;
-        const response = await axios.get(url)
-        return response.data
+        const res = await axios.get(`${environment.baseUrl}banners/active?type=${type}`);
+        return res.data?.data || [];
+    } catch (err) {
+        console.error("Error fetching banners:", err);
+        return [];
     }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-}
+};
 
 // =========================== Product Cart Api ====================
 
