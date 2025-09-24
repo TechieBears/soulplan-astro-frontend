@@ -1,86 +1,86 @@
-import HomeBanner from '../../components/HomeComponents/HomeBanner'
-import HomeBestServices from '../../components/HomeComponents/HomeBestServices'
-import HomeCertifications from '../../components/HomeComponents/HomeCertifications'
-import Testimonials from '../../components/testimonial'
-import { useEffect, useState } from 'react';
-import { getCustomerBanners, getPublicServices } from '../../api';
+import HomeBanner from "../../components/HomeComponents/HomeBanner";
+import HomeBestServices from "../../components/HomeComponents/HomeBestServices";
+import HomeCertifications from "../../components/HomeComponents/HomeCertifications";
+import Testimonials from "../../components/testimonial";
+import { useEffect, useState } from "react";
+import { getActiveBanners, getPublicServices } from "../../api";
+import { environment } from "../../env";
 
 const HomePage = () => {
-    const [banners, setBanners] = useState([]);
+  const [banners, setBanners] = useState([]);
+  const [slidesData, setSlidesData] = useState([]);
 
-    useEffect(() => {
-        async function fetchBanners() {
-            const res = await getCustomerBanners();
-            // If API returns {data: [...]}, use res.data; else use res
-            setBanners(res?.data || res || []);
-        }
-        fetchBanners();
-    }, []);
+  useEffect(() => {
+    const fetchSlides = async () => {
+      const banners = await getActiveBanners("website");
 
-    // Transform banners to slidesData format expected by HomeBanner
-    // const slidesData = banners.map(banner => {
-    //     let imageUrl = '';
-    //     if (typeof banner.image === 'object' && banner.image.imageUrl) {
-    //         imageUrl = `${environment.baseUrl}${banner.image.imageUrl}`;
-    //     } else if (typeof banner.image === 'string') {
-    //         imageUrl = banner.image.startsWith('http') ? banner.image : `${environment.baseUrl}${banner.image}`;
-    //     } else if (banner.imageUrl) {
-    //         imageUrl = banner.imageUrl.startsWith('http') ? banner.imageUrl : `${environment.baseUrl}${banner.imageUrl}`;
-    //     }
-    //     return {
-    //         id: banner._id || banner.id,
-    //         image: imageUrl,
-    //         title: banner.title || banner.bannerTitle || '',
-    //         description: banner.description || banner.bannerDescription || '',
-    //         button: typeof banner.buttonText === 'string' ? banner.buttonText : '',
-    //         background: true,
-    //         onClick: () => banner.buttonLink ? window.open(banner.buttonLink, '_blank') : null
-    //     };
-    // });
+      const formattedSlides = await Promise.all(
+        banners.map(async (item) => { 
+          let imageUrl;
+          if (item.image && item.image.startsWith("http")) {
+            imageUrl = item.image;
+          } else {
+            const baseUrl = environment.baseUrl.replace("/api/", "");
+            imageUrl = item.image ? `${baseUrl}${item.image}` : "";
+          }
+          let finalImageUrl = imageUrl;
 
-    // Static demo slides data
-    const slidesData = [
-        {
-            id: 1,
-            image: "https://res.cloudinary.com/astroguid/image/upload/v1758019720/image2_chhr4p.jpg",
-            title: `its time to choose your right soul plan for your better future`,
-            description: `Talk to our experienced As Astrologer The Best in Astrology and get right solutions for your problems`,
+          try {
+            const response = await fetch(imageUrl, {
+              mode: "cors",
+              credentials: "omit",
+            });
+
+            if (response.ok) {
+              const blob = await response.blob();
+              finalImageUrl = URL.createObjectURL(blob);
+            } else {
+              console.warn(
+                "Fetch failed, using original URL:",
+                response.status
+              );
+            }
+          } catch (error) {
+            console.warn(
+              "Blob conversion failed, using original URL:",
+              error.message
+            );
+          }
+
+          return {
+            id: item.id,
+            image: finalImageUrl,
+            title: item.title,
+            description: item.description,
             button: true,
             background: true,
             video: null,
-            onClick: () => console.log("Slide 1 button clicked")
-        },
-        {
-            id: 2,
-            image: "https://res.cloudinary.com/astroguid/image/upload/v1758019719/image3_flhz58.jpg",
-            title: "Unlock Your Life's Purpose Through Vedic Astrology",
-            description: "Experience the profound wisdom of ancient Indian astrology. Get detailed birth chart analysis, planetary remedies, and spiritual guidance tailored to your unique cosmic blueprint. Transform your life with authentic Vedic insights.",
-            button: true,
-            background: true,
-            video: null,
-            onClick: () => console.log("Slide 2 button clicked")
-        },
-        {
-            id: 3,
-            image: "https://res.cloudinary.com/astroguid/image/upload/v1758019718/image1_g3yax9.jpg",
-            title: "Harmonize Your Space with Vastu Shastra",
-            description: "Create positive energy flow in your home and workplace with ancient Vastu principles. Our certified consultants provide comprehensive Vastu analysis and practical solutions to enhance prosperity, health, and happiness in your life.",
-            button: true,
-            background: true,
-            video: null,
-            onClick: () => console.log("Slide 3 button clicked")
-        }
-    ];
+            onClick: () => {
+              window.location.href = '/services';
+            },
+            onImageError: (e) => {
+              console.error("Image failed to load:", finalImageUrl);
+              console.error("Error event:", e);
+            },
+          };
+        })
+      );
+      setSlidesData(formattedSlides);
 
-    return (
-        <div>
-            <HomeBanner slidesData={slidesData} />
-            <HomeCertifications />
-            <HomeBestServices />
-            <Testimonials />
-            {/* <HomeFooter /> */}
-        </div>
-    )
-}
+    };
 
-export default HomePage
+    fetchSlides();
+  }, []);
+
+  return (
+    <div>
+      <HomeBanner slidesData={slidesData} />
+      <HomeCertifications />
+      <HomeBestServices />
+      <Testimonials />
+      {/* <HomeFooter /> */}
+    </div>
+  );
+};
+
+export default HomePage;
