@@ -53,14 +53,33 @@ const ProductBookings = () => {
     };
 
 
-    const handleOrderStatusChange = async (orderId, newStatus) => {
+    const handleOrderStatusChange = async (orderId, newStatus, currentStatus) => {
         try {
-            const updatedData = {
-                orderStatus: newStatus
+            const validOptions = getValidStatusOptions(currentStatus);
+            const isValidTransition = validOptions.some(option => option.value === newStatus);
+
+            if (!isValidTransition) {
+                toast.error('Invalid status transition');
+                return;
             }
-            await updateProductOrder(orderId, updatedData);
+
+            const updatedData = {
+                "orderId": orderId,
+                "status": newStatus
+            }
+
+            await updateProductOrder(updatedData);
             setRefreshTrigger(prev => prev + 1);
-            toast.success('Order status updated successfully');
+
+            const statusMessages = {
+                'CONFIRMED': 'Order confirmed successfully!',
+                'SHIPPED': 'Order marked as shipped!',
+                'DELIVERED': 'Order delivered successfully!',
+                'CANCELLED': 'Order cancelled.',
+                'REFUNDED': 'Order refunded.'
+            };
+
+            toast.success(statusMessages[newStatus] || 'Order status updated successfully');
         } catch (error) {
             console.log('error', error)
             toast.error('Failed to update order status');
@@ -76,19 +95,55 @@ const ProductBookings = () => {
         { value: 'REFUNDED', label: 'Refunded' }
     ];
 
-    const orderStatusBody = (row) => (
-        <select
-            value={row?.orderStatus || 'PENDING'}
-            onChange={(e) => handleOrderStatusChange(row?._id, e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-tbLex tracking-tight"
-        >
-            {orderStatusOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                    {option.label}
-                </option>
-            ))}
-        </select>
-    );
+    const getValidStatusOptions = (currentStatus) => {
+        const statusFlow = {
+            'PENDING': ['PENDING', 'CONFIRMED', 'CANCELLED'],
+            'CONFIRMED': ['CONFIRMED', 'SHIPPED', 'CANCELLED'],
+            'SHIPPED': ['SHIPPED', 'DELIVERED', 'CANCELLED'],
+            'DELIVERED': ['DELIVERED', 'REFUNDED'],
+            'CANCELLED': ['CANCELLED', 'REFUNDED'],
+            'REFUNDED': ['REFUNDED']
+        };
+
+        const validStatuses = statusFlow[currentStatus] || ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'REFUNDED'];
+
+        return orderStatusOptions.filter(option =>
+            validStatuses.includes(option.value)
+        );
+    };
+
+    const orderStatusBody = (row) => {
+        const currentStatus = row?.orderStatus || 'PENDING';
+        const validOptions = getValidStatusOptions(currentStatus);
+
+        const getStatusColor = (status) => {
+            switch (status) {
+                case 'PENDING': return 'text-yellow-600 bg-yellow-50/80 border-yellow-200';
+                case 'CONFIRMED': return 'text-blue-600 bg-blue-50/80 border-blue-200';
+                case 'SHIPPED': return 'text-purple-600 bg-purple-50/80 border-purple-200';
+                case 'DELIVERED': return 'text-green-600 bg-green-50/80 border-green-200';
+                case 'CANCELLED': return 'text-red-600 bg-red-50/80 border-red-200';
+                case 'REFUNDED': return 'text-gray-600 bg-gray-50/80 border-gray-200';
+                default: return 'text-gray-600 bg-gray-50/80 border-gray-200';
+            }
+        };
+
+        return (
+            <div className="space-y-1">
+                <select
+                    value={currentStatus}
+                    onChange={(e) => handleOrderStatusChange(row?._id, e.target.value, currentStatus)}
+                    className={`px-6 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-tbLex tracking-tight ${getStatusColor(currentStatus)}`}
+                >
+                    {validOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </select>
+            </div>
+        );
+    };
 
     const paymentStatusBody = (row) => {
         const statusColor = row?.paymentStatus === 'PAID' ? 'text-green-600 bg-green-100' :

@@ -523,6 +523,17 @@ export const getProductSubCategories = async (data) => {
         return err?.response?.data
     }
 }
+export const getProductSubCategoriesByCategory = async (id) => {
+    try {
+        const url = `${environment.baseUrl}product-subcategories/get-by-category?id=${id || ''}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getProductSubCategoriesSingle api file", err);
+        return err?.response?.data
+    }
+}
 
 export const addProductSubCategory = async (data) => {
     const url = `${environment.baseUrl}product-subcategories/create`;
@@ -719,7 +730,7 @@ export const getPublicProductsFilter = async () => {
 export const getProducts = async (data) => {
     console.log('data', data)
     try {
-        const url = `${environment.baseUrl}product/get-all?name=${data?.name}&categoryName=${data?.categoryName}&page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}product/get-all?name=${data?.name || ''}&categoryId=${data?.categoryId || ''}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -769,7 +780,7 @@ export const deleteProduct = async (id) => {
 
 export const getAllEmployees = async (data) => {
     try {
-        const url = `${environment.baseUrl}employee-users/get-all?name=${data?.name}&page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}employee-users/get-all?name=${data?.name || ''}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -1092,7 +1103,7 @@ export const clearCart = async () => {
 
 export const getAllFeedback = async (data) => {
     try {
-        const url = `${environment.baseUrl}feedback/get-all?page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}feedback/get-all?search=${data?.name || ''}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -1115,7 +1126,7 @@ export const addFeedback = async (data) => {
     }
 }
 
-export const respondFeedback = async (id, data) => {
+export const respondFeedback = async (data) => {
     const url = `${environment.baseUrl}feedback/respond`;
     try {
         const response = await axios.post(url, data)
@@ -1204,10 +1215,10 @@ export const getAllProductOrders = async (data) => {
     }
 }
 
-export const updateProductOrder = async (orderId, data) => {
+export const updateProductOrder = async (data) => {
     try {
-        const url = `${environment.baseUrl}product-order/update-status/${orderId}`;
-        const response = await axios.put(url, data);
+        const url = `${environment.baseUrl}product-order/update-order-status`;
+        const response = await axios.post(url, data);
         return response.data;
     }
     catch (err) {

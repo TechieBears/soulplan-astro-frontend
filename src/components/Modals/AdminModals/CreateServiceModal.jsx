@@ -81,6 +81,20 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                 ...userData
             });
             setValue('category', userData?.category?._id);
+        } else {
+            reset({
+                category: '',
+                serviceType: '',
+                name: '',
+                title: '',
+                subTitle: '',
+                price: '',
+                description: '',
+                durationInMinutes: '',
+                htmlContent: '',
+                image: '',
+                videoUrl: []
+            });
         }
     }, [edit, userData, reset, setValue, open]);
 

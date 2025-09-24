@@ -3,18 +3,16 @@ import moment from 'moment'
 import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import { getAllEqnuires, getAllFeedback } from '../../../api'
+import { getAllFeedback } from '../../../api';
 import Table from '../../../components/Table/Table'
 import TableHeader from '../../../components/Table/TableHeader'
-import SelectTextInput from '../../../components/TextInput/SelectTextInput'
 import TextInput from '../../../components/TextInput/TextInput'
 import { formBtn1 } from '../../../utils/CustomClass'
 import usePagination from '../../../utils/customHooks/usePagination'
 import SendFeedbackReplay from '../../../components/Modals/AdminModals/SendFeedbackReplay';
 
 const initialFilterState = {
-    name: '',
-    status: '',
+    name: ''
 };
 
 export default function CustomerFeedback() {
@@ -27,7 +25,6 @@ export default function CustomerFeedback() {
         refresh: refreshTrigger
     }), [filterCriteria, refreshTrigger]);
 
-    // Pagination hook
     const {
         filterData,
         pageNo,
@@ -38,18 +35,16 @@ export default function CustomerFeedback() {
         records,
         error
     } = usePagination(1, 10, getAllFeedback, combinedFilters);
-    // Handle API errors
+
     useEffect(() => {
         if (error) toast.error('Failed to fetch users');
     }, [error]);
 
-    // Form submit handler
     const handleFilterSubmit = (data) => {
         setFilterCriteria(data);
         pageChangeHandler(1);
     };
 
-    // Clear filters
     const handleClearFilters = () => {
         reset(initialFilterState);
         setFilterCriteria(initialFilterState);
@@ -68,16 +63,15 @@ export default function CustomerFeedback() {
         { field: 'source', header: 'Reason Type', style: true, sortable: true },
         { field: 'subject', header: 'Subject', style: true, sortable: true },
         { field: 'createdAt', header: 'Enquiry Date', body: (row) => <>{moment(row?.createdAt)?.format('DD-MM-YYYY') || "---- -----"}</>, style: true, sortable: true },
-        { field: 'Message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true, sortable: true },
+        { field: 'Message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate1 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true, sortable: true },
         { field: 'isRead', header: 'Status', body: (row) => <h6 className={`${!row?.isRead ? 'text-red-500 bg-red-200' : 'text-green-500 bg-green-200'} p-2 text-center rounded-full capitalize px-5`}>{row?.isRead ? 'Read' : 'Unread'}</h6>, style: true },
         { field: "action", header: "Action", body: actionBodyTemplate, style: true, sortable: true },
     ];
     return (
         <div className="space-y-5">
-            {/* Filter Form */}
             <div className="bg-white p-4 sm:m-5 rounded-xl">
                 <form onSubmit={handleSubmit(handleFilterSubmit)} className="flex flex-col lg:flex-row gap-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-2">
+                    <div className="grid grid-cols-1 md:grid-cols-1 w-full gap-4">
                         <TextInput
                             label="Enter Full Name*"
                             placeholder="Enter Full Name"
@@ -85,24 +79,6 @@ export default function CustomerFeedback() {
                             registerName="name"
                             props={{ ...register('name') }}
                         />
-                        <div className="">
-                            <SelectTextInput
-                                label="Select Status*"
-                                registerName="status"
-                                placeholder={"Select Status"}
-                                options={[
-                                    { value: 'pending', label: 'Pending' },
-                                    { value: 'resolved', label: 'Resolved' },
-                                    { value: 'closed', label: 'Closed' },
-                                    { value: 'rejected', label: 'Rejected' },
-                                ]}
-                                props={{
-                                    ...register('status'),
-                                    value: watch('status') || ''
-                                }}
-                            />
-                        </div>
-
                     </div>
                     <div className="flex space-x-2">
                         <button type="submit" className={`${formBtn1} w-full`}>Filter</button>
@@ -111,13 +87,11 @@ export default function CustomerFeedback() {
                 </form>
             </div>
 
-            {/* User Table Section */}
             <div className="bg-white rounded-xl m-4 sm:m-5 shadow-sm  p-5 sm:p-7 ">
                 <TableHeader title={`User Feedbacks (${filterData?.length || 0})`} subtitle={'Recently users enquiries or feedback will appear here'} />
 
                 <Table data={filterData} columns={columns} paginator={false} />
 
-                {/* Pagination Controls */}
                 <div className="flex justify-end items-center gap-4 mt-4">
                     <button
                         onClick={() => pageChangeHandler(pageNo - 1)}

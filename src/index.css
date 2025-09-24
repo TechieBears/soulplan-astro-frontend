@@ -522,10 +522,6 @@ body::-webkit-scrollbar-thumb {
     background: linear-gradient(90deg, #9333ea 0%, #dc2626 100%);
 }
 
-/* Product page specific styles */
-.bg-slate1 {
-    background-color: #f8fafc;
-}
 
 .bg-gradient-orange {
     background: linear-gradient(90deg, #f97316 0%, #ea580c 100%);

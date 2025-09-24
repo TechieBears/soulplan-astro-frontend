@@ -4,8 +4,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Error from '../Errors/Error';
 
 export default function MultiSelectTextInput({ label, options, value, onChange, errors }) {
-    const selectedOptions = options.filter(option =>
-        (value || []).includes(option.value)
+    const selectedOptions = options?.filter(option =>
+        (value || [])?.includes(option?.value)
     );
 
     return (
@@ -16,18 +16,18 @@ export default function MultiSelectTextInput({ label, options, value, onChange, 
                 disableCloseOnSelect
                 value={selectedOptions}
                 onChange={(event, newOptions) => {
-                    const newValues = newOptions.map(option => option.value);
+                    const newValues = newOptions?.map(option => option?.value);
                     onChange(newValues);
                 }}
                 getOptionLabel={(option) => option.label}
-                isOptionEqualToValue={(option, value) => option.value === value.value}
+                isOptionEqualToValue={(option, value) => option?.value === value?.value}
                 renderOption={(props, option, { selected }) => {
                     return (
                         <li {...props} className={`px-2 bg-white text-sm font-tbLex text-slate-500 transition-all duration-150 tracking-tight`}>
                             <Checkbox
                                 checked={selected}
                             />
-                            {option.label}
+                            {option?.label}
                         </li>
                     );
                 }}
@@ -61,7 +61,7 @@ export default function MultiSelectTextInput({ label, options, value, onChange, 
             {errors && (
                 <Error
                     message={
-                        errors.message ||
+                        errors?.message ||
                         `${label.replace(/\b(enter|your)\b/gi, "").trim()} is required`
                     }
                 />

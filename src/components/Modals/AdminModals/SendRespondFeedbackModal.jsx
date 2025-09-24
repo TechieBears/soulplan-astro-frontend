@@ -43,6 +43,18 @@ function SendRespondFeedbackModal({ edit, userData, setRefreshTrigger }) {
             toast.error("Failed to add Employee");
         }
     }
+    useEffect(() => {
+        if (edit && userData) {
+            reset({
+                firstName: userData?.firstName,
+                lastName: userData?.lastName,
+                email: userData?.email,
+                mobileNo: userData?.mobileNo,
+            });
+        } else {
+            reset();
+        }
+    }, [edit, userData, reset, setValue, open]);
 
     return (
         <>
@@ -144,7 +156,7 @@ function SendRespondFeedbackModal({ edit, userData, setRefreshTrigger }) {
                                                 </div>
                                             </div>
 
-                                            <footer className="py-3 flex bg-slate-100 justify-end px-4 space-x-3">
+                                            <footer className="py-3 flex bg-slate1 justify-end px-4 space-x-3">
                                                 {loader ? <LoadBox className={formBtn1} /> : <button type='submit' className={formBtn1}>submit</button>}
                                             </footer>
                                         </form>

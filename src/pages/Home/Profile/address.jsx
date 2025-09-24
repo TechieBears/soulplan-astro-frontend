@@ -171,7 +171,6 @@ const AddressPage = () => {
                                     placeholder="Enter First Name"
                                     type="text"
                                     registerName="firstName"
-                                    style="!bg-slate-100"
                                     props={{ ...register('firstName', { required: "First name is required", validate: validateAlphabets }), minLength: 3 }}
                                     errors={errors.firstName}
                                 />
@@ -186,7 +185,6 @@ const AddressPage = () => {
                                     label="Enter Last Name*"
                                     placeholder="Enter Last Name"
                                     type="text"
-                                    style="!bg-slate-100"
                                     registerName="lastName"
                                     props={{ ...register('lastName', { required: "Last name is required", validate: validateAlphabets }), minLength: 3 }}
                                     errors={errors.lastName}
@@ -206,7 +204,6 @@ const AddressPage = () => {
                                     label="Enter Your Phone Number"
                                     placeholder="Enter Your Phone Number"
                                     type="tel"
-                                    style="!bg-slate-100"
                                     registerName="mobileNo"
                                     props={{ ...register('mobileNo', { validate: validatePhoneNumber, required: true }), maxLength: 10, minLength: 10 }}
                                     errors={errors.mobileNo}
@@ -251,7 +248,6 @@ const AddressPage = () => {
                             <CustomTextArea
                                 label="Enter Address"
                                 placeholder="Enter Address"
-                                style="!bg-slate-100"
                                 registerName="address"
                                 props={{
                                     ...register('address', {
@@ -276,7 +272,6 @@ const AddressPage = () => {
                                     label="Enter City"
                                     placeholder="Enter City"
                                     type="text"
-                                    style="!bg-slate-100"
                                     registerName="city"
                                     props={{
                                         ...register('city', {
@@ -299,7 +294,6 @@ const AddressPage = () => {
                                     label="Enter Postal Code"
                                     placeholder="Enter Postal Code"
                                     type="tel"
-                                    style="!bg-slate-100"
                                     registerName="postalCode"
                                     props={{
                                         ...register('postalCode', {
@@ -333,7 +327,6 @@ const AddressPage = () => {
                                         label="Enter State"
                                         placeholder="Enter State"
                                         type="text"
-                                        style="!bg-slate-100"
                                         registerName="state"
                                         props={{
                                             ...register('state', {
@@ -355,7 +348,6 @@ const AddressPage = () => {
                                 </h4>
                                 <div className="">
                                     <SelectTextInput
-                                        style="!bg-slate-100"
                                         label="Select Country"
                                         registerName="country"
                                         options={[
@@ -411,7 +403,7 @@ const AddressCard = ({ address, onEdit, fetchAddresses }) => {
     return (
         <div
             key={address?._id}
-            className="bg-slate-100 rounded-lg p-4 "
+            className="bg-slate1 rounded-lg p-4 "
         >
             <div className="flex flex-col md:flex-row justify-between items-start gap-3">
                 <div className="flex-1 space-y-1">

@@ -62,13 +62,15 @@ function ServiceCategoriesModal({ edit, userData, setRefreshTrigger }) {
 
     useEffect(() => {
         if (edit && userData) {
-            setValue('name', userData?.name);
-            setValue('image', userData?.image);
-            setValue('description', userData?.description);
+            reset({
+                name: userData?.name,
+                image: userData?.image,
+                description: userData?.description,
+            });
         } else {
             reset();
         }
-    }, [edit, userData, reset, setValue]);
+    }, [edit, userData, reset, setValue, open]);
 
     return (
         <>

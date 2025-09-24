@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { formBtn1 } from '../../../utils/CustomClass';
 import LoadBox from '../../Loader/LoadBox';
@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { Edit } from 'iconsax-reactjs';
 import { respondFeedback } from '../../../api';
 import { TableTitle } from '../../../helper/Helper';
-import SelectTextInput from '../../TextInput/SelectTextInput';
+import CustomTextArea from '../../TextInput/CustomTextArea';
 
 function SendFeedbackReplay({ edit, userData, setRefreshTrigger }) {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
@@ -20,32 +20,43 @@ function SendFeedbackReplay({ edit, userData, setRefreshTrigger }) {
     const formSubmit = async (data) => {
         try {
             setLoader(true);
-            const updatedData = {
+            const payload = {
+                id: userData?._id,
                 message: data?.message,
                 subject: data?.subject,
                 greeting: data?.greeting,
                 signature: data?.signature,
             }
-            if (edit) {
-                await respondFeedback(userData?._id, updatedData).then(res => {
-                    if (res?.success) {
-                        toast.success(res?.message)
-                        setLoader(false);
-                        reset();
-                        setRefreshTrigger(prev => prev + 1);
-                        toggle();
-                    } else {
-                        toast.error(res?.message || "Something went wrong")
-                        setLoader(false);
-                    }
-                })
-            }
+            await respondFeedback(payload).then(res => {
+                if (res?.success) {
+                    toast.success(res?.message)
+                    setLoader(false);
+                    reset();
+                    setRefreshTrigger(prev => prev + 1);
+                    toggle();
+                } else {
+                    toast.error(res?.message || "Something went wrong")
+                    setLoader(false);
+                }
+            })
         } catch (error) {
             console.log('Error submitting form:', error);
             setLoader(false);
             toast.error("Failed to add Employee");
         }
     }
+    useEffect(() => {
+        if (edit && userData) {
+            reset({
+                message: userData?.message,
+                subject: userData?.subject,
+                greeting: userData?.greeting,
+                signature: userData?.signature,
+            });
+        } else {
+            reset();
+        }
+    }, [edit, userData, reset, setValue, open]);
 
     return (
         <>
@@ -94,12 +105,19 @@ function SendFeedbackReplay({ edit, userData, setRefreshTrigger }) {
                                                     >
                                                         Message
                                                     </h4>
-                                                    <TextInput
-                                                        label="Enter Message*"
+                                                    <CustomTextArea
+                                                        label="Enter Message"
                                                         placeholder="Enter Message"
-                                                        type="text"
                                                         registerName="message"
-                                                        props={{ ...register('message', { required: "Message is required", validate: validateAlphabets }), minLength: 3 }}
+                                                        props={{
+                                                            ...register('message', {
+                                                                required: "Message is required",
+                                                                minLength: {
+                                                                    value: 10,
+                                                                    message: "Message must be at least 10 characters"
+                                                                }
+                                                            })
+                                                        }}
                                                         errors={errors.message}
                                                     />
                                                 </div>
@@ -137,31 +155,22 @@ function SendFeedbackReplay({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Signature
+                                                        Signature (Your Name)
                                                     </h4>
                                                     <div className="">
-                                                        <SelectTextInput
-                                                            label="Select Signature"
+                                                        <TextInput
+                                                            label="Enter Signature"
+                                                            placeholder="Enter Signature"
+                                                            type="text"
                                                             registerName="signature"
-                                                            options={[
-                                                                { value: '', label: 'Select Signature' },
-                                                                { value: '1', label: 'Signature 1' },
-                                                                { value: '2', label: 'Signature 2' },
-                                                                { value: '3', label: 'Signature 3' },
-                                                            ]}
-                                                            placeholder="Select Signature"
-                                                            props={{
-                                                                ...register('signature', { required: true }),
-                                                                value: watch('signature') || ''
-                                                            }}
+                                                            props={{ ...register('signature', { required: "Signature is required" }) }}
                                                             errors={errors.signature}
-                                                            defaultValue={userData?.signature}
                                                         />
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <footer className="py-3 flex bg-slate-100 justify-end px-4 space-x-3">
+                                            <footer className="py-3 flex bg-slate1 justify-end px-4 space-x-3">
                                                 {loader ? <LoadBox className={formBtn1} /> : <button type='submit' className={formBtn1}>Send </button>}
                                             </footer>
                                         </form>

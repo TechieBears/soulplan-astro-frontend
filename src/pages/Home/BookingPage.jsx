@@ -88,7 +88,6 @@ const BookingPage = () => {
                                     Services Type
                                 </h4>
                                 <SelectTextInput
-                                    style="!bg-slate-100"
                                     label="Select Services Type"
                                     registerName="serviceType"
                                     options={[
@@ -137,7 +136,6 @@ const BookingPage = () => {
                                     Time Slots
                                 </h4>
                                 <SelectTextInput
-                                    style="!bg-slate-100"
                                     label="Select Time Slots"
                                     registerName="timeSlot"
                                     options={[
@@ -174,7 +172,6 @@ const BookingPage = () => {
                                         value: watch('currency') || ''
                                     }}
                                     errors={errors.currency}
-                                    style="!bg-slate-100"
                                     label="Select Currency"
                                     registerName="currency"
                                     options={currencyOptions}
@@ -192,7 +189,6 @@ const BookingPage = () => {
                                         label="Enter First Name*"
                                         placeholder="Enter First Name"
                                         type="text"
-                                        style="!bg-slate-100"
                                         registerName="firstName"
                                         props={{ ...register('firstName', { required: "First name is required", validate: validateAlphabets }), minLength: 3 }}
                                         errors={errors.firstName}
@@ -208,7 +204,6 @@ const BookingPage = () => {
                                         label="Enter Last Name*"
                                         placeholder="Enter Last Name"
                                         type="text"
-                                        style="!bg-slate-100"
                                         registerName="lastName"
                                         props={{ ...register('lastName', { required: "Last name is required", validate: validateAlphabets }), minLength: 3 }}
                                         errors={errors.lastName}
@@ -221,7 +216,6 @@ const BookingPage = () => {
                                         Email
                                     </h4>
                                     <TextInput
-                                        style="!bg-slate-100"
                                         label="Enter Your Email"
                                         placeholder="Enter Your Email"
                                         type="text"
@@ -240,7 +234,6 @@ const BookingPage = () => {
                                         label="Enter Your Phone Number"
                                         placeholder="Enter Your Phone Number"
                                         type="tel"
-                                        style="!bg-slate-100"
                                         registerName="mobileNo"
                                         props={{ ...register('mobileNo', { validate: validatePhoneNumber, required: true }), maxLength: 10, minLength: 10 }}
                                         errors={errors.mobileNo}

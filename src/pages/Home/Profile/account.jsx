@@ -73,7 +73,6 @@ export default function AccountPage() {
                                     type="text"
                                     registerName="firstName"
                                     value={user?.firstName}
-                                    style="!bg-slate-100"
                                     props={{ ...register('firstName', { required: "First name is required", validate: validateAlphabets }), minLength: 3, disabled: !isEditable, readOnly: !isEditable }}
                                     errors={errors.firstName}
                                 />
@@ -90,7 +89,6 @@ export default function AccountPage() {
                                     label="Enter Last Name*"
                                     placeholder="Enter Last Name"
                                     type="text"
-                                    style="!bg-slate-100"
                                     registerName="lastName"
                                     value={user?.lastName}
                                     props={{ ...register('lastName', { required: "Last name is required", validate: validateAlphabets }), minLength: 3, disabled: !isEditable, readOnly: !isEditable }}
@@ -110,7 +108,6 @@ export default function AccountPage() {
                                     placeholder="Enter Your Email"
                                     type="text"
                                     registerName="email"
-                                    style="!bg-slate-100"
                                     value={user?.email}
                                     props={{ ...register('email'), valdate: validateEmail, required: "Email is required", disabled: true, readOnly: true }}
                                     errors={errors.email}
@@ -128,7 +125,6 @@ export default function AccountPage() {
                                     label="Enter Your Phone Number"
                                     placeholder="Enter Your Phone Number"
                                     type="tel"
-                                    style="!bg-slate-100"
                                     registerName="mobileNo"
                                     value={user?.mobileNo}
                                     props={{ ...register('mobileNo', { validate: validatePhoneNumber, required: true }), maxLength: 10, minLength: 10, disabled: !isEditable, readOnly: !isEditable }}
@@ -147,7 +143,6 @@ export default function AccountPage() {
                                     label="Upload Profile Image*"
                                     multiple={false}
                                     registerName="profileImage"
-                                    style="!bg-slate-100"
                                     errors={errors.profileImage}
                                     {...register("profileImage", { required: "Profile Image is required" })}
                                     value={user?.profileImage}
@@ -168,7 +163,6 @@ export default function AccountPage() {
                                 </h4>
                                 <div className="">
                                     <SelectTextInput
-                                        style="!bg-slate-100"
                                         label="Select Gender"
                                         registerName="gender"
                                         options={[

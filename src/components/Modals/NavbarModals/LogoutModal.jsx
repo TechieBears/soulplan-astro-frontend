@@ -1,7 +1,7 @@
 import { Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setLoggedUser, setLoggedUserDetails, setRoleIs } from '../../../redux/Slices/loginSlice';
 import { logoutUser } from '../../../api';
@@ -10,9 +10,10 @@ import toast from 'react-hot-toast';
 export default function LogoutModal({ open, setOpen }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const user = useSelector((state) => state.user.userDetails);
     // ============================= logout user dashbaord ================================
     const logOut = async () => {
-        await logoutUser().then((res) => {
+        await logoutUser({ userId: user?._id }).then((res) => {
             console.log(res)
             dispatch(setLoggedUserDetails(undefined))
             dispatch(setRoleIs(undefined))

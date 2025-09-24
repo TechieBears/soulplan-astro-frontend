@@ -81,7 +81,6 @@ const ContactPage = () => {
                                         label="Enter Full Name*"
                                         placeholder="Enter Full Name"
                                         type="text"
-                                        style="!bg-slate-100"
                                         registerName="fullName"
                                         props={{ ...register('fullName', { required: "Full name is required" }), minLength: 3 }}
                                         errors={errors.fullName}
@@ -120,7 +119,6 @@ const ContactPage = () => {
                                         label="Enter Your Email"
                                         placeholder="Enter Your Email"
                                         type="text"
-                                        style="!bg-slate-100"
                                         registerName="email"
                                         props={{ ...register('email'), valdate: validateEmail, required: "Email is required" }}
                                         errors={errors.email}
@@ -136,7 +134,6 @@ const ContactPage = () => {
                                         label="Enter Your Phone Number"
                                         placeholder="Enter Your Phone Number"
                                         type="tel"
-                                        style="!bg-slate-100"
                                         registerName="mobileNumber"
                                         props={{ ...register('mobileNumber', { validate: validatePhoneNumber, required: true }), maxLength: 10, minLength: 10 }}
                                         errors={errors.mobileNumber}
@@ -151,7 +148,6 @@ const ContactPage = () => {
                                     <CustomTextArea
                                         label="Enter Message"
                                         placeholder="Enter Message"
-                                        style="!bg-slate-100"
                                         registerName="message"
                                         props={{
                                             ...register('message', {

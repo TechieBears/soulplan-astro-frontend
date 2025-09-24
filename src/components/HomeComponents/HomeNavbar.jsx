@@ -7,9 +7,8 @@ import { useSelector } from "react-redux";
 import { LoginCurve, User, Box, Building4, CallCalling, Information } from "iconsax-reactjs";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { getActiveServiceCategories, getProductFromCart } from "../../api";
+import { getActiveServiceCategories } from "../../api";
 import { ShoppingCart } from "lucide-react";
-import toast from "react-hot-toast";
 
 const HomeNavbar = () => {
     const navLinks = [
@@ -97,20 +96,6 @@ const HomeNavbar = () => {
         return () => document.removeEventListener("keydown", keyHandler);
     });
 
-
-
-    useEffect(() => {
-        const fetchAddress = async () => {
-            try {
-                const res = await getProductFromCart();
-                setCartItems(res?.data?.items);
-            } catch (err) {
-                toast.error(err.message || 'Failed to fetch product cart');
-                console.error('Error fetching product cart', err);
-            }
-        }
-        fetchAddress();
-    }, []);
 
     return (
         <>

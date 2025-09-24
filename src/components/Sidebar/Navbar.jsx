@@ -1,19 +1,19 @@
 import "../../css/Navbar.css"
 import { ArrowDown2, LoginCurve, NotificationBing, Setting2, SmsNotification, User } from 'iconsax-reactjs';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState, useRef } from 'react';
 import LogoutModal from '../Modals/NavbarModals/LogoutModal';
 import { formBtn1 } from '../../utils/CustomClass';
 import greetingTime from "greeting-time";
 import moment from "moment";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { logoutUser } from "../../api";
+import { setLoggedUser, setLoggedUserDetails, setRoleIs, setUserDetails } from "../../redux/Slices/loginSlice";
 
-const Navbar = ({ mobileSidebar, setMobileSidebar, setIsActiveLink, isActiveLink }) => {
+const Navbar = ({ mobileSidebar, isActiveLink }) => {
     const user = useSelector((state) => state.user.userDetails)
     const [open, setOpen] = useState(false)
-    const [card, setCard] = useState(true)
-    // ============================= logout user dashbaord ================================
-
     return (
         <>
             <div className={`${mobileSidebar ? "left-[15rem]" : ""} ${isActiveLink ? "left-[5rem]" : "left-0 xl:left-[15rem]"}  duration-700 transition-all ease-in-out  pt-3.5 py-2 px-4 z-50 md:px-3 m-5 mx-7 rounded-xl bg-white mt-7`} >
@@ -58,9 +58,9 @@ const Navbar = ({ mobileSidebar, setMobileSidebar, setIsActiveLink, isActiveLink
 const ProfilePage = () => {
 
     const user = useSelector((state) => state.user.userDetails)
-
+    const dispatch = useDispatch();
     const [dropdownOpen, setDropdownOpen] = useState(false);
-
+    const navigate = useNavigate();
     const trigger = useRef(null);
     const dropdown = useRef(null);
 
@@ -90,10 +90,26 @@ const ProfilePage = () => {
         return () => document.removeEventListener("keydown", keyHandler);
     });
 
-    const logOut = () => {
-        setDropdownOpen(!dropdownOpen)
-        localStorage.removeItem("persist:root");
-        window.location.href = "/";
+    // ============================= logout user dashbaord ================================
+    const logOut = async () => {
+        await logoutUser({ userId: user?._id }).then((res) => {
+            console.log(res)
+            if (res?.success) {
+                setDropdownOpen(!dropdownOpen)
+                dispatch(setLoggedUserDetails(undefined))
+                dispatch(setRoleIs(undefined))
+                dispatch(setLoggedUser(false))
+                dispatch(setUserDetails(undefined))
+                localStorage.removeItem("persist:root");
+                toast.success(res?.message || res?.success || 'Logout successfully')
+                navigate('/')
+            } else {
+                toast.error(res?.message || res?.error || 'Logout failed')
+            }
+        }).catch((err) => {
+            console.log(err)
+            toast.error(err?.message || err?.error || 'Logout failed')
+        })
     }
 
     return (
@@ -156,7 +172,7 @@ const ProfilePage = () => {
                                 </NavLink>
                             </div>
                             <div>
-                                <button onClick={logOut} className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium font-tbLex text-red-500 hover:bg-gray-50 ">
+                                <button onClick={() => logOut()} className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium font-tbLex text-red-500 hover:bg-gray-50 ">
                                     <span className="flex items-center gap-2">
                                         <LoginCurve size={22} variant="TwoTone" />
                                         Log out

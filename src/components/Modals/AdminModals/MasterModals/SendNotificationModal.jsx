@@ -254,7 +254,7 @@ function SendNotificationModal({ edit, userData, setRefreshTrigger }) {
                                                 </div>
                                             </div>
 
-                                            <footer className="py-3 flex bg-slate-100 justify-end px-4 space-x-3">
+                                            <footer className="py-3 flex bg-slate1 justify-end px-4 space-x-3">
                                                 {loader ? <LoadBox className={formBtn1} /> : <button type='submit' className={formBtn1}>submit</button>}
                                             </footer>
                                         </form>

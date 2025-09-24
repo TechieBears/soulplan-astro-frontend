@@ -104,10 +104,10 @@ const CartPage = () => {
                     </h1>
 
                     <div className="absolute right-0 sm:flex bg-white rounded-full p-1.5 space-x-1.5">
-                        <button className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${activeTab === "services" ? "bg-linear-gradient text-white" : ""}`} onClick={() => setActiveTab("services")}>
+                        <button className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate1 transition-all duration-300 text-sm md:text-base font-tbLex ${activeTab === "services" ? "bg-linear-gradient text-white" : ""}`} onClick={() => setActiveTab("services")}>
                             Services
                         </button>
-                        <button className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${activeTab === "products" ? "bg-linear-gradient text-white" : ""}`} onClick={() => setActiveTab("products")}>
+                        <button className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate1 transition-all duration-300 text-sm md:text-base font-tbLex ${activeTab === "products" ? "bg-linear-gradient text-white" : ""}`} onClick={() => setActiveTab("products")}>
                             Products
                         </button>
                     </div>
