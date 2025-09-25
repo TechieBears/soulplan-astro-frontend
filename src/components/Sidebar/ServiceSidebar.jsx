@@ -1,151 +1,195 @@
 import { useEffect, useState } from "react";
 import { formBtn3 } from "../../utils/CustomClass";
-import { Mobile } from 'iconsax-reactjs';
+import { Mobile } from "iconsax-reactjs";
 import Breadcrumbs from "../../components/breadcrum";
 import { CaretRight, ClockCountdown } from "@phosphor-icons/react";
 import { getActiveServiceCategories, getPublicServicesSingle } from "../../api";
 import { useLocation, useNavigate } from "react-router-dom";
 
-
-
 const SidebarLayout = () => {
-    const params = useLocation();
-    const [singleService, setSingleService] = useState(null);
-    const [services, _] = useState(params?.state?.serviceData?.allServiceCategories || []);
-    const [active, setActive] = useState(services.filter(service => service?._id === params?.state?.serviceData?._id)?.[0]);
+  const params = useLocation();
+  const [singleService, setSingleService] = useState(null);
+  const [services, _] = useState(
+    params?.state?.serviceData?.allServiceCategories || []
+  );
+  const [active, setActive] = useState(
+    services.filter(
+      (service) => service?._id === params?.state?.serviceData?._id
+    )?.[0]
+  );
 
-    useEffect(() => {
-        const fetchService = async () => {
-            const response = await getPublicServicesSingle({ id: active?._id });
-            setSingleService(response?.data);
-        }
-        fetchService();
-    }, [active]);
+  useEffect(() => {
+    const fetchService = async () => {
+      const response = await getPublicServicesSingle({ id: active?._id });
+      setSingleService(response?.data);
+    };
+    fetchService();
+  }, [active]);
 
-    return (
-        <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
-            <Breadcrumbs currentService={active?.name} />
-            <div className="container mx-auto px-5 xl:px-0 flex flex-col-reverse lg:flex-row xl:py-10 space-y-5 lg:space-x-10">
-                {/* Sidebar */}
-                <SideBar services={services} active={active} setActive={setActive} />
+  return (
+    <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
+      <Breadcrumbs currentService={active?.name} />
+      <div className="container mx-auto px-5 xl:px-0 flex flex-col-reverse lg:flex-row xl:py-10 space-y-5 lg:space-x-10">
+        {/* Sidebar */}
+        <SideBar services={services} active={active} setActive={setActive} />
 
-                {/* Main Content */}
-                <MainSection content={singleService} active={active} />
-            </div>
-        </div>
-    );
+        {/* Main Content */}
+        <MainSection content={singleService} active={active} />
+      </div>
+    </div>
+  );
 };
 
 const SideBar = ({ services, active, setActive }) => {
-    return (
-        <aside className="w-full lg:w-1/4 space-y-2 pb-14 lg:pb-0">
-            <ul className="">
-                {services?.map((service) => (
-                    <li key={service.name}>
-                        <button
-                            onClick={() => setActive(service)}
-                            className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${active?._id === service._id
-                                ? "text-p bg-[#ffecd2]"
-                                : "hover:bg-[#ffecd2]/50 text-slate-700"
-                                }`}
-                        >
-                            <div className="flex items-center justify-between overflow-hidden text-nowrap">
-                                <span className="text-ellipsis overflow-hidden">{service.name}</span>
-                                <span className="text-p"><CaretRight size={20} className="text-black" /></span>
-                            </div>
-                            {active?._id === service._id ? <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-linear-gradient rounded-3xl transition-colors duration-300" /> : <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-slate-200 rounded-full" />}
-                        </button>
-                    </li>
-                ))}
-            </ul>
-        </aside>
-    )
-}
+  return (
+    <aside className="w-full lg:w-1/4 space-y-2 pb-14 lg:pb-0">
+      <ul className="">
+        {services?.map((service) => (
+          <li key={service.name}>
+            <button
+              onClick={() => setActive(service)}
+              className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${
+                active?._id === service._id
+                  ? "text-p bg-[#ffecd2]"
+                  : "hover:bg-[#ffecd2]/50 text-slate-700"
+              }`}
+            >
+              <div className="flex items-center justify-between overflow-hidden text-nowrap">
+                <span className="text-ellipsis overflow-hidden">
+                  {service.name}
+                </span>
+                <span className="text-p">
+                  <CaretRight size={20} className="text-black" />
+                </span>
+              </div>
+              {active?._id === service._id ? (
+                <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-linear-gradient rounded-3xl transition-colors duration-300" />
+              ) : (
+                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-slate-200 rounded-full" />
+              )}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  );
+};
 
 const MainSection = ({ content }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    if (!content) {
-        return (
-            <main className="flex-1 !my-0 ">
-                <div className="space-y-8 flex items-center justify-center h-64">
-                    <p className="text-gray-500">Loading service details...</p>
-                </div>
-            </main>
-        );
-    }
-
-    // Function to strip HTML tags from content
-    const stripHtmlTags = (html) => {
-        const temp = document.createElement("div");
-        temp.innerHTML = html;
-        return temp.textContent || temp.innerText || "";
-    };
-
+  if (!content) {
     return (
-        <main className="flex-1 !my-0 ">
-            <div className="space-y-8">
-                <img
-                    src={content.image}
-                    alt={content.title}
-                    className="w-full sm:h-[60vh] object-cover rounded-md"
-                />
+      <main className="flex-1 !my-0 ">
+        <div className="space-y-8 flex items-center justify-center h-64">
+          <p className="text-gray-500">Loading service details...</p>
+        </div>
+      </main>
+    );
+  }
 
-                <div className="bg-[#FFF2DB] p-6 rounded-md space-y-3 ">
-                    <h3 className="text-xl font-medium text-p font-tbLex">
-                        {content.title}
-                    </h3>
-                    <p className="text-gray-600 font-tbPop font-normal text-md">{content.subTitle}</p>
-                    <div className="flex justify-start  lg:justify-between  flex-col lg:flex-row items-start lg:items-center space-y-5 lg:space-y-0 py-3">
-                        <div className="space-y-3">
-                            <div className="space-x-1.5 flex items-center">
-                                <ClockCountdown size={20} />
-                                <h4 className="text-slate-700 text-sm font-tbPop font-normal">Session Duration: {content.durationInMinutes} minutes</h4>
-                            </div>
-                            <div className="space-x-1.5 flex items-center">
-                                <Mobile size={20} />
-                                <h4 className="text-slate-700 text-sm font-tbPop font-normal capitalize">Mode: {content.serviceType?.replaceAll("_", " ")}</h4>
-                            </div>
-                        </div>
-                        <div className="flex flex-col items-start lg:items-end space-y-2">
-                            <button
-                                className={`${formBtn3} lg:!w-auto`}
-                                onClick={() => navigate('/booking', { state: { service: content } })}
-                            >
-                                Check Availability
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className="mt-10">
-                    <div className="prose max-w-none">
-                        <div
-                            className="text-gray-700 leading-relaxed"
-                            dangerouslySetInnerHTML={{ __html: content.htmlContent }}
-                        />
-                    </div>
+  // Function to strip HTML tags from content
+  const stripHtmlTags = (html) => {
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+    return temp.textContent || temp.innerText || "";
+  };
 
-                    {content.videoUrl && content.videoUrl.length > 0 && (
-                        <div className="mt-8">
-                            <h4 className="font-semibold text-lg mb-4 text-p font-tbLex">Related Videos</h4>
-                            <video
-                                loop
-                                muted
-                                controls
-                                playsInline
-                                className="w-full h-full object-cover rounded-2xl"
-                            >
-                                <source
-                                    src={"https://www.youtube.com/watch?v=WRQHV3kDcyo&list=RDWRQHV3kDcyo&start_radio=1"}
-                                    type="video/mp4"
-                                />
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    )}
-                </div>
+  return (
+    <main className="flex-1 !my-0 ">
+      <div className="space-y-8">
+        <img
+          src={content.image}
+          alt={content.title}
+          className="w-full sm:h-[60vh] object-cover rounded-md"
+        />
+
+        <div className="bg-[#FFF2DB] p-6 rounded-md space-y-3 ">
+          <h3 className="text-xl font-medium text-p font-tbLex">
+            {content.title}
+          </h3>
+          <p className="text-gray-600 font-tbPop font-normal text-md">
+            {content.subTitle}
+          </p>
+          <div className="flex justify-start  lg:justify-between  flex-col lg:flex-row items-start lg:items-center space-y-5 lg:space-y-0 py-3">
+            <div className="space-y-3">
+              <div className="space-x-1.5 flex items-center">
+                <ClockCountdown size={20} />
+                <h4 className="text-slate-700 text-sm font-tbPop font-normal">
+                  Session Duration: {content.durationInMinutes} minutes
+                </h4>
+              </div>
+              <div className="space-x-1.5 flex items-center">
+                <Mobile size={20} />
+                <h4 className="text-slate-700 text-sm font-tbPop font-normal capitalize">
+                  Mode: {content.serviceType?.replaceAll("_", " ")}
+                </h4>
+              </div>
             </div>
-        </main>
-    )
-}
+            <div className="flex flex-col items-start lg:items-end space-y-2">
+              <button
+                className={`${formBtn3} lg:!w-auto`}
+                onClick={() =>
+                  navigate("/booking", { state: { service: content } })
+                }
+              >
+                Check Availability
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="mt-10">
+          <div className="prose max-w-none">
+            <div
+              className="text-gray-700 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: content.htmlContent }}
+            />
+          </div>
+
+          {content.videoUrl && content.videoUrl.length > 0 && (
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+              {content.videoUrl.map((vid, index) => {
+                const url = vid.videoUrl;
+
+                return (
+                  <div
+                    key={vid._id || index}
+                    className="w-full aspect-video overflow-hidden bg-black my-4"
+                  >
+                    {url.includes("youtube.com") || url.includes("youtu.be") ? (
+                      <iframe
+                        src={
+                          url
+                            .replace("watch?v=", "embed/") 
+                            .replace("youtu.be/", "www.youtube.com/embed/")
+                            .split("&")[0]
+                        } // remove extra params
+                        title={`YouTube video ${index + 1}`}
+                        className="w-full h-full"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        loop
+                        muted
+                        controls
+                        playsInline
+                        className="w-full h-full object-cover"
+                      >
+                        <source src={url} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    </main>
+  );
+};
 export default SidebarLayout;
