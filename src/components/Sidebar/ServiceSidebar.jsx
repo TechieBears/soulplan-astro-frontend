@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { formBtn3 } from "../../utils/CustomClass";
-import { Mobile } from "iconsax-reactjs";
+import { Car, Mobile } from "iconsax-reactjs";
 import Breadcrumbs from "../../components/breadcrum";
 import { CaretRight, ClockCountdown } from "@phosphor-icons/react";
 import { getActiveServiceCategories, getPublicServicesSingle } from "../../api";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Keyboard } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import { ArrowLeft2, ArrowRight2 } from "iconsax-reactjs";
 
 const SidebarLayout = () => {
   const params = useLocation();
@@ -138,54 +143,89 @@ const MainSection = ({ content }) => {
             </div>
           </div>
         </div>
-        <div className="mt-10">
-          <div className="prose max-w-none">
-            <div
-              className="text-gray-700 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: content.htmlContent }}
-            />
-          </div>
+
+        <div className="prose max-w-none">
+          <div
+            className="text-gray-700 leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: content.htmlContent }}
+          />
+        </div>
+
+        <div className="mt-10 w-full max-w-5xl mx-auto relative">
+          {/* Custom Navigation Buttons */}
+          <button
+            className="absolute top-1/2 left-2 sm:left-[-20px] md:left-[-40px] z-20 -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg"
+            id="prevBtn"
+          >
+            <ArrowLeft2 size={20} />
+          </button>
+          <button
+            className="absolute top-1/2 right-2 sm:right-[-20px] md:right-[-40px] z-20 -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg"
+            id="nextBtn"
+          >
+            <ArrowRight2 size={20} />
+          </button>
 
           {content.videoUrl && content.videoUrl.length > 0 && (
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Swiper
+              slidesPerView={1} // default for mobile
+              spaceBetween={10}
+              keyboard={true}
+              modules={[Navigation, Keyboard]}
+              navigation={{
+                prevEl: "#prevBtn",
+                nextEl: "#nextBtn",
+              }}
+              className="sliderBox"
+              breakpoints={{
+                0: { slidesPerView: 1, spaceBetween: 10 },
+                480: { slidesPerView: 1, spaceBetween: 10 }, // small phones
+                640: { slidesPerView: 1, spaceBetween: 10 }, // larger phones
+                768: { slidesPerView: 2, spaceBetween: 15 }, // tablets
+                1024: { slidesPerView: 3, spaceBetween: 20 }, // desktop
+                1280: { slidesPerView: 3, spaceBetween: 25 }, // large desktop
+              }}
+            >
               {content.videoUrl.map((vid, index) => {
                 const url = vid.videoUrl;
 
                 return (
-                  <div
-                    key={vid._id || index}
-                    className="w-full aspect-video overflow-hidden bg-black my-4"
-                  >
-                    {url.includes("youtube.com") || url.includes("youtu.be") ? (
-                      <iframe
-                        src={
-                          url
-                            .replace("watch?v=", "embed/") 
-                            .replace("youtu.be/", "www.youtube.com/embed/")
-                            .split("&")[0]
-                        } // remove extra params
-                        title={`YouTube video ${index + 1}`}
-                        className="w-full h-full"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <video
-                        loop
-                        muted
-                        controls
-                        playsInline
-                        className="w-full h-full object-cover"
-                      >
-                        <source src={url} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    )}
-                  </div>
+                  <SwiperSlide key={vid._id || index}>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="w-full h-48 sm:h-56 md:h-72 lg:h-60 xl:h-64 bg-black mb-8 sm:mb-0 overflow-hidden">
+                        {url.includes("youtube.com") ||
+                        url.includes("youtu.be") ? (
+                          <iframe
+                            src={
+                              url
+                                .replace("watch?v=", "embed/")
+                                .replace("youtu.be/", "www.youtube.com/embed/")
+                                .split("&")[0]
+                            }
+                            title={`YouTube video ${index + 1}`}
+                            className="w-full h-full"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        ) : (
+                          <video
+                            loop
+                            muted
+                            controls
+                            playsInline
+                            className="w-full h-full object-cover"
+                          >
+                            <source src={url} type="video/mp4" />
+                            Your browser does not support the video tag.
+                          </video>
+                        )}
+                      </div>
+                    </div>
+                  </SwiperSlide>
                 );
               })}
-            </div>
+            </Swiper>
           )}
         </div>
       </div>
