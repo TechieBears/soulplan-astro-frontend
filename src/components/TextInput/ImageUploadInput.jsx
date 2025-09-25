@@ -12,7 +12,8 @@ const ImageUploadInput = ({
     multiple,
     setValue,
     defaultValue,
-    style
+    style,
+    disabled,
 }) => {
     const [fileName, setFileName] = useState("");
     const [files, setFiles] = useState([]);
@@ -90,7 +91,7 @@ const ImageUploadInput = ({
                             : 'border-slate-300 focus:border-primary'}
                         opacity-0 absolute z-10 cursor-pointer ${style}`}
                     onChange={handleFileChange}
-                    disabled={isUploading}
+                    disabled={isUploading || disabled}
                 />
                 <div className={`w-full h-full flex items-center px-4 rounded-lg  cursor-pointer
                     ${!errors?.ref?.value && errors?.type === "required"

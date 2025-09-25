@@ -5,6 +5,7 @@ import Breadcrumbs from "../../components/breadcrum";
 import { CaretRight, ClockCountdown } from "@phosphor-icons/react";
 import { getActiveServiceCategories, getPublicServicesSingle } from "../../api";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 
 
@@ -63,6 +64,7 @@ const SideBar = ({ services, active, setActive }) => {
 }
 
 const MainSection = ({ content }) => {
+    const isLogged = useSelector((state) => state.user.isLogged);
     const navigate = useNavigate();
 
     if (!content) {
@@ -82,6 +84,16 @@ const MainSection = ({ content }) => {
         return temp.textContent || temp.innerText || "";
     };
 
+    const checkAvailabilityHandler = () => {
+        if (!isLogged) {
+            window.scrollTo(0, 0, { behavior: 'smooth' });
+            navigate('/login');
+            return;
+        } else {
+            window.scrollTo(0, 0, { behavior: 'smooth' });
+            navigate('/booking', { state: { service: content, tab: 'services' } });
+        }
+    }
     return (
         <main className="flex-1 !my-0 ">
             <div className="space-y-8">
@@ -110,7 +122,7 @@ const MainSection = ({ content }) => {
                         <div className="flex flex-col items-start lg:items-end space-y-2">
                             <button
                                 className={`${formBtn3} lg:!w-auto`}
-                                onClick={() => navigate('/booking', { state: { service: content } })}
+                                onClick={checkAvailabilityHandler}
                             >
                                 Check Availability
                             </button>

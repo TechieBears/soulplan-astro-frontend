@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
 import { formBtn3 } from "../../../utils/CustomClass";
 import TextInput from "../../../components/TextInput/TextInput";
@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import SelectTextInput from "../../../components/TextInput/SelectTextInput";
 import { editUserCustomer } from "../../../api";
 import toast from "react-hot-toast";
+import { setUserDetails } from "../../../redux/Slices/loginSlice";
 const Private = ({ children }) => children;
 const UserDashboard = ({ children }) => children;
 
@@ -16,7 +17,7 @@ export default function AccountPage() {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
     const [isEditable, setIsEditable] = useState(false);
     const user = useSelector((state) => state.user.userDetails);
-
+    const dispatch = useDispatch();
     const formSubmit = async (data) => {
         const payload = {
             ...data,
@@ -24,8 +25,11 @@ export default function AccountPage() {
         }
         await editUserCustomer(payload).then(res => {
             if (res?.success) {
+                console.log(res?.data?.user)
+                dispatch(setUserDetails(res?.data?.user))
                 toast.success(res?.message);
                 reset();
+                setIsEditable(false);
             } else {
                 toast.error(res?.message || "Something went wrong");
             }
@@ -170,6 +174,7 @@ export default function AccountPage() {
                                             { value: 'female', label: 'Female' },
                                             { value: 'other', label: 'Other' },
                                         ]}
+                                        disabled={!isEditable}
                                         placeholder="Select Gender"
                                         props={{
                                             ...register('gender', { required: true }),

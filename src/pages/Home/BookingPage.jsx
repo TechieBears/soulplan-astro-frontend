@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import TextInput from "../../components/TextInput/TextInput";
 import SelectTextInput from "../../components/TextInput/SelectTextInput";
@@ -9,10 +9,21 @@ import Calendar from 'react-calendar';
 import { Controller, useForm } from "react-hook-form";
 import '../../css/CustomCalendar.css';
 import star from '../../assets/helperImages/star.png'
+import { checkAvailability, getPublicServicesDropdown } from "../../api";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
+import moment from "moment";
+import MultiSelectTextInput from '../../components/TextInput/MultiSelectTextInput';
 
 const BookingPage = () => {
+    const user = useSelector((state) => state.user.userDetails);
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
     const navigate = useNavigate();
+    const location = useLocation();
+    const service = location.state;
+    const [timeSlots, setTimeSlots] = useState([]);
+    console.log("⚡️🤯 ~ BookingPage.jsx:23 ~ BookingPage ~ timeSlots:", timeSlots)
+    console.log("⚡️🤯 ~ BookingPage.jsx:22 ~ BookingPage ~ service:", service)
 
     const [formData, setFormData] = useState({
         serviceType: "Palmistry",
@@ -42,13 +53,52 @@ const BookingPage = () => {
     const currencyOptions = [
         { value: "Indian (INR)", label: "Indian (INR)" },
         { value: "USD", label: "USD" },
-        { value: "EUR", label: "EUR" },
     ];
 
+    const dateWatch = watch('date');
     const onSubmit = (data) => {
         console.log("Booking submitted:", data);
         alert("Booking request submitted successfully!");
     };
+
+    const [Searvice, setSearvice] = useState([]);
+
+    useEffect(() => {
+        const fetchServiceCategories = async () => {
+            const response = await getPublicServicesDropdown();
+            console.log("⚡️🤯 ~ HomeNavbar.jsx:413 ~ fetchServiceCategories ~ response:", response)
+            setSearvice(response?.data);
+        }
+        fetchServiceCategories();
+    }, []);
+    useMemo(() => {
+        const fetchService = async () => {
+            const payload = {
+                date: moment(dateWatch).format('YYYY-MM-DD'),
+                astrologer_id: "68ca9cf272e2d0202ee1b902"
+            }
+            const response = await checkAvailability(payload);
+            const availableSlots = response?.data?.timeSlots?.filter((item) =>
+                !item?.booked && item?.status === 'available'
+            );
+
+            setTimeSlots(availableSlots?.map((item) => ({
+                value: `${item?.display_time} - ${item?.display_end_time}`,
+                label: `${moment(item?.display_time, "HH:mm").format("hh:mm A")} - ${moment(item?.display_end_time, "HH:mm").format("hh:mm A")}`
+            })) || []);
+        }
+        fetchService();
+    }, [dateWatch]);
+
+    useEffect(() => {
+        reset({
+            firstName: user?.firstName,
+            lastName: user?.lastName,
+            mobileNo: user?.mobileNo,
+            email: user?.email
+        });
+    }, [user]);
+
 
     return (
         <div className="min-h-screen bg-[#FFF9EF]  pt-16 lg:pt-24 relative">
@@ -90,13 +140,7 @@ const BookingPage = () => {
                                 <SelectTextInput
                                     label="Select Services Type"
                                     registerName="serviceType"
-                                    options={[
-                                        { value: 'Palmistry', label: 'Palmistry' },
-                                        { value: 'Astrology', label: 'Astrology' },
-                                        { value: 'USA', label: 'USA' },
-                                        { value: 'Tarot Reading', label: 'Tarot Reading' },
-                                        { value: 'Numerology', label: 'Numerology' },
-                                    ]}
+                                    options={Searvice?.map((item) => ({ value: item?._id, label: item?.name }))}
                                     placeholder="Select Services Type"
                                     props={{
                                         ...register('serviceType', { required: true }),
@@ -135,29 +179,19 @@ const BookingPage = () => {
                                 >
                                     Time Slots
                                 </h4>
-                                <SelectTextInput
-                                    label="Select Time Slots"
-                                    registerName="timeSlot"
-                                    options={[
-                                        { value: '09:00 AM - 10:00 AM', label: '09:00 AM - 10:00 AM' },
-                                        { value: '10:00 AM - 11:00 AM', label: '10:00 AM - 11:00 AM' },
-                                        { value: '11:00 AM - 12:00 PM', label: '11:00 AM - 12:00 PM' },
-                                        { value: '12:00 PM - 01:00 PM', label: '12:00 PM - 01:00 PM' },
-                                        { value: '02:00 PM - 03:00 PM', label: '02:00 PM - 03:00 PM' },
-                                        { value: '03:00 PM - 04:00 PM', label: '03:00 PM - 04:00 PM' },
-                                        { value: '09:00 AM - 10:00 AM', label: '09:00 AM - 10:00 AM' },
-                                        { value: '10:00 AM - 11:00 AM', label: '10:00 AM - 11:00 AM' },
-                                        { value: '11:00 AM - 12:00 PM', label: '11:00 AM - 12:00 PM' },
-                                        { value: '12:00 PM - 01:00 PM', label: '12:00 PM - 01:00 PM' },
-                                        { value: '02:00 PM - 03:00 PM', label: '02:00 PM - 03:00 PM' },
-                                        { value: '03:00 PM - 04:00 PM', label: '03:00 PM - 04:00 PM' },
-                                    ]}
-                                    placeholder="Select Time Slots"
-                                    props={{
-                                        ...register('timeSlot', { required: true }),
-                                        value: watch('timeSlot') || ''
-                                    }}
-                                    errors={errors.timeSlot}
+                                <Controller
+                                    name="timeSlot"
+                                    control={control}
+                                    render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                        <MultiSelectTextInput
+                                            label="Select Time Slots"
+                                            options={timeSlots}
+                                            key={'timeSlot'}
+                                            value={value || []}
+                                            onChange={onChange}
+                                            errors={errors.timeSlot}
+                                        />
+                                    )}
                                 />
                             </div>
                             <div className="">

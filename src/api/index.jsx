@@ -1249,3 +1249,16 @@ export const updateProductOrder = async (data) => {
         return err?.response?.data;
     }
 }
+// ======================= calendar api =======================
+
+export const checkAvailability = async (data) => {
+    try {
+        const url = `${environment.baseUrl}calender/check-availability`;
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in checkAvailability api file", err);
+        return err?.response?.data
+    }
+}
