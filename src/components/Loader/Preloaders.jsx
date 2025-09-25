@@ -1,6 +1,6 @@
 const Preloaders = () => {
     return (
-        <main className="flex justify-center items-center h-screen flex-col space-y-6 bg-slate1 ">
+        <main className="flex justify-center items-center h-screen flex-col space-y-6 bg-[#FFF9EF] ">
             <svg height="128px" width="128px" viewBox="0 0 128 128" className="pl1">
                 <defs>
                     <linearGradient y2="1" x2="1" y1="0" x1="0" id="pl-grad">

@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { LoginCurve, User, Box, Building4, CallCalling, Information } from "iconsax-reactjs";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { getActiveServiceCategories } from "../../api";
+import { getActiveServiceCategories, getPublicServicesDropdown } from "../../api";
 import { ShoppingCart } from "lucide-react";
 
 const HomeNavbar = () => {
@@ -417,7 +417,7 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
 
     useEffect(() => {
         const fetchServiceCategories = async () => {
-            const response = await getActiveServiceCategories();
+            const response = await getPublicServicesDropdown();
             console.log("⚡️🤯 ~ HomeNavbar.jsx:413 ~ fetchServiceCategories ~ response:", response)
             setSearvice(response?.data);
         }
@@ -436,6 +436,15 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
                     <NavLink
                         to={`/services/${item.name?.toLowerCase()}`}
                         key={i}
+                        state={{
+                            serviceData: {
+                                ...item,
+                                navigationDate: new Date().toISOString(),
+                                timestamp: Date.now(),
+                                allServiceCategories: Searvice,
+                                selectedIndex: i
+                            }
+                        }}
                         className={({ isActive }) =>
                             `flex items-center gap-2 px-4 py-2 hover:bg-gray-100 !transition-all !duration-500 !ease-in-out ${isActive ? "text-p font-bold" : "text-gray-800 hover:text-p"
                             }`

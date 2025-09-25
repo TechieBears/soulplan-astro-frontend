@@ -644,12 +644,36 @@ export const getServices = async (data) => {
 }
 export const getPublicServices = async (data) => {
     try {
-        const url = `${environment.baseUrl}service/public/get-all?page=${data?.p || 1}&limit=${data?.records || 10}&search=${data?.search || ''}&category=${data?.category || ''}&minPrice=${data?.minPrice || ''}&maxPrice=${data?.maxPrice || ''}&durationInMinutes=${data?.durationInMinutes || ''}&serviceType=${data?.serviceType || ''}&isActive=${data?.isActive || ''}`;
+        const url = `${environment.baseUrl}service/public/get-all?page=${data?.p || 1}&limit=${data?.records || 10}&search=${data?.search || ''}&category=${data?.category || ''}`;
         const response = await axios.get(url)
         return response.data
     }
     catch (err) {
         console.log("==========error in getServices api file", err);
+        return err?.response?.data
+    }
+}
+
+export const getPublicServicesDropdown = async () => {
+    try {
+        const url = `${environment.baseUrl}service/public/dropdown`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in get Public Services Dropdown api file", err);
+        return err?.response?.data
+    }
+}
+export const getPublicServicesSingle = async (data) => {
+    try {
+        const url = `${environment.baseUrl}service/public/get-single?id=${data?.id || ''}`;
+        console.log("⚡️🤯 ~ index.jsx:659 ~ getPublicServicesSingle ~ url:", url)
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getPublicServicesSingle api file", err);
         return err?.response?.data
     }
 }
@@ -1216,6 +1240,7 @@ export const getAllProductOrders = async (data) => {
 export const updateProductOrder = async (data) => {
     try {
         const url = `${environment.baseUrl}product-order/update-order-status`;
+        console.log("⚡️🤯 ~ index.jsx:1230 ~ getPublicServicesSingle ~ url:", url)
         const response = await axios.post(url, data);
         return response.data;
     }
