@@ -9,9 +9,11 @@ import { environment } from "../../env";
 const HomePage = () => {
     const [banners, setBanners] = useState([]);
     const [slidesData, setSlidesData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchSlides = async () => {
+            setIsLoading(true);
             const banners = await getActiveBanners("website");
 
             const formattedSlides = await Promise.all(
@@ -66,7 +68,7 @@ const HomePage = () => {
                 })
             );
             setSlidesData(formattedSlides);
-
+            setIsLoading(false);
         };
 
         fetchSlides();
@@ -74,7 +76,7 @@ const HomePage = () => {
 
     return (
         <div>
-            <HomeBanner slidesData={slidesData} />
+            <HomeBanner slidesData={slidesData} isLoading={isLoading} />
             <HomeCertifications />
             <HomeBestServices />
             <Testimonials />

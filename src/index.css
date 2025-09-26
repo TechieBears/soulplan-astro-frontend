@@ -861,3 +861,37 @@ video {
         transform: translate(48px, 0);
     }
 }
+/* Banner text animations */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.banner-title {
+    animation: slideInLeft 1s ease-out;
+}
+
+.banner-description {
+    animation: slideInLeft 1s ease-out 0.3s both;
+}
+
+.banner-button {
+    animation: slideInUp 1s ease-out 0.6s both;
+}
