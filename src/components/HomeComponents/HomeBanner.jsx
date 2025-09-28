@@ -3,7 +3,15 @@ import { FreeMode, Autoplay, Navigation } from 'swiper/modules';
 import { formBtn3 } from '../../utils/CustomClass';
 import roundimage from '../../assets/roundimage.png';
 
-const HomeBanner = ({ slidesData }) => {
+const HomeBanner = ({ slidesData, isLoading }) => {
+    if (isLoading) {
+        return (
+            <section className='w-full h-screen flex items-center justify-center bg-gray-900'>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-white"></div>
+            </section>
+        );
+    }
+
     return (
         <section className='w-full h-screen'>
             <Swiper
@@ -27,14 +35,14 @@ const HomeBanner = ({ slidesData }) => {
                                 />
                                 <div className="absolute inset-0 container mx-auto flex  items-center justify-between z-30 px-5 xl:pl-0 pr-10 xl:pr-0">
                                     <div className="w-full md:w-2/3 lg:w-1/2 space-y-3 lg:space-y-5 text-center md:text-left">
-                                        <h1 className="text-3xl lg:text-4xl xl:text-6xl pb-2 font-tbLex font-bold text-p tracking-tighter">
+                                        <h1 className="text-3xl lg:text-4xl xl:text-6xl pb-2 font-tbLex font-bold text-p tracking-tighter banner-title">
                                             {slide.title}
                                         </h1>
-                                        <p className="text-xs md:text-sm font-tbPop w-full md:w-2/3  text-slate-200 pb-1 text-center md:text-left">
+                                        <p className="text-xs md:text-sm font-tbPop w-full md:w-2/3  text-slate-200 pb-1 text-center md:text-left banner-description">
                                             {slide.description}
                                         </p>
                                         {slide.button && (
-                                            <div className="flex justify-center md:justify-start">
+                                            <div className="flex justify-center md:justify-start banner-button">
                                                 <button
                                                     className={`btn ${formBtn3} !w-fit`}
                                                     onClick={slide.onClick}
