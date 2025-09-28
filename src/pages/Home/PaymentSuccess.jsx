@@ -1,61 +1,88 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import product1 from "../../assets/shop/product1.png";
 import moon from "../../assets/moon.png";
-import verify from "../../assets/verify.png";
+import suceess from "../../assets/success.json";
 import { Icon } from "@iconify/react";
-import { Calendar, Timer1, Zoom } from "iconsax-reactjs";
+import { Calendar } from "lucide-react";
+import { Zoom, Timer1 } from "iconsax-reactjs";
 import { ShoppingCartIcon } from "lucide-react";
-import { formBtn1, formBtn2 } from "../../utils/CustomClass";
+import { formBtn1 } from "../../utils/CustomClass";
+import { getProductBookingsConfirmed, getServiceBookingsConfirmed } from "../../api/index";
+import ProductCardSkeleton from "../../components/Loader/ProductCardSkeleton";
+import ServiceCardSkeleton from "../../components/Loader/ServiceCardSkeleton";
+import Lottie from "lottie-react";
 
 const PaymentSuccess = () => {
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState("products");
-    const [orderDetails, setOrderDetails] = useState();
-
-    const orderItems = [
-        {
-            id: "P4000",
-            name: "Amber Crystal",
-            price: 3520,
-            mrp: 4000,
-            quantity: 1,
-            image: product1,
-        },
-        {
-            id: "P4001",
-            name: "Amber Crystal",
-            price: 3520,
-            mrp: 4000,
-            quantity: 1,
-            image: product1,
-        },
-    ];
-
-    const serviceItems = [
-        {
-            id: "S001",
-            type: "Palmistry",
-            duration: "30–60 minutes",
-            date: "15th Sep, 2025 / 12:00PM – 01:00PM",
-            mode: "Online",
-            price: 1500,
-            link: "zoommtg://zoom.us/join?confno=8529015",
-        },
-    ];
+    const { state } = useLocation();
+    const [activeTab, setActiveTab] = useState(state?.type === "product" ? "products" : "services");
+    const [productOrders, setProductOrders] = useState([]);
+    const [serviceOrders, setServiceOrders] = useState([]);
+    const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+    const [isLoadingServices, setIsLoadingServices] = useState(true);
+    const [hasProductOrders, setHasProductOrders] = useState(false);
+    const [hasServiceOrders, setHasServiceOrders] = useState(false);
 
     useEffect(() => {
-        // const fetchProductCart = async () => {
-        //     try {
-        //         const res = await getProductFromCart();
-        //         setOrderDetails(res?.data);
-        //     } catch (err) {
-        //         toast.error(err.message || 'Failed to fetch product cart');
-        //         console.error('Error fetching product cart', err);
-        //     }
-        // }
-        // fetchProductCart();
+        const fetchProductOrders = async () => {
+            try {
+                setIsLoadingProducts(true);
+                const res = await getProductBookingsConfirmed();
+                if (res?.success && res?.data?.length > 0) {
+                    setProductOrders(res.data);
+                    setHasProductOrders(true);
+                } else {
+                    setProductOrders([]);
+                    setHasProductOrders(false);
+                }
+            } catch (err) {
+                toast.error(err.message || 'Failed to fetch product orders');
+                console.error('Error fetching product orders', err);
+                setProductOrders([]);
+                setHasProductOrders(false);
+            } finally {
+                setIsLoadingProducts(false);
+            }
+        };
+
+        const fetchServiceOrders = async () => {
+            try {
+                setIsLoadingServices(true);
+                const res = await getServiceBookingsConfirmed();
+                if (res?.success && res?.data?.length > 0) {
+                    setServiceOrders(res.data);
+                    setHasServiceOrders(true);
+                } else {
+                    setServiceOrders([]);
+                    setHasServiceOrders(false);
+                }
+            } catch (err) {
+                toast.error(err.message || 'Failed to fetch service orders');
+                console.error('Error fetching service orders', err);
+                setServiceOrders([]);
+                setHasServiceOrders(false);
+            } finally {
+                setIsLoadingServices(false);
+            }
+        };
+
+        fetchProductOrders();
+        fetchServiceOrders();
     }, []);
+
+    useEffect(() => {
+        if (!isLoadingProducts && !isLoadingServices) {
+            if (hasProductOrders && !hasServiceOrders) {
+                setActiveTab("products");
+            } else if (!hasProductOrders && hasServiceOrders) {
+                setActiveTab("services");
+            } else if (hasProductOrders && hasServiceOrders) {
+                setActiveTab("products");
+            }
+        }
+    }, [isLoadingProducts, isLoadingServices, hasProductOrders, hasServiceOrders]);
 
     return (
         <div className="min-h-screen bg-[#FFF9EF] flex items-center mt-20 sm:mt-0 justify-center px-4">
@@ -81,10 +108,11 @@ const PaymentSuccess = () => {
                                 } justify-center mb-3 space-y-6 xl:space-y-4`}
                         >
                             <div className="flex items-center gap-2">
-                                <img
-                                    src={verify}
+                                <Lottie
+                                    animationData={suceess}
+                                    loop={true}
                                     alt="Verified"
-                                    className="w-6 h-6 sm:w-7 sm:h-7"
+                                    className="w-12 h-12 sm:w-70 sm:h-70"
                                 />
                                 <h1 className="text-base sm:text-lg md:text-2xl font-semibold text-black text-tbLex">
                                     Booking Confirmed
@@ -97,132 +125,186 @@ const PaymentSuccess = () => {
                             </p>
                         </div>
                     </div>
-
-                    {/* Tabs */}
-                    {/* <div className="flex items-center bg-gray-100 rounded-full space-x-2 px-2 mb-4">
-          <button
-            onClick={() => setActiveTab("products")}
-            className={`px-6 py-2 rounded-full font-medium text-sm ${
-              activeTab === "products"
-                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            Products
-          </button>
-          <button
-            onClick={() => setActiveTab("services")}
-            className={`px-6 py-2 rounded-full font-medium text-sm ${
-              activeTab === "services"
-                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            Services
-          </button>
-        </div> */}
-
-                    <div className="space-y-4">
-                        {activeTab === "products" &&
-                            orderItems.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className="bg-[#9E52D8] rounded-lg p-4 cursor-pointer hover:bg-[#8A47C4] transition-colors
-                   flex flex-col sm:flex-row items-left sm:items-start gap-4"
-                                    onClick={() => navigate(`/orders/${item.id}`)}
-                                >
-                                    <div className="sm:w-24 sm:h-24 w-full rounded-lg overflow-hidden flex-shrink-0 mx-auto sm:mx-0 " style={{ background: `linear-gradient(90deg, rgba(0, 121, 208, 0.2) -12.5%, rgba(158, 82, 216, 0.2) 30.84%, rgba(218, 54, 92, 0.2) 70.03%, rgba(208, 73, 1, 0.2) 111%)` }}>
-                                        <img
-                                            src={item.image}
-                                            alt={item.name}
-                                            className="w-full h-full object-contain p-2"
-                                            loading="lazy"
-                                        />
-                                    </div>
-
-                                    {/* Details */}
-                                    <div className="flex-1 min-w-0 text-left justify-self-start">
-                                        <h3 className="font-bold text-white font-dm text-lg mb-1">
-                                            {item.name}
-                                        </h3>
-                                        <div className="font-medium text-lg text-white mb-1">
-                                            ₹{item.price?.toLocaleString() || 0}
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <div className="text-white text-sm">
-                                                MRP{" "}
-                                                <span className="line-through">
-                                                    ₹{item.mrp?.toLocaleString() || 0}
-                                                </span>{" "}
-                                                (incl. of all taxes)
+                    <div className="space-y-4 h-[250px] overflow-y-scroll">
+                        {activeTab === "products" && (
+                            <>
+                                {isLoadingProducts ? (
+                                    <div className="space-y-4">
+                                        {[1, 2].map((index) => (
+                                            <div key={index} className="animate-pulse">
+                                                <ProductCardSkeleton />
                                             </div>
-                                            <div className="text-white text-sm font-medium">
-                                                QTY: {item.quantity}
-                                            </div>
-                                        </div>
+                                        ))}
                                     </div>
-                                </div>
-                            ))}
+                                ) : hasProductOrders ? (
+                                    productOrders.map((order, orderIndex) => (
+                                        <div key={order._id} className="space-y-4 ">
+                                            {order.items?.map((item, itemIndex) => (
+                                                <div
+                                                    key={`${order._id}-${item._id}`}
+                                                    className="bg-[#9E52D8] rounded-lg p-4 cursor-pointer hover:bg-[#8A47C4] transition-all duration-300
+                                                             flex flex-col sm:flex-row items-left sm:items-start gap-4 cart-slide-up"
+                                                    style={{ animationDelay: `${(orderIndex * order.items.length + itemIndex) * 0.1}s` }}
+                                                    onClick={() => navigate(`/profile/my-orders`)}
+                                                >
+                                                    <div className="sm:w-24 sm:h-24 w-full rounded-lg overflow-hidden flex-shrink-0 mx-auto sm:mx-0"
+                                                        style={{ background: `linear-gradient(90deg, rgba(0, 121, 208, 0.2) -12.5%, rgba(158, 82, 216, 0.2) 30.84%, rgba(218, 54, 92, 0.2) 70.03%, rgba(208, 73, 1, 0.2) 111%)` }}>
+                                                        <img
+                                                            src={item.product?.images?.[0] || product1}
+                                                            alt={item.product?.name || "Product"}
+                                                            className="w-full h-full object-contain p-2"
+                                                            loading="lazy"
+                                                        />
+                                                    </div>
 
-                        {activeTab === "services" &&
-                            serviceItems.map((service) => (
-                                <div
-                                    key={service.id}
-                                    className="relative rounded-lg p-4 text-black cursor-pointer transition-colors overflow-hidden"
-                                    onClick={() => navigate(`/orders/${service.id}`)}
-                                >
-                                    <h3 className="font-medium font-dm text-lg mb-4">
-                                        Service Type:{" "}
-                                        <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 bg-clip-text text-transparent">
-                                            {service.type}
-                                        </span>
-                                    </h3>
-                                    <p className="flex items-center gap-4 mb-2">
-                                        <Timer1 className="w-6 h-6" />
-                                        <span>Session Duration: {service.duration}</span>
-                                    </p>
-                                    <p className="flex items-center gap-4 mb-2">
-                                        <Calendar className="w-6 h-6" />
-                                        <span>Date: {service.date}</span>
-                                    </p>
-                                    <p className="flex items-center gap-4 ">
-                                        <Icon icon="ph:device-mobile" className="w-6 h-6" />
-                                        <span>Mode: {service.mode}</span>
-                                    </p>
-
-                                    {service.link && (
-                                        <div className="flex items-center gap-4 mt-2">
-                                            <Zoom className="w-6 h-6" />
-                                            <a
-                                                href={service.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-sm break-words"
-                                            >
-                                                {service.link}
-                                            </a>
+                                                    <div className="flex-1 min-w-0 text-left justify-self-start">
+                                                        <h3 className="font-bold text-white font-dm text-lg mb-1">
+                                                            {item.product?.name}
+                                                        </h3>
+                                                        <div className="font-medium text-lg text-white mb-1">
+                                                            ₹{item.product?.sellingPrice?.toLocaleString() || 0}
+                                                        </div>
+                                                        <div className="flex justify-between items-start">
+                                                            <div className="text-white text-sm">
+                                                                MRP
+                                                                <span className="line-through">
+                                                                    ₹{item.product?.mrpPrice?.toLocaleString() || 0}
+                                                                </span>
+                                                                (incl. of all taxes)
+                                                            </div>
+                                                            <div className="text-white text-sm font-medium">
+                                                                QTY: {item.product?.quantity || 1}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex justify-between items-center mt-2">
+                                                            <div className="text-white text-xs">
+                                                                Order Status: <span className="font-semibold">{order.orderStatus}</span>
+                                                            </div>
+                                                            <div className="text-white text-xs">
+                                                                Payment: <span className="font-semibold">{order.paymentStatus}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
-                                    )}
-                                </div>
-                            ))}
+                                    ))
+                                ) : (
+                                    <div className="text-center py-8">
+                                        <ShoppingCartIcon className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                                        <h3 className="text-lg font-medium text-gray-600 mb-2">No Product Orders</h3>
+                                        <p className="text-gray-500">You haven't placed any product orders yet.</p>
+                                    </div>
+                                )}
+                            </>
+                        )}
+
+                        {activeTab === "services" && (
+                            <>
+                                {isLoadingServices ? (
+                                    <div className="space-y-4">
+                                        {[1, 2].map((index) => (
+                                            <div key={index} className="animate-pulse">
+                                                <ServiceCardSkeleton />
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : hasServiceOrders ? (
+                                    serviceOrders.map((order, orderIndex) => (
+                                        <div key={order.orderId} className="space-y-3">
+                                            {order.services?.map((service, serviceIndex) => (
+                                                <div
+                                                    key={`${order.orderId}-${service.serviceId}`}
+                                                    className="relative rounded-lg p-4 text-black cursor-pointer transition-all duration-300
+                                                             bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100
+                                                             border border-gray-200 hover:border-purple-300 cart-slide-up overflow-hidden"
+                                                    style={{ animationDelay: `${(orderIndex * order.services.length + serviceIndex) * 0.1}s` }}
+                                                    onClick={() => navigate(`/profile/my-orders`)}
+                                                >
+                                                    <h3 className="font-medium font-dm text-lg mb-4">
+                                                        Service Type:
+                                                        <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 bg-clip-text text-transparent font-semibold">
+                                                            {service.serviceName}
+                                                        </span>
+                                                    </h3>
+
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                                                        <p className="flex items-center gap-3">
+                                                            <Timer1 className="w-5 h-5 text-purple-600" />
+                                                            <span className="text-sm">Duration: {service.durationInMinutes} minutes</span>
+                                                        </p>
+                                                        <p className="flex items-center gap-3">
+                                                            <Calendar className="w-5 h-5 text-blue-600" />
+                                                            <span className="text-sm">Date: {service.bookingDate}</span>
+                                                        </p>
+                                                        <p className="flex items-center gap-3">
+                                                            <Icon icon="ph:device-mobile" className="w-5 h-5 text-green-600" />
+                                                            <span className="text-sm">Mode: {service.serviceType}</span>
+                                                        </p>
+                                                        <p className="flex items-center gap-3">
+                                                            <Icon icon="ph:clock" className="w-5 h-5 text-orange-600" />
+                                                            <span className="text-sm">Time: {service.startTime} - {service.endTime}</span>
+                                                        </p>
+                                                    </div>
+
+                                                    {service.zoomLink && (
+                                                        <div className="flex items-center gap-3 mb-3">
+                                                            <Zoom className="w-5 h-5 text-blue-600" />
+                                                            <a
+                                                                href={service.zoomLink}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-sm text-blue-600 hover:text-blue-800 break-words underline"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
+                                                                Join Meeting
+                                                            </a>
+                                                        </div>
+                                                    )}
+
+                                                    <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                                                        <div className="text-sm">
+                                                            <span className="text-gray-600">Price: </span>
+                                                            <span className="font-semibold text-green-600">₹{service.servicePrice?.toLocaleString()}</span>
+                                                        </div>
+                                                        <div className="flex gap-4 text-xs">
+                                                            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                                                                {service.bookingStatus}
+                                                            </span>
+                                                            <span className={`px-2 py-1 rounded-full ${service.paymentStatus === 'paid'
+                                                                ? 'bg-green-100 text-green-800'
+                                                                : 'bg-yellow-100 text-yellow-800'
+                                                                }`}>
+                                                                {service.paymentStatus}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center py-8">
+                                        <Calendar className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                                        <h3 className="text-lg font-medium text-gray-600 mb-2">No Service Bookings</h3>
+                                        <p className="text-gray-500">You haven't booked any services yet.</p>
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
 
-                    {/* View My Orders */}
                     <div className="space-y-4">
                         <button type="button" onClick={() => navigate('/')} className={`${formBtn1} h-[48px] lg:h-[46px] xl:h-[51px] w-full !bg-transparent border border-black !text-black`}>Back to Home</button>
-                        <button
-                            onClick={() => navigate('/profile/my-orders')}
-                            className={`h-[48px] lg:h-[46px] xl:h-[51px] py-3 text-white !font-medium !tracking-normal text-sm xl:text-base bg-primary-gradient hover:opacity-90  disabled:opacity-50  transition  w-full rounded relative `}
-                            style={{
-                                background: `linear-gradient(90deg, rgba(0, 121, 208, 0.6) -12.5%, rgba(158, 82, 216, 0.6) 30.84%, rgba(218, 54, 92, 0.6) 70.03%, rgba(208, 73, 1, 0.6) 111%)`,
-                            }}
-                        >
-                            <div className="flex items-center justify-center space-x-1.5 bg-white  rounded absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[46px] lg:h-[43px] xl:h-[48px] w-[99%] z-10">
-                                <span className="text-base xl:text-lg font-tbPop text-p">
-                                    View My Orders
-                                </span>
-                            </div>
-                        </button>
+                        <div className="gradientBtn w-full">
+                            <button
+                                className={`w-full`}
+                                onClick={() => navigate('/profile/my-orders')}
+                                disabled={false}
+                            >
+                                <span className="text-base xl:text-lg font-tbPop text-p">View My Orders</span>
+                            </button>
+                        </div>
                     </div>
 
                 </div>

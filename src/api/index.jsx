@@ -653,6 +653,17 @@ export const getPublicServices = async (data) => {
         return err?.response?.data
     }
 }
+export const getPublicServicesCards = async (data) => {
+    try {
+        const url = `${environment.baseUrl}service/soulplane/public/get-all?page=${data?.p || 1}&limit=${data?.records || 10}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getPublicServicesCards api file", err);
+        return err?.response?.data
+    }
+}
 
 export const getPublicServicesDropdown = async () => {
     try {
@@ -1119,6 +1130,43 @@ export const clearCart = async () => {
     }
 }
 
+// ========================= Service Cart Api ========================
+
+export const addServiceToCart = async (data) => {
+    const url = `${environment.baseUrl}service-cart/public/add`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addServiceToCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const getServiceFromCart = async (data) => {
+    const url = `${environment.baseUrl}service-cart/public/get`;
+    try {
+        const response = await axios.get(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getServiceFromCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const removeServiceFromCart = async (data) => {
+    const url = `${environment.baseUrl}service-cart/public/remove-item`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in removeServiceFromCart api file", err);
+        return err?.response?.data
+    }
+}
 
 
 // ================== Customer Feedback Api ==================
@@ -1260,5 +1308,58 @@ export const checkAvailability = async (data) => {
     catch (err) {
         console.log("==========error in checkAvailability api file", err);
         return err?.response?.data
+    }
+}
+
+
+// ===================== Service Order Api =====================
+
+export const PlaceServiceOrder = async (data) => {
+    const url = `${environment.baseUrl}service-order/public/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data;
+    }
+    catch (err) {
+        console.log("==========error in PlaceServiceOrder api file", err);
+        return err?.response?.data;
+    }
+}
+export const getServiceBookingsConfirmed = async (data) => {
+    const url = `${environment.baseUrl}service-order/public/get-all`;
+    try {
+        const response = await axios.get(url, data)
+        return response.data;
+    }
+    catch (err) {
+        console.log("==========error in getServiceBookingsConfirmed api file", err);
+        return err?.response?.data;
+    }
+}
+
+
+// ===================== Product Booking Api =====================
+
+export const PlaceProductOrder = async (data) => {
+    const url = `${environment.baseUrl}product-order/public/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data;
+    }
+    catch (err) {
+        console.log("==========error in bookProduct api file", err);
+        return err?.response?.data;
+    }
+}
+
+export const getProductBookingsConfirmed = async (data) => {
+    const url = `${environment.baseUrl}product-order/public/get-all`;
+    try {
+        const response = await axios.get(url, data)
+        return response.data;
+    }
+    catch (err) {
+        console.log("==========error in getProductBookingsConfirmed api file", err);
+        return err?.response?.data;
     }
 }

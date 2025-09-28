@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { formBtn3 } from "../../utils/CustomClass";
-import { Car, Mobile } from "iconsax-reactjs";
+import { Mobile } from "iconsax-reactjs";
 import Breadcrumbs from "../../components/breadcrum";
 import { CaretRight, ClockCountdown } from "@phosphor-icons/react";
-import { getActiveServiceCategories, getPublicServicesSingle } from "../../api";
+import { getPublicServicesDropdown, getPublicServicesSingle } from "../../api";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Keyboard } from "swiper/modules";
@@ -14,32 +14,34 @@ import { ArrowLeft2, ArrowRight2 } from "iconsax-reactjs";
 const SidebarLayout = () => {
     const params = useLocation();
     const [singleService, setSingleService] = useState(null);
-    const [services, _] = useState(
-        params?.state?.serviceData?.allServiceCategories || []
-    );
-    const [active, setActive] = useState(
-        services.filter(
-            (service) => service?._id === params?.state?.serviceData?._id
-        )?.[0]
-    );
+    const [services, setServices] = useState([]);
+    const [activeId, setActiveId] = useState(params?.state?.serviceData?._id || null);
 
     useEffect(() => {
         const fetchService = async () => {
-            const response = await getPublicServicesSingle({ id: active?._id });
+            const response = await getPublicServicesSingle({ id: activeId });
             setSingleService(response?.data);
         };
         fetchService();
-    }, [active]);
+    }, [activeId]);
+
+    useEffect(() => {
+        const fetchServiceCategories = async () => {
+            const response = await getPublicServicesDropdown();
+            setServices(response?.data);
+        }
+        fetchServiceCategories();
+    }, []);
 
     return (
         <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
-            <Breadcrumbs currentService={active?.name} />
+            <Breadcrumbs currentService={params?.state?.serviceData?.name} />
             <div className="container mx-auto px-5 xl:px-0 flex flex-col-reverse lg:flex-row xl:py-10 space-y-5 lg:space-x-10">
                 {/* Sidebar */}
-                <SideBar services={services} active={active} setActive={setActive} />
+                <SideBar services={services} active={activeId} setActive={setActiveId} />
 
                 {/* Main Content */}
-                <MainSection content={singleService} active={active} />
+                <MainSection content={singleService} active={activeId} />
             </div>
         </div>
     );
@@ -47,13 +49,13 @@ const SidebarLayout = () => {
 
 const SideBar = ({ services, active, setActive }) => {
     return (
-        <aside className="w-full lg:w-1/4 space-y-2 pb-14 lg:pb-0">
+        <aside className="w-full lg:w-1/4 space-y-2 pb-14 lg:pb-0 h-screen overflow-y-scroll ">
             <ul className="">
                 {services?.map((service) => (
                     <li key={service.name}>
                         <button
-                            onClick={() => setActive(service)}
-                            className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${active?._id === service._id
+                            onClick={() => setActive(service?._id)}
+                            className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${active === service?._id
                                 ? "text-p bg-[#ffecd2]"
                                 : "hover:bg-[#ffecd2]/50 text-slate-700"
                                 }`}
@@ -66,7 +68,7 @@ const SideBar = ({ services, active, setActive }) => {
                                     <CaretRight size={20} className="text-black" />
                                 </span>
                             </div>
-                            {active?._id === service._id ? (
+                            {active === service?._id ? (
                                 <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-linear-gradient rounded-3xl transition-colors duration-300" />
                             ) : (
                                 <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-slate-200 rounded-full" />
@@ -133,9 +135,7 @@ const MainSection = ({ content }) => {
                         <div className="flex flex-col items-start lg:items-end space-y-2">
                             <button
                                 className={`${formBtn3} lg:!w-auto`}
-                                onClick={() =>
-                                    navigate("/booking", { state: { service: content } })
-                                }
+                                onClick={() => { navigate("/booking", { state: { service: content } }), window.scrollTo(0, 0, { behavior: "smooth" }) }}
                             >
                                 Check Availability
                             </button>

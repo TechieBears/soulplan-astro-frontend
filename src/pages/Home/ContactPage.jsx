@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Breadcrumbs from "../../components/breadcrum";
 import TextInput from "../../components/TextInput/TextInput";
 import { formBtn3 } from "../../utils/CustomClass";
 import { useForm } from "react-hook-form";
-import { validateAlphabets, validateEmail, validatePhoneNumber } from '../../utils/validateFunction';
+import { validateEmail, validatePhoneNumber } from '../../utils/validateFunction';
 import LoadBox from '../../components/Loader/LoadBox';
 import CustomTextArea from "../../components/TextInput/CustomTextArea";
 import toast from "react-hot-toast";
@@ -37,6 +37,15 @@ const ContactPage = () => {
             toast.error("Failed to add Feedback");
         }
     }
+    useEffect(() => {
+        reset({
+            fullName: "",
+            email: "",
+            subject: "",
+            mobileNumber: "",
+            message: "",
+        });
+    }, [reset]);
     return (
         <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
             <Breadcrumbs />

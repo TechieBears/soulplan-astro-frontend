@@ -3,12 +3,14 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { formBtn3 } from "../../utils/CustomClass";
 import { CaretDown, List } from "@phosphor-icons/react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LoginCurve, User, Box, Building4, CallCalling, Information } from "iconsax-reactjs";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { getActiveServiceCategories, getPublicServicesDropdown } from "../../api";
+import { getActiveServiceCategories, getProductFromCart, getPublicServicesDropdown } from "../../api";
 import { ShoppingCart } from "lucide-react";
+import toast from "react-hot-toast";
+import { setCartProductCount } from "../../redux/Slices/cartSlice";
 
 const HomeNavbar = () => {
     const navLinks = [
@@ -37,7 +39,7 @@ const HomeNavbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [prevScrollPos, setPrevScrollPos] = useState(0);
-
+    const dispatch = useDispatch();
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollPos = window.pageYOffset;
@@ -95,6 +97,21 @@ const HomeNavbar = () => {
         document.addEventListener("keydown", keyHandler);
         return () => document.removeEventListener("keydown", keyHandler);
     });
+
+    const fetchProductCart = async () => {
+        try {
+            const res = await getProductFromCart();
+            dispatch(setCartProductCount(res?.data?.items?.length));
+        } catch (err) {
+            toast.error(err.message || "Failed to fetch product cart");
+            console.error("Error fetching product cart", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchProductCart();
+    }, []);
+
 
 
     return (
@@ -429,7 +446,7 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
             ref={dropdown}
             onFocus={() => setDropdownOpen(true)}
             onBlur={() => setDropdownOpen(false)}
-            className={`absolute left-0 top-14 w-[240px] pb-3 overflow-hidden rounded-lg z-50 bg-white shadow-lg border border-slate-100 transition-all ease-in-out duration-500 ${dropdownOpen ? "block opacity-100 transition-all ease-in-out duration-500" : "hidden opacity-0 transition-all ease-in-out duration-500"}`}
+            className={`absolute left-0 top-14 w-[240px] pb-3 h-[200px] overflow-y-scroll scrollbars rounded-lg z-50 bg-white shadow-lg border border-slate-100 transition-all ease-in-out duration-500 ${dropdownOpen ? "block opacity-100 transition-all ease-in-out duration-500" : "hidden opacity-0 transition-all ease-in-out duration-500"}`}
         >
             <div>
                 {Searvice?.map((item, i) => (
@@ -438,11 +455,7 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
                         key={i}
                         state={{
                             serviceData: {
-                                ...item,
-                                navigationDate: new Date().toISOString(),
-                                timestamp: Date.now(),
-                                allServiceCategories: Searvice,
-                                selectedIndex: i
+                                ...item
                             }
                         }}
                         className={({ isActive }) =>

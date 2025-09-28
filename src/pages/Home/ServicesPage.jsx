@@ -5,12 +5,14 @@ import rightImage from "../../assets/helperImages/rightDesign.png"
 import { useState, useEffect } from "react";
 import { getPublicServices } from "../../api";
 import ServicesCard from "../../components/Cards/ServicesCard";
+import ServiceCardSkeleton from "../../components/Loader/ServiceCardSkeleton";
 import { formBtn3 } from "../../utils/CustomClass";
 import { PulseLoader } from "react-spinners";
 
 const ServicesPage = () => {
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(true);
     const [hasMore, setHasMore] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const recordsPerPage = 12;
@@ -21,7 +23,6 @@ const ServicesPage = () => {
             const response = await getPublicServices({
                 p: page,
                 records: recordsPerPage,
-                search: '',
             });
 
             if (response?.data) {
@@ -36,6 +37,9 @@ const ServicesPage = () => {
             console.error('Error fetching services:', error);
         } finally {
             setLoading(false);
+            if (!isLoadMore) {
+                setInitialLoading(false);
+            }
         }
     };
 
@@ -61,30 +65,40 @@ const ServicesPage = () => {
 
             <section className="w-full lg:py-2 xl:py-4 px-5 xl:px-0 container mx-auto z-10">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                    {services && services?.map((service, idx) => (
-                        <ServicesCard service={service} idx={idx} />
+                    {initialLoading && (
+                        <>
+                            {Array.from({ length: 8 }).map((_, idx) => (
+                                <ServiceCardSkeleton key={`skeleton-${idx}`} />
+                            ))}
+                        </>
+                    )}
+
+                    {!initialLoading && services && services?.map((service, idx) => (
+                        <div key={service.id || idx} className="service-card-enter">
+                            <ServicesCard service={service} idx={idx} />
+                        </div>
                     ))}
                 </div>
 
-                {services?.length === 0 && !loading && (
+                {services?.length === 0 && !loading && !initialLoading && (
                     <div className="text-center py-12">
                         <p className="text-gray-500 text-lg">No services found.</p>
                     </div>
                 )}
 
-                {hasMore && services?.length > 0 && (
-                    <div className="text-center mt-12">
+                {hasMore && services?.length > 0 && !initialLoading && (
+                    <div className="text-center mt-12 mb-10 justify-self-center">
                         <button
                             onClick={handleLoadMore}
                             disabled={loading}
-                            className={`${formBtn3} ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`${formBtn3} !w-auto disabled:opacity-90 ${loading ? ' cursor-not-allowed' : ''}`}
                         >
                             {loading ? 'Loading...' : 'Load More Services'}
                         </button>
                     </div>
                 )}
 
-                {loading && services?.length === 0 && (
+                {loading && services?.length === 0 && !initialLoading && (
                     <div className="flex justify-center py-12">
                         <PulseLoader color="#000" size={4} />
                     </div>

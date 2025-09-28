@@ -11,6 +11,9 @@ import { getAllAddress, addAddress, editAddress, deleteAddress } from "../../../
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setAddresses } from "../../../redux/Slices/cartSlice";
+import Lottie from "lottie-react";
+import loader from "../../../assets/loader.json";
+import AddressSkeletonGrid from "../../../components/Loader/AddressCardSkeleton";
 
 const AddressPage = () => {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
@@ -18,8 +21,9 @@ const AddressPage = () => {
     const [editingAddress, setEditingAddress] = useState(null);
     const [addresses, setAddress] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [fetchLoading, setFetchLoading] = useState(true);
     const dispatch = useDispatch()
-    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(null);
     const formSubmit = async (data) => {
         try {
             setLoading(true);
@@ -69,8 +73,7 @@ const AddressPage = () => {
             setValue('firstName', editingAddress.firstName || '');
             setValue('lastName', editingAddress.lastName || '');
             setValue('mobileNo', editingAddress.phoneNumber || '');
-            setValue('type', editingAddress.addressType ?
-                editingAddress.addressType.charAt(0).toUpperCase() + editingAddress.addressType.slice(1) : '');
+            setValue('type', editingAddress.addressType ? editingAddress.addressType.charAt(0).toUpperCase() + editingAddress.addressType.slice(1) : '');
             setValue('address', editingAddress.address || '');
             setValue('city', editingAddress.city || '');
             setValue('postalCode', editingAddress.postalCode || '');
@@ -83,13 +86,17 @@ const AddressPage = () => {
 
     const fetchAddresses = async () => {
         try {
+            setFetchLoading(true);
             const res = await getAllAddress();
-            // dispatch(setAddresses(res?.data?.filter(item => item?.isDefault)))
+            const defaultAddress = res?.data?.filter(item => item?.isDefault)
+            dispatch(setAddresses(defaultAddress[0]))
             setAddress(res?.data);
         } catch (err) {
             setAddress([]);
             toast.error(err.message || 'Failed to fetch addresses');
             console.error('Error fetching addresses', err);
+        } finally {
+            setFetchLoading(false);
         }
     }
 
@@ -113,16 +120,26 @@ const AddressPage = () => {
                 </div>
             </div>
 
-            {/* Address List */}
-            {addresses?.length > 0 && !showAddForm && (
+            {fetchLoading && !showAddForm && (
+                <AddressSkeletonGrid count={4} />
+            )}
+
+            {!fetchLoading && addresses?.length > 0 && !showAddForm && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-scroll">
                     {addresses.map((address) => (
-                        <AddressCard key={address?._id} address={address} onEdit={handleShowForm} fetchAddresses={fetchAddresses} />
+                        <AddressCard
+                            key={address?._id}
+                            address={address}
+                            onEdit={handleShowForm}
+                            fetchAddresses={fetchAddresses}
+                            deleteLoading={deleteLoading}
+                            setDeleteLoading={setDeleteLoading}
+                        />
                     ))}
                 </div>
             )}
 
-            {addresses?.length === 0 && !showAddForm && (
+            {!fetchLoading && addresses?.length === 0 && !showAddForm && (
                 <div className="flex flex-col items-center justify-center h-full space-y-6">
                     <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto">
                         <svg
@@ -395,10 +412,30 @@ const AddressPage = () => {
     );
 };
 
-const AddressCard = ({ address, onEdit, fetchAddresses }) => {
+const AddressCard = ({ address, onEdit, fetchAddresses, deleteLoading, setDeleteLoading }) => {
     const fullName = `${address?.firstName || ''} ${address?.lastName || ''}`.trim();
     const capitalizedAddressType = address?.addressType ?
         address.addressType.charAt(0).toUpperCase() + address.addressType.slice(1) : '';
+
+    const isDeleting = deleteLoading === address?._id;
+
+    const handleDelete = async () => {
+        try {
+            setDeleteLoading(address?._id);
+            const res = await deleteAddress(address?._id);
+            if (res?.success) {
+                toast.success(res?.message);
+                fetchAddresses();
+            } else {
+                toast.error(res?.message);
+            }
+        } catch (error) {
+            toast.error('Failed to delete address');
+            console.error('Error deleting address:', error);
+        } finally {
+            setDeleteLoading(null);
+        }
+    };
 
     return (
         <div
@@ -414,28 +451,29 @@ const AddressCard = ({ address, onEdit, fetchAddresses }) => {
                         <div className="flex gap-3">
                             <button
                                 onClick={() => onEdit(address)}
-                                className={"flex items-center justify-center border rounded border-black bg-transparent !racking-tight !text-black px-3.5 py-2 font-tbLex text-sm"}
+                                disabled={isDeleting}
+                                className={"flex items-center justify-center border rounded border-black bg-transparent !racking-tight !text-black px-3.5 py-2 font-tbLex text-sm disabled:opacity-50 disabled:cursor-not-allowed"}
                             >
                                 <NotePencil size={20} className="mr-1 text-slate-700" />
                                 Edit
                             </button>
 
                             <button
-                                onClick={async () => {
-                                    await deleteAddress(address?._id).then(res => {
-                                        if (res?.success) {
-                                            toast.success(res?.message);
-                                            fetchAddresses();
-                                        } else {
-                                            toast.error(res?.message);
-                                        }
-                                    })
-                                }
-                                }
-                                className={"flex items-center justify-center !racking-tight  px-3.5 py-2 !bg-red-500 !text-white rounded font-tbLex text-sm disabled:opacity-50 disabled:cursor-not-allowed"}
+                                onClick={handleDelete}
+                                disabled={isDeleting}
+                                className={"flex items-center justify-center !racking-tight px-3.5 py-2 !bg-red-500 !text-white rounded font-tbLex text-sm disabled:opacity-50 disabled:cursor-not-allowed"}
                             >
-                                <Trash size={20} className="mr-1 text-white" />
-                                Delete
+                                {isDeleting ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-1"></div>
+                                        Deleting...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Trash size={20} className="mr-1 text-white" />
+                                        Delete
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>

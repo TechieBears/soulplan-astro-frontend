@@ -1,5 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { ShoppingCartIcon } from "@phosphor-icons/react";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { setCartProductCount } from "../../redux/Slices/cartSlice";
+import { addProductToCart } from "../../api";
+import { useState } from "react";
+import { MoonLoader } from "react-spinners";
 
 const Star = ({ filled }) => (
     <svg
@@ -15,22 +21,42 @@ const Star = ({ filled }) => (
 const ProductCard = ({ product }) => {
     const { _id, name, sellingPrice, mrpPrice, discountPercentage, images } = product;
     const navigate = useNavigate();
+    const login = useSelector((state) => state.user.isLogged);
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
 
     const handleCardClick = () => {
         navigate(`/product/${_id}`);
     };
 
-    const handleAddToCart = (e) => {
-        e.stopPropagation();
-        console.log(`Added ${name} to cart`);
+    const handleAddToCart = async (productId) => {
+        if (!login) {
+            navigate("/login");
+            return;
+        }
+        try {
+            setLoading(true);
+            const res = await addProductToCart({ productId, quantity: 1 });
+            console.log("==========res in handleAddToCart", res);
+            if (res?.success) {
+                dispatch(setCartProductCount(res?.data?.items?.length));
+                toast.success(res?.message || "Product added to cart");
+            } else {
+                toast.error(res?.message || "Something went wrong");
+            }
+        } catch (err) {
+            console.log("==========err in handleAddToCart", err);
+            toast.error(err?.message || "Something went wrong");
+        }
+        finally {
+            setLoading(false);
+        }
     };
-
     return (
         <div
             className="h-full flex flex-col bg-white p-3 rounded-lg shadow-lg  hover:shadow-xl hover:scale-[1.02] transition-all duration-300 overflow-hidden border border-gray-100 cursor-pointer"
-            onClick={handleCardClick}
         >
-            <div className="relative w-full max-w-sm mx-auto aspect-square rounded-lg overflow-hidden" style={{ background: `linear-gradient(90deg, rgba(0, 121, 208, 0.2) -12.5%, rgba(158, 82, 216, 0.2) 30.84%, rgba(218, 54, 92, 0.2) 70.03%, rgba(208, 73, 1, 0.2) 111%)` }}>
+            <div className="relative w-full max-w-sm mx-auto aspect-square rounded-lg overflow-hidden" style={{ background: `linear-gradient(90deg, rgba(0, 121, 208, 0.2) -12.5%, rgba(158, 82, 216, 0.2) 30.84%, rgba(218, 54, 92, 0.2) 70.03%, rgba(208, 73, 1, 0.2) 111%)` }} onClick={handleCardClick}>
                 <img
                     src={images?.[0]}
                     alt={name}
@@ -44,7 +70,7 @@ const ProductCard = ({ product }) => {
                 )}
             </div>
 
-            <div className="pt-4 flex flex-col flex-grow">
+            <div className="pt-4 flex flex-col flex-grow" onClick={handleCardClick}>
                 <div className="flex flex-grow justify-between items-start">
                     {/* Left side - Title & Rating */}
 
@@ -74,19 +100,15 @@ const ProductCard = ({ product }) => {
                     </div>
                 </div>
             </div>
-
-            <button
-                className={`h-[48px] lg:h-[46px] xl:h-[51px] py-3 text-white !font-medium !tracking-normal text-sm xl:text-base bg-primary-gradient hover:opacity-90  disabled:opacity-50  transition  w-full rounded relative `}
-                onClick={handleAddToCart}
-                style={{
-                    background: `linear-gradient(90deg, rgba(0, 121, 208, 0.6) -12.5%, rgba(158, 82, 216, 0.6) 30.84%, rgba(218, 54, 92, 0.6) 70.03%, rgba(208, 73, 1, 0.6) 111%)`
-                }}
-            >
-                <div className="flex items-center justify-center space-x-1.5 bg-white  rounded absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[46px] lg:h-[43px] xl:h-[48px] w-[99%] z-10">
-                    <ShoppingCartIcon className="text-black text-xl lg:text-xl" />
-                    <span className="text-base xl:text-lg font-tbPop text-p">Add to Cart</span>
-                </div>
-            </button>
+            <div className="gradientBtn w-full">
+                <button
+                    className={`w-full`}
+                    onClick={() => handleAddToCart(_id)}
+                    disabled={loading}
+                >
+                    <span className="text-base xl:text-lg font-tbPop text-p">{loading ? "Processing..." : "Add to Cart"}</span>
+                </button>
+            </div>
         </div>
     );
 };

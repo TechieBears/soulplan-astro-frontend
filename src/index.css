@@ -861,3 +861,222 @@ video {
         transform: translate(48px, 0);
     }
 }
+
+/* Cart Loading Animations */
+@keyframes cart-shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+@keyframes cart-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cart-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cart-shimmer {
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0.1) 100%);
+    background-size: 200px 100%;
+    animation: cart-shimmer 1.5s ease-in-out infinite;
+}
+
+.cart-fade-in {
+    animation: cart-fade-in 0.5s ease-out forwards;
+}
+
+.cart-slide-up {
+    animation: cart-slide-up 0.6s ease-out forwards;
+}
+
+.cart-item-enter {
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: cart-slide-up 0.4s ease-out forwards;
+}
+
+.cart-item-enter:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.cart-item-enter:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.cart-item-enter:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.cart-item-enter:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.cart-item-enter:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+/* Service Card Loading Animations */
+@keyframes service-shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+.service-shimmer {
+    background: linear-gradient(90deg,
+            #e2e8f0 0%,
+            #cbd5e1 50%,
+            #e2e8f0 100%);
+    background-size: 200px 100%;
+    animation: service-shimmer 1.5s ease-in-out infinite;
+}
+
+/* Product Card Loading Animations */
+@keyframes product-shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+.product-shimmer {
+    background: linear-gradient(90deg,
+            #e2e8f0 0%,
+            #cbd5e1 50%,
+            #e2e8f0 100%);
+    background-size: 200px 100%;
+    animation: product-shimmer 1.5s ease-in-out infinite;
+}
+
+.service-card-enter {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    animation: service-fade-in 0.6s ease-out forwards;
+}
+
+.service-card-enter:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.service-card-enter:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.service-card-enter:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.service-card-enter:nth-child(4) {
+    animation-delay: 0.25s;
+}
+
+.service-card-enter:nth-child(5) {
+    animation-delay: 0.3s;
+}
+
+.service-card-enter:nth-child(6) {
+    animation-delay: 0.35s;
+}
+
+.service-card-enter:nth-child(7) {
+    animation-delay: 0.4s;
+}
+
+.service-card-enter:nth-child(8) {
+    animation-delay: 0.45s;
+}
+
+.service-card-enter:nth-child(9) {
+    animation-delay: 0.5s;
+}
+
+.service-card-enter:nth-child(10) {
+    animation-delay: 0.55s;
+}
+
+.service-card-enter:nth-child(11) {
+    animation-delay: 0.6s;
+}
+
+.service-card-enter:nth-child(12) {
+    animation-delay: 0.65s;
+}
+
+@keyframes service-fade-in {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.gradientBtn button {
+    --border-radius: 5px;
+    --border-width: 1.5px;
+    appearance: none;
+    position: relative;
+    padding: 0.7em 2em;
+    border: 0;
+    background-color: transparent;
+    font-family: "Roboto", Arial, "Segoe UI", sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #fff;
+    z-index: 2;
+}
+
+.gradientBtn button::after {
+    --m-i: linear-gradient(#000, #000);
+    --m-o: content-box, padding-box;
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: var(--border-width);
+    border-radius: var(--border-radius);
+    background-image: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+    border: 1px solid;
+    -webkit-mask-image: var(--m-i), var(--m-i);
+    mask-image: var(--m-i), var(--m-i);
+    -webkit-mask-origin: var(--m-o);
+    mask-origin: var(--m-o);
+    -webkit-mask-clip: var(--m-o);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+    filter: hue-rotate(0);
+    animation: rotate-hue linear 500ms infinite;
+    animation-play-state: paused;
+}

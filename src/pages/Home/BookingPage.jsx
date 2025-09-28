@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import TextInput from "../../components/TextInput/TextInput";
 import SelectTextInput from "../../components/TextInput/SelectTextInput";
-import { formBtn3 } from "../../utils/CustomClass";
 import { validateAlphabets, validateEmail, validatePhoneNumber } from "../../utils/validateFunction";
 import Calendar from 'react-calendar';
 import { Controller, useForm } from "react-hook-form";
 import '../../css/CustomCalendar.css';
 import star from '../../assets/helperImages/star.png'
-import { checkAvailability, getPublicServicesDropdown } from "../../api";
+import { addServiceToCart, checkAvailability, getPublicServicesDropdown } from "../../api";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import MultiSelectTextInput from '../../components/TextInput/MultiSelectTextInput';
+import toast from "react-hot-toast";
 
 const BookingPage = () => {
     const user = useSelector((state) => state.user.userDetails);
@@ -21,47 +20,72 @@ const BookingPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const service = location.state;
+    console.log("⚡️🤯 ~ BookingPage.jsx:23 ~ BookingPage ~ service:", service)
     const [timeSlots, setTimeSlots] = useState([]);
-    console.log("⚡️🤯 ~ BookingPage.jsx:23 ~ BookingPage ~ timeSlots:", timeSlots)
-    console.log("⚡️🤯 ~ BookingPage.jsx:22 ~ BookingPage ~ service:", service)
-
-    const [formData, setFormData] = useState({
-        serviceType: "Palmistry",
-        timeSlot: "12:00 PM - 01:00 PM",
-        currency: "Indian (INR)",
-        fullName: "Siddharth Singh",
-        mobile: "9856585685",
-        email: "siddharthsingh123@gmail.com",
-    });
-
-    const serviceOptions = [
-        { value: "Palmistry", label: "Palmistry" },
-        { value: "Astrology", label: "Astrology" },
-        { value: "Tarot Reading", label: "Tarot Reading" },
-        { value: "Numerology", label: "Numerology" },
-    ];
-
-    const timeSlotOptions = [
-        { value: "09:00 AM - 10:00 AM", label: "09:00 AM - 10:00 AM" },
-        { value: "10:00 AM - 11:00 AM", label: "10:00 AM - 11:00 AM" },
-        { value: "11:00 AM - 12:00 PM", label: "11:00 AM - 12:00 PM" },
-        { value: "12:00 PM - 01:00 PM", label: "12:00 PM - 01:00 PM" },
-        { value: "02:00 PM - 03:00 PM", label: "02:00 PM - 03:00 PM" },
-        { value: "03:00 PM - 04:00 PM", label: "03:00 PM - 04:00 PM" },
-    ];
+    const [Searvice, setSearvice] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const dateWatch = watch('date');
 
     const currencyOptions = [
-        { value: "Indian (INR)", label: "Indian (INR)" },
+        { value: "INR", label: "Indian (INR)" },
         { value: "USD", label: "USD" },
     ];
 
-    const dateWatch = watch('date');
-    const onSubmit = (data) => {
-        console.log("Booking submitted:", data);
-        alert("Booking request submitted successfully!");
-    };
+    const handleBooking = async (data) => {
+        try {
+            setIsLoading(true);
+            const payload = {
+                serviceId: service?.service?._id,
+                astrologerId: "68ca9cf272e2d0202ee1b902",
+                date: moment(dateWatch).format('YYYY-MM-DD'),
+                serviceMode: "online",
+                startTime: data?.timeSlot?.split(" - ")[0],
+                endTime: data?.timeSlot?.split(" - ")[1],
+                currency: data?.currency,
+            }
+            console.log("⚡️🤯 ~ BookingPage.jsx:80 ~ handleBooking ~ payload:", payload)
+            await addServiceToCart(payload).then(res => {
+                if (res?.success) {
+                    setIsLoading(false);
+                    reset();
+                    toast.success(res?.message || "Booking Successfully");
+                } else {
+                    setIsLoading(false);
+                    toast.error(res?.message || "Something went wrong");
+                }
+            })
+        } catch (error) {
+            console.log('Error submitting form:', error);
+            setIsLoading(false);
+            toast.error(error?.message || "Failed to book Service");
+        }
+    }
+    const fetchService = async () => {
+        const payload = {
+            date: moment(dateWatch).format('YYYY-MM-DD'),
+            astrologer_id: "68ca9cf272e2d0202ee1b902",
+            service_type: "online",
+            service_duration: service?.service?.durationInMinutes || 30,
+        }
+        setIsLoading(true);
+        await checkAvailability(payload).then(res => {
+            console.log("⚡️🤯 ~ BookingPage.jsx:107 ~ fetchService ~ res:", res)
+            if (res?.success) {
+                const availableSlots = res?.data?.timeSlots?.filter((item) =>
+                    !item?.booked && item?.status === 'available'
+                );
+                setTimeSlots(availableSlots?.map((item) => ({ value: item?.time, label: item?.time })) || []);
+                setIsLoading(false);
+            } else {
+                toast.error(res?.message || "Something went wrong")
+                setIsLoading(false);
+            }
+        })
+    }
 
-    const [Searvice, setSearvice] = useState([]);
+    useMemo(() => {
+        fetchService();
+    }, [dateWatch]);
 
     useEffect(() => {
         const fetchServiceCategories = async () => {
@@ -71,27 +95,13 @@ const BookingPage = () => {
         }
         fetchServiceCategories();
     }, []);
-    useMemo(() => {
-        const fetchService = async () => {
-            const payload = {
-                date: moment(dateWatch).format('YYYY-MM-DD'),
-                astrologer_id: "68ca9cf272e2d0202ee1b902"
-            }
-            const response = await checkAvailability(payload);
-            const availableSlots = response?.data?.timeSlots?.filter((item) =>
-                !item?.booked && item?.status === 'available'
-            );
-
-            setTimeSlots(availableSlots?.map((item) => ({
-                value: `${item?.display_time} - ${item?.display_end_time}`,
-                label: `${moment(item?.display_time, "HH:mm").format("hh:mm A")} - ${moment(item?.display_end_time, "HH:mm").format("hh:mm A")}`
-            })) || []);
-        }
-        fetchService();
-    }, [dateWatch]);
 
     useEffect(() => {
         reset({
+            serviceType: service?.service?._id,
+            timeSlot: "",
+            date: "",
+            currency: "",
             firstName: user?.firstName,
             lastName: user?.lastName,
             mobileNo: user?.mobileNo,
@@ -127,7 +137,7 @@ const BookingPage = () => {
                 </div>
 
 
-                <form onSubmit={handleSubmit(onSubmit)} >
+                <form onSubmit={handleSubmit(handleBooking)} >
                     <div className='bg-white p-3 md:p-5 xl:p-8 rounded-lg
                             grid  md:grid-cols-2 gap-x-12' >
                         <div className="space-y-5 ">
@@ -179,19 +189,16 @@ const BookingPage = () => {
                                 >
                                     Time Slots
                                 </h4>
-                                <Controller
-                                    name="timeSlot"
-                                    control={control}
-                                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                                        <MultiSelectTextInput
-                                            label="Select Time Slots"
-                                            options={timeSlots}
-                                            key={'timeSlot'}
-                                            value={value || []}
-                                            onChange={onChange}
-                                            errors={errors.timeSlot}
-                                        />
-                                    )}
+                                <SelectTextInput
+                                    label="Select Time Slots"
+                                    registerName="timeSlot"
+                                    options={timeSlots}
+                                    placeholder="Select Time Slots"
+                                    props={{
+                                        ...register('timeSlot', { required: true }),
+                                        value: watch('timeSlot') || ''
+                                    }}
+                                    errors={errors.timeSlot}
                                 />
                             </div>
                             <div className="">
@@ -273,15 +280,15 @@ const BookingPage = () => {
                                         errors={errors.mobileNo}
                                     />
                                 </div>
+
+                            </div>
+                            <div className="gradientBtn w-full">
                                 <button
-                                    className={`h-[48px] lg:h-[46px] xl:h-[51px] py-3 text-white !font-medium !tracking-normal text-sm xl:text-base bg-primary-gradient hover:opacity-90  disabled:opacity-50 transition  w-full rounded relative col-span-2`}
-                                    style={{
-                                        background: `linear-gradient(90deg, rgba(0, 121, 208, 0.6) -12.5%, rgba(158, 82, 216, 0.6) 30.84%, rgba(218, 54, 92, 0.6) 70.03%, rgba(208, 73, 1, 0.6) 111%)`
-                                    }}
+                                    className={`!w-full`}
+                                    type="submit"
+                                    disabled={isLoading}
                                 >
-                                    <div className="flex items-center justify-center space-x-1.5 bg-white  rounded absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[46px] lg:h-[43px] xl:h-[48px] w-[99.50%] z-10">
-                                        <span className="text-base xl:text-lg font-tbPop text-p">Book Service</span>
-                                    </div>
+                                    <span className="text-base xl:text-lg font-tbPop text-p">{isLoading ? "Processing..." : "Book Service"}</span>
                                 </button>
                             </div>
                         </div>

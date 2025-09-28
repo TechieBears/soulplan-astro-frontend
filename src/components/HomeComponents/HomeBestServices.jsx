@@ -1,19 +1,27 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPublicServices } from "../../api";
 import corner1 from "../../assets/services/corner1.png";
 import underline from "../../assets/undertext.png";
 import { formBtn3 } from "../../utils/CustomClass";
 import ServicesCard from "../Cards/ServicesCard";
+import ServiceCardSkeleton from "../Loader/ServiceCardSkeleton";
+import { PulseLoader } from "react-spinners";
+import { getPublicServices } from "../../api";
 
 export default function HomeBestServices() {
     const navigate = useNavigate();
     const [services, setServices] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(true);
+    const recordsPerPage = 8;
 
     useEffect(() => {
         const fetchServices = async () => {
-            const response = await getPublicServices({ p: 1, records: 10, search: '', category: '' });
+            const response = await getPublicServices({ p: 1, records: recordsPerPage, search: '', category: '' });
+            setLoading(true);
             setServices(response?.data || []);
+            setLoading(false);
+            setInitialLoading(false);
         }
         fetchServices();
     }, []);
@@ -29,7 +37,6 @@ export default function HomeBestServices() {
                 />
             </>
 
-            {/* Heading */}
             <div className="text-center mb-12">
                 <>
                     <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold  text-center leading-snug">
@@ -43,23 +50,36 @@ export default function HomeBestServices() {
                 </>
             </div>
 
-            {/* Grid */}
-            <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-5 xl:px-0">
-                {services.slice(0, 10).map((service, idx) => (
-                    <ServicesCard service={service} idx={idx} />
-                ))}
-            </div>
+            <section className="w-full lg:py-2 xl:py-4 px-5 xl:px-0 container mx-auto z-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                    {initialLoading && (
+                        <>
+                            {Array.from({ length: 8 }).map((_, idx) => (
+                                <ServiceCardSkeleton key={`skeleton-${idx}`} />
+                            ))}
+                        </>
+                    )}
+
+                    {!initialLoading && services && services?.map((service, idx) => (
+                        <div key={service.id || idx} className="service-card-enter">
+                            <ServicesCard service={service} idx={idx} />
+                        </div>
+                    ))}
+                </div>
+
+                {services?.length === 0 && !loading && !initialLoading && (
+                    <div className="text-center py-12">
+                        <p className="text-gray-500 text-lg">No services found.</p>
+                    </div>
+                )}
 
 
-            {/* Button */}
-            <div className="text-center  justify-self-center mt-12">
-                <button
-                    className={` ${formBtn3}`}
-                    onClick={() => navigate('/services')}
-                >
-                    View All Services
-                </button>
-            </div>
+                {loading && services?.length === 0 && !initialLoading && (
+                    <div className="flex justify-center py-12">
+                        <PulseLoader color="#000" size={4} />
+                    </div>
+                )}
+            </section>
             <img
                 src={corner1}
                 alt="corner"

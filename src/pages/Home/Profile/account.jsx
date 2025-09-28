@@ -155,6 +155,7 @@ export default function AccountPage() {
                                     register={register}
                                     setValue={setValue}
                                     control={control}
+                                    defaultValue={user?.profileImage}
                                 />
                             </div>
 
