@@ -55,11 +55,20 @@ const ServicesPage = () => {
     }, []);
     return (
         <div className="bg-[#FFF9EF]  pt-10 lg:pt-16 relative">
-            <div className="absolute top-56 left-0 opacity-30  ">
-                <img src={rightImage} className="w-full h-full object-fill" />
+            <div className="absolute top-50 -left-80 ">
+                <img
+                    src={rightImage}
+                    className="w-[500px]   h-[500px] object-contain spin-slow"
+                    alt="left design"
+                />
             </div>
-            <div className="absolute top-1/4 -right-10 scale-75 opacity-30 ">
-                <img src={leftImage} className="w-full h-full object-fill" />
+
+            <div className="absolute top-1/4 -right-80 ">
+                <img
+                    src={rightImage}
+                    className="w-[500px] h-[500px] object-contain spin-slow"
+                    alt="right design"
+                />
             </div>
             <Breadcrumbs />
 
