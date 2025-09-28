@@ -75,17 +75,26 @@ const AboutPage = () => {
             <Certifications showTopImage={false} />
 
             <section className="w-full  py-16 px-5 xl:px-0 relative">
-                <div className="absolute top-56 left-0 opacity-30  ">
-                    <img src={rightImage} alt="" className="w-full h-full object-fill" />
-                </div>
-                <div className="absolute top-3/3 -right-10 scale-75 opacity-30 ">
-                    <img src={leftImage} alt="" className="w-full h-full object-fill" />
-                </div>
+                 <div className="absolute top-50 -left-80 ">
+                       <img
+                         src={rightImage}
+                         className="w-[500px]   h-[500px] object-contain spin-slow"
+                         alt="left design"
+                       />
+                     </div>
+               
+                     <div className="absolute top-50 -right-80 ">
+                       <img
+                         src={rightImage}
+                         className="w-[500px] h-[500px] object-contain spin-slow"
+                         alt="right design"
+                       />
+                     </div>
                 <div className="absolute bottom-10 -left-20 scale-75  ">
-                    <img src={sun} alt="" className="w-full h-full object-fill" />
+                    <img src={sun} alt="" className="w-full h-full object-fill spin-slow" />
                 </div>
                 <div className="absolute bottom-5 -right-10 scale-75">
-                    <img src={moon} alt="" className="w-full h-full object-fill" />
+                    <img src={moon} alt="" className="w-full h-full object-fill spin-slow" />
                 </div>
                 <div className="container mx-auto ">
                     {/* Stats Section */}

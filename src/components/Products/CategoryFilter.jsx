@@ -35,9 +35,9 @@ const CategoryFilter = ({ categories = [], selectedCategories = [], onToggleCate
                             </span>
                             <span className="text-slate-700 text-base flex items-center gap-2 transition-colors">
                                 {category.name}
-                                {category.count !== undefined && (
+                                {/* {category.count !== undefined && (
                                     <span className="text-slate-500 text-sm">({category.count})</span>
-                                )}
+                                )} */}
                             </span>
                         </button>
                     </li>
