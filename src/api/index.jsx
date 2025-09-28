@@ -1,8 +1,16 @@
 import axios from "axios";
 import { environment } from "../env";
+import toast from "react-hot-toast";
 
 axios.defaults.withCredentials = environment?.production;
 
+const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem("persist:root");
+    localStorage.removeItem('rememberedCredentials');
+    toast.error('Your session has expired. Please login again.');
+    window.location.href = '/login';
+};
 
 axios.interceptors.request.use(
     (config) => {
@@ -16,6 +24,32 @@ axios.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
+axios.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (error) => {
+        if (error.response?.status === 401) {
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || '';
+
+            if (errorMessage.toLowerCase().includes('token') &&
+                (errorMessage.toLowerCase().includes('expired') ||
+                    errorMessage.toLowerCase().includes('invalid') ||
+                    errorMessage.toLowerCase().includes('unauthorized'))) {
+
+                const token = localStorage.getItem('token');
+                if (token) {
+                    handleLogout();
+                }
+            }
+        }
+
+        return Promise.reject(error);
+    }
+);
+
+
 // ==================== Regiter Api===================
 
 export const registerUser = async (data) => {
