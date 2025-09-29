@@ -1,57 +1,76 @@
-import { formBtn1 } from '../../utils/CustomClass'
-import image2 from '../../assets/arrow.gif'
-import { useGSAP } from '@gsap/react';
-import { gsap } from 'gsap';
-import { SplitText } from 'gsap/all';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode, Autoplay, Navigation } from 'swiper/modules';
+import { formBtn3 } from '../../utils/CustomClass';
+import roundimage from '../../assets/roundimage.png';
 
-const HomeBanner = ({ image, title, description, button, background, onClick }) => {
-
-    useGSAP(() => {
-        let split = SplitText.create(".split", { type: "words" });
-
-        const tl = gsap.timeline({
-            defaults: {
-                duration: 1,
-                ease: "power1.inOut",
-            },
-        });
-
-        tl.from(split.words, {
-            y: 100,
-            autoAlpha: 0,
-            stagger: 0.05
-        })
-
-        tl.from(".discrption", {
-            y: 100,
-            opacity: 0,
-        })
-
-        tl.from(".btn", {
-            y: 100,
-            opacity: 0,
-        })
-    }, [])
+const HomeBanner = ({ slidesData, isLoading }) => {
+    if (isLoading) {
+        return (
+            <section className='w-full h-screen flex items-center justify-center bg-gray-900'>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-white"></div>
+            </section>
+        );
+    }
 
     return (
-        <section className='relative flex h-screen items-center justify-center  overflow-hidden' >
-            {background && <div className='absolute inset-0 z-10 h-full w-full overflow-hidden bg-gradient-to-t from-transparent from-30% to-black ' />}
-            <img src={image} alt="Home Banner" className='w-full h-full object-cover' />
-            {/* <video src="https://pikaso.cdnpk.net/public/media/banners/google_veo3_banner.mp4" class="relative w-full size-full object-cover" loop autoPlay playsInline muted>
-            </video>
-            <div class="absolute inset-0 z-0 bg-black/50"></div> */}
-            <div className='absolute inset-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center flex justify-center items-center flex-col space-y-3 container mx-auto z-40 px-4 md:px-8 ' >
-                <h1 className='split text-2xl md:text-4xl lg:text-6xl pb-2  font-tbLex font-bold text-neutral-50 overflow-hidden' >{title}</h1>
-                <p className='discrption text-xs md:text-base font-tbPop font-normal text-white max-w-4xl !mb-5 overflow-hidden' >{description}</p>
-                {button && <button className={`btn ${formBtn1}`} onClick={onClick} >Register to join</button>}
-            </div>
-            {background && <div className='absolute inset-0 z-40 h-full w-full overflow-hidden bg-gradient-to-b from-transparent from-10% via-transparent via-70% to-white to-90% pointer-events-none' />}
-            {button && <div className='absolute  bottom-10 left-1/2 transform -translate-x-1/2 z-40 ' >
-                <img loading="lazy" src={image2} alt="Home Banner" className='w-16 h-16 object-cover' />
-            </div>}
+        <section className='w-full h-screen'>
+            <Swiper
+                slidesPerView={1}
+                freeMode={true}
+                modules={[FreeMode, Autoplay, Navigation]}
+                navigation={true}
+                centeredSlides={true}
+                className="mySwiper homeBannerSwiper"
+            >
+                {slidesData?.map((slide, index) => {
+                    return (
+                        <SwiperSlide key={index} className='relative '>
+                            <div className="relative h-screen w-full">
+                                <div className="absolute inset-0 z-20 flex justify-center items-center bg-black/70"></div>
+                                <img
+                                    loading="lazy"
+                                    src={slide.image}
+                                    className="w-full flex-shrink-0 h-screen object-cover cursor-pointer object-center"
+                                    alt={slide.title || 'Slide Image'}
+                                />
+                                <div className="absolute inset-0 container mx-auto flex  items-center justify-between z-30 px-5 xl:pl-0 pr-10 xl:pr-0">
+                                    <div className="w-full md:w-2/3 lg:w-1/2 space-y-3 lg:space-y-5 text-center md:text-left">
+                                        <h1 className="text-3xl lg:text-4xl xl:text-6xl pb-2 font-tbLex font-bold text-p tracking-tighter banner-title">
+                                            {slide.title}
+                                        </h1>
+                                        <p className="text-xs md:text-sm font-tbPop w-full md:w-2/3  text-slate-200 pb-1 text-center md:text-left banner-description">
+                                            {slide.description}
+                                        </p>
+                                        {slide.button && (
+                                            <div className="flex justify-center md:justify-start banner-button">
+                                                <button
+                                                    className={`btn ${formBtn3} !w-fit`}
+                                                    onClick={slide.onClick}
+                                                >
+                                                    <span className="text-white">Book an Appointment</span>
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
 
+                                    {index == 0 && (
+                                        <div className="w-1/3  justify-center items-center overflow-hidden scale-[1.15] imageback hidden md:block">
+                                            <img
+                                                src={roundimage}
+                                                alt={slide.title}
+                                                className="w-full h-full object-contain  spin-slow"
+                                            />
+                                        </div>
+                                    )}
+
+
+                                </div>
+                            </div>
+                        </SwiperSlide>
+                    )
+                })}
+            </Swiper>
         </section>
     )
 }
-
-export default HomeBanner
+export default HomeBanner;

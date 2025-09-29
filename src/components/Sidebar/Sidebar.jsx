@@ -22,7 +22,7 @@ const Sidebar = ({ children }) => {
                                 <h2 className={isActiveLink ? 'hidden ' : 'font-tbLex font-bold  text-2xl text-black transition-all duration-700 delay-200 capitalize'}>Soul Plan<span className="text-primary">.</span></h2>
                             </NavLink>
                         </div>
-                        <ul className='flex  items-center flex-col overflow-y-scroll h-full  mt-2 mb-20 space-y-1.5 scroll-hide'>
+                        <ul className='flex  items-center flex-col overflow-y-scroll h-full  my-4 mb-20 space-y-1 scroll-hide'>
                             {SidebarAdminApi?.map((item, i) =>
                                 <SidebarLink
                                     i={i}
@@ -35,11 +35,11 @@ const Sidebar = ({ children }) => {
                     </div>
                 </aside>
                 {/* ====================== sidebar end ===================== */}
-                <div className={isActiveLink ? "navbar-section-active transition-all duration-700 w-full" : "navbar-section transition-all duration-700  w-full "} >
+                <div className={isActiveLink ? "navbar-section-active transition-all duration-700" : "navbar-section transition-all duration-700  "} >
                     {/* ====================== Navbar start ===================== */}
                     <Navbar setMobileSidebar={setMobileSidebar} mobileSidebar={mobileSidebar} setIsActiveLink={setIsActiveLink} isActiveLink={isActiveLink} />
                     {/* ====================== sidebar end ===================== */}
-                    <main className="pb-5 pt-20" >
+                    <main className="pb-5 px-2 w-full" >
                         {/* ====================== Routes start ===================== */}
                         {children}
                         {/* ======================Routes start ===================== */}

@@ -1,5 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-    --primaryColor: #007bff;
+    --primaryColor: #4f46e5;
     --font-name: 'Plus Jakarta Sans';
     --font-name-pop: 'Poppins';
     --font-name-lex: 'Lexend';
@@ -68,6 +72,47 @@ body::-webkit-scrollbar-thumb {
     background-color: var(--primaryColor);
     border-radius: 1rem;
 }
+
+
+/* global.css */
+.text-p {
+    background: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.4s ease-in-out;
+}
+
+.image-flip {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+
+.border-p {
+    border: 1px solid;
+    border-image-source: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+}
+
+.animated-container div {
+    background: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.4s ease-in-out;
+}
+
+.text-hover-p:hover {
+    background: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.4s ease-in-out;
+}
+
 
 /* ============ image gallery =============== */
 .pswp__img {
@@ -453,9 +498,57 @@ body::-webkit-scrollbar-thumb {
     color: #000 !important;
 }
 
+.jodit_theme_summer {
+    --jd-color-background-default: #eff2fa;
+    /* --jd-color-border: #eff2fa; */
+    --jd-color-panel: #fff;
+    --jd-color-icon: #000;
+}
 
+/* Custom gradient utilities */
 .linear-grid {
     background: linear-gradient(90deg, rgb(8, 168, 245) 0%, 50%, rgb(16, 63, 199) 100%);
+}
+
+.bg-primary-gradient {
+    background: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+}
+
+.bg-blue-red-gradient {
+    background: linear-gradient(90deg, #2563eb 0%, #dc2626 100%);
+}
+
+.bg-purple-red-gradient {
+    background: linear-gradient(90deg, #9333ea 0%, #dc2626 100%);
+}
+
+
+.bg-gradient-orange {
+    background: linear-gradient(90deg, #f97316 0%, #ea580c 100%);
+}
+
+.bg-button-diagonal-gradient-orange {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.text-base-font {
+    color: #374151;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
 }
 
 .max-w {
@@ -529,6 +622,54 @@ body::-webkit-scrollbar-thumb {
     pointer-events: none;
 }
 
+/* Custom HomeBanner Swiper Navigation Styles */
+.homeBannerSwiper .swiper-button-prev,
+.homeBannerSwiper .swiper-button-next {
+    color: #fff !important;
+    background: linear-gradient(135deg, #FFFFFF26, #FFFFFF26) !important;
+    border-radius: 50% !important;
+    width: 3.1rem !important;
+    height: 3.1rem !important;
+    border: 0.5px solid rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px #FFFFFF26 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 10 !important;
+}
+
+.homeBannerSwiper .swiper-button-prev:hover,
+.homeBannerSwiper .swiper-button-next:hover {
+    background: linear-gradient(135deg, #FFFFFF26, #FFFFFF26) !important;
+    transform: translateY(-50%) scale(1.1) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 6px 20px #FFFFFF26 !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.homeBannerSwiper .swiper-button-prev:after,
+.homeBannerSwiper .swiper-button-next:after {
+    font-size: 16px !important;
+    font-weight: bold !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.homeBannerSwiper .swiper-button-prev {
+    left: 20px !important;
+}
+
+.homeBannerSwiper .swiper-button-next {
+    right: 20px !important;
+}
+
+.homeBannerSwiper .swiper-button-prev.swiper-button-disabled,
+.homeBannerSwiper .swiper-button-next.swiper-button-disabled {
+    opacity: 0.3 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) scale(0.9) !important;
+}
+
 @media screen and (max-width: 425px) {
 
     .swiper-button-prev,
@@ -541,8 +682,51 @@ body::-webkit-scrollbar-thumb {
     .swiper-button-next:after {
         font-size: 12px !important;
     }
+
+    /* HomeBanner mobile styles */
+    .homeBannerSwiper .swiper-button-prev,
+    .homeBannerSwiper .swiper-button-next {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .homeBannerSwiper .swiper-button-prev:after,
+    .homeBannerSwiper .swiper-button-next:after {
+        font-size: 14px !important;
+    }
+
+    .homeBannerSwiper .swiper-button-prev {
+        left: 10px !important;
+    }
+
+    .homeBannerSwiper .swiper-button-next {
+        right: 10px !important;
+    }
 }
 
+.imageback {
+    background-image: url("../src/assets/ZodiacCircular.png");
+    background-size: 130% 130%;
+    overflow: hidden;
+    border-radius: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: gradient 15s ease infinite;
+}
+
+.spin-slow {
+    animation: spin 15s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 
 video {
@@ -676,4 +860,261 @@ video {
         height: 40px;
         transform: translate(48px, 0);
     }
+}
+
+/* Cart Loading Animations */
+@keyframes cart-shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+@keyframes cart-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cart-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cart-shimmer {
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0.1) 100%);
+    background-size: 200px 100%;
+    animation: cart-shimmer 1.5s ease-in-out infinite;
+}
+
+.cart-fade-in {
+    animation: cart-fade-in 0.5s ease-out forwards;
+}
+
+.cart-slide-up {
+    animation: cart-slide-up 0.6s ease-out forwards;
+}
+
+.cart-item-enter {
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: cart-slide-up 0.4s ease-out forwards;
+}
+
+.cart-item-enter:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.cart-item-enter:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.cart-item-enter:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.cart-item-enter:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.cart-item-enter:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+/* Service Card Loading Animations */
+@keyframes service-shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+.service-shimmer {
+    background: linear-gradient(90deg,
+            #e2e8f0 0%,
+            #cbd5e1 50%,
+            #e2e8f0 100%);
+    background-size: 200px 100%;
+    animation: service-shimmer 1.5s ease-in-out infinite;
+}
+
+/* Product Card Loading Animations */
+@keyframes product-shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+.product-shimmer {
+    background: linear-gradient(90deg,
+            #e2e8f0 0%,
+            #cbd5e1 50%,
+            #e2e8f0 100%);
+    background-size: 200px 100%;
+    animation: product-shimmer 1.5s ease-in-out infinite;
+}
+
+.service-card-enter {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    animation: service-fade-in 0.6s ease-out forwards;
+}
+
+.service-card-enter:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.service-card-enter:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.service-card-enter:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.service-card-enter:nth-child(4) {
+    animation-delay: 0.25s;
+}
+
+.service-card-enter:nth-child(5) {
+    animation-delay: 0.3s;
+}
+
+.service-card-enter:nth-child(6) {
+    animation-delay: 0.35s;
+}
+
+.service-card-enter:nth-child(7) {
+    animation-delay: 0.4s;
+}
+
+.service-card-enter:nth-child(8) {
+    animation-delay: 0.45s;
+}
+
+.service-card-enter:nth-child(9) {
+    animation-delay: 0.5s;
+}
+
+.service-card-enter:nth-child(10) {
+    animation-delay: 0.55s;
+}
+
+.service-card-enter:nth-child(11) {
+    animation-delay: 0.6s;
+}
+
+.service-card-enter:nth-child(12) {
+    animation-delay: 0.65s;
+}
+
+@keyframes service-fade-in {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.gradientBtn button {
+    --border-radius: 5px;
+    --border-width: 1.5px;
+    appearance: none;
+    position: relative;
+    padding: 0.7em 2em;
+    border: 0;
+    background-color: transparent;
+    font-family: "Roboto", Arial, "Segoe UI", sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #fff;
+    z-index: 2;
+}
+
+.gradientBtn button::after {
+    --m-i: linear-gradient(#000, #000);
+    --m-o: content-box, padding-box;
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: var(--border-width);
+    border-radius: var(--border-radius);
+    background-image: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+    border: 1px solid;
+    -webkit-mask-image: var(--m-i), var(--m-i);
+    mask-image: var(--m-i), var(--m-i);
+    -webkit-mask-origin: var(--m-o);
+    mask-origin: var(--m-o);
+    -webkit-mask-clip: var(--m-o);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+    filter: hue-rotate(0);
+    animation: rotate-hue linear 500ms infinite;
+    animation-play-state: paused;
+}
+
+
+/* Banner text animations */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.banner-title {
+    animation: slideInLeft 1s ease-out;
+}
+
+.banner-description {
+    animation: slideInLeft 1s ease-out 0.3s both;
+}
+
+.banner-button {
+    animation: slideInUp 1s ease-out 0.6s both;
 }

@@ -1,15 +1,64 @@
 import axios from "axios";
 import { environment } from "../env";
+import toast from "react-hot-toast";
 
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = environment?.production;
+
+const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem("persist:root");
+    localStorage.removeItem('rememberedCredentials');
+    toast.error('Your session has expired. Please login again.');
+    window.location.href = '/login';
+};
+
+axios.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+axios.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (error) => {
+        if (error.response?.status === 401) {
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || '';
+
+            if (errorMessage.toLowerCase().includes('token') &&
+                (errorMessage.toLowerCase().includes('expired') ||
+                    errorMessage.toLowerCase().includes('invalid') ||
+                    errorMessage.toLowerCase().includes('unauthorized'))) {
+
+                const token = localStorage.getItem('token');
+                if (token) {
+                    handleLogout();
+                }
+            }
+        }
+
+        return Promise.reject(error);
+    }
+);
+
 
 // ==================== Regiter Api===================
 
 export const registerUser = async (data) => {
-    const url = `${environment.baseUrl}user/add-user `;
+    const url = `${environment.baseUrl}customer-users/register`;
     try {
+        console.log('Register Data:', data);
         const response = await axios.post(url, data)
         return response.data
+
     }
     catch (err) {
         console.log("==========error in Register User api file", err);
@@ -17,8 +66,22 @@ export const registerUser = async (data) => {
     }
 };
 
+// ==================== get filtered actors api ====================
+export const adminGetFilteredActors = async (data) => {
+    try {
+        const url = `${environment.baseUrl}admin/filtered-actors?role=${data?.role || ""}&email=${data?.email || ""}&page=${data?.p || 1}&limit=${data?.records || 10}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in adminGetFilteredActors api file", err);
+        return err?.response?.data
+    }
+}
+
+
 export const loginUser = async (data) => {
-    const url = `${environment.baseUrl}user/login`;
+    const url = `${environment.baseUrl}auth/login`;
     try {
         const response = await axios.post(url, data)
         return response.data
@@ -28,8 +91,19 @@ export const loginUser = async (data) => {
         return err?.response?.data
     }
 };
+export const logoutUser = async (data) => {
+    const url = `${environment.baseUrl}auth/logout`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in logout User api file", err);
+        return err?.response?.data
+    }
+};
 export const forgetUser = async (data) => {
-    const url = `${environment.baseUrl}user/verification-code`;
+    const url = `${environment.baseUrl}customer-users/forgot-password`;
     try {
         const response = await axios.post(url, data)
         return response.data
@@ -40,13 +114,15 @@ export const forgetUser = async (data) => {
     }
 };
 export const resetPassword = async (data) => {
-    const url = `${environment.baseUrl}user/forgot-password`;
+    const url = `${environment.baseUrl}customer-users/reset-password`;
+    console.log('Reset password data:', data);
     try {
         const response = await axios.post(url, data)
         return response.data
     }
     catch (err) {
-        console.log("==========error in forget User api file", err.response.data);
+        console.log("==========error in reset password api file", err);
+        console.log('Reset password error response:', err?.response?.data);
         return err?.response?.data
     }
 };
@@ -266,8 +342,8 @@ export const userContactUs = async (data) => {
 
 
 export const uploadToCloudinary = async (file) => {
-    const cloudName = 'hamax';
-    const apiKey = '567326273964993';
+    const cloudName = 'astroguid';
+    const apiKey = import.meta.env.VITE_CLOUDINARY_KEY;
     const uploadPreset = 'ml_default';
 
     const formData = new FormData();
@@ -310,61 +386,6 @@ export const uploadToCloudinary = async (file) => {
 };
 
 
-// ========================== After Login User actors page apis ===================
-
-export const getLatestLeadActors = async () => {
-    try {
-        const url = `${environment.baseUrl}user/latest-lead-actors`
-        const response = await axios.get(url)
-        return response.data.data
-    } catch (err) {
-        console.log('error in get Latest Lead Actors api file', err)
-        return err?.response?.data
-    }
-}
-
-export const getProfileDetails = async (id) => {
-    try {
-        const url = `${environment.baseUrl}user/user-details/${id}`
-        const response = await axios.get(url)
-        return response.data.data
-    } catch (err) {
-        console.log('error in get Profile Details api file', err)
-        return err?.response?.data
-    }
-}
-export const getRandomActors = async () => {
-    try {
-        const url = `${environment.baseUrl}user/random-actors`
-        const response = await axios.get(url)
-        return response.data.data
-    } catch (err) {
-        console.log('error in get Random Actors api file', err)
-        return err?.response?.data
-    }
-}
-export const getFilterLeadActors = async (data, page) => {
-    try {
-        const url = `${environment.baseUrl}user/filtered-leadActors?age=${data?.age || ""}&role=${data?.role || ""}&gender=${data?.gender || ""}&page=${page || 1}`
-        const response = await axios.get(url)
-        return response?.data
-    } catch (err) {
-        console.log('error in get Filtered Lead Actors api file', err)
-        return err?.response?.data
-    }
-}
-export const getblacklistedActors = async (data, page) => {
-    try {
-        const url = `${environment.baseUrl}user/blacklisted-user?role=${data?.role || ""}&page=${page || 1}`
-        const response = await axios.get(url)
-        return response?.data
-    } catch (err) {
-        console.log('error in get Filtered Lead Actors api file', err)
-        return err?.response?.data
-    }
-}
-
-
 // ============================== casting page apis =========================
 
 
@@ -390,123 +411,7 @@ export const getFilterCasting = async (role) => {
     }
 }
 
-
-// ============================== production page apis =========================
-
-
-export const getLetestProduction = async () => {
-    try {
-        const url = `${environment.baseUrl}user/lastest-production`
-        const response = await axios.get(url)
-        return response.data.data
-    } catch (err) {
-        console.log('error in get latest production api file', err)
-        return err?.response?.data
-    }
-}
-
-export const getFilterProduction = async (data, page) => {
-    try {
-        const url = `${environment.baseUrl}user/production-pagination?subRole=${data?.subRole || ""}&page=${page || 1}`
-        const response = await axios.get(url)
-        console.log("⚡️🤯 ~ index.jsx:384 ~ getFilterProduction ~ response:", response)
-        return response.data
-    } catch (err) {
-        console.log('error in get Filtered production api file', err)
-        return err?.response?.data
-    }
-}
-export const getDubbingProductionActors = async (data, page) => {
-    try {
-        const url = `${environment.baseUrl}user/getdubbing-actors?gender=${data?.gender || ""}&page=${page || 1}`
-        const response = await axios.get(url)
-        return response.data
-    } catch (err) {
-        console.log('error in get Filtered production api file', err)
-        return err?.response?.data
-    }
-}
-export const getAllActors = async (data, page) => {
-    console.log("⚡️🤯 ~ index.jsx:413 ~ getAllActors ~ data:", data)
-    const url = `${environment.baseUrl}user/actors-pagination?role=${data?.role || ""}&actorType=${data?.actorType || ""}&page=${page || 1}`;
-    try {
-        const response = await axios.get(url)
-        console.log("⚡️🤯 ~ index.jsx:416 ~ getAllActors ~ response:", response)
-        return response?.data
-    }
-    catch (err) {
-        console.log('error in get all Actors  api file', err)
-        return err?.response?.data
-    }
-};
-
-
-
 /* =============== Payment API ================= */
-
-export const paymentOrderId = async (id, data) => {
-    const url = `${environment.baseUrl}user/create-orderId/${id}`;
-    try {
-        const response = await axios.put(url, data)
-        return response.data
-    }
-    catch (err) {
-        console.log("⚡️🤯 ~ index.jsx:415 ~ paymentOrderId ~ err:", err)
-        return err?.response?.data
-    }
-};
-
-
-export const verifyPayment = async (id) => {
-    const url = `${environment.baseUrl}payment/payment-status/${id}`;
-    try {
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log("Api file error get Orders Details ===========>", err);
-    }
-};
-
-
-// ==================== get filtered actors api ====================
-export const adminGetFilteredActors = async (data) => {
-    try {
-        const url = `${environment.baseUrl}admin/filtered-actors?role=${data?.role || ""}&email=${data?.email || ""}&page=${data?.p || 1}&limit=${data?.records || 10}`;
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log("==========error in adminGetFilteredActors api file", err);
-        return err?.response?.data
-    }
-}
-
-// ==================== get filtered casting api ====================
-export const adminGetFilteredCasting = async (data) => {
-    try {
-        const url = `${environment.baseUrl}admin/filtered-casting-production?role=castingTeam&subRole=${data?.subRole || ""}&email=${data?.email || ""}&page=${data?.p || 1}&limit=${data?.records || 10}`;
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log("==========error in adminGetFilteredActors api file", err);
-        return err?.response?.data
-    }
-}
-
-// ==================== get filtered production api ====================
-export const adminGetFilteredProduction = async (data) => {
-    try {
-        const url = `${environment.baseUrl}admin/filtered-casting-production?role=productionTeam&subRole=${data?.subRole || ""}&email=${data?.email || ""}&page=${data?.p || 1}&limit=${data?.records || 10}`;
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log("==========error in adminGetFilteredActors api file", err);
-        return err?.response?.data
-    }
-}
 
 export const adminTransactionPagination = async (data) => {
     const url = `${environment.baseUrl}admin/transaction-pagination?status=${data?.status}&email=${data?.email}&orderId=${data?.orderId}&page=${data?.p || 1}&limit=${data?.records || 10}`;
@@ -584,5 +489,911 @@ export const editProfile = async (id, data) => {
         return response
     } catch (error) {
         console.log('error in edit profile api file', error)
+    }
+}
+
+
+// =============================== Api Binding Start ==============================
+
+// ====================== Product Categories Api ======================
+export const getProductCategories = async (data) => {
+    try {
+        const url = `${environment.baseUrl}product-categories/get-all?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log(err);
+        return err?.response?.data
+    }
+}
+export const getProductCategoriesDropdown = async () => {
+    try {
+        const url = `${environment.baseUrl}product-categories/dropdown`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log(err);
+        return err?.response?.data
+    }
+}
+
+export const addProductCategory = async (data) => {
+    const url = `${environment.baseUrl}product-categories/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addProductCategory api file", err);
+        return err?.response?.data
+    }
+};
+
+export const editProductCategory = async (id, data) => {
+    const url = `${environment.baseUrl}product-categories/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editProductCategory api file", err);
+        return err?.response?.data
+    }
+};
+
+
+
+// ======================= Product Sub Categories Api ======================
+export const getProductSubCategories = async (data) => {
+    try {
+        const url = `${environment.baseUrl}product-subcategories/get-all?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log(err);
+        return err?.response?.data
+    }
+}
+export const getProductSubCategoriesByCategory = async (id) => {
+    try {
+        const url = `${environment.baseUrl}product-subcategories/get-by-category?id=${id || ''}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getProductSubCategoriesSingle api file", err);
+        return err?.response?.data
+    }
+}
+
+export const addProductSubCategory = async (data) => {
+    const url = `${environment.baseUrl}product-subcategories/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addProductSubCategory api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editProductSubCategory = async (id, data) => {
+    const url = `${environment.baseUrl}product-subcategories/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editProductSubCategory api file", err);
+        return err?.response?.data
+    }
+}
+
+export const deleteProductSubCategory = async (id) => {
+    const url = `${environment.baseUrl}product-subcategories/delete?id=${id}`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in deleteProductSubCategory api file", err);
+        return err?.response?.data
+    }
+}
+
+// ====================== Service Categories Api ======================
+export const getServiceCategories = async (data) => {
+    try {
+        const url = `${environment.baseUrl}service-categories/get-all?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log(err);
+        return err?.response?.data
+    }
+}
+export const getServiceCategoriesDropdown = async () => {
+    try {
+        const url = `${environment.baseUrl}service-categories/dropdown`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log(err);
+        return err?.response?.data
+    }
+}
+export const getActiveServiceCategories = async () => {
+    try {
+        const url = `${environment.baseUrl}service-categories/public/active`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log(err);
+        return err?.response?.data
+    }
+}
+
+export const addServiceCategory = async (data) => {
+    const url = `${environment.baseUrl}service-categories/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addServiceCategory api file", err);
+        return err?.response?.data
+    }
+};
+
+export const editServiceCategory = async (id, data) => {
+    const url = `${environment.baseUrl}service-categories/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editServiceCategory api file", err);
+        return err?.response?.data
+    }
+};
+
+// ======================= Service Api ======================
+export const getServices = async (data) => {
+    try {
+        const url = `${environment.baseUrl}service/get-all?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getServices api file", err);
+        return err?.response?.data
+    }
+}
+export const getPublicServices = async (data) => {
+    try {
+        const url = `${environment.baseUrl}service/public/get-all?page=${data?.p || 1}&limit=${data?.records || 10}&search=${data?.search || ''}&category=${data?.category || ''}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getServices api file", err);
+        return err?.response?.data
+    }
+}
+export const getPublicServicesCards = async (data) => {
+    try {
+        const url = `${environment.baseUrl}service/soulplane/public/get-all?page=${data?.p || 1}&limit=${data?.records || 10}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getPublicServicesCards api file", err);
+        return err?.response?.data
+    }
+}
+
+export const getPublicServicesDropdown = async () => {
+    try {
+        const url = `${environment.baseUrl}service/public/dropdown`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in get Public Services Dropdown api file", err);
+        return err?.response?.data
+    }
+}
+export const getPublicServicesSingle = async (data) => {
+    try {
+        const url = `${environment.baseUrl}service/public/get-single?id=${data?.id || ''}`;
+        console.log("⚡️🤯 ~ index.jsx:659 ~ getPublicServicesSingle ~ url:", url)
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getPublicServicesSingle api file", err);
+        return err?.response?.data
+    }
+}
+
+export const addService = async (data) => {
+    const url = `${environment.baseUrl}service/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addService api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editService = async (id, data) => {
+    const url = `${environment.baseUrl}service/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editService api file", err);
+        return err?.response?.data
+    }
+}
+
+
+// ======================= Products Api ======================
+
+export const getPublicProducts = async (data) => {
+    try {
+        const url = `${environment.baseUrl}service/public/get-all?page=${data?.p || 1}&limit=${data?.records || 10}&search=${data?.search || ''}&category=${data?.category || ''}&subcategory=${data?.subcategory || ''}&minPrice=${data?.minPrice || ''}&maxPrice=${data?.maxPrice || ''}&inStock=${data?.inStock || ''}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getPublicProducts api file", err);
+        return err?.response?.data
+    }
+}
+export const getActiveProducts = async () => {
+    const url = `${environment.baseUrl}product/public/active`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching active products:', error);
+        throw error;
+    }
+};
+
+export const getPublicProductsSingle = async (id) => {
+    try {
+        const url = `${environment.baseUrl}product/public/active-single?id=${id}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getPublicProductsSingle api file", err);
+        return err?.response?.data
+    }
+}
+
+export const getPublicProductsFilter = async () => {
+    try {
+        const url = `${environment.baseUrl}product/public/filter`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getPublicProductsFilter api file", err);
+        return err?.response?.data
+    }
+}
+
+export const getProducts = async (data) => {
+    console.log('data', data)
+    try {
+        const url = `${environment.baseUrl}product/get-all?name=${data?.name || ''}&categoryId=${data?.categoryId || ''}&page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getProducts api file", err);
+        return err?.response?.data
+    }
+}
+
+export const addProduct = async (data) => {
+    const url = `${environment.baseUrl}product/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addProduct api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editProduct = async (id, data) => {
+    const url = `${environment.baseUrl}product/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editProduct api file", err);
+        return err?.response?.data
+    }
+}
+
+export const deleteProduct = async (id) => {
+    const url = `${environment.baseUrl}product/delete?id=${id}`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in deleteProduct api file", err);
+        return err?.response?.data
+    }
+}
+
+// ==================== Employee Api ====================
+
+export const getAllEmployees = async (data) => {
+    try {
+        const url = `${environment.baseUrl}employee-users/get-all?name=${data?.name || ''}&page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllEmployees api file", err);
+        return err?.response?.data
+    }
+}
+
+export const addEmployee = async (data) => {
+    const url = `${environment.baseUrl}employee-users/register`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addEmployee api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editEmployee = async (id, data) => {
+    const url = `${environment.baseUrl}employee-users/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editEmployee api file", err);
+        return err?.response?.data
+    }
+}
+
+// ==================== Customer Api ====================
+
+export const getAllCustomers = async (data) => {
+    try {
+        const url = `${environment.baseUrl}customer-users/get-all?name=${data?.name}&page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllCustomers api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editUserCustomer = async (data) => {
+    const url = `${environment.baseUrl}customer-users/update`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in edit Customer api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editCustomer = async (id, data) => {
+    const url = `${environment.baseUrl}customer-users/admin-update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in edit Customer api file", err);
+        return err?.response?.data
+    }
+}
+
+
+// ================== Banner Api ==================
+
+export const getAllBanners = async (data) => {
+    try {
+        const url = `${environment.baseUrl}banners/get-all?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllBanners api file", err);
+        return err?.response?.data
+    }
+}
+
+
+export const addBanner = async (data) => {
+    const url = `${environment.baseUrl}banners/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addBanner api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editBanner = async (id, data) => {
+    const url = `${environment.baseUrl}banners/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editBanner api file", err);
+        return err?.response?.data
+    }
+}
+
+export const deleteBanner = async (id) => {
+    const url = `${environment.baseUrl}banners/delete?id=${id}`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in deleteBanner api file", err);
+        return err?.response?.data
+    }
+}
+
+
+// ==================== Website APi Binding ====================
+
+
+// ==================== Authendication Api===================
+// export const registerUser = async (data) => {
+//     const url = `${environment.baseUrl}customer-users/register`;
+//     try {
+//         console.log('Register Data:', data);
+//         const response = await axios.post(url, data)
+//         return response.data
+
+//     }
+//     catch (err) {
+//         console.log("==========error in Register User api file", err);
+//         return err?.response?.data
+//     }
+// };
+
+// export const loginUser = async (data) => {
+//     const url = `${environment.baseUrl}auth/login`;
+//     console.log('Login URL:', url);
+//     console.log('Login Data:', data);
+//     try {
+//         const response = await axios.post(url, data)
+//         return response.data
+//     }
+//     catch (err) {
+//         console.log("==========error in login User api file", err);
+//         console.log('Error response:', err?.response?.data);
+//         return err?.response?.data
+//     }
+// };
+
+// export const forgetUser = async (data) => {
+//     const url = `${environment.baseUrl}customer-users/forgot-password`;
+//     try {
+//         const response = await axios.post(url, data)
+//         return response.data
+//     }
+//     catch (err) {
+//         console.log("==========error in forget User api file", err.response.data);
+//         return err?.response?.data
+//     }
+// };
+// export const resetPassword = async (data) => {
+//     const url = `${environment.baseUrl}customer-users/reset-password`;
+//     console.log('Reset password data:', data);
+//     try {
+//         const response = await axios.post(url, data)
+//         return response.data
+//     }
+//     catch (err) {
+//         console.log("==========error in reset password api file", err);
+//         console.log('Reset password error response:', err?.response?.data);
+//         return err?.response?.data
+//     }
+// };
+
+
+// ==================== Website APi Binding ====================
+
+
+// ==================== Authendication Api===================
+// export const registerUser = async (data) => {
+//     const url = `${environment.baseUrl}/api/customer-users/register`;
+//     try {
+//         console.log('Register Data:', data);
+//         const response = await axios.post(url, data)
+//         return response.data
+
+//     }
+//     catch (err) {
+//         console.log("==========error in Register User api file", err);
+//         return err?.response?.data
+//     }
+// };
+
+// export const loginUser = async (data) => {
+//     const url = `${environment.baseUrl}/api/auth/login`;
+//     console.log('Login URL:', url);
+//     console.log('Login Data:', data);
+//     try {
+//         const response = await axios.post(url, data)
+//         return response.data
+//     }
+//     catch (err) {
+//         console.log("==========error in login User api file", err);
+//         console.log('Error response:', err?.response?.data);
+//         return err?.response?.data
+//     }
+// };
+
+// export const forgetUser = async (data) => {
+//     const url = `${environment.baseUrl}/api/customer-users/forgot-password`;
+//     try {
+//         const response = await axios.post(url, data)
+//         return response.data
+//     }
+//     catch (err) {
+//         console.log("==========error in forget User api file", err.response.data);
+//         return err?.response?.data
+//     }
+// };
+// export const resetPassword = async (data) => {
+//     const url = `${environment.baseUrl}/api/customer-users/reset-password`;
+//     console.log('Reset password data:', data);
+//     try {
+//         const response = await axios.post(url, data)
+//         return response.data
+//     }
+//     catch (err) {
+//         console.log("==========error in reset password api file", err);
+//         console.log('Reset password error response:', err?.response?.data);
+//         return err?.response?.data
+//     }
+// };
+
+// ====================CUstomer(User) Banner  Api===================
+export const getActiveBanners = async (type = "website") => {
+    try {
+        const res = await axios.get(`${environment.baseUrl}banners/active?type=${type}`);
+        return res.data?.data || [];
+    } catch (err) {
+        console.error("Error fetching banners:", err);
+        return [];
+    }
+};
+
+// =========================== Product Cart Api ====================
+
+export const addProductToCart = async (data) => {
+    const url = `${environment.baseUrl}product-cart/public/add`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addProductToCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const getProductFromCart = async (data) => {
+    const url = `${environment.baseUrl}product-cart/public/get`;
+    try {
+        const response = await axios.get(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getProductFromCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const removeProductFromCart = async (data) => {
+    const url = `${environment.baseUrl}product-cart/public/remove-item`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in removeProductFromCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const updateProductInCart = async (data) => {
+    const url = `${environment.baseUrl}product-cart/public/update`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in updateProductInCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const clearCart = async () => {
+    const url = `${environment.baseUrl}product-cart/public/clear`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in clearCart api file", err);
+        return err?.response?.data
+    }
+}
+
+// ========================= Service Cart Api ========================
+
+export const addServiceToCart = async (data) => {
+    const url = `${environment.baseUrl}service-cart/public/add`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addServiceToCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const getServiceFromCart = async (data) => {
+    const url = `${environment.baseUrl}service-cart/public/get`;
+    try {
+        const response = await axios.get(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getServiceFromCart api file", err);
+        return err?.response?.data
+    }
+}
+
+export const removeServiceFromCart = async (data) => {
+    const url = `${environment.baseUrl}service-cart/public/remove-item`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in removeServiceFromCart api file", err);
+        return err?.response?.data
+    }
+}
+
+
+// ================== Customer Feedback Api ==================
+
+export const getAllFeedback = async (data) => {
+    try {
+        const url = `${environment.baseUrl}feedback/get-all?search=${data?.name || ''}&page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllFeedback api file", err);
+        return err?.response?.data
+    }
+}
+
+
+export const addFeedback = async (data) => {
+    const url = `${environment.baseUrl}feedback/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addFeedback api file", err);
+        return err?.response?.data
+    }
+}
+
+export const respondFeedback = async (data) => {
+    const url = `${environment.baseUrl}feedback/respond`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in respondFeedback api file", err);
+        return err?.response?.data
+    }
+}
+
+export const deleteFeedback = async (id) => {
+    const url = `${environment.baseUrl}/feedback/delete?id=${id}`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in deleteFeedback api file", err);
+        return err?.response?.data
+    }
+}
+// ========================= Address Api ========================
+
+export const getAllAddress = async () => {
+    const url = `${environment.baseUrl}customer-address/get-all`;
+    try {
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllAddress api file", err);
+        return err?.response?.data
+    }
+}
+
+export const addAddress = async (data) => {
+    const url = `${environment.baseUrl}customer-address/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in addAddress api file", err);
+        return err?.response?.data
+    }
+}
+
+export const editAddress = async (id, data) => {
+    const url = `${environment.baseUrl}customer-address/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editAddress api file", err);
+        return err?.response?.data
+    }
+}
+
+export const deleteAddress = async (id) => {
+    const url = `${environment.baseUrl}customer-address/delete?id=${id}`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in deleteAddress api file", err);
+        return err?.response?.data
+    }
+}
+
+
+// =========================== admin product order api ====================
+
+export const getAllProductOrders = async (data) => {
+    console.log('data', data)
+    try {
+        const url = `${environment.baseUrl}product-order/get-all?orderId=${data?.orderId || ""}&date=${data?.date || ""}&status=${data?.status || ""}&page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllProductOrders api file", err);
+        return err?.response?.data
+    }
+}
+
+export const updateProductOrder = async (data) => {
+    try {
+        const url = `${environment.baseUrl}product-order/update-order-status`;
+        console.log("⚡️🤯 ~ index.jsx:1230 ~ getPublicServicesSingle ~ url:", url)
+        const response = await axios.post(url, data);
+        return response.data;
+    }
+    catch (err) {
+        console.log("==========error in updateProductOrderStatus api file", err);
+        return err?.response?.data;
+    }
+}
+// ======================= calendar api =======================
+
+export const checkAvailability = async (data) => {
+    try {
+        const url = `${environment.baseUrl}calender/check-availability`;
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in checkAvailability api file", err);
+        return err?.response?.data
+    }
+}
+
+
+// ===================== Service Order Api =====================
+
+export const PlaceServiceOrder = async (data) => {
+    const url = `${environment.baseUrl}service-order/public/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data;
+    }
+    catch (err) {
+        console.log("==========error in PlaceServiceOrder api file", err);
+        return err?.response?.data;
+    }
+}
+export const getServiceBookingsConfirmed = async (data) => {
+    const url = `${environment.baseUrl}service-order/public/get-all`;
+    try {
+        const response = await axios.get(url, data)
+        return response.data;
+    }
+    catch (err) {
+        console.log("==========error in getServiceBookingsConfirmed api file", err);
+        return err?.response?.data;
+    }
+}
+
+
+// ===================== Product Booking Api =====================
+
+export const PlaceProductOrder = async (data) => {
+    const url = `${environment.baseUrl}product-order/public/create`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data;
+    }
+    catch (err) {
+        console.log("==========error in bookProduct api file", err);
+        return err?.response?.data;
+    }
+}
+
+export const getProductBookingsConfirmed = async (data) => {
+    const url = `${environment.baseUrl}product-order/public/get-all`;
+    try {
+        const response = await axios.get(url, data)
+        return response.data;
+    }
+    catch (err) {
+        console.log("==========error in getProductBookingsConfirmed api file", err);
+        return err?.response?.data;
     }
 }

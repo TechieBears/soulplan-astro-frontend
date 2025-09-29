@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { validateEmail, validatePassword } from '../../../utils/validateFunction';
 import TextInput from '../../TextInput/TextInput';
 import { forgetUser, resetPassword } from '../../../api';
+import { formBtn3 } from '../../../utils/CustomClass';
 
 export default function ForgetPasswordModal({ open, setOpen }) {
     const [step, setStep] = useState(1); // 1: email, 2: OTP, 3: new password
@@ -421,7 +422,7 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                             <button
                                                 type="submit"
                                                 disabled={isLoading}
-                                                className={`flex-1 rounded-lg px-4 py-3 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${isLoading ? 'bg-blue-400' :
+                                                className={`${formBtn3} ${isLoading ? 'bg-blue-400' :
                                                     step === 3 ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-blue-700'
                                                     }`}
                                             >
