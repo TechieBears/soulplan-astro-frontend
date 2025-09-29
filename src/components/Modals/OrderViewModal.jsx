@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { X, Star, Share2 } from "lucide-react";
 import ring from "../../assets/shop/product2.png";
 import CustomTextArea from "../TextInput/CustomTextArea";
@@ -7,6 +7,7 @@ import delivery from "../../assets/deliver.png";
 import { Calendar, Timer1, Zoom } from "iconsax-reactjs";
 import { Icon } from "@iconify/react";
 import verified from "../../assets/verify.png";
+import { Dialog, Transition } from "@headlessui/react";
 
 
 const Details = [
@@ -425,7 +426,7 @@ const OrderViewModal = ({ isOpen, onClose, modalType = "product" }) => {
                         >
                             Write a Review
                         </button>
-                    </div>
+                    </div>  
 
                     {/* Review Input */}
                     {activeReview === productIndex && (
@@ -501,57 +502,84 @@ const OrderViewModal = ({ isOpen, onClose, modalType = "product" }) => {
     );
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center sm:p-4 z-50">
-            <div className="bg-white rounded-lg max-w-6xl w-full max-h-[70vh] overflow-y-auto scroll-hide">
-                <div className="flex items-center justify-between border-b bg-gray-50 sticky top-0 z-10 p-4 sm:px-6">
-                    <h2 className="text-lg font-semibold text-gray-800 font-tbPop">
-                        {modalType === "product" ? "Order Details" : "Order Details"}
-                    </h2>
+        <Transition.Root show={isOpen} as={Fragment}>
+            <Dialog as="div" className="relative z-[99]" onClose={onClose}>
+                <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 backdrop-blur-[2.3px] bg-black/20" />
+                </Transition.Child>
 
-                    <div className="flex items-center gap-x-4">
-                        {modalType === "product" ? (
-                            <>
-                                <button className="flex items-center space-x-2 sm:p-2 bg-[#daede7] text-green-800 text-md sm:text-md font-tbPop rounded">
-                                    <img src={delivery} alt="Delivery status" className="w-6 h-6" />
-                                    <span className="hidden sm:inline">{Details[0].status}</span>
-                                </button>
-                                <button className="flex items-center space-x-2 sm:p-2 bg-[#dfddf0] text-blue-600 text-md sm:text-md font-tbPop rounded">
-                                    <img src={download} alt="Download Invoice" className="w-6 h-6" />
-                                    <span className="hidden sm:inline">Download Invoice</span>
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button className="flex items-center space-x-2 sm:p-2 bg-[#e8f5e8] text-green-700 text-md sm:text-md font-tbPop rounded">
-                                    <img src={verified} alt="" className="w-6 h-6" />
-                                    <span className="hidden sm:inline">Session Completed</span>
-                                </button>
-                                {/* <button className="flex items-center space-x-2 sm:p-2 bg-[#f0f4ff] text-blue-700 text-md sm:text-md font-tbPop rounded">
-                  <Zoom className="w-6 h-6" />
-                  <span className="hidden sm:inline">Join Meeting</span>
-                </button> */}
-                            </>
-                        )}
-                        <button
-                            onClick={onClose}
-                            className="text-black hover:text-gray-700 transition-colors p-2 rounded"
-                            aria-label="Close Modal"
+                <div className="fixed inset-0 z-[99] w-screen overflow-y-auto">
+                    <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            enterTo="opacity-100 translate-y-0 sm:scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <X className="w-6 h-6" />
-                        </button>
+                            <Dialog.Panel className="relative transform overflow-hidden rounded-xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-6xl max-h-[85vh] overflow-y-auto">
+                                {/* Header */}
+                                <div className="flex items-center justify-between border-b bg-gray-50 sticky top-0 z-10 p-4 sm:px-6">
+                                    <h2 className="text-lg font-semibold text-gray-800 font-tbPop">
+                                        {modalType === "product" ? "Order Details" : "Order Details"}
+                                    </h2>
+
+                                    <div className="flex items-center gap-x-4">
+                                        {modalType === "product" ? (
+                                            <>
+                                                <button className="flex items-center space-x-2 sm:p-2 bg-[#daede7] text-green-800 text-md sm:text-md font-tbPop rounded">
+                                                    <img src={delivery} alt="Delivery status" className="w-6 h-6" />
+                                                    <span className="hidden sm:inline">{Details[0].status}</span>
+                                                </button>
+                                                <button className="flex items-center space-x-2 sm:p-2 bg-[#dfddf0] text-blue-600 text-md sm:text-md font-tbPop rounded">
+                                                    <img src={download} alt="Download Invoice" className="w-6 h-6" />
+                                                    <span className="hidden sm:inline">Download Invoice</span>
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <button className="flex items-center space-x-2 sm:p-2 bg-[#e8f5e8] text-green-700 text-md sm:text-md font-tbPop rounded">
+                                                    <img src={verified} alt="" className="w-6 h-6" />
+                                                    <span className="hidden sm:inline">Session Completed</span>
+                                                </button>
+                                            </>
+                                        )}
+                                        <button
+                                            onClick={onClose}
+                                            className="text-black hover:text-gray-700 transition-colors p-2 rounded"
+                                            aria-label="Close Modal"
+                                        >
+                                            <X className="w-6 h-6" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Content */}
+                                <div className="bg-white px-4 pb-4 pt-5 sm:p-6">
+                                    <div className="space-y-6">
+                                        {Details.map((detail, productIndex) =>
+                                            modalType === "product"
+                                                ? renderProductView(detail, productIndex)
+                                                : renderServiceView(detail, productIndex)
+                                        )}
+                                    </div>
+                                </div>
+                            </Dialog.Panel>
+                        </Transition.Child>
                     </div>
                 </div>
-
-                {/* Products/Services List */}
-                <div className="p-4 sm:p-6 space-y-6 max-h-[85vh] overflow-y-auto scroll-hide">
-                    {Details.map((detail, productIndex) =>
-                        modalType === "product"
-                            ? renderProductView(detail, productIndex)
-                            : renderServiceView(detail, productIndex)
-                    )}
-                </div>
-            </div>
-        </div>
+            </Dialog>
+        </Transition.Root>
     );
 };
 

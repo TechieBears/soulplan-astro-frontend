@@ -109,12 +109,12 @@ export default function MyOrders() {
                 <UserDashboard>
                     <ProfileSidebar>
                         <div className="flex flex-col sm:flex-row justify-between">
-                            <h1 className="text-lg font-medium text-left text-gray-800  p-4 font-tbLex">
+                            <h1 className="text-lg text-center font-medium  text-gray-800  p-4 font-tbLex">
                                 My Orders
                             </h1>
 
                             {/* 🔹 Tabs */}
-                            <div className="flex bg-slate1 rounded-full p-1.5 space-x-1.5 mb-5">
+                            <div className="flex bg-slate1 justify-center rounded-full p-1.5 space-x-1.5 mb-5">
                                 <button
                                     className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate1 transition-all duration-300 text-sm md:text-base font-tbLex ${activeTab === "services"
                                         ? "bg-linear-gradient text-white"
@@ -153,39 +153,39 @@ export default function MyOrders() {
                                                 ))}
                                             </div>
                                         ) : hasServiceOrders ? (
-                                            serviceOrders.map((order, orderIndex) => (
-                                                <div key={order.orderId} className="space-y-3">
-                                                    {order.services?.map((service, serviceIndex) => (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {serviceOrders.map((order, orderIndex) =>
+                                                    order.services?.map((service, serviceIndex) => (
                                                         <div
                                                             key={`${order.orderId}-${service.serviceId}`}
-                                                            className="relative rounded-lg p-4 text-black cursor-pointer transition-all duration-300
-                                                             bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100
+                                                            className="relative rounded-lg p-4 text-white cursor-pointer transition-all duration-300
+                                                             bg-[#9E52D8] hover:from-blue-100 hover:to-purple-100
                                                              border border-gray-200 hover:border-purple-300 cart-slide-up overflow-hidden"
                                                             style={{ animationDelay: `${(orderIndex * order.services.length + serviceIndex) * 0.1}s` }}
-                                                            onClick={() => navigate(`/profile/my-orders`)}
+                                                            onClick={() => openModal(service, "service")}
                                                         >
                                                             <h3 className="font-medium font-dm text-lg mb-4">
                                                                 Service Type:
-                                                                <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 bg-clip-text text-transparent font-semibold">
-                                                                    {service.serviceName}
+                                                                <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 bg-clip-text text-white font-semibold">
+                                                                      {service.serviceName}
                                                                 </span>
                                                             </h3>
 
-                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                                                            <div className="flex flex-col gap-3 mb-3">
                                                                 <p className="flex items-center gap-3">
-                                                                    <Timer1 className="w-5 h-5 text-purple-600" />
+                                                                    <Timer1 className="w-5 h-5 " />
                                                                     <span className="text-sm">Duration: {service.durationInMinutes} minutes</span>
                                                                 </p>
                                                                 <p className="flex items-center gap-3">
-                                                                    <Calendar className="w-5 h-5 text-blue-600" />
+                                                                    <Calendar className="w-5 h-5 " />
                                                                     <span className="text-sm">Date: {service.bookingDate}</span>
                                                                 </p>
                                                                 <p className="flex items-center gap-3">
-                                                                    <Icon icon="ph:device-mobile" className="w-5 h-5 text-green-600" />
+                                                                    <Icon icon="ph:device-mobile" className="w-5 h-5 " />
                                                                     <span className="text-sm">Mode: {service.serviceType}</span>
                                                                 </p>
                                                                 <p className="flex items-center gap-3">
-                                                                    <Icon icon="ph:clock" className="w-5 h-5 text-orange-600" />
+                                                                    <Icon icon="ph:clock" className="w-5 h-5 " />
                                                                     <span className="text-sm">Time: {service.startTime} - {service.endTime}</span>
                                                                 </p>
                                                             </div>
@@ -207,8 +207,8 @@ export default function MyOrders() {
 
                                                             <div className="flex justify-between items-center pt-2 border-t border-gray-200">
                                                                 <div className="text-sm">
-                                                                    <span className="text-gray-600">Price: </span>
-                                                                    <span className="font-semibold text-green-600">₹{service.servicePrice?.toLocaleString()}</span>
+                                                                    <span className="text-white">Price: </span>
+                                                                    <span className="font-semibold ">₹{service.servicePrice?.toLocaleString()}</span>
                                                                 </div>
                                                                 <div className="flex gap-4 text-xs">
                                                                     <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
@@ -223,9 +223,9 @@ export default function MyOrders() {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    ))}
-                                                </div>
-                                            ))
+                                                    ))
+                                                )}
+                                            </div>
                                         ) : (
                                             <div className="text-center py-8">
                                                 <Calendar className="w-16 h-16 mx-auto text-gray-400 mb-4" />
@@ -247,15 +247,15 @@ export default function MyOrders() {
                                                 ))}
                                             </div>
                                         ) : hasProductOrders ? (
-                                            productOrders.map((order, orderIndex) => (
-                                                <div key={order._id} className="space-y-4 " style={{ animationDelay: `${orderIndex * 0.1}s` }}>
-                                                    {order.items?.map((item, itemIndex) => (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {productOrders.map((order, orderIndex) =>
+                                                    order.items?.map((item, itemIndex) => (
                                                         <div
                                                             key={`${order._id}-${item._id}`}
                                                             className="bg-[#9E52D8] rounded-lg p-4 cursor-pointer hover:bg-[#8A47C4] transition-all duration-300
                                                              flex flex-col sm:flex-row items-left sm:items-start gap-4 cart-slide-up"
                                                             style={{ animationDelay: `${(orderIndex * order.items.length + itemIndex) * 0.1}s` }}
-                                                            onClick={() => navigate(`/profile/my-orders`)}
+                                                            onClick={() => openModal(order, "product")}
                                                         >
                                                             <div className="sm:w-24 sm:h-24 w-full rounded-lg overflow-hidden flex-shrink-0 mx-auto sm:mx-0"
                                                                 style={{ background: `linear-gradient(90deg, rgba(0, 121, 208, 0.2) -12.5%, rgba(158, 82, 216, 0.2) 30.84%, rgba(218, 54, 92, 0.2) 70.03%, rgba(208, 73, 1, 0.2) 111%)` }}>
@@ -276,7 +276,7 @@ export default function MyOrders() {
                                                                 </div>
                                                                 <div className="flex justify-between items-start">
                                                                     <div className="text-white text-sm">
-                                                                        MRP
+                                                                        MRP :
                                                                         <span className="line-through">
                                                                             ₹{item.product?.mrpPrice?.toLocaleString() || 0}
                                                                         </span>
@@ -296,9 +296,9 @@ export default function MyOrders() {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    ))}
-                                                </div>
-                                            ))
+                                                    ))
+                                                )}
+                                            </div>
                                         ) : (
                                             <div className="text-center py-8">
                                                 <ShoppingCartIcon className="w-16 h-16 mx-auto text-gray-400 mb-4" />
@@ -313,11 +313,11 @@ export default function MyOrders() {
                     </ProfileSidebar>
                 </UserDashboard>
             </Private>
-            <OrderViewModal
-                isOpen={modalOpen}
-                onClose={handleClose}
-                modalType={modalType}
-            />
+<OrderViewModal
+  isOpen={modalOpen}
+  onClose={handleClose}
+  modalType={modalType}
+/>
         </>
     );
 }
