@@ -1,6 +1,7 @@
 import React, { useState, Fragment } from "react";
 import { X } from "lucide-react";
 import { Dialog, Transition } from "@headlessui/react";
+import TextInput from "../TextInput/TextInput";
 
 const couponsData = [
   {
@@ -96,15 +97,20 @@ const AvailableCouponsModal = ({ isOpen, onClose }) => {
                   <div className="space-y-6">
                     {/* Coupon Code Input */}
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-gray-800 font-tbPop">Enter Coupon Code</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 font-tbPop">
+                        Enter Coupon Code
+                      </h3>
                       <div className="flex items-center gap-3">
-                        <input
-                          type="text"
-                          placeholder="Enter coupon code"
-                          value={couponCode}
-                          onChange={(e) => setCouponCode(e.target.value)}
-                          className="flex-1 border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-purple-400 font-tbPop"
-                        />
+                        <div className="flex-1">
+                          <TextInput
+                            type="text"
+                            placeholder="Enter coupon code"
+                            props={{
+                              value: couponCode,
+                              onChange: (e) => setCouponCode(e.target.value)
+                            }}
+                          />
+                        </div>
                         <button className="text-purple-600 font-medium hover:text-purple-700 text-base px-6 py-3 border border-purple-600 rounded-lg hover:bg-purple-50 transition-colors font-tbPop">
                           Check
                         </button>
@@ -113,8 +119,7 @@ const AvailableCouponsModal = ({ isOpen, onClose }) => {
 
                     {/* Coupons List */}
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-gray-800 font-tbPop">Available Coupons</h3>
-                      <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                      <div className="space-y-4 max-h-[400px] overflow-y-auto scroll-hide">
                         {couponsData.map((coupon) => (
                           <div
                             key={coupon.id}
@@ -125,20 +130,26 @@ const AvailableCouponsModal = ({ isOpen, onClose }) => {
                             }`}
                             onClick={() => setSelectedCoupon(coupon.id)}
                           >
-                            <input
-                              type="radio"
-                              name="coupon"
-                              checked={selectedCoupon === coupon.id}
-                              onChange={() => setSelectedCoupon(coupon.id)}
-                              className="mt-1 w-5 h-5 accent-purple-600"
-                            />
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                name="coupon"
+                                checked={selectedCoupon === coupon.id}
+                                onChange={() => setSelectedCoupon(coupon.id)}
+                                className="hidden peer"
+                              />
+                              <div className="w-6 h-6 bg-linear-gradient bg-linear-gradient flex items-center justify-center peer-checked:before:content-['✔'] peer-checked:before:text-white peer-checked:before:text-sm transition-all duration-300 shadow-md" />
+                              <span className="text-gray-700 text-sm ">
+                                {coupon.name}
+                              </span>
+                            </label>
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
                                 <span
-                                  className={`px-3 py-1 border rounded-md text-sm font-semibold font-tbPop ${
+                                  className={`px-3 py-1 border border-dotted rounded text-sm font-semibold font-tbPop ${
                                     selectedCoupon === coupon.id
                                       ? "border-purple-600 text-purple-700"
-                                      : "border-purple-300 text-purple-700"
+                                      : "border-purple-600 text-purple-700"
                                   }`}
                                 >
                                   {coupon.title}
@@ -158,7 +169,6 @@ const AvailableCouponsModal = ({ isOpen, onClose }) => {
                         ))}
                       </div>
                     </div>
-
                   </div>
                 </div>
 
@@ -166,19 +176,20 @@ const AvailableCouponsModal = ({ isOpen, onClose }) => {
                 <div className="border-t border-gray-200 bg-gray-50 px-6 py-4">
                   <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
                     <p className="text-gray-800 text-base font-medium font-tbPop">
-                      Maximum Savings: <span className="font-semibold">₹300</span>
+                      Maximum Savings:{" "}
+                      <span className="font-semibold">₹300</span>
                     </p>
                     <div className="flex items-center gap-3 w-full lg:w-auto">
                       <button
                         onClick={handleCancel}
-                        className="flex-1 lg:flex-none px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 text-base transition-colors font-tbPop"
+                        className="flex-1 lg:flex-none px-8  py-3 border border-gray-300 text-gray-700 hover:bg-gray-100 text-base transition-colors font-tbPop"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleApply}
                         disabled={!selectedCoupon}
-                        className={`flex-1 lg:flex-none px-6 py-3 rounded-lg text-white text-base transition-colors font-tbPop ${
+                        className={`flex-1 lg:flex-none space-x-2 px-8 py-3  text-white text-base transition-colors font-tbPop ${
                           selectedCoupon
                             ? "bg-gray-900 hover:bg-gray-800"
                             : "bg-gray-400 cursor-not-allowed"
