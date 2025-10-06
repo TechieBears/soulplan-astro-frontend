@@ -389,12 +389,12 @@ export default function MyOrders() {
                                                                             <Icon icon="ph:wallet" className="w-3 h-3 inline mr-1" />
                                                                             {order.paymentMethod}
                                                                         </span>
-                                                                        <div className="flex items-center gap-1">
+                                                                        {order?.items?.length > 1 && <div className="flex items-center gap-1">
                                                                             <div className="size-6 bg-white text-black rounded-full text-center font-tbLex font-medium text-sm">
                                                                                 {order?.items?.length - 1}
                                                                             </div>
                                                                             <span className="text-white text-sm">+</span>
-                                                                        </div>
+                                                                        </div>}
                                                                     </div>
                                                                 </div>
                                                             </div>
