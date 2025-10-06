@@ -12,7 +12,7 @@ import { ArrowLeft2, ArrowRight2 } from 'iconsax-reactjs';
 const ProductCategories = () => {
     const [selectedTab, setSelectedTab] = useState(0);
     return (
-        <div className="mx-5 mt-10" >
+        <div className="mx-5 mt-10 h-screen bg-slate-100" >
             <Tabs selectedIndex={selectedTab} onSelect={index => setSelectedTab(index)} >
                 <TabList className="flex space-x-2 mx-1 ">
                     <Tab
@@ -69,7 +69,6 @@ const ProductCategoriesPanel = () => {
     </div>
 
     const imageBodyTemp = (row) => <div className='w-52 h-24 rounded'>
-        {console.log(row)}
         <img loading="lazy" src={row?.image} alt="image" className='w-full h-full object-cover rounded' />
     </div>
 

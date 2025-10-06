@@ -2,6 +2,7 @@ import React, { useMemo, useEffect, useState } from "react";
 import moment from "moment";
 import BookingDetailsModal from "../../../components/Modals/AdminModals/BookingDetailsModal";
 import { ArrowLeft2, ArrowRight2 } from "iconsax-reactjs";
+import { astrologerSlots } from "../../../api";
 
 const dummyCalendarData = {
     bookings: [
@@ -43,10 +44,10 @@ const dummyCalendarData = {
 };
 
 // Generate full-day slots (09:00 to 21:00, every 30 mins)
-const generateFullDaySlots = () => {
+const generateFullDaySlots = (time) => {
     const slots = [];
-    let start = moment("09:00", "HH:mm");
-    const end = moment("21:00", "HH:mm");
+    let start = moment(time?.start, "HH:mm");
+    const end = moment(time?.end, "HH:mm");
 
     while (start.isBefore(end)) {
         const slotStart = start.format("HH:mm");
@@ -104,7 +105,7 @@ const SlotCard = ({ status, booking, onClick, isLoading }) => {
                 return {
                     bg: "bg-gradient-to-br from-amber-50 via-orange-50 to-orange-100",
                     text: "text-orange-600",
-                    title: `${booking?.customer?.first_name} ${booking?.customer?.last_name}`,
+                    title: `${booking?.customer}`,
                     border: "border-orange-300/80",
                 };
             case "available":
@@ -127,7 +128,7 @@ const SlotCard = ({ status, booking, onClick, isLoading }) => {
             className={`
         py-5 ${config.bg} ${config.text}
         rounded-md flex flex-col items-center justify-center
-        font-semibold text-sm transition-all duration-300 ease-in-out
+        font-semibold capitalize text-sm transition-all duration-300 ease-in-out
         ${isClickable ? "cursor-pointer transform" : "cursor-default"}
         border ${config.border}
       `}
@@ -135,7 +136,7 @@ const SlotCard = ({ status, booking, onClick, isLoading }) => {
             <div className="text-center leading-tight">
                 {status === "booked" ? (
                     <h4 className="text-sm font-semibold line-clamp-1 px-5">
-                        {booking?.customer?.first_name} {booking?.customer?.last_name}
+                        {booking?.customer}
                     </h4>
                 ) : (
                     <div className="text-sm font-bold text-center px-5">
@@ -147,19 +148,33 @@ const SlotCard = ({ status, booking, onClick, isLoading }) => {
     );
 };
 
-const VenueCalendar = () => {
+const BookingCalendar = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
+    const [slots, setSlots] = useState({
+        bookings: [],
+        date: {},
+        time: { start: "09:00", end: "21:00" },
+    });
 
-    const fullDaySlots = useMemo(() => generateFullDaySlots(), []);
+    const fullDaySlots = useMemo(() => generateFullDaySlots(slots?.time), [slots]);
 
     const [startDate, setStartDate] = useState(moment().startOf("day"));
     const daysRange = useMemo(() => generateDaysRange(startDate, 6), [startDate]);
 
+    const getSlots = async () => {
+        setIsLoading(true);
+        try {
+            const response = await astrologerSlots(moment(startDate).format("YYYY-MM-DD"), moment(startDate).add(5, 'days').format("YYYY-MM-DD"), "68d3df7c6de359385735d513");
+            setSlots(response?.data || { bookings: [], astrologers: [], time: { start: "09:00", end: "21:00" } });
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 1200);
-        return () => clearTimeout(timer);
+        getSlots();
     }, [startDate]);
 
     const handleSlotClick = (day, timeSlot, booking, status) => {
@@ -206,17 +221,17 @@ const VenueCalendar = () => {
 
             <div className="flex justify-between items-center mb-6">
                 <button
-                    className="p-2 bg-slate1 rounded-full hover:bg-slate-200"
+                    className="p-2 bg-slate-100 rounded-full hover:bg-slate-200"
                     onClick={() => setStartDate((prev) => moment(prev).subtract(6, "days"))}
                 >
                     <ArrowLeft2 size={22} color="#000" />
                 </button>
                 <h6 className="text-lg font-semibold">
                     {moment(startDate).format("DD MMM")} -{" "}
-                    {moment(startDate).add(16, "days").format("DD MMM YYYY")}
+                    {moment(startDate).add(5, "days").format("DD MMM YYYY")}
                 </h6>
                 <button
-                    className="p-2 bg-slate1 rounded-full hover:bg-slate-200"
+                    className="p-2 bg-slate-100 rounded-full hover:bg-slate-200"
                     onClick={() => setStartDate((prev) => moment(prev).add(6, "days"))}
                 >
                     <ArrowRight2 size={22} color="#000" />
@@ -225,7 +240,7 @@ const VenueCalendar = () => {
 
             <div className="overflow-x-auto">
                 <div className="min-w-full bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-                    <div className="bg-slate1 text-gray-800 border-b border-gray-200">
+                    <div className="bg-slate-100 text-gray-800 border-b border-gray-200">
                         <div className="grid grid-cols-[200px_repeat(auto-fit,_minmax(120px,_1fr))] gap-4 p-3">
                             <div className="font-bold text-center py-2 text-black">
                                 Time Slots
@@ -258,15 +273,28 @@ const VenueCalendar = () => {
                                 </div>
 
                                 {daysRange.map((day) => {
-                                    const booking = dummyCalendarData.bookings.find(
-                                        (b) =>
-                                            moment(b.date).isSame(day.fullDate, "day") &&
-                                            b.start_time === timeSlot.slots_start_time
+                                    function toMinutes(timeStr) {
+                                        timeStr = timeStr || "00:00";
+                                        const [h, m] = timeStr.split(":").map(Number);
+                                        return h * 60 + m;
+                                    }
+                                    const booking = slots?.bookings.find(
+                                        (b) => {
+                                            const bookingStart = toMinutes(b.startTime);
+                                            const bookingEnd = toMinutes(b.endTime);
+                                            const slotStart = toMinutes(timeSlot.slots_start_time);
+                                            const slotEnd = toMinutes(timeSlot.slots_end_time);
+
+                                            return ((moment(b.date).isSame(day.fullDate, "day")) &&
+                                                (b.blocked
+                                                    ? b.startTime === timeSlot.slots_start_time
+                                                    : bookingStart < slotEnd && bookingEnd > slotStart))
+                                        }
                                     );
 
                                     let status = "available";
                                     if (booking?.blocked) status = "blocked";
-                                    else if (booking?.slot_booked) status = "booked";
+                                    else if (booking?.paymentStatus) status = "booked";
 
                                     return (
                                         <div key={day.id}>
@@ -289,11 +317,12 @@ const VenueCalendar = () => {
 
             <BookingDetailsModal
                 open={showBookingModal}
+                refetch={getSlots}
                 toggle={() => setShowBookingModal(false)}
-                bookingData={selectedBooking}
+                bookingDatas={selectedBooking}
             />
         </div>
     );
 };
 
-export default VenueCalendar;
+export default BookingCalendar;

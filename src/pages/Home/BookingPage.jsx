@@ -20,11 +20,12 @@ const BookingPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const service = location.state;
-    console.log("⚡️🤯 ~ BookingPage.jsx:23 ~ BookingPage ~ service:", service)
     const [timeSlots, setTimeSlots] = useState([]);
     const [Searvice, setSearvice] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingService, setIsLoadingService] = useState(false);
     const dateWatch = watch('date');
+    const serviceTypeWatch = watch('serviceType');
 
     const currencyOptions = [
         { value: "INR", label: "Indian (INR)" },
@@ -33,7 +34,7 @@ const BookingPage = () => {
 
     const handleBooking = async (data) => {
         try {
-            setIsLoading(true);
+            setIsLoadingService(true);
             const payload = {
                 serviceId: service?.service?._id,
                 astrologerId: "68ca9cf272e2d0202ee1b902",
@@ -42,15 +43,20 @@ const BookingPage = () => {
                 startTime: data?.timeSlot?.split(" - ")[0],
                 endTime: data?.timeSlot?.split(" - ")[1],
                 currency: data?.currency,
+                firstName: data?.firstName,
+                lastName: data?.lastName,
+                email: data?.email,
+                phone: data?.mobileNo,
             }
             console.log("⚡️🤯 ~ BookingPage.jsx:80 ~ handleBooking ~ payload:", payload)
             await addServiceToCart(payload).then(res => {
                 if (res?.success) {
-                    setIsLoading(false);
+                    setIsLoadingService(false);
                     reset();
+                    navigate("/cart", { state: { type: "services" } });
                     toast.success(res?.message || "Booking Successfully");
                 } else {
-                    setIsLoading(false);
+                    setIsLoadingService(false);
                     toast.error(res?.message || "Something went wrong");
                 }
             })
@@ -61,6 +67,7 @@ const BookingPage = () => {
         }
     }
     const fetchService = async () => {
+        if (!dateWatch) return;
         const payload = {
             date: moment(dateWatch).format('YYYY-MM-DD'),
             astrologer_id: "68ca9cf272e2d0202ee1b902",
@@ -74,7 +81,7 @@ const BookingPage = () => {
                 const availableSlots = res?.data?.timeSlots?.filter((item) =>
                     !item?.booked && item?.status === 'available'
                 );
-                setTimeSlots(availableSlots?.map((item) => ({ value: item?.time, label: item?.time })) || []);
+                setTimeSlots(availableSlots?.map((item) => ({ value: item?.time, label: item?.time, disabled: item?.disabled })) || []);
                 setIsLoading(false);
             } else {
                 toast.error(res?.message || "Something went wrong")
@@ -85,12 +92,11 @@ const BookingPage = () => {
 
     useMemo(() => {
         fetchService();
-    }, [dateWatch]);
+    }, [dateWatch, serviceTypeWatch]);
 
     useEffect(() => {
         const fetchServiceCategories = async () => {
             const response = await getPublicServicesDropdown();
-            console.log("⚡️🤯 ~ HomeNavbar.jsx:413 ~ fetchServiceCategories ~ response:", response)
             setSearvice(response?.data);
         }
         fetchServiceCategories();
@@ -100,7 +106,7 @@ const BookingPage = () => {
         reset({
             serviceType: service?.service?._id,
             timeSlot: "",
-            date: "",
+            date: new Date(),
             currency: "",
             firstName: user?.firstName,
             lastName: user?.lastName,
@@ -168,6 +174,7 @@ const BookingPage = () => {
                                             className="custom-calendar"
                                             onChange={onChange}
                                             value={value}
+                                            minDate={new Date()}
                                             navigationLabel={({ date, label, locale, view }) =>
                                                 view === 'month' ?
                                                     `${date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}` :
@@ -286,9 +293,9 @@ const BookingPage = () => {
                                 <button
                                     className={`!w-full`}
                                     type="submit"
-                                    disabled={isLoading}
+                                    disabled={isLoadingService}
                                 >
-                                    <span className="text-base xl:text-lg font-tbPop text-p">{isLoading ? "Processing..." : "Book Service"}</span>
+                                    <span className="text-base xl:text-lg font-tbPop text-p">{isLoadingService ? "Processing..." : "Book Service"}</span>
                                 </button>
                             </div>
                         </div>

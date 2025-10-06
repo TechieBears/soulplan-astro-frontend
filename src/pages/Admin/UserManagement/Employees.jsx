@@ -11,6 +11,7 @@ import { formBtn1, tableBtn } from '../../../utils/CustomClass'
 import { validateAlphabets } from '../../../utils/validateFunction';
 import CreateEmployeeModal from '../../../components/Modals/AdminModals/CreateEmployeeModal';
 import TableHeader from '../../../components/Table/TableHeader';
+import { imageComponet } from '../../../helper/Helper';
 
 
 const Employees = () => {
@@ -59,6 +60,7 @@ const Employees = () => {
 
 
     const columns = [
+        { field: "profile", header: "Profile", body: imageComponet, style: true },
         {
             field: 'code', header: 'Employee Id', body: (row) => <div className="flex items-center gap-2"><span className='capitalize'>{row?._id?.slice(-10) || "---- -----"}</span> <span><Copy className="cursor-pointer text-primary hover:text-primary" size={18}
                 onClick={() => {

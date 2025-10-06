@@ -181,7 +181,7 @@ const HomeNavbar = () => {
                     <div className="hidden lg:flex items-center gap-4">
                         {/* Cart Icon */}
                         {login && <button
-                            onClick={() => navigate("/cart")}
+                            onClick={() => navigate("/cart", { state: { type: "products" } })}
                             className="relative p-2 text-gray-800 hover:text-blue-600 transition-colors"
                         >
                             <ShoppingCart size={24} />
@@ -333,7 +333,7 @@ const ProfileSection = () => {
                         <div className="" ref={trigger}
                             onClick={() => setDropdownOpen(!dropdownOpen)}>
                             <div className=" rounded-full border-2 border-white w-full flex items-center space-x-2 cursor-pointer">
-                                <img loading="lazy" className="h-10 w-10 rounded-full object-cover bg-slate1 " src={user?.profilePicture || "https://bootstrapdemos.wrappixel.com/materialM/dist/assets/images/profile/user-1.jpg"} alt="user" />
+                                <img loading="lazy" className="h-10 w-10 rounded-full object-cover bg-slate1 " src={user?.profileImage || "https://bootstrapdemos.wrappixel.com/materialM/dist/assets/images/profile/user-1.jpg"} alt="user" />
                             </div>
                         </div>
                         <div
@@ -345,7 +345,7 @@ const ProfileSection = () => {
                             <div className="flex items-center gap-3 px-4 py-3">
                                 <div className="relative aspect-square w-16 rounded-full">
                                     <img
-                                        src={user?.profilePicture || "https://cdn.tailgrids.com/assets/images/core-components/account-dropdowns/image-1.jpg"}
+                                        src={user?.profileImage || "https://cdn.tailgrids.com/assets/images/core-components/account-dropdowns/image-1.jpg"}
                                         alt="account"
                                         className="w-full rounded-full object-cover object-center"
                                     />
@@ -435,7 +435,6 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
     useEffect(() => {
         const fetchServiceCategories = async () => {
             const response = await getPublicServicesDropdown();
-            console.log("⚡️🤯 ~ HomeNavbar.jsx:413 ~ fetchServiceCategories ~ response:", response)
             setSearvice(response?.data);
         }
         fetchServiceCategories();
