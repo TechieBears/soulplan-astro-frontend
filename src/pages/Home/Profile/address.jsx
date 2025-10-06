@@ -487,7 +487,7 @@ const AddressCard = ({ address, onEdit, fetchAddresses, deleteLoading, setDelete
             </div>
             <div className="flex justify-between items-center pt-3">
                 {address?.isDefault && (
-                    <p className="text-slate-600 font-tbPop font-normal text-sm">• Default Address</p>
+                    <p className=" font-tbPop font-normal text-sm text-green-500">• Default Address</p>
                 )}
                 <p className="text-slate-600 font-tbPop font-normal text-sm">• {capitalizedAddressType}</p>
             </div>

@@ -1,16 +1,18 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { formBtn1, tableBtn, formBtn3 } from '../../../utils/CustomClass';
+import { formBtn1, tableBtn } from '../../../utils/CustomClass';
 import LoadBox from '../../Loader/LoadBox';
 import TextInput from '../../TextInput/TextInput';
 import { validateAlphabets, validateEmail, validatePhoneNumber, validateCommision } from '../../../utils/validateFunction';
 import toast from 'react-hot-toast';
 import { Edit } from 'iconsax-reactjs';
-import { addEmployee, editEmployee } from '../../../api';
+import { addEmployee, editEmployee, getPublicServicesDropdown } from '../../../api';
 import { TableTitle } from '../../../helper/Helper';
 import MultiSelectTextInput from '../../TextInput/MultiSelectTextInput';
 import { Controller } from 'react-hook-form';
+import ImageUploadInput from '../../TextInput/ImageUploadInput';
+import SelectTextInput from '../../TextInput/SelectTextInput';
 
 function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
     const { register, handleSubmit, control, watch, reset, setValue, formState: { errors } } = useForm();
@@ -18,11 +20,19 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
     const toggle = () => { setOpen(!open), reset() };
     const [loader, setLoader] = useState(false);
 
+    const [serviceSkills, setServiceSkills] = useState([]);
+
+    const employeeType = watch('employeeType');
+
     const formSubmit = async (data) => {
         try {
             setLoader(true);
+            const payload = {
+                ...data,
+                "preBooking": true
+            }
             if (edit) {
-                await editEmployee(userData?._id, data).then(res => {
+                await editEmployee(userData?._id, payload).then(res => {
                     if (res?.success) {
                         toast.success(res?.message)
                         setLoader(false);
@@ -35,7 +45,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                     }
                 })
             } else {
-                await addEmployee(data).then(res => {
+                await addEmployee(payload).then(res => {
                     if (res?.success) {
                         setLoader(false);
                         reset();
@@ -58,20 +68,46 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
 
     useEffect(() => {
         if (edit && userData) {
+            setValue('employeeType', userData?.profile?.employeeType);
             setValue('firstName', userData?.profile?.firstName);
             setValue('lastName', userData?.profile?.lastName);
             setValue('email', userData?.email);
             setValue('mobileNo', userData?.mobileNo);
-            setValue('skills', userData?.skills);
-            setValue('languages', userData?.languages);
-            setValue('experience', userData?.experience);
-            setValue('days', userData?.days);
-            setValue('startTime', userData?.startTime);
-            setValue('endTime', userData?.endTime);
+            setValue('skills', userData?.profile?.skills);
+            setValue('languages', userData?.profile?.languages);
+            setValue('experience', userData?.profile?.experience);
+            setValue('days', userData?.profile?.days);
+            setValue('startTime', userData?.profile?.startTime);
+            setValue('endTime', userData?.profile?.endTime);
+            setValue('profileImage', userData?.profile?.profileImage);
         } else {
-            reset();
+            reset({
+                employeeType: '',
+                firstName: '',
+                lastName: '',
+                email: '',
+                mobileNo: '',
+                skills: [],
+                languages: [],
+                experience: '',
+                days: [],
+                startTime: '',
+                endTime: '',
+                profileImage: '',
+            });
         }
     }, [edit, userData, reset, setValue, open]);
+
+
+    useEffect(() => {
+        if (open) {
+            const apiCall = async () => {
+                const response = await getPublicServicesDropdown();
+                setServiceSkills(response?.data?.map(item => ({ value: item?.name, label: item?.name })))
+            }
+            apiCall();
+        }
+    }, [open]);
 
     return (
         <>
@@ -107,7 +143,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                 leaveFrom="opacity-100 scale-100"
                                 leaveTo="opacity-0 scale-95"
                             >
-                                <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-lg bg-white  text-left align-middle shadow-xl transition-all">
+                                <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden rounded-lg bg-white  text-left align-middle shadow-xl transition-all">
                                     <TableTitle
                                         title={edit ? "Edit Employee" : "Create New Employee"}
                                         toggle={toggle}
@@ -115,7 +151,32 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                     <div className=" bg-white">
                                         {/* React Hook Form */}
                                         <form onSubmit={handleSubmit(formSubmit)} >
-                                            <div className='p-5 py-8  grid grid-cols-2 gap-x-3 gap-y-5 ' >
+                                            <div className='p-5 py-8  grid grid-cols-3 gap-x-3 gap-y-5 ' >
+                                                <div className="">
+                                                    <h4
+                                                        className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                    >
+                                                        Employee Type {edit ? "(Cannot be edited)" : ""}
+                                                    </h4>
+                                                    <div className="">
+                                                        <SelectTextInput
+                                                            label="Select Employee Type"
+                                                            registerName="employeeType"
+                                                            options={[
+                                                                { value: 'astrologer', label: 'Astrologer' },
+                                                                { value: 'employee', label: 'Employee' },
+                                                            ]}
+                                                            disabled={edit}
+                                                            placeholder="Select Employee Type"
+                                                            props={{
+                                                                ...register('employeeType'),
+                                                                value: watch('employeeType') || ''
+                                                            }}
+                                                            errors={errors.employeeType}
+                                                            defaultValue={userData?.employeeType}
+                                                        />
+                                                    </div>
+                                                </div>
                                                 <div className="">
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
@@ -146,16 +207,35 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                         errors={errors.lastName}
                                                     />
                                                 </div>
+                                                <div className=''>
+                                                    <h4
+                                                        className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                    >
+                                                        Employee Image
+                                                    </h4>
+                                                    <ImageUploadInput
+                                                        label="Upload Employee Image"
+                                                        multiple={false}
+                                                        registerName="profileImage"
+                                                        errors={errors.profileImage}
+                                                        {...register("profileImage", { required: "Employee Image is required" })}
+                                                        register={register}
+                                                        setValue={setValue}
+                                                        control={control}
+                                                        defaultValue={userData?.profileImage}
+                                                    />
+                                                </div>
                                                 <div className="">
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Email
+                                                        Email {edit ? "(Cannot be edited)" : ""}
                                                     </h4>
                                                     <TextInput
                                                         label="Enter Your Email"
                                                         placeholder="Enter Your Email"
                                                         type="text"
+                                                        disabled={edit}
                                                         registerName="email"
                                                         props={{ ...register('email'), valdate: validateEmail, required: "Email is required" }}
                                                         errors={errors.email}
@@ -177,7 +257,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                     />
                                                 </div>
 
-                                                <div className="">
+                                                {employeeType === 'astrologer' && <div>
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
@@ -190,15 +270,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                             render={({ field: { onChange, value }, fieldState: { error } }) => (
                                                                 <MultiSelectTextInput
                                                                     label="Select Skills"
-                                                                    options={
-                                                                        [
-                                                                            { value: 'marriage', label: 'marriage' },
-                                                                            { value: 'marriage', label: 'marriage' },
-                                                                            { value: 'marriage', label: 'marriage' },
-                                                                            { value: 'weight', label: 'Weight' },
-                                                                            { value: 'dimension', label: 'Dimension' },
-                                                                        ]
-                                                                    }
+                                                                    options={serviceSkills}
                                                                     key={'skills'}
                                                                     value={value || []}
                                                                     onChange={onChange}
@@ -207,8 +279,8 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                             )}
                                                         />
                                                     </div>
-                                                </div>
-                                                <div className="">
+                                                </div>}
+                                                {employeeType === 'astrologer' && <div>
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
@@ -223,11 +295,22 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                                     label="Select Languages"
                                                                     options={
                                                                         [
-                                                                            { value: 'english', label: 'English' },
                                                                             { value: 'hindi', label: 'Hindi' },
                                                                             { value: 'bengali', label: 'Bengali' },
                                                                             { value: 'marathi', label: 'Marathi' },
+                                                                            { value: 'telugu', label: 'Telugu' },
+                                                                            { value: 'tamil', label: 'Tamil' },
+                                                                            { value: 'gujarati', label: 'Gujarati' },
+                                                                            { value: 'urdu', label: 'Urdu' },
                                                                             { value: 'kannada', label: 'Kannada' },
+                                                                            { value: 'odia', label: 'Odia' },
+                                                                            { value: 'malayalam', label: 'Malayalam' },
+                                                                            { value: 'punjabi', label: 'Punjabi' },
+                                                                            { value: 'assamese', label: 'Assamese' },
+                                                                            { value: 'maithili', label: 'Maithili' },
+                                                                            { value: 'santali', label: 'Santali' },
+                                                                            { value: 'kashmiri', label: 'Kashmiri' },
+                                                                            { value: 'english', label: 'English' },
                                                                         ]
                                                                     }
                                                                     key={'languages'}
@@ -238,8 +321,8 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                             )}
                                                         />
                                                     </div>
-                                                </div>
-                                                <div>
+                                                </div>}
+                                                {employeeType === 'astrologer' && <div>
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
@@ -255,8 +338,8 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                         props={{ ...register('experience', { validate: validateCommision }), maxLength: 2, minLength: 1 }}
                                                         errors={errors.experience}
                                                     />
-                                                </div>
-                                                <div>
+                                                </div>}
+                                                {employeeType === 'astrologer' && <div>
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
@@ -288,25 +371,30 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                             )}
                                                         />
                                                     </div>
-                                                </div>
-                                                <div>
+                                                </div>}
+                                                {employeeType === 'astrologer' && <div>
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
                                                         Start Time
                                                     </h4>
-                                                    <div className="">
-                                                        <TextInput
-                                                            label="Start Time*"
-                                                            placeholder="Start Time"
-                                                            type="time"
-                                                            registerName="startTime"
-                                                            props={{ ...register('startTime') }}
-                                                            errors={errors.startTime}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div>
+                                                    <TextInput
+                                                        label="Start Time*"
+                                                        type="time"
+                                                        registerName="startTime"
+                                                        props={{
+                                                            ...register("startTime", {
+                                                                required: "Start time is required",
+                                                                validate: (value) => {
+                                                                    const minutes = new Date(`1970-01-01T${value}:00`).getMinutes();
+                                                                    return [0, 30].includes(minutes) || "Only 00 or 30 minutes allowed";
+                                                                },
+                                                            }),
+                                                        }}
+                                                        errors={errors.startTime}
+                                                    />
+                                                </div>}
+                                                {employeeType === 'astrologer' && <div>
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
@@ -315,14 +403,21 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                     <div className="">
                                                         <TextInput
                                                             label="End Time*"
-                                                            placeholder="End Time"
                                                             type="time"
                                                             registerName="endTime"
-                                                            props={{ ...register('endTime') }}
+                                                            props={{
+                                                                ...register("endTime", {
+                                                                    required: "End time is required",
+                                                                    validate: (value) => {
+                                                                        const minutes = new Date(`1970-01-01T${value}:00`).getMinutes();
+                                                                        return [0, 30].includes(minutes) || "Only 00 or 30 minutes allowed";
+                                                                    },
+                                                                }),
+                                                            }}
                                                             errors={errors.endTime}
                                                         />
                                                     </div>
-                                                </div>
+                                                </div>}
 
                                             </div>
                                             <footer className="py-3 flex bg-slate1 justify-end px-4 space-x-3">

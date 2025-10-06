@@ -53,12 +53,11 @@ import ServicesCategories from "../pages/Admin/Services/ServicesCategories";
 import ProductBookings from "../pages/Admin/Bookings/ProductBookings";
 import ServiceBookings from "../pages/Admin/Bookings/ServiceBookings";
 import CustomerFeedback from "../pages/Admin/CustomerFeedback/CustomerFeedback";
+import VenueCalendar from '../pages/Admin/Bookings/AdminBookingsCalender';
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
     const user = useSelector((state) => state.user.userDetails);
-
-    console.log("⚡️🤯 ~ ProjectRoutes.jsx ~ user:", user);
     // ============ Page Loader ============
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 2800);
@@ -96,6 +95,7 @@ const ProjectRoutes = () => {
                         <Route path="/service-bookings" element={<ServiceBookings />} />
                         <Route path="/all-products" element={<AllProducts />} />
                         <Route path="/product-categories" element={<ProductCategories />} />
+                        <Route path="/admin-calender" element={<VenueCalendar />} />
                         <Route path="/all-services" element={<AllServices />} />
                         <Route
                             path="/service-categories"

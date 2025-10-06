@@ -7,9 +7,8 @@ import { Calendar, Timer1, Zoom } from "iconsax-reactjs";
 import OrderViewModal from "../../../components/Modals/OrderViewModal";
 import toast from "react-hot-toast";
 import { getProductBookingsConfirmed, getServiceBookingsConfirmed } from "../../../api";
-import ServiceCardSkeleton from "../../../components/Loader/ServiceCardSkeleton";
-import ProductCardSkeleton from "../../../components/Loader/ProductCardSkeleton";
 import { ShoppingCartIcon } from "lucide-react";
+import Preloaders from "../../../components/Loader/Preloaders";
 
 const Private = ({ children }) => children;
 const UserDashboard = ({ children }) => children;
@@ -47,7 +46,8 @@ export default function MyOrders() {
             try {
                 setIsLoadingProducts(true);
                 const res = await getProductBookingsConfirmed();
-                if (res?.success && res?.data?.length > 0) {
+                console.log("⚡️🤯 ~ orders.jsx:50 ~ fetchProductOrders ~ res:", res)
+                if (res?.success) {
                     setProductOrders(res.data);
                     setHasProductOrders(true);
                 } else {
@@ -68,6 +68,7 @@ export default function MyOrders() {
             try {
                 setIsLoadingServices(true);
                 const res = await getServiceBookingsConfirmed();
+                console.log("⚡️🤯 ~ orders.jsx:72 ~ fetchServiceOrders ~ res:", res)
                 if (res?.success && res?.data?.length > 0) {
                     setServiceOrders(res.data);
                     setHasServiceOrders(true);
@@ -109,12 +110,12 @@ export default function MyOrders() {
                 <UserDashboard>
                     <ProfileSidebar>
                         <div className="flex flex-col sm:flex-row justify-between">
-                            <h1 className="text-lg font-medium text-left text-gray-800  p-4 font-tbLex">
+                            <h1 className="text-lg text-center font-medium  text-gray-800  p-4 font-tbLex">
                                 My Orders
                             </h1>
 
                             {/* 🔹 Tabs */}
-                            <div className="flex bg-slate1 rounded-full p-1.5 space-x-1.5 mb-5">
+                            <div className="flex bg-slate1 justify-center rounded-full p-1.5 space-x-1.5 mb-5">
                                 <button
                                     className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate1 transition-all duration-300 text-sm md:text-base font-tbLex ${activeTab === "services"
                                         ? "bg-linear-gradient text-white"
@@ -145,87 +146,138 @@ export default function MyOrders() {
                                 {activeTab === "services" && (
                                     <>
                                         {isLoadingServices ? (
-                                            <div className="space-y-4">
-                                                {[1, 2].map((index) => (
-                                                    <div key={index} className="animate-pulse">
-                                                        <ServiceCardSkeleton />
-                                                    </div>
-                                                ))}
+                                            <div className="space-y-4 flex justify-center items-center bg-[#FFF9EF]">
+                                                <Preloaders />
                                             </div>
                                         ) : hasServiceOrders ? (
-                                            serviceOrders.map((order, orderIndex) => (
-                                                <div key={order.orderId} className="space-y-3">
-                                                    {order.services?.map((service, serviceIndex) => (
+                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                                {serviceOrders?.map((order, orderIndex) =>
+                                                    order.services?.map((service, serviceIndex) => (
                                                         <div
-                                                            key={`${order.orderId}-${service.serviceId}`}
-                                                            className="relative rounded-lg p-4 text-black cursor-pointer transition-all duration-300
-                                                             bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100
-                                                             border border-gray-200 hover:border-purple-300 cart-slide-up overflow-hidden"
-                                                            style={{ animationDelay: `${(orderIndex * order.services.length + serviceIndex) * 0.1}s` }}
-                                                            onClick={() => navigate(`/profile/my-orders`)}
+                                                            key={`${order._id}-${service._id}`}
+                                                            className="group relative bg-gradient-to-br from-indigo-600 via-purple-700 to-purple-800
+                                                                     rounded-2xl p-6 cursor-pointer transition-all duration-500 transform hover:scale-[1.02]
+                                                                     hover:shadow-2xl hover:shadow-purple-500/25  overflow-hidden cart-slide-up
+                                                                     border border-purple-400/20 backdrop-blur-sm"
+                                                            onClick={() => openModal(order, "service")}
                                                         >
-                                                            <h3 className="font-medium font-dm text-lg mb-4">
-                                                                Service Type:
-                                                                <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 bg-clip-text text-transparent font-semibold">
-                                                                    {service.serviceName}
+                                                            {/* Decorative background elements */}
+                                                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
+                                                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-indigo-400/20 to-transparent rounded-full translate-y-12 -translate-x-12"></div>
+
+                                                            {/* Service Header */}
+                                                            <div className="relative z-10 mb-6">
+                                                                <div className="flex items-center gap-3 mb-2">
+                                                                    <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-xl flex items-center justify-center">
+                                                                        <Icon icon="ph:calendar-star" className="w-6 h-6 text-white" />
+                                                                    </div>
+                                                                    <div>
+                                                                        <h3 className="font-bold text-white text-xl group-hover:text-purple-100 transition-colors duration-300">
+                                                                            {service?.serviceName}
+                                                                        </h3>
+                                                                        <div className="text-purple-200 text-sm">
+                                                                            Booking #{order?._id?.slice(-6).toUpperCase()}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Service Details */}
+                                                            <div className="space-y-4 mb-6 relative z-10">
+                                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                                    <div className="flex items-center gap-3 bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                                                                        <Timer1 className="w-5 h-5 text-purple-300 flex-shrink-0" />
+                                                                        <div>
+                                                                            <div className="text-purple-200 text-xs">Duration</div>
+                                                                            <div className="text-white text-sm font-medium">{service?.durationInMinutes} mins</div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="flex items-center gap-3 bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                                                                        <Calendar className="w-5 h-5 text-purple-300 flex-shrink-0" />
+                                                                        <div>
+                                                                            <div className="text-purple-200 text-xs">Date</div>
+                                                                            <div className="text-white text-sm font-medium">{service?.bookingDate}</div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="flex items-center gap-3 bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                                                                        <Icon icon="ph:device-mobile" className="w-5 h-5 text-purple-300 flex-shrink-0" />
+                                                                        <div>
+                                                                            <div className="text-purple-200 text-xs">Mode</div>
+                                                                            <div className="text-white text-sm font-medium">{service?.serviceType}</div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="flex items-center gap-3 bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                                                                        <Icon icon="ph:clock" className="w-5 h-5 text-purple-300 flex-shrink-0" />
+                                                                        <div>
+                                                                            <div className="text-purple-200 text-xs">Time</div>
+                                                                            <div className="text-white text-sm font-medium">{service?.startTime} - {service?.endTime}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Zoom Link */}
+                                                                {service?.zoomLink && (
+                                                                    <div className="bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-lg p-4 border border-blue-400/30">
+                                                                        <div className="flex items-center gap-3">
+                                                                            <Zoom className="w-5 h-5 text-blue-300" />
+                                                                            <div className="flex-1">
+                                                                                <div className="text-blue-200 text-xs mb-1">Meeting Link</div>
+                                                                                <a
+                                                                                    href={service?.zoomLink}
+                                                                                    target="_blank"
+                                                                                    rel="noopener noreferrer"
+                                                                                    className="text-blue-300 hover:text-blue-200 text-sm font-medium underline break-all"
+                                                                                    onClick={(e) => e.stopPropagation()}
+                                                                                >
+                                                                                    Join Meeting
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
+                                                            {/* Status Badges */}
+                                                            <div className="flex flex-wrap gap-2 mb-4 relative z-10">
+                                                                <span className={`px-3 py-1 rounded-full text-xs font-medium uppercase ${service?.bookingStatus === 'confirmed'
+                                                                    ? 'bg-green-500/20 text-green-300 border border-green-400/30'
+                                                                    : service?.bookingStatus === 'pending'
+                                                                        ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-400/30'
+                                                                        : 'bg-blue-500/20 text-blue-300 border border-blue-400/30'
+                                                                    }`}>
+                                                                    <Icon icon="ph:calendar-check" className="w-3 h-3 inline mr-1" />
+                                                                    {service?.bookingStatus}
                                                                 </span>
-                                                            </h3>
-
-                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                                                                <p className="flex items-center gap-3">
-                                                                    <Timer1 className="w-5 h-5 text-purple-600" />
-                                                                    <span className="text-sm">Duration: {service.durationInMinutes} minutes</span>
-                                                                </p>
-                                                                <p className="flex items-center gap-3">
-                                                                    <Calendar className="w-5 h-5 text-blue-600" />
-                                                                    <span className="text-sm">Date: {service.bookingDate}</span>
-                                                                </p>
-                                                                <p className="flex items-center gap-3">
-                                                                    <Icon icon="ph:device-mobile" className="w-5 h-5 text-green-600" />
-                                                                    <span className="text-sm">Mode: {service.serviceType}</span>
-                                                                </p>
-                                                                <p className="flex items-center gap-3">
-                                                                    <Icon icon="ph:clock" className="w-5 h-5 text-orange-600" />
-                                                                    <span className="text-sm">Time: {service.startTime} - {service.endTime}</span>
-                                                                </p>
+                                                                <span className={`px-3 py-1 rounded-full text-xs font-medium uppercase ${service?.paymentStatus === 'paid'
+                                                                    ? 'bg-green-500/20 text-green-300 border border-green-400/30'
+                                                                    : 'bg-orange-500/20 text-orange-300 border border-orange-400/30'
+                                                                    }`}>
+                                                                    <Icon icon="ph:credit-card" className="w-3 h-3 inline mr-1" />
+                                                                    {service.paymentStatus}
+                                                                </span>
                                                             </div>
 
-                                                            {service.zoomLink && (
-                                                                <div className="flex items-center gap-3 mb-3">
-                                                                    <Zoom className="w-5 h-5 text-blue-600" />
-                                                                    <a
-                                                                        href={service.zoomLink}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="text-sm text-blue-600 hover:text-blue-800 break-words underline"
-                                                                        onClick={(e) => e.stopPropagation()}
-                                                                    >
-                                                                        Join Meeting
-                                                                    </a>
+                                                            {/* Price Footer */}
+                                                            <div className="pt-4 border-t border-white/10 flex justify-between items-center relative z-10">
+                                                                <div className="text-purple-200 text-sm">
+                                                                    Service Price
                                                                 </div>
-                                                            )}
-
-                                                            <div className="flex justify-between items-center pt-2 border-t border-gray-200">
-                                                                <div className="text-sm">
-                                                                    <span className="text-gray-600">Price: </span>
-                                                                    <span className="font-semibold text-green-600">₹{service.servicePrice?.toLocaleString()}</span>
-                                                                </div>
-                                                                <div className="flex gap-4 text-xs">
-                                                                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
-                                                                        {service.bookingStatus}
-                                                                    </span>
-                                                                    <span className={`px-2 py-1 rounded-full ${service.paymentStatus === 'paid'
-                                                                        ? 'bg-green-100 text-green-800'
-                                                                        : 'bg-yellow-100 text-yellow-800'
-                                                                        }`}>
-                                                                        {service.paymentStatus}
-                                                                    </span>
+                                                                <div className="text-white text-2xl font-bold">
+                                                                    ₹{service.servicePrice?.toLocaleString()}
                                                                 </div>
                                                             </div>
+
+                                                            {/* Hover effect overlay */}
+                                                            <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/0 via-purple-500/0 to-purple-600/0
+                                                                          group-hover:from-indigo-600/10 group-hover:via-purple-500/5 group-hover:to-purple-600/10
+                                                                          transition-all duration-500 rounded-2xl"></div>
                                                         </div>
-                                                    ))}
-                                                </div>
-                                            ))
+                                                    ))
+                                                )}
+                                            </div>
                                         ) : (
                                             <div className="text-center py-8">
                                                 <Calendar className="w-16 h-16 mx-auto text-gray-400 mb-4" />
@@ -239,66 +291,132 @@ export default function MyOrders() {
                                 {activeTab === "products" && (
                                     <>
                                         {isLoadingProducts ? (
-                                            <div className="space-y-4">
-                                                {[1, 2].map((index) => (
-                                                    <div key={index} className="animate-pulse">
-                                                        <ProductCardSkeleton />
-                                                    </div>
-                                                ))}
+                                            <div className="space-y-4 flex justify-center items-center bg-[#FFF9EF]">
+                                                <Preloaders />
                                             </div>
                                         ) : hasProductOrders ? (
-                                            productOrders.map((order, orderIndex) => (
-                                                <div key={order._id} className="space-y-4 " style={{ animationDelay: `${orderIndex * 0.1}s` }}>
-                                                    {order.items?.map((item, itemIndex) => (
+                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                                {productOrders.map((order, orderIndex) => {
+                                                    return (
                                                         <div
-                                                            key={`${order._id}-${item._id}`}
-                                                            className="bg-[#9E52D8] rounded-lg p-4 cursor-pointer hover:bg-[#8A47C4] transition-all duration-300
-                                                             flex flex-col sm:flex-row items-left sm:items-start gap-4 cart-slide-up"
-                                                            style={{ animationDelay: `${(orderIndex * order.items.length + itemIndex) * 0.1}s` }}
-                                                            onClick={() => navigate(`/profile/my-orders`)}
+                                                            key={`${order._id}-${orderIndex}`}
+                                                            className="group relative bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800
+                                                                     rounded-2xl p-6 cursor-pointer transition-all duration-500 transform hover:scale-[1.02]
+                                                                     hover:shadow-2xl hover:shadow-purple-500/25 cart-slide-up overflow-hidden
+                                                                     border border-purple-400/20 backdrop-blur-sm"
+                                                            onClick={() => openModal(order, "product")}
                                                         >
-                                                            <div className="sm:w-24 sm:h-24 w-full rounded-lg overflow-hidden flex-shrink-0 mx-auto sm:mx-0"
-                                                                style={{ background: `linear-gradient(90deg, rgba(0, 121, 208, 0.2) -12.5%, rgba(158, 82, 216, 0.2) 30.84%, rgba(218, 54, 92, 0.2) 70.03%, rgba(208, 73, 1, 0.2) 111%)` }}>
-                                                                <img
-                                                                    src={item.product?.images?.[0] || product1}
-                                                                    alt={item.product?.name || "Product"}
-                                                                    className="w-full h-full object-contain p-2"
-                                                                    loading="lazy"
-                                                                />
+                                                            {/* Decorative background elements */}
+                                                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
+                                                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-400/20 to-transparent rounded-full translate-y-12 -translate-x-12"></div>
+
+                                                            {/* Order ID and Date */}
+                                                            <div className="flex justify-between items-start mb-4 relative z-10">
+                                                                <div className="text-purple-200 text-xs font-medium">
+                                                                    Order #{order._id?.slice(-8).toUpperCase()}
+                                                                </div>
+                                                                <div className="text-purple-200 text-xs">
+                                                                    {new Date(order.createdAt).toLocaleDateString('en-IN', {
+                                                                        day: '2-digit',
+                                                                        month: 'short',
+                                                                        year: 'numeric'
+                                                                    })}
+                                                                </div>
                                                             </div>
 
-                                                            <div className="flex-1 min-w-0 text-left justify-self-start">
-                                                                <h3 className="font-bold text-white font-dm text-lg mb-1">
-                                                                    {item.product?.name}
-                                                                </h3>
-                                                                <div className="font-medium text-lg text-white mb-1">
-                                                                    ₹{item.product?.sellingPrice?.toLocaleString() || 0}
+                                                            <div className="flex flex-col sm:flex-row gap-4 relative z-10">
+                                                                {/* Product Image */}
+                                                                <div className="sm:w-24 sm:h-24 w-full h-36 rounded-xl overflow-hidden flex-shrink-0
+                                                                              bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm border border-white/20
+                                                                              group-hover:shadow-lg group-hover:shadow-purple-500/20 transition-all duration-300">
+                                                                    <img
+                                                                        src={order?.items[0]?.product?.images?.[0] || product1}
+                                                                        alt={order?.items[0]?.product?.name || "Product"}
+                                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                                        loading="lazy"
+                                                                    />
                                                                 </div>
-                                                                <div className="flex justify-between items-start">
-                                                                    <div className="text-white text-sm">
-                                                                        MRP
-                                                                        <span className="line-through">
-                                                                            ₹{item.product?.mrpPrice?.toLocaleString() || 0}
+
+                                                                {/* Product Details */}
+                                                                <div className="flex-1 min-w-0">
+                                                                    <h3 className="font-bold text-white text-xl mb-2 group-hover:text-purple-100 transition-colors duration-300">
+                                                                        {order?.items[0]?.product?.name}
+                                                                    </h3>
+
+                                                                    <div className="flex items-center gap-3 mb-3">
+                                                                        <div className="text-2xl font-bold text-white">
+                                                                            ₹{order?.items[0]?.product?.sellingPrice?.toLocaleString() || 0}
+                                                                        </div>
+                                                                        <div className="text-purple-200 text-sm line-through">
+                                                                            ₹{order?.items[0]?.product?.mrpPrice?.toLocaleString() || 0}
+                                                                        </div>
+                                                                        <div className="bg-green-500/20 text-green-300 px-2 py-1 rounded-full text-xs font-medium">
+                                                                            {Math.round(((order?.items[0]?.product?.mrpPrice - order?.items[0]?.product?.sellingPrice) / order?.items[0]?.product?.mrpPrice) * 100)}% OFF
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="flex items-center justify-between mb-4">
+                                                                        <div className="flex items-center gap-2">
+                                                                            <Icon icon="ph:package" className="w-4 h-4 text-purple-300" />
+                                                                            <span className="text-purple-200 text-sm">Qty: {order?.items[0]?.product?.quantity || 1}</span>
+                                                                        </div>
+                                                                        <div className="text-purple-200 text-sm">
+                                                                            Subtotal: ₹{order?.items[0]?.product?.subtotal?.toLocaleString() || 0}
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {/* Status Badges */}
+                                                                    <div className="flex flex-wrap gap-2">
+                                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.orderStatus === 'PENDING'
+                                                                            ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-400/30'
+                                                                            : order.orderStatus === 'CONFIRMED'
+                                                                                ? 'bg-blue-500/20 text-blue-300 border border-blue-400/30'
+                                                                                : order.orderStatus === 'DELIVERED'
+                                                                                    ? 'bg-green-500/20 text-green-300 border border-green-400/30'
+                                                                                    : 'bg-red-500/20 text-red-300 border border-red-400/30'
+                                                                            }`}>
+                                                                            <Icon icon="ph:truck" className="w-3 h-3 inline mr-1" />
+                                                                            {order.orderStatus}
                                                                         </span>
-                                                                        (incl. of all taxes)
-                                                                    </div>
-                                                                    <div className="text-white text-sm font-medium">
-                                                                        QTY: {item.product?.quantity || 1}
-                                                                    </div>
-                                                                </div>
-                                                                <div className="flex justify-between items-center mt-2">
-                                                                    <div className="text-white text-xs">
-                                                                        Order Status: <span className="font-semibold">{order.orderStatus}</span>
-                                                                    </div>
-                                                                    <div className="text-white text-xs">
-                                                                        Payment: <span className="font-semibold">{order.paymentStatus}</span>
+                                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.paymentStatus === 'PAID'
+                                                                            ? 'bg-green-500/20 text-green-300 border border-green-400/30'
+                                                                            : 'bg-orange-500/20 text-orange-300 border border-orange-400/30'
+                                                                            }`}>
+                                                                            <Icon icon="ph:credit-card" className="w-3 h-3 inline mr-1" />
+                                                                            {order.paymentStatus}
+                                                                        </span>
+                                                                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-400/30">
+                                                                            <Icon icon="ph:wallet" className="w-3 h-3 inline mr-1" />
+                                                                            {order.paymentMethod}
+                                                                        </span>
+                                                                        <div className="flex items-center gap-1">
+                                                                            <div className="size-6 bg-white text-black rounded-full text-center font-tbLex font-medium text-sm">
+                                                                                {order?.items?.length - 1}
+                                                                            </div>
+                                                                            <span className="text-white text-sm">+</span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
+
+                                                            {/* Total Amount Footer */}
+                                                            <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center relative z-10">
+                                                                <div className="text-purple-200 text-sm">
+                                                                    Total Amount (incl. GST)
+                                                                </div>
+                                                                <div className="text-white text-xl font-bold">
+                                                                    ₹{order.finalAmount?.toLocaleString() || 0}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Hover effect overlay */}
+                                                            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-500/0 to-indigo-600/0
+                                                                          group-hover:from-purple-600/10 group-hover:via-purple-500/5 group-hover:to-indigo-600/10
+                                                                          transition-all duration-500 rounded-2xl"></div>
                                                         </div>
-                                                    ))}
-                                                </div>
-                                            ))
+                                                    )
+                                                })}
+                                            </div>
                                         ) : (
                                             <div className="text-center py-8">
                                                 <ShoppingCartIcon className="w-16 h-16 mx-auto text-gray-400 mb-4" />
@@ -316,7 +434,8 @@ export default function MyOrders() {
             <OrderViewModal
                 isOpen={modalOpen}
                 onClose={handleClose}
-                modalType={modalType}
+                orderData={selectedOrder}
+                orderType={modalType}
             />
         </>
     );

@@ -1,16 +1,16 @@
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { formBtn3 } from "../../utils/CustomClass";
 import { Edit } from "iconsax-reactjs";
 import { ArrowLeft } from "@phosphor-icons/react";
 import star from "../../assets/helperImages/star.png";
 import {
+    createServiceOrder,
     getAllAddress,
     getProductFromCart,
     getServiceFromCart,
     PlaceProductOrder,
-    PlaceServiceOrder,
     removeProductFromCart,
     removeServiceFromCart,
     updateProductInCart,
@@ -21,11 +21,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAddresses, setCartProductCount } from "../../redux/Slices/cartSlice";
 import emptyCart from "../../assets/emptyCart.svg";
 import ServicesCartCard from "../../components/Cards/ServicesCartCard";
+import moment from "moment";
 
 const CartPage = () => {
     const navigate = useNavigate();
-    const [cartItems, setCartItems] = useState([]);
-    const [activeTab, setActiveTab] = useState("products");
+    const location = useLocation();
+    const type = location.state?.type;
+    console.log("⚡️🤯 ~ Cart.jsx:29 ~ CartPage ~ type:", type)
+    const [activeTab, setActiveTab] = useState(type || "products");
 
     return (
         <div className="min-h-screen bg-[#FFF9EF]  pt-16 lg:pt-24 relative">
@@ -169,6 +172,7 @@ const ProductTab = () => {
                 setIsLoading(true);
             }
             const res = await getProductFromCart();
+            console.log("⚡️🤯 ~ Cart.jsx:175 ~ fetchProductCart ~ res:", res)
             setCartItems(res?.data?.items);
             dispatch(setCartProductCount(res?.data?.items?.length));
         } catch (err) {
@@ -184,20 +188,33 @@ const ProductTab = () => {
 
     const calculateSubtotal = () => {
         return cartItems?.reduce((total, item) => {
-            return total + item.price * item.quantity;
+            // Use totalPrice if available, otherwise calculate from price * quantity
+            return total + (item.totalPrice || item.price * item.quantity);
         }, 0);
     };
 
     const calculateGST = () => {
         return cartItems?.reduce((total, item) => {
-            const itemTotal = item.price * item.quantity;
-            return total + (itemTotal * item.gst) / 100;
+            const itemTotal = item.totalPrice || item.price * item.quantity;
+            // Use item.gst if available, otherwise default to 18%
+            const gstRate = item.gst || 18;
+            return total + (itemTotal * gstRate) / 100;
         }, 0);
     };
 
     const subtotal = calculateSubtotal();
     const gstAmount = calculateGST();
-    const total = subtotal + gstAmount;
+    // If items have totalPrice, GST might already be included, so use subtotal as total
+    const hasItemsWithTotalPrice = cartItems?.some(item => item.totalPrice);
+    const total = hasItemsWithTotalPrice ? subtotal : subtotal + gstAmount;
+
+    console.log("⚡️ ProductTab Calculations:", {
+        cartItems: cartItems?.length,
+        subtotal,
+        gstAmount,
+        hasItemsWithTotalPrice,
+        total
+    });
 
     const updateQuantity = async (id, newQty) => {
         try {
@@ -262,9 +279,10 @@ const ProductTab = () => {
             }
             console.log("==========payload in handleBooking", payload);
             await PlaceProductOrder(payload).then(res => {
+                console.log("⚡️🤯 ~ Cart.jsx:282 ~ handleBooking ~ res:", res)
                 if (res?.success) {
                     toast.success(res?.message);
-                    navigate("/payment-success", { state: { type: "product" } });
+                    navigate("/payment-success", { state: { type: "products", orderDetails: res?.data } });
                 } else {
                     toast.error(res?.message || "Something went wrong");
                 }
@@ -346,13 +364,15 @@ const ProductTab = () => {
                                     ₹{item?.price?.toLocaleString()}
                                 </div>
                                 <div className="text-white text-sm">
-                                    <span>
-                                        MRP
-                                        <span className="line-through">
-                                            ₹{item?.mrp?.toLocaleString()}
+                                    {item?.mrp && (
+                                        <span>
+                                            MRP
+                                            <span className="line-through">
+                                                ₹{item?.mrp?.toLocaleString()}
+                                            </span>
                                         </span>
-                                    </span>
-                                    <span className="ml-1">(incl. of all taxes)</span>
+                                    )}
+                                    <span className={item?.mrp ? "ml-1" : ""}>(incl. of all taxes)</span>
                                 </div>
                             </div>
                         </div>
@@ -441,18 +461,19 @@ const ProductTab = () => {
                     <div className="space-y-3 mb-6 bg-gray-100 p-4 rounded-lg">
                         <div className="flex justify-between items-center">
                             <span className="text-gray-600">
-                                Product {cartItems?.reduce((t, i) => t + i.quantity, 0)}x (incl.
-                                GST)
+                                Product {cartItems?.reduce((t, i) => t + (i.quantity || 1), 0)}x {hasItemsWithTotalPrice ? '(incl. GST)' : '(excl. GST)'}
                             </span>
                             <span className="font-medium">
                                 ₹ {subtotal?.toLocaleString()}
                             </span>
                         </div>
 
-                        <div className="flex justify-between items-center">
-                            <span className="text-gray-600">GST (18%)</span>
-                            <span className="font-medium">₹ {gstAmount || 0}</span>
-                        </div>
+                        {!hasItemsWithTotalPrice && (
+                            <div className="flex justify-between items-center">
+                                <span className="text-gray-600">GST (18%)</span>
+                                <span className="font-medium">₹ {gstAmount || 0}</span>
+                            </div>
+                        )}
 
                         <div className="border-t border-gray-300 my-2"></div>
 
@@ -486,11 +507,10 @@ const ProductTab = () => {
 };
 
 const ServiceTab = () => {
-    const addresses = useSelector((state) => state.cart?.addresses);
     const [cartItems, setCartItems] = useState([]);
     const [grandTotal, setGrandTotal] = useState(0);
-    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
     const [bookingLoading, setBookingLoading] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -557,9 +577,6 @@ const ServiceTab = () => {
 
 
 
-    if (isLoading) {
-        return <CartSkeleton />;
-    }
     if (cartItems?.length == 0) {
         return (
             <div className="flex items-center flex-col justify-center h-full w-full bg-white rounded-lg space-y-10 py-28">
@@ -571,26 +588,36 @@ const ServiceTab = () => {
 
 
     const handleBooking = async (data) => {
-        console.log("⚡️🤯 ~ BookingPage.jsx:35 ~ handleBooking ~ data:", data)
+        console.log("⚡️🤯 ~ BookingPage.jsx:35 ~ handleBooking ~ data:", data, cartItems)
         try {
             setIsLoading(true);
             const payload = {
-                serviceId: cartItems?.[0]?.serviceId,
-                astrologerId: cartItems?.[0]?.astrologerId,
-                bookingDate: moment(cartItems?.[0]?.bookingDate).format('YYYY-MM-DD'),
-                startTime: cartItems?.[0]?.startTime,
+                serviceItems: cartItems?.map(item => ({
+                    serviceId: item?.serviceId || "",
+                    astrologerId: "68ca9cf272e2d0202ee1b902",
+                    bookingDate: moment(item?.date).format('YYYY-MM-DD'),
+                    startTime: item?.startTime || "",
+                    firstName: item?.cust?.firstName || "",
+                    lastName: item?.cust?.lastName || "",
+                    email: item?.cust?.email || "",
+                    phone: item?.cust?.phone || "",
+                    address: item?.cust?.address || "",
+                })),
                 paymentType: "COD",
-                paymentId: "",
+                currencyType: "INR",
+                paymentId: "COD-20250923123045",
+                couponId: "",
                 address: "",
                 paymentDetails: {
                     note: "Cash will be collected at time of service",
-                    currency: data?.currency
+                    currency: "INR"
                 }
             }
-            await bookService(payload).then(res => {
+            await createServiceOrder(payload).then(res => {
+                console.log("⚡️🤯 ~ Cart.jsx:601 ~ handleBooking ~ payload:", res)
                 if (res?.success) {
                     setIsLoading(false);
-                    reset();
+                    navigate("/payment-success", { state: { type: "services", orderDetails: res?.order } });
                     toast.success(res?.message || "Booking Successfully");
                 } else {
                     setIsLoading(false);
@@ -631,10 +658,10 @@ const ServiceTab = () => {
                             </span>
                         </div>
 
-                        <div className="flex justify-between items-center">
+                        {/* <div className="flex justify-between items-center">
                             <span className="text-gray-600">GST (18%)</span>
                             <span className="font-medium">₹ {gstAmount || 0}</span>
-                        </div>
+                        </div> */}
 
                         <div className="border-t border-gray-300 my-2"></div>
 
