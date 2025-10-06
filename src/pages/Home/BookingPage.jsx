@@ -13,6 +13,7 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import toast from "react-hot-toast";
+import { InfoCircle } from "iconsax-reactjs";
 
 const BookingPage = () => {
     const user = useSelector((state) => state.user.userDetails);
@@ -194,7 +195,7 @@ const BookingPage = () => {
                                 <h4
                                     className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                 >
-                                    Time Slots
+                                    Time Slots*
                                 </h4>
                                 <SelectTextInput
                                     label="Select Time Slots"
@@ -212,7 +213,7 @@ const BookingPage = () => {
                                 <h4
                                     className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                 >
-                                    Currency
+                                    Currency*
                                 </h4>
                                 <SelectTextInput
                                     props={{

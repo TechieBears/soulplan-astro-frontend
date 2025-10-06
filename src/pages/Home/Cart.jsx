@@ -577,9 +577,6 @@ const ServiceTab = () => {
 
 
 
-    if (isLoading) {
-        return <CartSkeleton />;
-    }
     if (cartItems?.length == 0) {
         return (
             <div className="flex items-center flex-col justify-center h-full w-full bg-white rounded-lg space-y-10 py-28">
@@ -616,12 +613,11 @@ const ServiceTab = () => {
                     currency: "INR"
                 }
             }
-            console.log("⚡️🤯 ~ Cart.jsx:602 ~ handleBooking ~ payload:", payload)
             await createServiceOrder(payload).then(res => {
-                console.log("⚡️🤯 ~ Cart.jsx:601 ~ handleBooking ~ payload:", payload)
+                console.log("⚡️🤯 ~ Cart.jsx:601 ~ handleBooking ~ payload:", res)
                 if (res?.success) {
                     setIsLoading(false);
-                    navigate("/payment-success", { state: { type: "services", orderId: res?.data?.orderId } });
+                    navigate("/payment-success", { state: { type: "services", orderDetails: res?.order } });
                     toast.success(res?.message || "Booking Successfully");
                 } else {
                     setIsLoading(false);

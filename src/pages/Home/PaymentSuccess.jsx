@@ -16,9 +16,10 @@ import Lottie from "lottie-react";
 const PaymentSuccess = () => {
     const navigate = useNavigate();
     const { state } = useLocation();
+    console.log("⚡️🤯 ~ PaymentSuccess.jsx:19 ~ PaymentSuccess ~ state:", state)
     const [activeTab, setActiveTab] = useState(state?.type === "products" ? "products" : "services");
-    const [productOrders, setProductOrders] = useState(state?.orderDetails.order || "");
-    console.log("⚡️🤯 ~ PaymentSuccess.jsx:22 ~ PaymentSuccess ~ productOrders:", productOrders.order)
+    const [productOrders, setProductOrders] = useState(state?.type === "products" ? state?.orderDetails.order : state?.orderDetails);
+
     const [serviceOrders, setServiceOrders] = useState([]);
     const [isLoadingProducts, setIsLoadingProducts] = useState(true);
     const [isLoadingServices, setIsLoadingServices] = useState(true);
@@ -129,7 +130,6 @@ const PaymentSuccess = () => {
                     <div className="space-y-4 h-[250px] overflow-y-scroll">
                         {activeTab === "products" && (
                             <>
-
                                 <div className="space-y-4 ">
                                     {productOrders?.items?.map((item, index) => {
                                         return (
