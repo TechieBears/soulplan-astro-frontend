@@ -2,113 +2,122 @@ const Private = ({ children }) => children;
 const UserDashboard = ({ children }) => children;
 
 const PrivacyPolicy = () => {
-    return (
-        <>
-            <div className="p-8 mt-10">
-                <h1 className="text-lg font-medium text-center text-gray-800  p-4 font-tbLex sm:text-center">
-                    Privacy Policy
-                </h1>
+  return (
+    <>
+      <div className="p-8 mt-10">
+        <h1 className="text-lg font-medium text-center text-gray-800  p-4 font-tbLex sm:text-center">
+          Privacy Policy
+        </h1>
 
-                <div className="sm:p-8">
-                    <p className="text-md text-gray-700 mb-6 font-tbPop">
-                        At AstroMax, we take your privacy seriously. This Privacy Policy
-                        outlines the types of personal information we collect and how we
-                        use, store, and protect it.
-                    </p>
-
-                    <h2 className="text-lg font-medium text-gray-800 mb-4 font-tbLex">
-                        1. Information We Collect
-                    </h2>
-                    <p className="text-lg text-gray-700 mb-4 font-tbPop">
-                        We collect the following types of information when you use our
-                        website or services:
-                    </p>
-                    <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
-                        <li>
-                            <strong className="font-tbLex">Personal Information:</strong>{" "}
-                            Name, email address, phone number, etc.
-                        </li>
-                        <li>
-                            <strong className="font-tbLex">Usage Data:</strong> Information on
-                            how you interact with our services, including pages visited, time
-                            spent on each page, etc.
-                        </li>
-                        <li>
-                            <strong className="font-tbLex">Cookies:</strong> We may use
-                            cookies to improve your experience on our website.
-                        </li>
-                    </ul>
-
-                    <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-                        2. How We Use Your Information
-                    </h2>
-                    <p className="text-lg text-gray-700 mb-4 font-tbPop">
-                        The information we collect is used for the following purposes:
-                    </p>
-                    <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
-                        <li>To provide and improve our services</li>
-                        <li>
-                            To communicate with you, including sending promotional emails
-                        </li>
-                        <li>To comply with legal obligations</li>
-                    </ul>
-
-                    <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-                        3. How We Protect Your Information
-                    </h2>
-                    <p className="text-lg text-gray-700 mb-4 font-tbPop">
-                        We implement security measures to protect your personal information.
-                        However, no method of transmission over the internet is 100% secure,
-                        so we cannot guarantee absolute security.
-                    </p>
-
-                    <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-                        4. Sharing Your Information
-                    </h2>
-                    <p className="text-lg text-gray-700 mb-4 font-tbPop">
-                        We do not sell, trade, or rent your personal information to third
-                        parties. However, we may share it in the following cases:
-                    </p>
-                    <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
-                        <li>If required by law or to protect our legal rights</li>
-                        <li>
-                            With trusted service providers who help us deliver our services
-                        </li>
-                    </ul>
-
-                    <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-                        5. Your Rights
-                    </h2>
-                    <p className="text-lg text-gray-700 mb-4 font-tbPop">
-                        Depending on your jurisdiction, you may have the right to access,
-                        correct, or delete your personal information. You can also withdraw
-                        your consent for processing at any time.
-                    </p>
-
-                    <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-                        6. Changes to This Privacy Policy
-                    </h2>
-                    <p className="text-lg text-gray-700 mb-4 font-tbPop">
-                        We may update this Privacy Policy from time to time. Any changes
-                        will be posted on this page, and we will notify you of any
-                        significant changes.
-                    </p>
-
-                    <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-                        7. Contact Us
-                    </h2>
-                    <p className="text-lg text-gray-700 mb-6 font-tbPop">
-                        If you have any questions or concerns about this Privacy Policy,
-                        please contact us at [Your Email Address].
-                    </p>
-
-                    <p className="text-center text-sm text-gray-500 italic font-tbPop">
-                        Last updated: [Date]
-                    </p>
-                </div>
-            </div>
-        </>
-    );
+        <div className="sm:p-8">
+          {/* <p className="text-md text-gray-700 mb-6 font-tbPop">
+            At AstroMax, we take your privacy seriously. This Privacy Policy
+            outlines the types of personal information we collect and how we
+            use, store, and protect it.
+          </p> */}
+          <h2 className="text-lg font-medium text-gray-800 mb-4 font-tbLex">
+            1. Information We Collect
+          </h2>
+          <p className="text-lg text-gray-700 mb-4 font-tbPop">
+            We collect personal information that you provide to us directly,
+            such as:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
+            <li>
+              {/* <strong className="font-tbLex">Personal Information:</strong>{" "} */}
+              Name, email address, phone number, etc.
+            </li>
+            <li>
+              {/* <strong className="font-tbLex">Usage Data:</strong> */}
+              Information on how you interact with our services, including pages
+              visited, time spent on each page, etc.
+            </li>
+            <li>
+              {/* <strong className="font-tbLex">Cookies:</strong>  */}
+              Payment information processed through secure third-party gateways
+            </li>
+          </ul>
+          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
+            2. Use of Information
+          </h2>
+          <p className="text-lg text-gray-700 mb-4 font-tbPop">
+            We use your information to:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
+            <li>Provide and manage our services</li>
+            <li>Communicate with you regarding bookings and updates</li>
+            <li>Improve our website and services</li>
+          </ul>
+          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
+            3. Cookies and Tracking
+          </h2>
+          <p className="text-lg text-gray-700 mb-4 font-tbPop">
+            We use cookies to enhance user experience and analyze website
+            traffic. You can manage cookie preferences through your browser
+            settings.
+          </p>
+          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
+            4. Data Security
+          </h2>
+          <p className="text-lg text-gray-700 mb-4 font-tbPop">
+            We implement reasonable security measures to protect your personal
+            information. However, no method of transmission over the internet is
+            100% secure.
+          </p>
+          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
+            5. Sharing of Information
+          </h2>
+          <p className="text-lg text-gray-700 mb-4 font-tbPop">
+            We do not sell or rent your personal information. We may share your
+            information with:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
+            <li>Service providers who assist in delivering our services</li>
+            <li>Legal authorities if required by law.</li>
+          </ul>
+          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
+            6. You have the right to:
+          </h2>
+          <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
+            <li>Access, correct, or delete your personal information</li>
+            <li>Opt-out of marketing communications</li>
+          </ul>{" "}
+          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
+            7. Changes to Privacy Policy
+          </h2>
+          <p className="text-lg text-gray-700 mb-4 font-tbPop">
+            We may update this Privacy Policy periodically. Users will be
+            notified of significant changes.
+          </p>
+          <h2 className="text-lg font-medium text-gray-800  mb-4 font-tbLex">
+            8. International Users
+          </h2>
+          <p className="text-lg text-gray-700 mb-6 font-tbPop">
+            If you are accessing our services from outside [Insert Country],
+            your information may be transferred to and processed in [Insert
+            Country].
+          </p>
+          <h2 className="text-lg font-medium text-gray-800  mb-4 font-tbLex">
+            8. Contact Us
+          </h2>
+          <p className="text-lg text-gray-700 mb-6 font-tbPop">
+            For questions or concerns regarding this Privacy Policy, please
+            contact us at:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
+            <li>Email: [Insert Email Address]</li>
+            <li>
+              Phone: [Insert Phone Number]
+              <li>Address: [Insert Physical Address]</li>
+            </li>
+          </ul>{" "}
+          <p className="text-center text-sm text-gray-500 italic font-tbPop">
+            Last updated: [Date]
+          </p>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default PrivacyPolicy;
