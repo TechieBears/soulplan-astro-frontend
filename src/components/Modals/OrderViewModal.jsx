@@ -17,7 +17,6 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
     const [allReviews, setAllReviews] = useState([]);
     const [messages, setMessages] = useState([]);
 
-    // React Hook Form for reviews
     const reviewForm = useForm({
         defaultValues: {
             rating: 5,
@@ -25,14 +24,12 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
         }
     });
 
-    // React Hook Form for messages
     const messageForm = useForm({
         defaultValues: {
             message: "",
         }
     });
 
-    // Initialize reviews and messages when orderData changes
     useEffect(() => {
         if (orderData) {
             if (orderType === "product") {
@@ -46,7 +43,6 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
 
     if (!isOpen || !orderData) return null;
 
-    // Handle review submission
     const handleSubmitReview = (itemIndex) => {
         reviewForm.handleSubmit((data) => {
             const newReviews = [...allReviews];
@@ -54,7 +50,7 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
                 text: data.reviewText,
                 rating: data.rating,
                 date: new Date().toISOString(),
-                userName: "Current User", // Replace with actual user name
+                userName: "Current User",
             };
             newReviews[itemIndex] = [...(newReviews[itemIndex] || []), reviewWithRating];
             setAllReviews(newReviews);
@@ -63,7 +59,6 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
         })();
     };
 
-    // Handle message submission
     const handleSubmitMessage = (itemIndex) => {
         messageForm.handleSubmit((data) => {
             const newMessage = {
@@ -77,18 +72,15 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
         })();
     };
 
-    // Get order status display
     const getOrderStatus = () => {
         if (orderType === "product") {
             return orderData.orderStatus || "PENDING";
         } else {
-            // For services, check the first service status
             const firstService = orderData.services?.[0];
             return firstService?.bookingStatus || "pending";
         }
     };
 
-    // Get payment status display
     const getPaymentStatus = () => {
         return orderData.paymentStatus || "PENDING";
     };
@@ -150,24 +142,6 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
                             <h1 className="text-xl lg:text-3xl font-medium text-slate-800 mb-2 font-tbPop">
                                 {product.name}
                             </h1>
-                            <div className="flex flex-col">
-                                <div className="flex items-center gap-1 my-4">
-                                    {[1, 2, 3, 4, 5].map((star) => (
-                                        <Star
-                                            key={star}
-                                            className={`w-4 h-4 sm:w-5 sm:h-5 ${star <= Math.floor(4.5) // Default rating
-                                                ? "text-yellow-400 fill-current"
-                                                : "text-gray-300"
-                                                }`}
-                                        />
-                                    ))}
-                                </div>
-                                <span className="text-gray-600 text-xs sm:text-sm font-tbPop">
-                                    Based on{" "}
-                                    {(allReviews[itemIndex]?.length || 0)}{" "}
-                                    reviews
-                                </span>
-                            </div>
                             <p className="text-gray-600 text-sm font-tbPop">
                                 Quantity: {product.quantity}
                             </p>
@@ -201,7 +175,6 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
                             Reviews & Messages
                         </h3>
 
-                        {/* Rating */}
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div className="flex items-center gap-3">
                                 <span className="text-xl sm:text-2xl font-bold text-gray-800 font-tbPop">
@@ -227,7 +200,7 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
                                 </div>
                             </div>
 
-                            <div className="flex gap-2">
+                            {/* <div className="flex gap-2">
                                 <button
                                     className="bg-black text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm hover:bg-gray-800 transition-colors font-tbPop"
                                     onClick={() =>
@@ -238,26 +211,13 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
                                 >
                                     Write a Review
                                 </button>
-                                <button
-                                    className="bg-blue-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm hover:bg-blue-700 transition-colors font-tbPop flex items-center gap-1"
-                                    onClick={() =>
-                                        setActiveMessage(
-                                            activeMessage === itemIndex ? null : itemIndex
-                                        )
-                                    }
-                                >
-                                    <MessageCircle className="w-4 h-4" />
-                                    Message
-                                </button>
-                            </div>
+                            </div> */}
                         </div>
 
-                        {/* Review Input */}
                         {activeReview === itemIndex && (
                             <div className="mt-3 flex flex-col gap-3 p-4 bg-gray-50 rounded-lg">
                                 <h4 className="font-semibold text-gray-800 font-tbPop">Write a Review</h4>
 
-                                {/* Rating Selection */}
                                 <div className="flex flex-col gap-2">
                                     <label className="text-sm font-medium text-gray-700 font-tbPop">Rating</label>
                                     <Controller
@@ -288,7 +248,6 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
                                     />
                                 </div>
 
-                                {/* Review Text */}
                                 <div className="flex flex-col gap-2">
                                     <label className="text-sm font-medium text-gray-700 font-tbPop">Review</label>
                                     <Controller
@@ -337,73 +296,17 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
                             </div>
                         )}
 
-                        {/* Message Input */}
-                        {activeMessage === itemIndex && (
-                            <div className="mt-3 flex flex-col gap-3 p-4 bg-blue-50 rounded-lg">
-                                <h4 className="font-semibold text-gray-800 font-tbPop">Send a Message</h4>
-
-                                <div className="flex flex-col gap-2">
-                                    <Controller
-                                        name="message"
-                                        control={messageForm.control}
-                                        rules={{ required: "Please enter a message" }}
-                                        render={({ field, fieldState }) => (
-                                            <div>
-                                                <CustomTextArea
-                                                    placeholder="Type your message here..."
-                                                    props={{
-                                                        ...field,
-                                                        rows: 3,
-                                                    }}
-                                                    style="font-tbPop"
-                                                />
-                                                {fieldState.error && (
-                                                    <p className="text-red-500 text-xs mt-1 font-tbPop">
-                                                        {fieldState.error.message}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        )}
-                                    />
-                                </div>
-
-                                <div className="flex justify-end gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setActiveMessage(null);
-                                            messageForm.reset();
-                                        }}
-                                        className="px-3 py-2 text-sm rounded-lg border hover:bg-gray-100 transition font-tbPop"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => handleSubmitMessage(itemIndex)}
-                                        className="px-3 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition font-tbPop flex items-center gap-1"
-                                    >
-                                        <Send className="w-4 h-4" />
-                                        Send Message
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* List of Submitted Reviews */}
                         {(allReviews[itemIndex]?.length > 0) && (
                             <div className="mt-4 space-y-4">
                                 <h5 className="font-semibold text-gray-800 font-tbPop">Customer Reviews</h5>
                                 {allReviews[itemIndex].map((review, i) => (
                                     <div key={i} className="flex gap-3 bg-gray-50 p-3 rounded-lg">
-                                        {/* Avatar */}
                                         <img
                                             src="https://i.pravatar.cc/40?img=3"
                                             alt="avatar"
                                             className="w-10 h-10 rounded-full object-cover"
                                         />
                                         <div className="flex-1">
-                                            {/* Name + Rating + Time */}
                                             <div className="flex items-center justify-between mb-1">
                                                 <span className="font-semibold text-gray-800 font-tbPop">
                                                     {review.userName || "Anonymous"}
@@ -423,30 +326,7 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
                                                     />
                                                 ))}
                                             </div>
-                                            {/* Review Text */}
                                             <p className="text-gray-700 text-sm font-tbPop">{review.text}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {/* Messages */}
-                        {messages.length > 0 && (
-                            <div className="mt-4 space-y-4">
-                                <h5 className="font-semibold text-gray-800 font-tbPop">Messages</h5>
-                                {messages.map((message, i) => (
-                                    <div key={i} className="flex gap-3 bg-blue-50 p-3 rounded-lg">
-                                        <div className="flex-1">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <span className="font-semibold text-gray-800 font-tbPop">
-                                                    {message.userName}
-                                                </span>
-                                                <span className="text-xs text-gray-500 font-tbPop">
-                                                    {new Date(message.date).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                            <p className="text-gray-700 text-sm font-tbPop">{message.text}</p>
                                         </div>
                                     </div>
                                 ))}

@@ -12,7 +12,19 @@ import { TableTitle } from '../../../../helper/Helper';
 
 function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
     const [open, setOpen] = useState(false);
-    const toggle = () => { setOpen(!open), reset() };
+    const toggle = () => {
+        setOpen(!open), reset({
+            couponName: '',
+            couponCode: '',
+            couponType: '',
+            discountIn: '',
+            discount: '',
+            activationDate: '',
+            expiryDate: '',
+            redemptionPerUser: '',
+            totalRedemptions: ''
+        })
+    };
     const [loader, setLoader] = useState(false);
     const { register, handleSubmit, watch, reset, formState: { errors }, setValue } = useForm();
 
@@ -110,10 +122,10 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-5">
 
                                                     <div>
-                                                        <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Coupon Name</h4>
+                                                        <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Coupon title</h4>
                                                         <TextInput
                                                             label="Enter Coupon Name"
-                                                            placeholder="Enter Coupon Name"
+                                                            placeholder="🎉 Use code SAVE20 — Get 20% OFF!"
                                                             registerName="couponName"
                                                             props={{ ...register('couponName', { required: "Required" }) }}
                                                             errors={errors.couponName}
@@ -126,7 +138,15 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                             label="Enter Coupon Code"
                                                             placeholder="Enter Coupon Code"
                                                             registerName="couponCode"
-                                                            props={{ ...register('couponCode', { required: "Required" }) }}
+                                                            props={{
+                                                                ...register('couponCode', {
+                                                                    required: "Required",
+                                                                    onChange: (e) => {
+                                                                        e.target.value = e?.target?.value?.toUpperCase();
+                                                                    }
+                                                                }),
+                                                                style: { textTransform: 'uppercase' }
+                                                            }}
                                                             errors={errors.couponCode}
                                                         />
                                                     </div>
@@ -165,13 +185,14 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                     </div>
 
                                                     <div>
-                                                        <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Discount</h4>
+                                                        <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Discount in {watch('discountIn') === 'percent' ? '%' : '₹'} <span className="text-red-500 text-xs font-tbLex">{edit ? '(Cannot be edited)' : ''}</span></h4>
                                                         <TextInput
-                                                            label="Enter Discount"
-                                                            placeholder="Enter Discount"
+                                                            disabled={edit}
+                                                            label={`Enter Discount ${watch('discountIn') === 'percent' ? '%' : '₹'}`}
+                                                            placeholder={`Enter Discount ${watch('discountIn') === 'percent' ? '%' : '₹'}`}
                                                             type="number"
                                                             registerName="discount"
-                                                            props={{ ...register('discount', { required: "Required" }) }}
+                                                            props={{ ...register('discount', { required: "Required", min: 0, max: watch('discountIn') === 'percent' ? 100 : 1000000 }) }}
                                                             errors={errors.discount}
                                                         />
                                                     </div>

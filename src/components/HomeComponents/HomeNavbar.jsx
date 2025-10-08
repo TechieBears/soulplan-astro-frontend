@@ -99,6 +99,7 @@ const HomeNavbar = () => {
     });
 
     const fetchProductCart = async () => {
+        if (!login) return;
         try {
             const res = await getProductFromCart();
             dispatch(setCartProductCount(res?.data?.items?.length));

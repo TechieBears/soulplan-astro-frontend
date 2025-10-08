@@ -16,7 +16,7 @@ const FilterSidebar = ({
     price,
     setPrice,
     minPrice = 0,
-    maxPrice = 10000,
+    maxPrice = 100000,
     resetFilters,
     isLoading = false,
 }) => {
