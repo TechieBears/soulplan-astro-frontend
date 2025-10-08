@@ -667,7 +667,7 @@ export const editServiceCategory = async (id, data) => {
 // ======================= Service Api ======================
 export const getServices = async (data) => {
     try {
-        const url = `${environment.baseUrl}service/get-all?page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}service/get-all?name=${data?.name || ''}&categoryId=${data?.categoryId || ''}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -1348,17 +1348,16 @@ export const checkAvailability = async (data) => {
 
 // ===================== Service Order Api =====================
 
-export const PlaceServiceOrder = async (data) => {
+export const createServiceOrder = async (orderData) => {
     const url = `${environment.baseUrl}service-order/public/create`;
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, orderData);
         return response.data;
+    } catch (err) {
+        return err?.response?.data || { success: false, message: 'Failed to create service order' };
     }
-    catch (err) {
-        console.log("==========error in PlaceServiceOrder api file", err);
-        return err?.response?.data;
-    }
-}
+};
+
 export const getServiceBookingsConfirmed = async (data) => {
     const url = `${environment.baseUrl}service-order/public/get-all`;
     try {
@@ -1397,3 +1396,243 @@ export const getProductBookingsConfirmed = async (data) => {
         return err?.response?.data;
     }
 }
+
+
+// =========================== admin service order api ====================
+
+export const getAllServiceOrdersAdmin = async (data) => {
+    try {
+        const url = `${environment.baseUrl}service-order/get-all?orderId=${data?.orderId || ""}&date=${data?.date || ""}&status=${data?.status || ""}&page=${data?.p}&limit=${data?.records}&astrologerId=${data?.astrologerId || ""}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAllServiceOrdersAdmin api file", err);
+        return err?.response?.data
+    }
+}
+
+// ==================== Get All Service Orders Api ====================
+export const getAllServiceOrders = async () => {
+    const url = `${environment.baseUrl}service-order/public/get-all`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.error('Error fetching service orders:', err);
+        return err?.response?.data || { success: false, message: 'Failed to fetch service orders' };
+    }
+};
+
+export const checkAvailabilityById = async (id) => {
+    try {
+        const url = `${environment.baseUrl}service-order/item/get-single?id=${id || ""}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in checkAvailability api file", err);
+        return err?.response?.data
+    }
+}
+
+
+export const updateServiceOrderStatus = async (data) => {
+    const url = `${environment.baseUrl}service-order/astrologer/update-order-status`;
+    try {
+        const response = await axios.post(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in updateAvailability api file", err);
+        return err?.response?.data
+    }
+}
+
+export const adminSlots = async (date) => {
+    const url = `${environment.baseUrl}calender/admin-slots?date=${date}`;
+    try {
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in logout User api file", err);
+        return err?.response?.data
+    }
+};
+
+// =========================== admin product order api ====================
+
+export const getAdminAllTestimonials = async (data) => {
+    try {
+        const url = `${environment.baseUrl}testimonials/get-all?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAdminAllTestimonials api file", err);
+        return err?.response?.data
+    }
+}
+export const editTestimonials = async (id, data) => {
+    const url = `${environment.baseUrl}testimonials/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editTestimonials api file", err);
+        return err?.response?.data
+    }
+}
+
+export const adminBlockSlots = async (data) => {
+    const url = `${environment.baseUrl}calender/admin-block-slots`;
+    try {
+        const response = await axios.post(url, data);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in adminBlockSlots api file", err);
+        return err?.response?.data;
+    }
+};
+
+export const astrologerSlots = async (sdate, edate, astrologerId) => {
+    const url = `${environment.baseUrl}calender/astrologer-slots?sdate=${sdate}&edate=${edate}&astrologerId=${astrologerId}`;
+    try {
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in logout User api file", err);
+        return err?.response?.data
+    }
+};
+
+export const getSingleServiceOrder = async (orderId) => {
+    const url = `${environment.baseUrl}service-order/public/item/get-single?id=${orderId}`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.error('Error fetching single service order:', err);
+        return err?.response?.data || { success: false, message: 'Failed to fetch service order details' };
+    }
+};
+
+export const getAllTestimonials = async (page = 1, limit = 10, isActive = true) => {
+    const url = `${environment.baseUrl}testimonials/public/get-all?page=${page}&limit=${limit}&isActive=${isActive}`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.error('Error fetching testimonials:', err);
+        return err?.response?.data || { success: false, message: 'Failed to fetch testimonials' };
+    }
+};
+
+export const createTestimonial = async (testimonialData) => {
+    const url = `${environment.baseUrl}testimonials/create`;
+    try {
+        const response = await axios.post(url, testimonialData);
+        return response.data;
+    } catch (err) {
+        console.error('Error creating testimonial:', err);
+        return err?.response?.data || { success: false, message: 'Failed to create testimonial' };
+    }
+};
+
+export const getSingleProductOrder = async (orderId) => {
+    const url = `${environment.baseUrl}product-order/public/get-single?id=${orderId}`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.error('Error fetching single product order:', err);
+        return err?.response?.data || { success: false, message: 'Failed to fetch product order details' };
+    }
+};
+
+
+
+// ================== Coupon API ==================
+
+export const getAllPublicCoupons = async (type, couponCode) => {
+    try {
+        const url = `${environment.baseUrl}coupon/public/get-all?couponType=${type || ""}&search=${couponCode || ""}`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getAllPublicCoupons api file", err);
+        return err?.response?.data;
+    }
+};
+
+export const getAllCoupons = async (data) => {
+    try {
+        const url = `${environment.baseUrl}coupon/get-all?page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getAllCoupons api file", err);
+        return err?.response?.data;
+    }
+};
+
+export const addCoupon = async (data) => {
+    const url = `${environment.baseUrl}coupon/create`;
+    try {
+        const response = await axios.post(url, data);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in addCoupon api file", err);
+        return err?.response?.data;
+    }
+};
+
+export const editCoupon = async (id, data) => {
+    const url = `${environment.baseUrl}coupon/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in editCoupon api file", err);
+        return err?.response?.data;
+    }
+};
+
+export const deleteCoupon = async (id) => {
+    const url = `${environment.baseUrl}coupon/delete?id=${id}`;
+    try {
+        const response = await axios.delete(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in deleteCoupon api file", err);
+        return err?.response?.data;
+    }
+};
+
+// ======================= Testimonials Api ========================
+
+export const getAllPublicTestimonials = async (page = 1, limit = 10) => {
+    const url = `${environment.baseUrl}testimonials/public/get-all?page=${page}&limit=${limit}`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getAllPublicTestimonials api file", err);
+        return err?.response?.data;
+    }
+};
+
+
+export const createPublicTestimonial = async (data) => {
+    const url = `${environment.baseUrl}testimonials/public/create`;
+    try {
+        const response = await axios.post(url, data);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in createPublicTestimonial api file", err);
+        return err?.response?.data;
+    }
+};

@@ -14,6 +14,7 @@ import { setAddresses } from "../../../redux/Slices/cartSlice";
 import Lottie from "lottie-react";
 import loader from "../../../assets/loader.json";
 import AddressSkeletonGrid from "../../../components/Loader/AddressCardSkeleton";
+import Switch from "react-js-switch";
 
 const AddressPage = () => {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
@@ -36,7 +37,8 @@ const AddressPage = () => {
                 city: data.city,
                 postalCode: data.postalCode,
                 state: data.state,
-                country: data.country
+                country: data.country,
+                isDefault: data.isDefault
             };
 
             let response;
@@ -79,6 +81,7 @@ const AddressPage = () => {
             setValue('postalCode', editingAddress.postalCode || '');
             setValue('state', editingAddress.state || '');
             setValue('country', editingAddress.country || '');
+            setValue('isDefault', editingAddress.isDefault || false);
         } else {
             reset();
         }
@@ -382,6 +385,28 @@ const AddressPage = () => {
                                     />
                                 </div>
                             </div>
+                            <div className="">
+                                <h4
+                                    className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                >
+                                    Default Address
+                                </h4>
+                                <div className="">
+                                    <Controller
+                                        name="isDefault"
+                                        control={control}
+                                        render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                            <Switch
+                                                value={value}
+                                                onChange={() => onChange(!value)}
+                                                size={50}
+                                                backgroundColor={{ on: "#86d993", off: "#c6c6c6" }}
+                                                borderColor={{ on: "#86d993", off: "#c6c6c6" }}
+                                            />
+                                        )}
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         {/* Actions */}
@@ -487,7 +512,7 @@ const AddressCard = ({ address, onEdit, fetchAddresses, deleteLoading, setDelete
             </div>
             <div className="flex justify-between items-center pt-3">
                 {address?.isDefault && (
-                    <p className="text-slate-600 font-tbPop font-normal text-sm">• Default Address</p>
+                    <p className=" font-tbPop font-normal text-sm text-green-500">• Default Address</p>
                 )}
                 <p className="text-slate-600 font-tbPop font-normal text-sm">• {capitalizedAddressType}</p>
             </div>

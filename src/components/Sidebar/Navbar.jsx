@@ -34,7 +34,7 @@ const Navbar = ({ mobileSidebar, isActiveLink }) => {
                             </h4>
                             <div className="flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6 ">
                                 <h2 className="font-tbLex font-bold text-2xl  md:text-2xl whitespace- tracking-tight capitalize text-slate-800">
-                                    {greetingTime(new Date())} 👋🏻, <span className="capitalize text-primary"> {user?.user?.fullName || "Guest User"}</span>
+                                    {greetingTime(new Date())} 👋🏻, <span className="capitalize text-primary"> {user?.firstName || "Guest"} {user?.lastName || "User"}</span>
                                 </h2>
                             </div>
                             <div className="flex items-center text-xs font-tbPop font-normal text-slate-500">
@@ -120,8 +120,8 @@ const ProfilePage = () => {
                         <div className="" ref={trigger}
                             onClick={() => setDropdownOpen(!dropdownOpen)}>
                             <div className="bg-white shadow-md rounded-3xl px-1.5 pr-2 py-1 w-full flex items-center space-x-2 cursor-pointer">
-                                <img loading="lazy" className="h-10 w-10 rounded-full object-cover bg-slate1 border-2 border-primary " src={'https://bootstrapdemos.wrappixel.com/materialM/dist/assets/images/profile/user-1.jpg'} alt="user" />
-                                <h5 className="text-sm font-tbPop font-medium text-black capitalize">{user?.firstName || "Guest User"}</h5>
+                                <img loading="lazy" className="h-10 w-10 rounded-full object-cover bg-slate-100 border-2 border-primary " src={user?.profileImage || "https://cdn.tailgrids.com/assets/images/core-components/account-dropdowns/image-1.jpg"} alt="user" />
+                                <h5 className="text-sm font-tbPop font-medium text-black capitalize line-clamp-1">{user?.firstName || "Guest"}</h5>
                                 <span className={dropdownOpen ? "-rotate-180 duration-300 transition-all" : "rotate-0 duration-300 transition-all"}>
                                     <ArrowDown2 size="20" className='text-slate-500' variant='TwoTone' />
                                 </span>
@@ -134,21 +134,21 @@ const ProfilePage = () => {
                             className={`absolute right-0 top-14 w-[240px] pb-3 overflow-hidden rounded-xl z-50 bg-white shadow-lg border border-slate-100 transition-all ease-in-out duration-500 ${dropdownOpen ? "block opacity-100 transition-all ease-in-out duration-500" : "hidden opacity-0 transition-all ease-in-out duration-500"}`}
                         >
                             <div className="flex items-center gap-3 px-4 py-3">
-                                <div className="relative aspect-square w-16 rounded-full">
+                                <div className="relative aspect-square w-16 h-16 rounded-full">
                                     <img
-                                        src="https://cdn.tailgrids.com/assets/images/core-components/account-dropdowns/image-1.jpg"
+                                        src={user?.profileImage || "https://cdn.tailgrids.com/assets/images/core-components/account-dropdowns/image-1.jpg"}
                                         alt="account"
-                                        className="w-full rounded-full object-cover object-center"
+                                        className="w-full h-full rounded-full object-cover "
                                     />
                                     <span className="absolute right-0 top-1 block h-3.5 w-3.5 rounded-full border-2 border-white bg-green-500 "></span>
                                 </div>
-                                <div>
-                                    <p className="text-base font-tbLex font-semibold text-black capitalize">
+                                <div >
+                                    <h5 className="text-base font-tbLex font-semibold text-black capitalize line-clamp-1">
                                         {user?.firstName || "Guest"} {user?.lastName || "User"}
-                                    </p>
-                                    <p className="text-xs font-tbPop text-slate-500 ">
-                                        {user?.email || "Guest Email"}
-                                    </p>
+                                    </h5>
+                                    <h5 className="text-slate-500 font-tbLex text-sm line-clamp-1 capitalize">
+                                        {user?.role || "Guest Role"}
+                                    </h5>
                                 </div>
                             </div>
                             <div>
@@ -230,7 +230,7 @@ const NotificationSection = () => {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                             </span>
-                            <div className="flex items-center space-x-2 p-1.5 bg-slate1 rounded-full">
+                            <div className="flex items-center space-x-2 p-1.5 bg-slate-100 rounded-full">
                                 <NotificationBing size="26" className='text-black' variant='TwoTone' />
                             </div>
                         </button>

@@ -247,7 +247,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         errors={errors.subTitle}
                                                     />
                                                 </div>
-                                                <div className="">
+                                                {/* <div className="">
 
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
@@ -268,7 +268,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         }}
                                                         errors={errors.description}
                                                     />
-                                                </div>
+                                                </div> */}
                                                 <div className=''>
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
@@ -422,6 +422,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                                 config={configTextEditor}
                                                                 tabIndex={1}
                                                                 onBlur={(newContent) => onChange(newContent)}
+                                                                onChange={(newContent) => onChange(newContent)}
                                                             />
                                                             {error && (
                                                                 <p className="text-red-500 text-sm mt-1">{error.message}</p>

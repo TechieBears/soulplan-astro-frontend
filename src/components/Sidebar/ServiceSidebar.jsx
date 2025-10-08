@@ -15,7 +15,9 @@ const SidebarLayout = () => {
     const params = useLocation();
     const [singleService, setSingleService] = useState(null);
     const [services, setServices] = useState([]);
-    const [activeId, setActiveId] = useState(params?.state?.serviceData?._id || null);
+    const [activeId, setActiveId] = useState(
+        params?.state?.serviceData?._id || null
+    );
 
     useEffect(() => {
         const fetchService = async () => {
@@ -29,7 +31,7 @@ const SidebarLayout = () => {
         const fetchServiceCategories = async () => {
             const response = await getPublicServicesDropdown();
             setServices(response?.data);
-        }
+        };
         fetchServiceCategories();
     }, []);
 
@@ -38,7 +40,11 @@ const SidebarLayout = () => {
             <Breadcrumbs currentService={params?.state?.serviceData?.name} />
             <div className="container mx-auto px-5 xl:px-0 flex flex-col-reverse lg:flex-row xl:py-10 space-y-5 lg:space-x-10">
                 {/* Sidebar */}
-                <SideBar services={services} active={activeId} setActive={setActiveId} />
+                <SideBar
+                    services={services}
+                    active={activeId}
+                    setActive={setActiveId}
+                />
 
                 {/* Main Content */}
                 <MainSection content={singleService} active={activeId} />
@@ -56,8 +62,8 @@ const SideBar = ({ services, active, setActive }) => {
                         <button
                             onClick={() => setActive(service?._id)}
                             className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${active === service?._id
-                                ? "text-p bg-[#ffecd2]"
-                                : "hover:bg-[#ffecd2]/50 text-slate-700"
+                                    ? "text-p bg-[#ffecd2]"
+                                    : "hover:bg-[#ffecd2]/50 text-slate-700"
                                 }`}
                         >
                             <div className="flex items-center justify-between overflow-hidden text-nowrap">
@@ -107,7 +113,7 @@ const MainSection = ({ content }) => {
                 <img
                     src={content.image}
                     alt={content.title}
-                    className="w-full sm:h-[60vh] object-cover rounded-md"
+                    className="w-full h-auto max-h-[40vh] sm:max-h-[60vh] object-cover rounded-md"
                 />
 
                 <div className="bg-[#FFF2DB] p-6 rounded-md space-y-3 ">
@@ -135,7 +141,10 @@ const MainSection = ({ content }) => {
                         <div className="flex flex-col items-start lg:items-end space-y-2">
                             <button
                                 className={`${formBtn3} lg:!w-auto`}
-                                onClick={() => { navigate("/booking", { state: { service: content } }), window.scrollTo(0, 0, { behavior: "smooth" }) }}
+                                onClick={() => {
+                                    navigate("/booking", { state: { service: content } }),
+                                        window.scrollTo(0, 0, { behavior: "smooth" });
+                                }}
                             >
                                 Check Availability
                             </button>
@@ -151,80 +160,85 @@ const MainSection = ({ content }) => {
                 </div>
 
                 <div className="mt-10 w-full max-w-5xl mx-auto relative">
-                    {/* Custom Navigation Buttons */}
-                    <button
-                        className="absolute top-1/2 left-2 sm:left-[-20px] md:left-[-40px] z-20 -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg"
-                        id="prevBtn"
-                    >
-                        <ArrowLeft2 size={20} />
-                    </button>
-                    <button
-                        className="absolute top-1/2 right-2 sm:right-[-20px] md:right-[-40px] z-20 -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg"
-                        id="nextBtn"
-                    >
-                        <ArrowRight2 size={20} />
-                    </button>
-
                     {content.videoUrl && content.videoUrl.length > 0 && (
-                        <Swiper
-                            slidesPerView={1} // default for mobile
-                            spaceBetween={10}
-                            keyboard={true}
-                            modules={[Navigation, Keyboard]}
-                            navigation={{
-                                prevEl: "#prevBtn",
-                                nextEl: "#nextBtn",
-                            }}
-                            className="sliderBox"
-                            breakpoints={{
-                                0: { slidesPerView: 1, spaceBetween: 10 },
-                                480: { slidesPerView: 1, spaceBetween: 10 },
-                                640: { slidesPerView: 1, spaceBetween: 10 },
-                                768: { slidesPerView: 2, spaceBetween: 15 },
-                                1024: { slidesPerView: 3, spaceBetween: 20 },
-                                1280: { slidesPerView: 3, spaceBetween: 25 },
-                            }}
-                        >
-                            {content.videoUrl.map((vid, index) => {
-                                const url = vid.videoUrl;
+                        <>
+                            {/* Custom Navigation Buttons */}
+                            <button
+                                className="absolute top-1/2 left-2 sm:left-[-20px] md:left-[-40px] z-20 -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg"
+                                id="prevBtn"
+                            >
+                                <ArrowLeft2 size={20} />
+                            </button>
+                            <button
+                                className="absolute top-1/2 right-2 sm:right-[-20px] md:right-[-40px] z-20 -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg"
+                                id="nextBtn"
+                            >
+                                <ArrowRight2 size={20} />
+                            </button>
 
-                                return (
-                                    <SwiperSlide key={vid._id || index}>
-                                        <div className="grid grid-cols-1 gap-4">
-                                            <div className="w-full h-48 sm:h-56 md:h-72 lg:h-60 xl:h-64 bg-black mb-8 sm:mb-0 overflow-hidden">
-                                                {url.includes("youtube.com") ||
-                                                    url.includes("youtu.be") ? (
-                                                    <iframe
-                                                        src={
-                                                            url
-                                                                .replace("watch?v=", "embed/")
-                                                                .replace("youtu.be/", "www.youtube.com/embed/")
-                                                                .split("&")[0]
-                                                        }
-                                                        title={`YouTube video ${index + 1}`}
-                                                        className="w-full h-full"
-                                                        frameBorder="0"
-                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                        allowFullScreen
-                                                    />
-                                                ) : (
-                                                    <video
-                                                        loop
-                                                        muted
-                                                        controls
-                                                        playsInline
-                                                        className="w-full h-full object-cover"
-                                                    >
-                                                        <source src={url} type="video/mp4" />
-                                                        Your browser does not support the video tag.
-                                                    </video>
-                                                )}
+                            <Swiper
+                                slidesPerView={1} // default for mobile
+                                spaceBetween={10}
+                                keyboard={true}
+                                modules={[Navigation, Keyboard]}
+                                navigation={{
+                                    prevEl: "#prevBtn",
+                                    nextEl: "#nextBtn",
+                                }}
+                                className="sliderBox"
+                                breakpoints={{
+                                    0: { slidesPerView: 1, spaceBetween: 10 },
+                                    480: { slidesPerView: 1, spaceBetween: 10 },
+                                    640: { slidesPerView: 1, spaceBetween: 10 },
+                                    768: { slidesPerView: 2, spaceBetween: 15 },
+                                    1024: { slidesPerView: 3, spaceBetween: 20 },
+                                    1280: { slidesPerView: 3, spaceBetween: 25 },
+                                }}
+                            >
+                                {content.videoUrl.map((vid, index) => {
+                                    const url = vid.videoUrl;
+
+                                    return (
+                                        <SwiperSlide key={vid._id || index}>
+                                            <div className="grid grid-cols-1 gap-4">
+                                                <div className="w-full h-48 sm:h-56 md:h-72 lg:h-60 xl:h-64 bg-black mb-8 sm:mb-0 overflow-hidden">
+                                                    {url.includes("youtube.com") ||
+                                                        url.includes("youtu.be") ? (
+                                                        <iframe
+                                                            src={
+                                                                url
+                                                                    .replace("watch?v=", "embed/")
+                                                                    .replace(
+                                                                        "youtu.be/",
+                                                                        "www.youtube.com/embed/"
+                                                                    )
+                                                                    .split("&")[0]
+                                                            }
+                                                            title={`YouTube video ${index + 1}`}
+                                                            className="w-full h-full"
+                                                            frameBorder="0"
+                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                            allowFullScreen
+                                                        />
+                                                    ) : (
+                                                        <video
+                                                            loop
+                                                            muted
+                                                            controls
+                                                            playsInline
+                                                            className="w-full h-full object-cover"
+                                                        >
+                                                            <source src={url} type="video/mp4" />
+                                                            Your browser does not support the video tag.
+                                                        </video>
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </SwiperSlide>
-                                );
-                            })}
-                        </Swiper>
+                                        </SwiperSlide>
+                                    );
+                                })}
+                            </Swiper>
+                        </>
                     )}
                 </div>
             </div>
