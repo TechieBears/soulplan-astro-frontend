@@ -1,7 +1,7 @@
 export const environment = {
     // -------------------- Local Server Api URL --------------------
-    baseUrl: 'http://192.168.0.134:6020/api/',
-    production: false,
+    // baseUrl: 'http://192.168.0.134:6020/api/',
+    // production: false,
 
 
     // -------------------- Ngrok Server Api URL --------------------
@@ -9,13 +9,13 @@ export const environment = {
     // production: false
 
     // -------------------- Devlopment Server Api URL --------------------
-    // baseUrl: 'https://soulplan-astro-backend.vercel.app/api/',
-    // production: false,
+    baseUrl: 'https://soulplan-astro-backend.vercel.app/api/',
+    production: false,
 
 
     // -------------------- Live Server Api URL --------------------
 
-    // baseUrl: 'https://api.hamax.in/api/',
+    // baseUrl: 'https://api.soulplan.net/api/',
     // production: true,
 
 }

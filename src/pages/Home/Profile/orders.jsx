@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
 import product1 from "../../../assets/shop/product1.png";
 import { Calendar, Timer1, Zoom } from "iconsax-reactjs";
@@ -9,11 +9,18 @@ import toast from "react-hot-toast";
 import { getProductBookingsConfirmed, getServiceBookingsConfirmed } from "../../../api";
 import { ShoppingCartIcon } from "lucide-react";
 import Preloaders from "../../../components/Loader/Preloaders";
-
 const Private = ({ children }) => children;
 const UserDashboard = ({ children }) => children;
 
 export default function MyOrders() {
+    const { state } = useLocation();
+    const [activeTab, setActiveTab] = useState(state?.type === "products" ? "products" : "services");
+    const [productOrders, setProductOrders] = useState([]);
+    const [serviceOrders, setServiceOrders] = useState([]);
+    const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+    const [isLoadingServices, setIsLoadingServices] = useState(true);
+    const [hasProductOrders, setHasProductOrders] = useState(false);
+    const [hasServiceOrders, setHasServiceOrders] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [modalType, setModalType] = useState("product");
@@ -31,22 +38,11 @@ export default function MyOrders() {
         setModalType("product");
     };
 
-    const navigate = useNavigate();
-    const { state } = useLocation();
-    const [activeTab, setActiveTab] = useState(state?.type === "product" ? "products" : "services");
-    const [productOrders, setProductOrders] = useState([]);
-    const [serviceOrders, setServiceOrders] = useState([]);
-    const [isLoadingProducts, setIsLoadingProducts] = useState(true);
-    const [isLoadingServices, setIsLoadingServices] = useState(true);
-    const [hasProductOrders, setHasProductOrders] = useState(false);
-    const [hasServiceOrders, setHasServiceOrders] = useState(false);
-
     useEffect(() => {
         const fetchProductOrders = async () => {
             try {
                 setIsLoadingProducts(true);
                 const res = await getProductBookingsConfirmed();
-                console.log("⚡️🤯 ~ orders.jsx:50 ~ fetchProductOrders ~ res:", res)
                 if (res?.success) {
                     setProductOrders(res.data);
                     setHasProductOrders(true);
@@ -68,7 +64,6 @@ export default function MyOrders() {
             try {
                 setIsLoadingServices(true);
                 const res = await getServiceBookingsConfirmed();
-                console.log("⚡️🤯 ~ orders.jsx:72 ~ fetchServiceOrders ~ res:", res)
                 if (res?.success && res?.data?.length > 0) {
                     setServiceOrders(res.data);
                     setHasServiceOrders(true);
@@ -138,7 +133,7 @@ export default function MyOrders() {
                         </div>
                         {/* 🔹 Loader */}
                         {isLoading ? (
-                            <div className="flex justify-center items-center py-12">
+                            <div className="flex justify-center items-center py-12 max-h-[600px] overflow-y-auto">
                                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#420098]"></div>
                             </div>
                         ) : (
@@ -146,20 +141,22 @@ export default function MyOrders() {
                                 {activeTab === "services" && (
                                     <>
                                         {isLoadingServices ? (
-                                            <div className="space-y-4 flex justify-center items-center bg-[#FFF9EF]">
+                                            <div className="space-y-4 flex justify-center items-center bg-[#FFF9EF] max-h-[600px] overflow-y-auto">
                                                 <Preloaders />
                                             </div>
                                         ) : hasServiceOrders ? (
-                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                                {serviceOrders?.map((order, orderIndex) =>
-                                                    order.services?.map((service, serviceIndex) => (
+                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[600px] overflow-y-auto">
+                                                {serviceOrders?.map((orderGroup, orderGroupIndex) => {
+                                                    const services = orderGroup?.services || [orderGroup];
+                                                    const mainOrderId = orderGroup?.orderId || orderGroup?._id;
+                                                    return services.map((service, serviceIndex) => (
                                                         <div
-                                                            key={`${order._id}-${service._id}`}
+                                                            key={`${mainOrderId}-${service.serviceId || service._id}-${serviceIndex}`}
                                                             className="group relative bg-gradient-to-br from-indigo-600 via-purple-700 to-purple-800
                                                                      rounded-2xl p-6 cursor-pointer transition-all duration-500 transform hover:scale-[1.02]
                                                                      hover:shadow-2xl hover:shadow-purple-500/25  overflow-hidden cart-slide-up
                                                                      border border-purple-400/20 backdrop-blur-sm"
-                                                            onClick={() => openModal(order, "service")}
+                                                            onClick={() => openModal(orderGroup?.services ? { ...service, orderId: mainOrderId, ...orderGroup } : service, "service")}
                                                         >
                                                             {/* Decorative background elements */}
                                                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
@@ -176,7 +173,7 @@ export default function MyOrders() {
                                                                             {service?.serviceName}
                                                                         </h3>
                                                                         <div className="text-purple-200 text-sm">
-                                                                            Booking #{order?._id?.slice(-6).toUpperCase()}
+                                                                            Booking #{(mainOrderId || service?._id)?.slice(-6).toUpperCase()}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -256,7 +253,7 @@ export default function MyOrders() {
                                                                     : 'bg-orange-500/20 text-orange-300 border border-orange-400/30'
                                                                     }`}>
                                                                     <Icon icon="ph:credit-card" className="w-3 h-3 inline mr-1" />
-                                                                    {service.paymentStatus}
+                                                                    {service?.paymentStatus}
                                                                 </span>
                                                             </div>
 
@@ -266,7 +263,7 @@ export default function MyOrders() {
                                                                     Service Price
                                                                 </div>
                                                                 <div className="text-white text-2xl font-bold">
-                                                                    ₹{service.servicePrice?.toLocaleString()}
+                                                                    ₹{service?.servicePrice?.toLocaleString()}
                                                                 </div>
                                                             </div>
 
@@ -276,7 +273,7 @@ export default function MyOrders() {
                                                                           transition-all duration-500 rounded-2xl"></div>
                                                         </div>
                                                     ))
-                                                )}
+                                                }).flat()}
                                             </div>
                                         ) : (
                                             <div className="text-center py-8">
@@ -389,12 +386,12 @@ export default function MyOrders() {
                                                                             <Icon icon="ph:wallet" className="w-3 h-3 inline mr-1" />
                                                                             {order.paymentMethod}
                                                                         </span>
-                                                                        <div className="flex items-center gap-1">
+                                                                        {order?.items?.length > 1 && <div className="flex items-center gap-1">
                                                                             <div className="size-6 bg-white text-black rounded-full text-center font-tbLex font-medium text-sm">
                                                                                 {order?.items?.length - 1}
                                                                             </div>
                                                                             <span className="text-white text-sm">+</span>
-                                                                        </div>
+                                                                        </div>}
                                                                     </div>
                                                                 </div>
                                                             </div>

@@ -1,47 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { FaQuoteLeft } from "react-icons/fa";
 import playstore from "../../src/assets/google-play-black.png";
 import phoneMockup from "../../src/assets/phone-mockup.png";
 import { formBtn3 } from "../utils/CustomClass";
 import { QuoteUp } from "iconsax-reactjs";
 import handImage from '../assets/helperImages/handImage.png'
 import { useNavigate } from "react-router-dom";
+import { getAllPublicTestimonials } from "../api";
+import userImage from '../assets/user.webp';
+import { Star } from "@phosphor-icons/react";
 
-const testimonials = [
-    {
-        name: "Shilpa Handergule",
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        image: "https://randomuser.me/api/portraits/women/1.jpg",
-        rating: 5,
-    },
-    {
-        name: "Shilpa Handergule",
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        image: "https://randomuser.me/api/portraits/women/1.jpg",
-        rating: 5,
-    },
-    {
-        name: "Sonali Shinde",
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        image: "https://randomuser.me/api/portraits/women/2.jpg",
-        rating: 5,
-        highlight: true, // This one gets the gradient background
-    },
-    {
-        name: "Sumanth Shubash",
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        image: "https://randomuser.me/api/portraits/men/3.jpg",
-        rating: 5,
-    },
-];
 
 const Testimonials = () => {
     const navigate = useNavigate();
     const [activeIndex, setActiveIndex] = React.useState(0);
+    const [testimonials, setTestimonials] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchTestimonials = async () => {
+            try {
+                setLoading(true);
+                const response = await getAllPublicTestimonials(1, 10);
+                if (response?.success && response?.data) {
+                    setTestimonials(response.data);
+                } else {
+                    setTestimonials([]);
+                }
+            } catch (error) {
+                console.log("error", error);
+                setTestimonials([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTestimonials();
+    }, []);
 
     return (
         <>
@@ -59,63 +56,98 @@ const Testimonials = () => {
                     </h2>
                     {/* Swiper */}
                     <div className="">
-                        <Swiper
-                            autoplay={{ delay: 2500, disableOnInteraction: false, pauseOnMouseEnter: true }}
-                            modules={[Autoplay]}
-                            spaceBetween={30}
-                            centeredSlides={true}
-                            loop={true}
-                            rewind
-                            className="pb-12 overflow-visible"
-                            breakpoints={{
-                                768: { slidesPerView: 2, centeredSlides: true },
-                                1024: { slidesPerView: 3, centeredSlides: true },
-                            }}
-                            onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-                        >
-                            {testimonials.map((t, index) => (
-                                <SwiperSlide key={index} className="flex h-full">
-                                    <div
-                                        className={`w-full p-6 rounded-lg transition-colors duration-300 flex flex-col items-center justify-between text-center shadow-md min-h-[320px] ${activeIndex === index
-                                            ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white scale-105 shadow-xl z-10"
-                                            : "bg-white border text-gray-700 opacity-80"
-                                            }`}
-                                    >
-                                        {/* Quote Icon */}
-                                        <QuoteUp className={`absolute z-10 top-5 left-5  transition-all duration-300 ${activeIndex === index ? "text-white" : "text-slate-200"}`} size={70} variant="Bold" />
-
-                                        {/* Avatar */}
-                                        <img
-                                            src={t.image}
-                                            alt={t.name}
-                                            className="w-20 h-20 rounded-full border-2 border-white mb-4"
-                                        />
-
-                                        {/* Testimonial Text */}
-                                        <p className="text-sm mb-4 leading-relaxed font-tbPop !font-normal line-clamp-3">
-                                            {t.text}
-                                        </p>
-
-                                        {/* Stars */}
-                                        <div className="flex justify-center space-x-1">
-                                            {Array.from({ length: t.rating }).map((_, i) => (
-                                                <span key={i} className="text-yellow-400 text-xl">
-                                                    ★
-                                                </span>
-                                            ))}
+                        {loading ? (
+                            <div className="flex justify-center items-center space-x-6 pb-12">
+                                {[1, 2, 3]?.map((item) => (
+                                    <div key={item} className="animate-pulse w-[400px]">
+                                        <div className="w-full max-w-sm p-6 rounded-lg bg-slate-100 shadow-md min-h-[320px] flex flex-col items-center justify-between">
+                                            <div className="w-20 h-20 bg-gray-300 rounded-full mb-4"></div>
+                                            <div className="space-y-2 w-full">
+                                                <div className="h-4 bg-gray-300 rounded w-full"></div>
+                                                <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                                                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                                            </div>
+                                            <div className="flex space-x-1 mt-4">
+                                                {[1, 2, 3, 4, 5]?.map((star) => (
+                                                    <div key={star} className="w-5 h-5 bg-gray-300 rounded"></div>
+                                                ))}
+                                            </div>
+                                            <div className="h-6 bg-gray-300 rounded w-24 mt-2"></div>
                                         </div>
-
-                                        {/* Name */}
-                                        <h4
-                                            className={`font-normal tracking-tight capitalize font-tbLex line-clamp-1 ${activeIndex === index ? "text-white" : "text-gray-700"
+                                    </div>
+                                ))}
+                            </div>
+                        ) : testimonials?.length > 0 ? (
+                            <Swiper
+                                autoplay={{ delay: 2500, disableOnInteraction: false, pauseOnMouseEnter: true }}
+                                modules={[Autoplay]}
+                                spaceBetween={30}
+                                centeredSlides={true}
+                                loop={testimonials?.length > 1}
+                                rewind
+                                className="pb-12 overflow-visible"
+                                breakpoints={{
+                                    768: { slidesPerView: 2, centeredSlides: true },
+                                    1024: { slidesPerView: 3, centeredSlides: true },
+                                }}
+                                onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+                            >
+                                {testimonials?.map((t, index) => (
+                                    <SwiperSlide key={t._id || index} className="flex h-full">
+                                        <div
+                                            className={`w-full p-6 rounded-lg transition-colors duration-300 flex flex-col items-center justify-between text-center shadow-md min-h-[320px] ${activeIndex === index
+                                                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white scale-105 shadow-xl z-10"
+                                                : "bg-white border text-gray-700 opacity-80"
                                                 }`}
                                         >
-                                            {t.name}
-                                        </h4>
-                                    </div>
-                                </SwiperSlide>
-                            ))}
-                        </Swiper>
+                                            {/* Quote Icon */}
+                                            <QuoteUp className={`absolute z-10 top-5 left-5 transition-all duration-300 ${activeIndex === index ? "text-white" : "text-slate-200"}`} size={70} variant="Bold" />
+
+                                            {/* Avatar */}
+                                            <img
+                                                src={t?.user_id?.profileImage || t?.user_id?.image || t?.image || userImage}
+                                                alt={`${t?.user_id?.profile?.firstName || t?.user_id?.name || t?.name || "User"}'s testimonial`}
+                                                className="w-20 h-20 rounded-full border-2 border-white mb-4 object-cover"
+                                                onError={(e) => {
+                                                    e.target.src = userImage;
+                                                }}
+                                            />
+
+                                            {/* Testimonial Text */}
+                                            <p className="text-sm mb-4 leading-relaxed font-tbPop !font-normal line-clamp-3">
+                                                {t?.message || t?.text}
+                                            </p>
+
+                                            {/* Stars */}
+                                            <div className="flex justify-center space-x-1">
+                                                {Array.from({ length: t.rating || 5 }).map((_, index) => (
+                                                    <Star
+                                                        key={index}
+                                                        size={20}
+                                                        weight="fill"
+                                                        color={index < t.rating ? "#FFD700" : "#E5E7EB"}
+                                                    />
+                                                ))}
+                                            </div>
+
+                                            {/* Name */}
+                                            <h4
+                                                className={`font-normal tracking-tight capitalize font-tbLex line-clamp-1 ${activeIndex === index ? "text-white" : "text-gray-700"
+                                                    }`}
+                                            >
+                                                {t?.user_id?.profile?.firstName && t?.user_id?.profile?.lastName
+                                                    ? `${t.user_id.profile.firstName} ${t.user_id.profile.lastName}`
+                                                    : t?.user_id?.name || t?.name || "Anonymous User"}
+                                            </h4>
+                                        </div>
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+                        ) : (
+                            <div className="text-center py-12">
+                                <p className="text-gray-500 text-lg">No testimonials available at the moment.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>

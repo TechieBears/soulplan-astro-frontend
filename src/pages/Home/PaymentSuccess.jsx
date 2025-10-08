@@ -16,10 +16,10 @@ import Lottie from "lottie-react";
 const PaymentSuccess = () => {
     const navigate = useNavigate();
     const { state } = useLocation();
+    console.log("⚡️🤯 ~ PaymentSuccess.jsx:19 ~ PaymentSuccess ~ state:", state)
     const [activeTab, setActiveTab] = useState(state?.type === "products" ? "products" : "services");
-    const [productOrders, setProductOrders] = useState(state?.orderDetails.order || "");
-    console.log("⚡️🤯 ~ PaymentSuccess.jsx:22 ~ PaymentSuccess ~ productOrders:", productOrders.order)
-    const [serviceOrders, setServiceOrders] = useState([]);
+    const [productOrders, setProductOrders] = useState(state?.type === "products" ? state?.orderDetails?.order : null);
+    const [serviceOrders, setServiceOrders] = useState(state?.type === "services" ? state?.orderDetails : null);
     const [isLoadingProducts, setIsLoadingProducts] = useState(true);
     const [isLoadingServices, setIsLoadingServices] = useState(true);
     const [hasProductOrders, setHasProductOrders] = useState(false);
@@ -129,7 +129,6 @@ const PaymentSuccess = () => {
                     <div className="space-y-4 h-[250px] overflow-y-scroll">
                         {activeTab === "products" && (
                             <>
-
                                 <div className="space-y-4 ">
                                     {productOrders?.items?.map((item, index) => {
                                         return (
@@ -191,89 +190,60 @@ const PaymentSuccess = () => {
 
                         {activeTab === "services" && (
                             <>
-                                {isLoadingServices ? (
-                                    <div className="space-y-4">
-                                        {[1, 2].map((index) => (
-                                            <div key={index} className="animate-pulse">
-                                                <ServiceCardSkeleton />
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : hasServiceOrders ? (
-                                    serviceOrders?.map((order, orderIndex) => (
-                                        <div key={order.orderId} className="space-y-3">
-                                            {order.services?.map((service, serviceIndex) => (
-                                                <div
-                                                    key={`${order._id}-${service._id}`}
-                                                    className="relative rounded-lg p-4 text-black cursor-pointer transition-all duration-300
+                                <div className="space-y-3">
+                                    {serviceOrders?.services?.map((service, serviceIndex) => (
+                                        <div
+                                            key={serviceIndex}
+                                            className="relative rounded-lg p-4 text-black cursor-pointer transition-all duration-300
                                                              bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100
                                                              border border-gray-200 hover:border-purple-300 cart-slide-up overflow-hidden"
-                                                    style={{ animationDelay: `${(orderIndex * order?.services?.length + serviceIndex) * 0.1}s` }}
-                                                    onClick={() => navigate(`/profile/my-orders`)}
-                                                >
-                                                    <h3 className="font-medium font-dm text-lg mb-4">
-                                                        Service Type:
-                                                        <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 bg-clip-text text-transparent font-semibold">
-                                                            {service?.serviceName}
-                                                        </span>
-                                                    </h3>
+                                        >
+                                            <h3 className="font-medium font-dm text-lg mb-4">
+                                                Service Type:
+                                                <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 bg-clip-text text-transparent font-semibold">
+                                                    {service?.serviceName}
+                                                </span>
+                                            </h3>
 
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                                                        <p className="flex items-center gap-3">
-                                                            <Timer1 className="w-5 h-5 text-purple-600" />
-                                                            <span className="text-sm">Duration: {service?.durationInMinutes} minutes</span>
-                                                        </p>
-                                                        <p className="flex items-center gap-3">
-                                                            <Calendar className="w-5 h-5 text-blue-600" />
-                                                            <span className="text-sm">Date: {service?.bookingDate}</span>
-                                                        </p>
-                                                        <p className="flex items-center gap-3">
-                                                            <Icon icon="ph:device-mobile" className="w-5 h-5 text-green-600" />
-                                                            <span className="text-sm">Mode: {service?.serviceType}</span>
-                                                        </p>
-                                                        <p className="flex items-center gap-3">
-                                                            <Icon icon="ph:clock" className="w-5 h-5 text-orange-600" />
-                                                            <span className="text-sm">Time: {service?.startTime} - {service?.endTime}</span>
-                                                        </p>
-                                                    </div>
-
-                                                    {service?.zoomLink && (
-                                                        <div className="flex items-center gap-3 mb-3">
-                                                            <Zoom className="w-5 h-5 text-blue-600" />
-                                                            <a
-                                                                href={service?.zoomLink}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="text-sm text-blue-600 hover:text-blue-800 break-words underline"
-                                                                onClick={(e) => e.stopPropagation()}
-                                                            >
-                                                                Join Meeting
-                                                            </a>
-                                                        </div>
-                                                    )}
-
-                                                    <div className="flex justify-between items-center pt-2 border-t border-gray-200">
-                                                        <div className="text-sm">
-                                                            <span className="text-gray-600">Price: </span>
-                                                            <span className="font-semibold text-green-600">₹{service?.servicePrice?.toLocaleString()}</span>
-                                                        </div>
-                                                        <div className="flex gap-4 text-xs">
-                                                            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
-                                                                {service?.bookingStatus}
-                                                            </span>
-                                                            <span className={`px-2 py-1 rounded-full ${service.paymentStatus === 'paid'
-                                                                ? 'bg-green-100 text-green-800'
-                                                                : 'bg-yellow-100 text-yellow-800'
-                                                                }`}>
-                                                                {service.paymentStatus}
-                                                            </span>
-                                                        </div>
-                                                    </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                                                <p className="flex items-center gap-3">
+                                                    <Timer1 className="w-5 h-5 text-purple-600" />
+                                                    <span className="text-sm">Duration: {service?.durationInMinutes} minutes</span>
+                                                </p>
+                                                <p className="flex items-center gap-3">
+                                                    <Calendar className="w-5 h-5 text-blue-600" />
+                                                    <span className="text-sm">Date: {service?.bookingDate}</span>
+                                                </p>
+                                                <p className="flex items-center gap-3">
+                                                    <Icon icon="ph:device-mobile" className="w-5 h-5 text-green-600" />
+                                                    <span className="text-sm">Mode: {service?.serviceType}</span>
+                                                </p>
+                                                <p className="flex items-center gap-3">
+                                                    <Icon icon="ph:clock" className="w-5 h-5 text-orange-600" />
+                                                    <span className="text-sm">Time: {service?.startTime} - {service?.endTime}</span>
+                                                </p>
+                                            </div>
+                                            <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                                                <div className="text-sm">
+                                                    <span className="text-gray-600">Price: </span>
+                                                    <span className="font-semibold text-green-600">₹{service?.service?.price}</span>
                                                 </div>
-                                            ))}
+                                                <div className="flex gap-4 text-xs">
+                                                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                                                        {service?.service?.serviceType}
+                                                    </span>
+                                                    <span className={`px-2 py-1 rounded-full capitalize ${service.paymentStatus === 'paid'
+                                                        ? 'bg-green-100 text-green-800'
+                                                        : 'bg-yellow-100 text-yellow-800'
+                                                        }`}>
+                                                        {service.paymentStatus}
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
-                                    ))
-                                ) : (
+                                    ))}
+                                </div>
+                                {serviceOrders?.services?.length === 0 && (
                                     <div className="text-center py-8">
                                         <Calendar className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                                         <h3 className="text-lg font-medium text-gray-600 mb-2">No Service Bookings</h3>
@@ -289,7 +259,7 @@ const PaymentSuccess = () => {
                         <div className="gradientBtn w-full">
                             <button
                                 className={`w-full`}
-                                onClick={() => navigate('/profile/my-orders')}
+                                onClick={() => navigate('/profile/my-orders', { state: { type: state?.type } })}
                                 disabled={false}
                             >
                                 <span className="text-base xl:text-lg font-tbPop text-p">View My Orders</span>

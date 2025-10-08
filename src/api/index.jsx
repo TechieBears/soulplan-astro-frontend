@@ -1486,6 +1486,17 @@ export const editTestimonials = async (id, data) => {
     }
 }
 
+export const adminBlockSlots = async (data) => {
+    const url = `${environment.baseUrl}calender/admin-block-slots`;
+    try {
+        const response = await axios.post(url, data);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in adminBlockSlots api file", err);
+        return err?.response?.data;
+    }
+};
+
 export const astrologerSlots = async (sdate, edate, astrologerId) => {
     const url = `${environment.baseUrl}calender/astrologer-slots?sdate=${sdate}&edate=${edate}&astrologerId=${astrologerId}`;
     try {
@@ -1546,6 +1557,17 @@ export const getSingleProductOrder = async (orderId) => {
 
 // ================== Coupon API ==================
 
+export const getAllPublicCoupons = async (type, couponCode) => {
+    try {
+        const url = `${environment.baseUrl}coupon/public/get-all?couponType=${type || ""}&search=${couponCode || ""}`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getAllPublicCoupons api file", err);
+        return err?.response?.data;
+    }
+};
+
 export const getAllCoupons = async (data) => {
     try {
         const url = `${environment.baseUrl}coupon/get-all?page=${data?.p}&limit=${data?.records}`;
@@ -1586,6 +1608,31 @@ export const deleteCoupon = async (id) => {
         return response.data;
     } catch (err) {
         console.log("==========error in deleteCoupon api file", err);
+        return err?.response?.data;
+    }
+};
+
+// ======================= Testimonials Api ========================
+
+export const getAllPublicTestimonials = async (page = 1, limit = 10) => {
+    const url = `${environment.baseUrl}testimonials/public/get-all?page=${page}&limit=${limit}`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getAllPublicTestimonials api file", err);
+        return err?.response?.data;
+    }
+};
+
+
+export const createPublicTestimonial = async (data) => {
+    const url = `${environment.baseUrl}testimonials/public/create`;
+    try {
+        const response = await axios.post(url, data);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in createPublicTestimonial api file", err);
         return err?.response?.data;
     }
 };
