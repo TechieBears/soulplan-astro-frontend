@@ -259,7 +259,7 @@ const PaymentSuccess = () => {
                         <div className="gradientBtn w-full">
                             <button
                                 className={`w-full`}
-                                onClick={() => navigate('/profile/my-orders')}
+                                onClick={() => navigate('/profile/my-orders', { state: { type: state?.type } })}
                                 disabled={false}
                             >
                                 <span className="text-base xl:text-lg font-tbPop text-p">View My Orders</span>
