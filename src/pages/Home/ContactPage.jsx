@@ -88,7 +88,7 @@ const ContactPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Full Name
+                                        Full Name*
                                     </h4>
                                     <TextInput
                                         label="Enter Full Name*"
@@ -103,7 +103,7 @@ const ContactPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Subject
+                                        Subject*
                                     </h4>
                                     <div className="">
                                         <SelectTextInput
@@ -126,7 +126,7 @@ const ContactPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Email
+                                        Email*
                                     </h4>
                                     <TextInput
                                         label="Enter Your Email"
@@ -141,7 +141,7 @@ const ContactPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Phone Number
+                                        Phone Number*
                                     </h4>
                                     <TextInput
                                         label="Enter Your Phone Number"

@@ -92,7 +92,7 @@ const HomePage = () => {
             
             <div className="fixed bottom-6 right-5 z-50 group">
               <a
-                href="https://wa.me/918693000900"
+                href="https://wa.me/+919321806791"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center bg-green-600 text-white rounded-full shadow-lg overflow-hidden transition-all duration-500 group-hover:pr-4"
@@ -104,7 +104,7 @@ const HomePage = () => {
 
                 {/* Number (appears on hover) */}
                 <span className="max-w-0 overflow-hidden opacity-0 text-white font-medium text-sm transition-all duration-500 group-hover:max-w-xs group-hover:opacity-100 ml-2">
-                  +91 86930 00900
+                   +91 9321806791
                 </span>
               </a>
             </div>

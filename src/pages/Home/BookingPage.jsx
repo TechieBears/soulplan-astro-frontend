@@ -262,7 +262,7 @@ const BookingPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Email
+                                        Email*
                                     </h4>
                                     <TextInput
                                         label="Enter Your Email"
