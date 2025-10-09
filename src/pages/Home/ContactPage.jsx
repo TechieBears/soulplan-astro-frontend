@@ -12,6 +12,10 @@ import SelectTextInput from "../../components/TextInput/SelectTextInput";
 
 const ContactPage = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
+      useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
 
     const [loader, setLoader] = useState()
     const onSubmit = async (data) => {

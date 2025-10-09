@@ -1,10 +1,15 @@
+import { useEffect } from "react";
+
 const Private = ({ children }) => children;
 const UserDashboard = ({ children }) => children;
 
 const PrivacyPolicy = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <>
-      <div className="p-8 mt-10">
+      <div className="p-8 pt-20">
         <h1 className="text-lg font-medium text-center text-gray-800  p-4 font-tbLex sm:text-center">
           Privacy Policy
         </h1>

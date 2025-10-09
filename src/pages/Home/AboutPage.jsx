@@ -101,7 +101,7 @@ const AboutPage = () => {
                     <div className="flex sm:flex-col md:flex-row items-center justify-center gap-5 sm:gap-10 md:gap-20 lg:gap-30 xl:gap-40 pt-10 lg:pt-20 pb-28">
                         {stats.map((stat, index) => (
                             <div key={index} className="text-left">
-                                <h6 className='text-red-500 font-tbLex font-bold text-6xl sm:text-9xl md:text-8xl  xl:text-9xl text-center tracking-tighter flex justify-center items-center'>
+                                <h6 className='text-red-500 font-tbLex font-bold text-5xl sm:text-6xl md:text-8xl xl:text-9xl text-center tracking-tighter flex justify-center items-center'>
                                     <AnimatedNumbers
                                         animateToNumber={stat.value}
                                         fontStyle={{ textAlign: "center", letterSpacing: -5 }}
@@ -140,7 +140,7 @@ const AboutPage = () => {
 function FeatureCard({ feature }) {
     return (
         <div
-            className={`shadow-lg bg-white rounded-md p-4 md:p-6 xl:p-8 h-[230px] md:h-[260px] xl:h-[270px] flex flex-col items-start justify-center cursor-pointer border transition-all duration-500 border-gray-100 group hover:bg-linear-gradient group space-y-2 z-10`}
+            className={`shadow-lg bg-white rounded-md p-4 md:p-6 xl:p-8 h-[230px] md:h-[260px] xl:h-[270px] flex flex-col items-start justify-center border transition-all duration-500 border-gray-100 group hover:bg-linear-gradient group space-y-2 z-10`}
 
         >
             <div className=" flex items-center justify-start w-full">
