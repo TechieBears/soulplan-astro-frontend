@@ -55,15 +55,15 @@ const SidebarLayout = () => {
 
 const SideBar = ({ services, active, setActive }) => {
     return (
-        <aside className="w-full lg:w-1/4 space-y-2 pb-14 lg:pb-0 h-screen overflow-y-scroll ">
+        <aside className="w-full lg:w-1/4 space-y-2 pb-14 lg:pb-0 h-screen overflow-y-scroll scroll-hide">
             <ul className="">
                 {services?.map((service) => (
                     <li key={service.name}>
                         <button
                             onClick={() => setActive(service?._id)}
                             className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${active === service?._id
-                                    ? "text-p bg-[#ffecd2]"
-                                    : "hover:bg-[#ffecd2]/50 text-slate-700"
+                                ? "text-p bg-[#ffecd2]"
+                                : "hover:bg-[#ffecd2]/50 text-slate-700"
                                 }`}
                         >
                             <div className="flex items-center justify-between overflow-hidden text-nowrap">

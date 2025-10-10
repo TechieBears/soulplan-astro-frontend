@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaStar, FaChevronUp, FaChevronDown } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import { formBtn3 } from "../../utils/CustomClass";
 import { ShoppingCartIcon } from "@phosphor-icons/react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -8,7 +8,6 @@ import ProductCard from "../../components/Products/ProductCard";
 import star from "../../assets/helperImages/star.png";
 import sun from "../../assets/helperImages/sun.png";
 import { addProductToCart, getPublicProductsSingle } from "../../api";
-import { MoonLoader } from "react-spinners";
 import { Autoplay, FreeMode, Navigation } from "swiper/modules";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -65,6 +64,19 @@ const ProductDetail = () => {
             console.log("==========err in handleAddToCart", err);
             toast.error(err?.message || "Something went wrong");
         }
+    };
+
+    const handleBuyNow = (productId) => {
+        if (!login) {
+            toast.error('Please login to continue with your purchase');
+            return;
+        }
+        navigate('/buy-now', {
+            state: {
+                product: product,
+                quantity: quantity
+            }
+        });
     };
 
     if (loading) {
@@ -195,12 +207,12 @@ const ProductDetail = () => {
                         <div className="col-span-6 md:col-span-12 lg:col-span-6">
                             {/* Title & Price */}
                             <div className="mb-4">
-                                <div className="text-sm text-gray-500 mb-2">
+                                <div className="text-sm text-gray-500 mb-2 capitalize  font-tbPop">
                                     {product?.category?.name}{" "}
                                     {product?.subcategory?.name &&
                                         `> ${product?.subcategory?.name}`}
                                 </div>
-                                <h2 className="text-xl lg:text-3xl font-medium font-tbPop text-slate-800 mb-2">
+                                <h2 className="text-xl lg:text-3xl font-medium font-tbPop text-slate-800 mb-2 capitalize">
                                     {product?.name}
                                 </h2>
                                 <div className="flex items-center space-x-4 mb-3">
@@ -209,13 +221,13 @@ const ProductDetail = () => {
                                             ₹{product?.sellingPrice?.toLocaleString()}
                                         </span>
                                         {product?.mrpPrice > product?.sellingPrice && (
-                                            <span className="text-base lg:text-lg text-slate-500 font-tbPop line-through">
+                                            <span className="text-base lg:text-lg text-slate-400 font-tbPop line-through">
                                                 ₹{product?.mrpPrice?.toLocaleString()}
                                             </span>
                                         )}
                                     </div>
                                     {product?.discountPercentage > 0 && (
-                                        <span className="bg-red-100 text-red-600 px-2 py-1  text-sm lg:text-base font-tbPop font-semibold">
+                                        <span className="bg-red-100 text-red-600 px-2 py-1  text-sm lg:text-base font-tbPop font-semibold capitalize">
                                             {product?.discountPercentage}% OFF
                                         </span>
                                     )}
@@ -231,27 +243,12 @@ const ProductDetail = () => {
                                             }`}
                                     >
                                         {product?.stock > 0
-                                            ? `In Stock (${product?.stock} available)`
+                                            ? `In Stock `
                                             : "Out of Stock"}
                                     </span>
                                 </div>
                             </div>
 
-                            {/* Stock Status */}
-                            {/* <div className="mb-4">
-              {product.inStock ? (
-                <div className="flex items-center space-x-2 text-green-600">
-                  <FaCheck className="w-4 h-4" />
-                  <span className="text-sm font-medium">
-                    In Stock ({product.stockCount} available)
-                  </span>
-                </div>
-              ) : (
-                <div className="text-red-600 text-sm font-medium">
-                  Out of Stock
-                </div>
-              )}
-            </div> */}
 
                             {/* Product Description */}
                             <div className="space-y-2 mb-4">
@@ -295,7 +292,7 @@ const ProductDetail = () => {
 
                                 {/* Action Buttons */}
                                 <div className="flex gap-3 !w-full flex-row-reverse md:flex-row">
-                                    <button className={`${formBtn3} `}>Buy Now</button>
+                                    <button className={`${formBtn3} `} disabled={product?.stock === 0} onClick={() => handleBuyNow(product?._id)}>Buy Now</button>
                                     <button
                                         className={`h-[48px] lg:h-[46px] xl:h-[51px] py-3 text-white !font-medium !tracking-normal text-sm xl:text-base bg-primary-gradient hover:opacity-90  disabled:opacity-50  transition  w-full rounded relative `}
                                         onClick={() => handleAddToCart(product?._id)}

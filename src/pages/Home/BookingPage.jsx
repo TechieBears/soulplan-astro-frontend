@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import TextInput from "../../components/TextInput/TextInput";
@@ -8,7 +8,7 @@ import Calendar from 'react-calendar';
 import { Controller, useForm } from "react-hook-form";
 import '../../css/CustomCalendar.css';
 import star from '../../assets/helperImages/star.png'
-import { addServiceToCart, checkAvailability, getPublicServicesDropdown } from "../../api";
+import { addServiceToCart, checkAvailability, getAllAstrologer, getPublicServicesDropdown } from "../../api";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
@@ -17,16 +17,31 @@ import { InfoCircle } from "iconsax-reactjs";
 
 const BookingPage = () => {
     const user = useSelector((state) => state.user.userDetails);
-    const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
     const navigate = useNavigate();
     const location = useLocation();
     const service = location.state;
+    const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm({
+        defaultValues: {
+            serviceType: service?.service?._id || "",
+            astrologer: "",
+            timeSlot: "",
+            date: new Date(),
+            currency: "",
+            bookingType: "self",
+            firstName: user?.firstName || "",
+            lastName: user?.lastName || "",
+            mobileNo: user?.mobileNo || "",
+            email: user?.email || ""
+        }
+    });
     const [timeSlots, setTimeSlots] = useState([]);
     const [Searvice, setSearvice] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingService, setIsLoadingService] = useState(false);
     const dateWatch = watch('date');
     const serviceTypeWatch = watch('serviceType');
+    const [astrologers, setAstrologers] = useState([]);
+    const [isAstrologersLoading, setIsAstrologersLoading] = useState(false);
 
     const currencyOptions = [
         { value: "INR", label: "Indian (INR)" },
@@ -38,7 +53,8 @@ const BookingPage = () => {
             setIsLoadingService(true);
             const payload = {
                 serviceId: service?.service?._id,
-                astrologerId: "68ca9cf272e2d0202ee1b902",
+                astrologerId: data.astrologer,
+                bookingType: data?.bookingType,
                 date: moment(dateWatch).format('YYYY-MM-DD'),
                 serviceMode: "online",
                 startTime: data?.timeSlot?.split(" - ")[0],
@@ -103,19 +119,55 @@ const BookingPage = () => {
         fetchServiceCategories();
     }, []);
 
-    useEffect(() => {
-        reset({
-            serviceType: service?.service?._id,
-            timeSlot: "",
-            date: new Date(),
-            currency: "",
-            firstName: user?.firstName,
-            lastName: user?.lastName,
-            mobileNo: user?.mobileNo,
-            email: user?.email
-        });
-    }, [user]);
+    const bookingType = watch('bookingType');
 
+    useEffect(() => {
+        if (bookingType === 'others') {
+            setValue('firstName', '');
+            setValue('lastName', '');
+            setValue('mobileNo', '');
+            setValue('email', '');
+        } else if (bookingType === 'self' && user) {
+            setValue('firstName', user?.firstName || '');
+            setValue('lastName', user?.lastName || '');
+            setValue('mobileNo', user?.mobileNo || '');
+            setValue('email', user?.email || '');
+        }
+    }, [bookingType, user, setValue]);
+
+    const fetchAstrologers = useCallback(async () => {
+        if (astrologers.length > 0 || isAstrologersLoading) return;
+
+        try {
+            setIsAstrologersLoading(true);
+            const response = await getAllAstrologer();
+            console.log("⚡️🤯 ~ BookingPage.jsx:127 ~ BookingPage ~ response:", response)
+            if (response?.success) {
+                setAstrologers(response.data || []);
+            } else {
+                setAstrologers([]);
+                toast.error('Failed to load astrologers. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error fetching astrologers:', error);
+            setAstrologers([]);
+            toast.error('Failed to load astrologers. Please try again.');
+        } finally {
+            setIsAstrologersLoading(false);
+        }
+    }, [astrologers.length, isAstrologersLoading]);
+
+    const AstrologerOptions = useMemo(() => {
+        if (!astrologers.length) return [];
+        return astrologers.map(astrologer => ({
+            value: astrologer._id,
+            label: astrologer.fullName
+        }));
+    }, [astrologers]);
+
+    useEffect(() => {
+        fetchAstrologers();
+    }, [fetchAstrologers]);
 
     return (
         <div className="min-h-screen bg-[#FFF9EF]  pt-16 lg:pt-24 relative">
@@ -161,9 +213,27 @@ const BookingPage = () => {
                                     placeholder="Select Services Type"
                                     props={{
                                         ...register('serviceType', { required: true }),
-                                        value: watch('serviceType') || ''
+                                        value: serviceTypeWatch || ''
                                     }}
                                     errors={errors.serviceType}
+                                />
+                            </div>
+                            <div className="">
+                                <h4
+                                    className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
+                                >
+                                    Select Astrologer*
+                                </h4>
+                                <SelectTextInput
+                                    label="Select Astrologer"
+                                    registerName="astrologer"
+                                    options={AstrologerOptions}
+                                    placeholder="Select Astrologer"
+                                    props={{
+                                        ...register('astrologer', { required: true }),
+                                        value: watch('astrologer') || ''
+                                    }}
+                                    errors={errors.astrologer}
                                 />
                             </div>
                             <div>
@@ -227,19 +297,52 @@ const BookingPage = () => {
                                     placeholder="Select Currency"
                                 />
                             </div>
+                            <div className="">
+                                <Controller
+                                    name="bookingType"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <div className="flex justify-end">
+                                            <div className="flex bg-white rounded-full p-1 border border-gray-200 shadow-sm w-56">
+                                                <button
+                                                    type="button"
+                                                    className={`px-3 py-2 rounded-full transition-colors font-tbLex font-medium text-sm flex-1 ${field.value === 'self'
+                                                        ? 'bg-linear-gradient text-white hover:opacity-90'
+                                                        : 'text-gray-600 hover:bg-gray-50'
+                                                        }`}
+                                                    onClick={() => field.onChange('self')}
+                                                >
+                                                    For Self
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className={`px-3 py-2 rounded-full transition-colors font-tbLex font-medium text-sm flex-1 ${field.value === 'others'
+                                                        ? 'bg-linear-gradient text-white hover:opacity-90'
+                                                        : 'text-gray-600 hover:bg-gray-50'
+                                                        }`}
+                                                    onClick={() => field.onChange('others')}
+                                                >
+                                                    For Others
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                />
+                            </div>
                             <div className="grid grid-cols-2 gap-5">
                                 <div className="">
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        First Name
+                                        First Name <span className="text-yellow-500 font-tbPop font-normal text-xs">{bookingType == "others" ? "*" : "(Read Only)"}</span>
                                     </h4>
                                     <TextInput
                                         label="Enter First Name*"
                                         placeholder="Enter First Name"
                                         type="text"
+                                        disabled={bookingType === 'self'}
                                         registerName="firstName"
-                                        props={{ ...register('firstName', { required: "First name is required", validate: validateAlphabets }), minLength: 3 }}
+                                        props={{ ...register('firstName', { required: bookingType === 'others' ? 'First name is required' : false, validate: validateAlphabets }), minLength: 3 }}
                                         errors={errors.firstName}
                                     />
                                 </div>
@@ -247,14 +350,15 @@ const BookingPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Last Name
+                                        Last Name <span className="text-yellow-500 font-tbPop font-normal text-xs">{bookingType == "others" ? "*" : "(Read Only)"}</span>
                                     </h4>
                                     <TextInput
                                         label="Enter Last Name*"
                                         placeholder="Enter Last Name"
                                         type="text"
+                                        disabled={bookingType === 'self'}
                                         registerName="lastName"
-                                        props={{ ...register('lastName', { required: "Last name is required", validate: validateAlphabets }), minLength: 3 }}
+                                        props={{ ...register('lastName', { required: bookingType === 'others' ? 'Last name is required' : false, validate: validateAlphabets }), minLength: 3 }}
                                         errors={errors.lastName}
                                     />
                                 </div>
@@ -262,14 +366,15 @@ const BookingPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Email*
+                                        Email <span className="text-yellow-500 font-tbPop font-normal text-xs">{bookingType == "others" ? "*" : "(Read Only)"}</span>
                                     </h4>
                                     <TextInput
                                         label="Enter Your Email"
                                         placeholder="Enter Your Email"
                                         type="text"
                                         registerName="email"
-                                        props={{ ...register('email'), valdate: validateEmail, required: "Email is required" }}
+                                        disabled={bookingType === 'self'}
+                                        props={{ ...register('email'), valdate: validateEmail, required: bookingType === 'others' ? 'Email is required' : false }}
                                         errors={errors.email}
                                     />
                                 </div>
@@ -277,14 +382,15 @@ const BookingPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Phone Number
+                                        Phone Number <span className="text-yellow-500 font-tbPop font-normal text-xs">{bookingType == "others" ? "*" : "(Read Only)"}</span>
                                     </h4>
                                     <TextInput
                                         label="Enter Your Phone Number"
                                         placeholder="Enter Your Phone Number"
                                         type="tel"
                                         registerName="mobileNo"
-                                        props={{ ...register('mobileNo', { validate: validatePhoneNumber, required: true }), maxLength: 10, minLength: 10 }}
+                                        disabled={bookingType === 'self'}
+                                        props={{ ...register('mobileNo', { validate: validatePhoneNumber, required: bookingType === 'others' ? 'Phone number is required' : false }), maxLength: 10, minLength: 10 }}
                                         errors={errors.mobileNo}
                                     />
                                 </div>

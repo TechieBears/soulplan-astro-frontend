@@ -36,7 +36,7 @@ const Sidebar = ({ children }) => {
                             <NavLink className="flex space-x-2 items-center" to="/">
                                 {/* <Trade size={isActiveLink ? "36" : "30"} className="text-primary " variant='Bulk' /> */}
                                 <img loading="lazy" src={logo} className='w-11 h-11 object-contain' />
-                                <h2 className={isActiveLink ? 'hidden ' : 'font-tbLex font-bold  text-2xl text-black transition-all duration-700 delay-200 capitalize'}>Soul Plan</h2>
+                                <h2 className={isActiveLink ? 'hidden ' : 'font-tbLex font-bold  text-2xl text-black transition-all duration-700 delay-200 uppercase'}>Soulplane</h2>
                             </NavLink>
                         </div>
                         <ul className='flex items-center flex-col overflow-y-scroll h-[calc(100vh-100px)]  mt-2 mb-20 space-y-1.5 scroll-hide'>
