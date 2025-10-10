@@ -1,15 +1,11 @@
-import AnimatedNumbers from "react-animated-numbers";
 import Breadcrumbs from "../../components/breadcrum";
-// import ArrowBtn from '../../components/Buttons/ArrowBtn'
 import Certifications from "../../components/HomeComponents/HomeCertifications";
-
 import trust1 from "../../assets/about/Astrology Application Nisha/trust1.png";
 import trust2 from "../../assets/about/Astrology Application Nisha/trust2.png";
 import trust3 from "../../assets/about/Astrology Application Nisha/trust3.png";
 import trust4 from "../../assets/about/Astrology Application Nisha/trust4.png";
 import trust5 from "../../assets/about/Astrology Application Nisha/trust5.png";
 import trust6 from "../../assets/about/Astrology Application Nisha/trust6.png";
-
 import trustg1 from "../../assets/about/Astrology Application Nisha/trust-g1.png";
 import trustg2 from "../../assets/about/Astrology Application Nisha/trust-g2.png";
 import trustg3 from "../../assets/about/Astrology Application Nisha/trust-g3.png";
@@ -18,8 +14,15 @@ import trustg5 from "../../assets/about/Astrology Application Nisha/trust-g5.png
 import trustg6 from "../../assets/about/Astrology Application Nisha/trust-g6.png";
 import moon from "../../assets/helperImages/moon.png"
 import sun from "../../assets/helperImages/sun.png"
-import leftImage from "../../assets/helperImages/leftDesign.png"
 import rightImage from "../../assets/helperImages/rightDesign.png"
+import NumberFlow from "@number-flow/react";
+import { useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 const stats = [
     { value: 15, label: "Services" },
@@ -67,6 +70,37 @@ const features = [
 ];
 
 const AboutPage = () => {
+    const statsContainerRef = useRef(null);
+    const [animatedStats, setAnimatedStats] = useState(
+        stats.map(() => 0)
+    );
+
+    useGSAP(() => {
+        stats.forEach((stat, index) => {
+            const animationObj = { value: 0 };
+
+            gsap.to(animationObj, {
+                value: stat.value,
+                duration: 2,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: statsContainerRef.current,
+                    start: "top 80%",
+                    end: "top 20%",
+                    toggleActions: "play none none reverse",
+                    once: false,
+                },
+                onUpdate: () => {
+                    setAnimatedStats(prev => {
+                        const newStats = [...prev];
+                        newStats[index] = Math.round(animationObj.value);
+                        return newStats;
+                    });
+                }
+            });
+        });
+    }, { scope: statsContainerRef, dependencies: [] });
+
     return (
         <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
 
@@ -75,21 +109,21 @@ const AboutPage = () => {
             <Certifications showTopImage={false} />
 
             <section className="w-full  py-16 px-5 xl:px-0 relative">
-                 <div className="absolute top-50 -left-80 ">
-                       <img
-                         src={rightImage}
-                         className="w-[500px]   h-[500px] object-contain spin-slow"
-                         alt="left design"
-                       />
-                     </div>
-               
-                     <div className="absolute top-50 -right-80 ">
-                       <img
-                         src={rightImage}
-                         className="w-[500px] h-[500px] object-contain spin-slow"
-                         alt="right design"
-                       />
-                     </div>
+                <div className="absolute top-50 -left-80 ">
+                    <img
+                        src={rightImage}
+                        className="w-[500px]   h-[500px] object-contain spin-slow"
+                        alt="left design"
+                    />
+                </div>
+
+                <div className="absolute top-50 -right-80 ">
+                    <img
+                        src={rightImage}
+                        className="w-[500px] h-[500px] object-contain spin-slow"
+                        alt="right design"
+                    />
+                </div>
                 <div className="absolute bottom-10 -left-20 scale-75  ">
                     <img src={sun} alt="" className="w-full h-full object-fill spin-slow" />
                 </div>
@@ -98,22 +132,14 @@ const AboutPage = () => {
                 </div>
                 <div className="container mx-auto ">
                     {/* Stats Section */}
-                    <div className="flex sm:flex-col md:flex-row items-center justify-center gap-5 sm:gap-10 md:gap-20 lg:gap-30 xl:gap-40 pt-10 lg:pt-20 pb-28">
+                    <div
+                        ref={statsContainerRef}
+                        className="flex sm:flex-col md:flex-row items-center justify-center gap-5 sm:gap-10 md:gap-20 lg:gap-30 xl:gap-40 pt-10 lg:pt-20 pb-28"
+                    >
                         {stats.map((stat, index) => (
                             <div key={index} className="text-left">
-                                <h6 className='text-red-500 font-tbLex font-bold text-6xl sm:text-9xl md:text-8xl  xl:text-9xl text-center tracking-tighter flex justify-center items-center'>
-                                    <AnimatedNumbers
-                                        animateToNumber={stat.value}
-                                        fontStyle={{ textAlign: "center", letterSpacing: -5 }}
-                                        configs={(_, index) => {
-                                            return {
-                                                mass: 1,
-                                                tension: 230 * (index + 1),
-                                                friction: 140,
-                                            };
-                                        }}
-                                    />
-
+                                <h6 className='text-red-500 font-tbLex font-bold text-6xl sm:text-9xl md:text-8xl  xl:text-9xl text-center tracking-tighter flex justify-center items-center w-[150px]'>
+                                    <NumberFlow value={animatedStats[index]} trend={0} format={{ notation: "compact" }} />
                                 </h6>
                                 <p className="text-slate-800 mt-2 text-center font-tbLex font-medium text-base">{stat.label}</p>
                             </div>
@@ -140,7 +166,7 @@ const AboutPage = () => {
 function FeatureCard({ feature }) {
     return (
         <div
-            className={`shadow-lg bg-white rounded-md p-4 md:p-6 xl:p-8 h-[230px] md:h-[260px] xl:h-[270px] flex flex-col items-start justify-center cursor-pointer border transition-all duration-500 border-gray-100 group hover:bg-linear-gradient group space-y-2 z-10`}
+            className={`shadow-lg bg-white rounded-md p-4 md:p-6 xl:p-8 h-[230px] md:h-[260px] xl:h-[270px] flex flex-col items-start justify-center  border transition-all duration-500 border-gray-100 group hover:bg-linear-gradient group space-y-2 z-10`}
 
         >
             <div className=" flex items-center justify-start w-full">

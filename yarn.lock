@@ -1821,6 +1821,14 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@number-flow/react@^0.5.10":
+  version "0.5.10"
+  resolved "https://registry.yarnpkg.com/@number-flow/react/-/react-0.5.10.tgz#7468384c0aaf03148986e4948d534ac832fe42e9"
+  integrity sha512-a8Wh5eNITn7Km4xbddAH7QH8eNmnduR6k34ER1hkHSGO4H2yU1DDnuAWLQM99vciGInFODemSc0tdxrXkJEpbA==
+  dependencies:
+    esm-env "^1.1.4"
+    number-flow "0.5.8"
+
 "@oemuap/react-magnifier@^3.0.6":
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/@oemuap/react-magnifier/-/react-magnifier-3.0.6.tgz#3c3137de119ee3f74c67c1ba3bcc984738c98fc3"
@@ -3550,6 +3558,11 @@ eslint@^9.33.0:
     natural-compare "^1.4.0"
     optionator "^0.9.3"
 
+esm-env@^1.1.4:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/esm-env/-/esm-env-1.2.2.tgz#263c9455c55861f41618df31b20cb571fc20b75e"
+  integrity sha512-Epxrv+Nr/CaL4ZcFGPJIYLWFom+YeV1DqMLHJoEd9SYRxNbaFruBwfEX/kkHUJf55j2+TUbmDcmuilbP1TmXHA==
+
 espree@^10.0.1, espree@^10.4.0:
   version "10.4.0"
   resolved "https://registry.yarnpkg.com/espree/-/espree-10.4.0.tgz#d54f4949d4629005a1fa168d937c3ff1f7e2a837"
@@ -4531,6 +4544,13 @@ normalize-range@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
   integrity sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==
+
+number-flow@0.5.8:
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/number-flow/-/number-flow-0.5.8.tgz#39bbf5fbce414513f1add06d717c27a299f1e433"
+  integrity sha512-FPr1DumWyGi5Nucoug14bC6xEz70A1TnhgSHhKyfqjgji2SOTz+iLJxKtv37N5JyJbteGYCm6NQ9p1O4KZ7iiA==
+  dependencies:
+    esm-env "^1.1.4"
 
 object-assign@^4.0.1, object-assign@^4.1.1:
   version "4.1.1"

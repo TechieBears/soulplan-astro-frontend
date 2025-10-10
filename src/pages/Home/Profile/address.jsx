@@ -91,14 +91,17 @@ const AddressPage = () => {
         try {
             setFetchLoading(true);
             const res = await getAllAddress();
-            const defaultAddress = res?.data?.filter(item => item?.isDefault)
-            dispatch(setAddresses(defaultAddress[0]))
+            if (res?.data?.length > 0) {
+                const defaultAddress = res?.data?.filter(item => item?.isDefault)
+                dispatch(setAddresses(defaultAddress[0]))
+            }
             setAddress(res?.data);
         } catch (err) {
             setAddress([]);
             toast.error(err.message || 'Failed to fetch addresses');
             console.error('Error fetching addresses', err);
         } finally {
+            setAddress([]);
             setFetchLoading(false);
         }
     }

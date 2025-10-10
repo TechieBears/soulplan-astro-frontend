@@ -54,6 +54,8 @@ import ProductBookings from "../pages/Admin/Bookings/ProductBookings";
 import ServiceBookings from "../pages/Admin/Bookings/ServiceBookings";
 import CustomerFeedback from "../pages/Admin/CustomerFeedback/CustomerFeedback";
 import VenueCalendar from '../pages/Admin/Bookings/AdminBookingsCalender';
+import { Whatsapp } from "iconsax-reactjs";
+import BuyNowPage from "../pages/Home/BuyNowPage";
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
@@ -116,7 +118,7 @@ const ProjectRoutes = () => {
                 </Sidebar>
             ) : (
                 // ============ Guest / Before Login ============
-                <main className="min-h-screen w-full overflow-x-hidden">
+                <main className="min-h-screen w-full overflow-x-hidden ">
                     <HomeNavbar />
                     <Routes>
                         <Route path="/" element={<HomePage />} />
@@ -187,6 +189,15 @@ const ProjectRoutes = () => {
                             }
                         />
                         <Route
+                            path="/buy-now"
+                            element={
+                                <ProtectedRoute>
+                                    <BuyNowPage />
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
                             path="/payment-success"
                             element={
                                 <ProtectedRoute>
@@ -197,6 +208,14 @@ const ProjectRoutes = () => {
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
                     <HomeFooter />
+                    <a
+                        href={`https://wa.me/${8693000900}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className=" fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-3.5 rounded-full shadow-lg transition-all duration-300"
+                    >
+                        <Whatsapp size={30} />
+                    </a>
                 </main>
             )}
 

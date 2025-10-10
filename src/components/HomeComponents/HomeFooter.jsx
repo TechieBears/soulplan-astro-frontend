@@ -67,13 +67,13 @@ const HomeFooter = () => {
                     <p>Copyright © {new Date().getFullYear()}. All rights reserved.</p>
                     <div className="flex gap-6 mt-2 md:mt-0">
                         <button
-                            onClick={() => navigate("/privacy-policy")}
+                            onClick={() => { navigate("/privacy-policy"), window.scrollTo(0, 0, { behavior: "smooth" }) }}
                             className="hover:underline"
                         >
                             Privacy Policy
                         </button>
                         <button
-                            onClick={() => navigate("/contact")}
+                            onClick={() => { navigate("/contact"), window.scrollTo(0, 0, { behavior: "smooth" }) }}
                             className="hover:underline"
                         >
                             Customer Support

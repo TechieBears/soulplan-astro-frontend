@@ -25,53 +25,6 @@ const PaymentSuccess = () => {
     const [hasProductOrders, setHasProductOrders] = useState(false);
     const [hasServiceOrders, setHasServiceOrders] = useState(false);
 
-    useEffect(() => {
-        const fetchProductOrders = async () => {
-            try {
-                setIsLoadingProducts(true);
-                const res = await getSingleProductOrder(state?.orderId);
-                console.log("⚡️🤯 ~ PaymentSuccess.jsx:33 ~ fetchProductOrders ~ res:", res)
-                if (res?.success) {
-                    setProductOrders(res.data);
-                    setHasProductOrders(true);
-                } else {
-                    setProductOrders([]);
-                    setHasProductOrders(false);
-                }
-            } catch (err) {
-                toast.error(err.message || 'Failed to fetch product orders');
-                console.error('Error fetching product orders', err);
-                setProductOrders([]);
-                setHasProductOrders(false);
-            } finally {
-                setIsLoadingProducts(false);
-            }
-        };
-
-        const fetchServiceOrders = async () => {
-            try {
-                setIsLoadingServices(true);
-                const res = await getSingleServiceOrder(state?.orderId);
-                if (res?.success) {
-                    setServiceOrders(res.data);
-                    setHasServiceOrders(true);
-                } else {
-                    setServiceOrders([]);
-                    setHasServiceOrders(false);
-                }
-            } catch (err) {
-                toast.error(err.message || 'Failed to fetch service orders');
-                console.error('Error fetching service orders', err);
-                setServiceOrders([]);
-                setHasServiceOrders(false);
-            } finally {
-                setIsLoadingServices(false);
-            }
-        };
-
-        // fetchProductOrders();
-        // fetchServiceOrders();
-    }, []);
 
     useEffect(() => {
         if (!isLoadingProducts && !isLoadingServices) {
@@ -162,7 +115,7 @@ const PaymentSuccess = () => {
                                                             (incl. of all taxes)
                                                         </div>
                                                         <div className="text-white text-sm font-medium">
-                                                            QTY: {item.snapshot?.quantity || 1}
+                                                            QTY: {item?.quantity || 1}
                                                         </div>
                                                     </div>
                                                     <div className="flex justify-between items-center mt-2">

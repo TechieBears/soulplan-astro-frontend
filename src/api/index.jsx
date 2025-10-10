@@ -699,6 +699,18 @@ export const getPublicServicesCards = async (data) => {
     }
 }
 
+export const getAllAstrologer = async (data = { employeeType: "astrologer" }) => {
+    const url = `${environment.baseUrl}employee-users/astroguid/public/get-all`;
+    try {
+        // Send data in the request payload using POST
+        const response = await axios.post(url, data);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching get all astrologer:', error);
+        throw error;
+    }
+};
+
 export const getPublicServicesDropdown = async () => {
     try {
         const url = `${environment.baseUrl}service/public/dropdown`;

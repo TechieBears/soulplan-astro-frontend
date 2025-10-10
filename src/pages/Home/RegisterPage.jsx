@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useGSAP } from '@gsap/react';
@@ -20,6 +20,7 @@ const RegisterPage = () => {
         handleSubmit,
         watch,
         setValue,
+        control,
         formState: { errors },
         reset,
     } = useForm();
@@ -74,6 +75,34 @@ const RegisterPage = () => {
                 {/* Form */}
                 <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleSubmit(onSubmit)}>
                     {/* First Name */}
+                    <div className="col-span-2">
+                        <h4
+                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                        >
+                            Title
+                        </h4>
+                        <div className="sm:flex sm:gap-2 space-x-2 space-y-2 sm:space-y-0">
+                            {["Mr", "Mrs", "Miss", "Baby", "Master"].map((type) => (
+                                <Controller
+                                    key={type}
+                                    name="title"
+                                    control={control}
+                                    render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                        <button
+                                            type="button"
+                                            onClick={() => onChange(type)}
+                                            className={`px-5 font-tbLex py-3 rounded-md text-sm font-medium ${value === type
+                                                ? "bg-linear-gradient text-white"
+                                                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                                                }`}
+                                        >
+                                            {type}
+                                        </button>
+                                    )}
+                                />
+                            ))}
+                        </div>
+                    </div>
                     <div className="col-span-1">
                         <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1.5">
                             First Name
@@ -120,16 +149,16 @@ const RegisterPage = () => {
 
                     {/* Phone */}
                     <div className="col-span-1">
-                        <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label htmlFor="mobileNo" className="block text-sm font-medium text-gray-700 mb-1.5">
                             Phone Number
                         </label>
                         <TextInput
                             label="Enter Your Phone Number"
                             placeholder="Enter Your Phone Number"
                             type="tel"
-                            registerName="phoneNumber"
-                            props={{ ...register('phoneNumber', { validate: validatePhoneNumber, required: "Phone number is required" }), maxLength: 10, minLength: 10 }}
-                            errors={errors.phoneNumber}
+                            registerName="mobileNo"
+                            props={{ ...register('mobileNo', { validate: validatePhoneNumber, required: "Phone number is required" }), maxLength: 10, minLength: 10 }}
+                            errors={errors.mobileNo}
                         />
                     </div>
 
@@ -196,7 +225,7 @@ const RegisterPage = () => {
                     {/* Button */}
                     <div className="md:col-span-2 mt-2">
                         {loader ? (
-                            <LoadBox />
+                            <LoadBox className={formBtn3} />
                         ) : (
                             <button
                                 type="submit"

@@ -14,6 +14,7 @@ const UserDashboard = ({ children }) => children;
 
 export default function MyOrders() {
     const { state } = useLocation();
+    console.log("⚡️🤯 ~ orders.jsx:17 ~ MyOrders ~ state:", state)
     const [activeTab, setActiveTab] = useState(state?.type === "products" ? "products" : "services");
     const [productOrders, setProductOrders] = useState([]);
     const [serviceOrders, setServiceOrders] = useState([]);
@@ -85,17 +86,6 @@ export default function MyOrders() {
         fetchServiceOrders();
     }, []);
 
-    useEffect(() => {
-        if (!isLoadingProducts && !isLoadingServices) {
-            if (hasProductOrders && !hasServiceOrders) {
-                setActiveTab("products");
-            } else if (!hasProductOrders && hasServiceOrders) {
-                setActiveTab("services");
-            } else if (hasProductOrders && hasServiceOrders) {
-                setActiveTab("products");
-            }
-        }
-    }, [isLoadingProducts, isLoadingServices, hasProductOrders, hasServiceOrders]);
 
     const isLoading = false;
 
@@ -137,14 +127,14 @@ export default function MyOrders() {
                                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#420098]"></div>
                             </div>
                         ) : (
-                            <>
+                            <div className="">
                                 {activeTab === "services" && (
                                     <>
                                         {isLoadingServices ? (
-                                            <div className="space-y-4 flex justify-center items-center bg-[#FFF9EF] max-h-[600px] overflow-y-auto">
-                                                <Preloaders />
+                                            <div className="space-y-4 flex justify-center items-center bg-slate1 max-h-[600px] overflow-y-auto">
+                                                <Preloaders className="bg-slate1" />
                                             </div>
-                                        ) : hasServiceOrders ? (
+                                        ) : serviceOrders?.length > 0 ? (
                                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[600px] overflow-y-auto">
                                                 {serviceOrders?.map((orderGroup, orderGroupIndex) => {
                                                     const services = orderGroup?.services || [orderGroup];
@@ -276,7 +266,7 @@ export default function MyOrders() {
                                                 }).flat()}
                                             </div>
                                         ) : (
-                                            <div className="text-center py-8">
+                                            <div className="text-center py-8 bg-slate1 flex flex-col items-center justify-center h-[450px] rounded-xl">
                                                 <Calendar className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                                                 <h3 className="text-lg font-medium text-gray-600 mb-2">No Service Bookings</h3>
                                                 <p className="text-gray-500">You haven't booked any services yet.</p>
@@ -288,10 +278,10 @@ export default function MyOrders() {
                                 {activeTab === "products" && (
                                     <>
                                         {isLoadingProducts ? (
-                                            <div className="space-y-4 flex justify-center items-center bg-[#FFF9EF]">
+                                            <div className="space-y-4 flex justify-center items-center bg-slate1">
                                                 <Preloaders />
                                             </div>
-                                        ) : hasProductOrders ? (
+                                        ) : productOrders?.length > 0 ? (
                                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                                 {productOrders.map((order, orderIndex) => {
                                                     return (
@@ -396,13 +386,12 @@ export default function MyOrders() {
                                                                 </div>
                                                             </div>
 
-                                                            {/* Total Amount Footer */}
                                                             <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center relative z-10">
                                                                 <div className="text-purple-200 text-sm">
                                                                     Total Amount (incl. GST)
                                                                 </div>
                                                                 <div className="text-white text-xl font-bold">
-                                                                    ₹{order.finalAmount?.toLocaleString() || 0}
+                                                                    ₹{order.totalAmount?.toLocaleString() || 0}
                                                                 </div>
                                                             </div>
 
@@ -415,7 +404,7 @@ export default function MyOrders() {
                                                 })}
                                             </div>
                                         ) : (
-                                            <div className="text-center py-8">
+                                            <div className="text-center py-8 bg-slate1 flex flex-col items-center justify-center h-[450px] rounded-xl">
                                                 <ShoppingCartIcon className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                                                 <h3 className="text-lg font-medium text-gray-600 mb-2">No Product Orders</h3>
                                                 <p className="text-gray-500">You haven't placed any product orders yet.</p>
@@ -423,7 +412,7 @@ export default function MyOrders() {
                                         )}
                                     </>
                                 )}
-                            </>
+                            </div>
                         )}
                     </ProfileSidebar>
                 </UserDashboard>

@@ -292,8 +292,10 @@ const ProductTab = () => {
     const fetchAddresses = async () => {
         try {
             const res = await getAllAddress();
-            const defaultAddress = res?.data?.filter((item) => item?.isDefault);
-            dispatch(setAddresses(defaultAddress[0]));
+            if (res?.data?.length > 0) {
+                const defaultAddress = res?.data?.filter(item => item?.isDefault)
+                dispatch(setAddresses(defaultAddress[0]))
+            }
         } catch (err) {
             toast.error(err.message || "Failed to fetch addresses");
             console.error("Error fetching addresses", err);
@@ -542,7 +544,7 @@ const ProductTab = () => {
                         </div>
                     </div>
 
-                    <button
+                    {addresses?._id && <button
                         onClick={() => handleBooking()}
                         disabled={bookingLoading}
                         className={`${formBtn3} w-full py-3 text-white rounded-md ${bookingLoading ? "opacity-50 cursor-not-allowed" : ""
@@ -556,7 +558,7 @@ const ProductTab = () => {
                         ) : (
                             "Continue to Pay"
                         )}
-                    </button>
+                    </button>}
                 </div>
             </div>
         </div>

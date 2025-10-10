@@ -154,12 +154,12 @@ const Testimonials = () => {
 
             <section className="bg-[#fff6ef]">
                 <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center justify-between pt-16 md:pt-20 gap-10 xl:gap-10 px-5 xl:px-0">
-                    <div className="text-left flex flex-col justify-center items-center md:items-start space-y-3">
-                        <h2 className="text-xl md:text-2xl xl:text-5xl w-full font-bold font-tbPop text-p text-center md:text-left ">
-                            “Astrology, Reimagined for Your Soul”
+                    <div className="text-left flex flex-col justify-center items-center md:items-start">
+                        <h2 className="text-xl md:text-2xl xl:text-5xl w-full font-bold font-tbPop text-p text-center md:text-left pb-3">
+                            Download Our Astrologer App Today
                         </h2>
-                        <p className="text-gray-600 text-sm lg:text-base text-center md:text-left">
-                            Download Our App Today
+                        <p className="text-gray-600 text-sm lg:text-base text-center md:text-left mb-2">
+                            For a sameless experience, download our apps on your phone
                         </p>
                         <div className="flex justify-start">
                             <a href="#" target="_blank" rel="noopener noreferrer">
