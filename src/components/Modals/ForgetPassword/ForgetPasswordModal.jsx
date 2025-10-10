@@ -212,15 +212,15 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all w-full max-w-md">
-                                <div className="bg-white px-8 py-8">
-                                    <div className="text-center">
-                                        <h2 className="text-2xl font-tbLex text-black font-bold mb-2 tracking-tight">
-                                            {step === 1 ? 'Reset Your Password' :
-                                                step === 2 ? 'Verify Your Identity' :
-                                                    'Create New Password'}
+                            <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-lg transition-all w-full max-w-lg">
+                                <div className="bg-white p-8">
+                                    <div className="text-center mb-6">
+                                        <h2 className="text-3xl font-extrabold text-center text-p">
+                                            {step === 1 ? 'Reset Password' :
+                                                step === 2 ? 'Verify Code' :
+                                                    'New Password'}
                                         </h2>
-                                        <p className="text-slate-500 mb-6 text-sm font-tbPop">
+                                        <p className="text-slate-500 mt-2 text-sm font-tbPop">
                                             {step === 1 ? 'Enter your email to receive a verification code' :
                                                 step === 2 ? `We sent a code to ${email}` :
                                                     'Your new password must be different from previous used passwords'}
@@ -228,7 +228,7 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                     </div>
 
                                     {/* Progress Steps */}
-                                    <div className="flex justify-between items-center mb-8 px-4">
+                                    <div className="flex justify-center items-center mb-8 px-4">
                                         <div className="flex flex-col items-center">
                                             <StepIcon
                                                 active={step === 1}
@@ -237,7 +237,7 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                             />
                                             <span className={`text-xs mt-2 ${step >= 1 ? 'text-primary font-medium' : 'text-gray-400'}`}>Email</span>
                                         </div>
-                                        <div className="flex-1 h-0.5 mx-2 bg-gray-200">
+                                        {/* <div className="flex-1 h-0.5 mx-2 bg-gray-200">
                                             <div className={`h-0.5 ${step >= 2 ? 'bg-primary' : 'bg-gray-200'}`}></div>
                                         </div>
                                         <div className="flex flex-col items-center">
@@ -258,7 +258,7 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                                 icon={<KeyIcon className="h-5 w-5" />}
                                             />
                                             <span className={`text-xs mt-2 ${step >= 3 ? 'text-primary font-medium' : 'text-gray-400'}`}>Password</span>
-                                        </div>
+                                        </div> */}
                                     </div>
 
                                     <form onSubmit={
@@ -266,12 +266,15 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                             step === 2 ? (e) => { e.preventDefault(); submitOtp(); } :
                                                 handleSubmit(submitNewPassword)
                                     }>
-                                        <div className="space-y-4">
+                                        <div className="space-y-5">
                                             {step === 1 && (
-                                                <div className="relative">
+                                                <div>
+                                                    <label className="block text-gray-700 font-medium mb-1">
+                                                        Email *
+                                                    </label>
                                                     <TextInput
-                                                        label="Enter Your Email"
-                                                        placeholder="Enter Your Email"
+                                                        label="Enter email*"
+                                                        placeholder="Enter email"
                                                         type="email"
                                                         registerName="email"
                                                         props={{ ...register('email'), validate: validateEmail, required: "Email is required" }}
@@ -280,7 +283,7 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                                 </div>
                                             )}
 
-                                            {step === 2 && (
+                                            {/* {step === 2 && (
                                                 <div className="space-y-4">
                                                     <div className="space-y-2">
                                                         <div className="flex justify-center gap-3">
@@ -322,6 +325,110 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                             )}
 
                                             {step === 3 && (
+                                                <div className="space-y-5">
+                                                    <div>
+                                                        <label htmlFor="newPassword" className="block text-gray-700 font-medium mb-1">New password *</label>
+                                                        <div className="relative">
+                                                            <input
+                                                                id="newPassword"
+                                                                type={showNewPassword ? "text" : "password"}
+                                                                {...register('newPassword', {
+                                                                    validate: validatePassword,
+                                                                    required: "Password is required"
+                                                                })}
+                                                                className={`block w-full rounded-lg border ${errors.newPassword ? 'border-red-300' : 'border-gray-300'} px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-blue-500`}
+                                                                placeholder="••••••••"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                                                onClick={() => setShowNewPassword(!showNewPassword)}
+                                                            >
+                                                                {!showNewPassword ? (
+                                                                    <EyeSlashIcon className="h-5 w-5 text-gray-400 hover:text-gray-500" />
+                                                                ) : (
+                                                                    <EyeIcon className="h-5 w-5 text-gray-400 hover:text-gray-500" />
+                                                                )}
+                                                            </button>
+                                                        </div>
+                                                        {errors.newPassword && (
+                                                            <p className="mt-1 text-sm text-red-600">{errors.newPassword.message}</p>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <label htmlFor="confirmPassword" className="block text-gray-700 font-medium mb-1">Confirm password *</label>
+                                                        <div className="relative">
+                                                            <input
+                                                                id="confirmPassword"
+                                                                type={showConfirmPassword ? "text" : "password"}
+                                                                {...register('confirmPassword', {
+                                                                    validate: validatePassword,
+                                                                    required: "Please confirm your password"
+                                                                })}
+                                                                className={`block w-full rounded-lg border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'} px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-blue-500`}
+                                                                placeholder="••••••••"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                            >
+                                                                {showConfirmPassword ? (
+                                                                    <EyeSlashIcon className="h-5 w-5 text-gray-400 hover:text-gray-500" />
+                                                                ) : (
+                                                                    <EyeIcon className="h-5 w-5 text-gray-400 hover:text-gray-500" />
+                                                                )}
+                                                            </button>
+                                                        </div>
+                                                        {errors.confirmPassword && (
+                                                            <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )} */}
+
+                                            {/* {step === 2 && (
+                                                <div className="space-y-4">
+                                                    <div className="space-y-2">
+                                                        <div className="flex justify-center gap-3">
+                                                            {[0, 1, 2, 3].map((index) => (
+                                                                <input
+                                                                    key={index}
+                                                                    ref={(el) => (otpInputs.current[index] = el)}
+                                                                    className={`w-14 h-14 border ${otp[index] ? 'border-blue-500' : 'border-gray-300'} rounded-lg text-center text-2xl font-tbPop focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200`}
+                                                                    type="text"
+                                                                    maxLength="1"
+                                                                    value={otp[index]}
+                                                                    onChange={(e) => handleOtpChange(index, e.target.value)}
+                                                                    onKeyDown={(e) => handleKeyDown(index, e)}
+                                                                    onPaste={handlePaste}
+                                                                    autoFocus={index === 0}
+                                                                />
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-center text-sm text-gray-500">
+                                                        Didn't receive code?{' '}
+                                                        <button
+                                                            type="button"
+                                                            onClick={resendOtp}
+                                                            disabled={isLoading}
+                                                            className="text-primary hover:text-blue-800 font-medium disabled:text-gray-400"
+                                                        >
+                                                            {isLoading ? (
+                                                                <span className="flex items-center justify-center">
+                                                                    <ArrowPathIcon className="h-4 w-4 animate-spin mr-1" />
+                                                                    Sending...
+                                                                </span>
+                                                            ) : (
+                                                                'Resend code'
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )} */}
+
+                                            {/* {step === 3 && (
                                                 <div className="space-y-4">
                                                     <div className="space-y-1">
                                                         <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">New password</label>
@@ -397,16 +504,16 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                                         </ul>
                                                     </div>
                                                 </div>
-                                            )}
+                                            )} */}
 
                                         </div>
 
-                                        <div className="mt-8 flex justify-between gap-3">
+                                        <div className="mt-6 flex justify-between gap-3">
                                             {step > 1 ? (
                                                 <button
                                                     type="button"
                                                     onClick={() => setStep(step - 1)}
-                                                    className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    className="flex-1 rounded border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                 >
                                                     Back
                                                 </button>
@@ -414,7 +521,7 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                                 <button
                                                     type="button"
                                                     onClick={handleClose}
-                                                    className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    className="flex-1 rounded border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                 >
                                                     Cancel
                                                 </button>
@@ -422,8 +529,8 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                             <button
                                                 type="submit"
                                                 disabled={isLoading}
-                                                className={`${formBtn3} ${isLoading ? 'bg-blue-400' :
-                                                    step === 3 ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-blue-700'
+                                                className={`${formBtn3} !rounded ${isLoading ? 'bg-blue-400' :
+                                                    step === 3 ? 'bg-green-600 hover:bg-green-700' : ''
                                                     }`}
                                             >
                                                 {isLoading ? (
