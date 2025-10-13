@@ -79,7 +79,7 @@ const RegisterPage = () => {
                         <h4
                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                         >
-                            Title
+                            Title *
                         </h4>
                         <div className="sm:flex sm:gap-2 space-x-2 space-y-2 sm:space-y-0">
                             {["Mr", "Mrs", "Miss", "Baby", "Master"].map((type) => (
@@ -105,7 +105,7 @@ const RegisterPage = () => {
                     </div>
                     <div className="col-span-1">
                         <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1.5">
-                            First Name
+                            First Name *
                         </label>
                         <TextInput
                             id="firstName"
@@ -120,7 +120,7 @@ const RegisterPage = () => {
                     {/* Last Name */}
                     <div className="col-span-1">
                         <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1.5">
-                            Last Name
+                            Last Name *
                         </label>
                         <TextInput
                             id="lastName"
@@ -135,7 +135,7 @@ const RegisterPage = () => {
                     {/* Email */}
                     <div className="col-span-1 md:col-span-2">
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
-                            Email
+                            Email *
                         </label>
                         <TextInput
                             label="Enter Your Email"
@@ -150,7 +150,7 @@ const RegisterPage = () => {
                     {/* Phone */}
                     <div className="col-span-1">
                         <label htmlFor="mobileNo" className="block text-sm font-medium text-gray-700 mb-1.5">
-                            Phone Number
+                            Phone Number *
                         </label>
                         <TextInput
                             label="Enter Your Phone Number"
@@ -165,7 +165,7 @@ const RegisterPage = () => {
                     {/* Gender */}
                     <div className="col-span-1">
                         <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1.5">
-                            Gender
+                            Gender *
                         </label>
                         <SelectTextInput
                             label="Select Gender"
@@ -190,7 +190,7 @@ const RegisterPage = () => {
                     {/* Password */}
                     <div className="col-span-1">
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
-                            Password
+                            Password *
                         </label>
                         <TextInput
                             label="Enter Your Password"
@@ -205,7 +205,7 @@ const RegisterPage = () => {
                     {/* Confirm Password */}
                     <div className="col-span-1">
                         <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1.5">
-                            Confirm Password
+                            Confirm Password *
                         </label>
                         <TextInput
                             label="Enter Your Confirm Password"
