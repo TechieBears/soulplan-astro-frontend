@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { PhoneCall } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
@@ -9,6 +10,10 @@ const Private = ({ children }) => children;
 const UserDashboard = ({ children }) => children;
 
 export default function CustomerSupport() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <>
             <Private>

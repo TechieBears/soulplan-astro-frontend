@@ -5,84 +5,103 @@ import Testimonials from "../../components/testimonial";
 import { useEffect, useState } from "react";
 import { getActiveBanners } from "../../api";
 import { environment } from "../../env";
+import { FaWhatsapp } from "react-icons/fa";
 
 const HomePage = () => {
-    const [banners, setBanners] = useState([]);
-    const [slidesData, setSlidesData] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+  const [banners, setBanners] = useState([]);
+  const [slidesData, setSlidesData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchSlides = async () => {
-            setIsLoading(true);
-            const banners = await getActiveBanners("website");
+  useEffect(() => {
+    const fetchSlides = async () => {
+      setIsLoading(true);
+      const banners = await getActiveBanners("website");
 
-            const formattedSlides = await Promise.all(
-                banners.map(async (item) => {
-                    let imageUrl;
-                    if (item.image && item.image.startsWith("http")) {
-                        imageUrl = item.image;
-                    } else {
-                        const baseUrl = environment.baseUrl.replace("/api/", "");
-                        imageUrl = item.image ? `${baseUrl}${item.image}` : "";
-                    }
-                    let finalImageUrl = imageUrl;
+      const formattedSlides = await Promise.all(
+        banners.map(async (item) => {
+          let imageUrl;
+          if (item.image && item.image.startsWith("http")) {
+            imageUrl = item.image;
+          } else {
+            const baseUrl = environment.baseUrl.replace("/api/", "");
+            imageUrl = item.image ? `${baseUrl}${item.image}` : "";
+          }
+          let finalImageUrl = imageUrl;
 
-                    try {
-                        const response = await fetch(imageUrl, {
-                            mode: "cors",
-                            credentials: "omit",
-                        });
+          try {
+            const response = await fetch(imageUrl, {
+              mode: "cors",
+              credentials: "omit",
+            });
 
-                        if (response.ok) {
-                            const blob = await response.blob();
-                            finalImageUrl = URL.createObjectURL(blob);
-                        } else {
-                            console.warn(
-                                "Fetch failed, using original URL:",
-                                response.status
-                            );
-                        }
-                    } catch (error) {
-                        console.warn(
-                            "Blob conversion failed, using original URL:",
-                            error.message
-                        );
-                    }
-
-                    return {
-                        id: item.id,
-                        image: finalImageUrl,
-                        title: item.title,
-                        description: item.description,
-                        button: true,
-                        background: true,
-                        video: null,
-                        onClick: () => {
-                            window.location.href = '/services';
-                        },
-                        onImageError: (e) => {
-                            console.error("Image failed to load:", finalImageUrl);
-                            console.error("Error event:", e);
-                        },
-                    };
-                })
+            if (response.ok) {
+              const blob = await response.blob();
+              finalImageUrl = URL.createObjectURL(blob);
+            } else {
+              console.warn(
+                "Fetch failed, using original URL:",
+                response.status
+              );
+            }
+          } catch (error) {
+            console.warn(
+              "Blob conversion failed, using original URL:",
+              error.message
             );
-            setSlidesData(formattedSlides);
-            setIsLoading(false);
-        };
+          }
 
-        fetchSlides();
-    }, []);
+          return {
+            id: item.id,
+            image: finalImageUrl,
+            title: item.title,
+            description: item.description,
+            button: true,
+            background: true,
+            video: null,
+            onClick: () => {
+              window.location.href = "/services";
+            },
+            onImageError: (e) => {
+              console.error("Image failed to load:", finalImageUrl);
+              console.error("Error event:", e);
+            },
+          };
+        })
+      );
+      setSlidesData(formattedSlides);
+      setIsLoading(false);
+    };
 
-    return (
-        <div>
-            <HomeBanner slidesData={slidesData} isLoading={isLoading} />
-            <HomeCertifications />
-            <HomeBestServices />
-            <Testimonials />
-            {/* <HomeFooter /> */}
-        </div>
-    );
+    fetchSlides();
+  }, []);
+
+  return (
+    <>
+      <HomeBanner slidesData={slidesData} isLoading={isLoading} />
+      <HomeCertifications />
+      <HomeBestServices />
+      <Testimonials />
+      {/* <HomeFooter /> */}
+
+      <div className="fixed bottom-6 right-5 group z-50">
+        <a
+          href="https://wa.me/918693000000"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 ease-out h-14 w-14 hover:w-52 overflow-visible"
+          aria-label="Contact us on WhatsApp"
+        >
+          <div className="absolute inset-0 bg-green-500 group-hover:bg-green-600 rounded-full transition-all duration-300"></div>
+
+          <span className="absolute right-14 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-out delay-10 text-sm font-medium whitespace-nowrap pr-3">
+            +91 86930 00000
+          </span>
+
+          <span className="absolute inset-0 rounded-full bg-green-400 opacity-75 animate-ping"></span>
+        </a>
+      </div>
+    </>
+  );
 };
 
 export default HomePage;

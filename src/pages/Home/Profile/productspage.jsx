@@ -19,7 +19,7 @@ const ProductsPage = () => {
     });
     const [loading, setLoading] = React.useState(true);
     const [currentPage, setCurrentPage] = React.useState(1);
-    const [itemsPerPage] = React.useState(12);
+    const [itemsPerPage] = React.useState(9);
 
     const [filtersLoading, setFiltersLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
@@ -244,7 +244,7 @@ const ProductsPage = () => {
                     <div className="lg:col-span-9 order-2 lg:order-1">
                         {loading ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
-                                {Array.from({ length: 12 }).map((_, index) => (
+                                {Array.from({ length: 9 }).map((_, index) => (
                                     <ProductCardSkeleton key={index} />
                                 ))}
                             </div>

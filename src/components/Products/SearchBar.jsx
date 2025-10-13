@@ -7,7 +7,7 @@ const SearchBar = ({ value, onChange }) => {
         type="text"
         placeholder="Search products..."
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={onChange}
         className="w-full rounded-md border border-slate-200 pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
         aria-label="Search products"
       />
