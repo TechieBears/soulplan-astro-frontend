@@ -127,217 +127,6 @@ export const resetPassword = async (data) => {
     }
 };
 
-export const registerUserEdit = async (id, data) => {
-    try {
-        const url = `${environment.baseUrl}user/add-user/${id}`
-        const response = await axios.put(url, data)
-        return response.data
-    } catch (err) {
-        console.log('error black listing user api file', err)
-        return err?.response?.data
-    }
-}
-
-
-export const login = async (data) => {
-    const url = `${environment.baseUrl}admin-login`;
-    try {
-        const response = await axios.post(url, data)
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-};
-
-// ====================Get All User Api===================
-export const getAllUser = async (data) => {
-    try {
-        const url = `${environment.baseUrl}admin/get-all-user`;
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-}
-
-// ====================== BlackList User =====================
-export const blacklistUser = async (id, status) => {
-    try {
-        const url = `${environment.baseUrl}admin/blacklist-user?id=${id}`
-        const response = await axios.put(url, status)
-        return response.data
-    } catch (err) {
-        console.log('error black listing user api file', err)
-        return err?.response?.data
-
-    }
-}
-
-export const premiumUser = async (id, status) => {
-    try {
-        const url = `${environment.baseUrl}admin/premium-user?id=${id}`
-        const response = await axios.put(url, status)
-        return response.data
-    } catch (err) {
-        console.log('error premium user api file', err)
-        return err?.response?.data
-    }
-}
-
-// ====================== Block User =====================
-export const blockUser = async (id, status) => {
-    try {
-        const url = `${environment.baseUrl}admin/block-user?id=${id}`
-        const response = await axios.put(url, status)
-        return response.data
-    } catch (err) {
-        console.log('error blocking user api file', err)
-        return err?.response?.data
-    }
-}
-
-// ====================== Verify User =====================
-export const verifyUser = async (id, status) => {
-    try {
-        const url = `${environment.baseUrl}admin/verify-user?id=${id}`
-        const response = await axios.put(url, status)
-        return response.data
-    } catch (err) {
-        console.log('error blocking user api file', err)
-        return err?.response?.data
-    }
-}
-
-// ====================Get All User Api===================
-export const getAllBlockedUser = async (data) => {
-    try {
-        const url = `${environment.baseUrl}admin/get-all-blacklist-user?name=${data?.name}&role=${data?.role == 'castingDirector' || data?.role == 'castingAgency' ? 'castingTeam' : data?.role}&subRole=${data?.role == 'castingDirector' || data?.role == 'castingAgency' ? data?.role : ''}&email=${data?.email}&page=${data?.p}&limit=${data?.records}&skip=${data?.skip}`;
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-}
-
-// ================== Reject User api ==========
-export const rejectUser = async (id, data) => {
-    try {
-        const url = `${environment.baseUrl}admin/reject-user?id=${id}`
-        const response = await axios.put(url, data)
-        return response
-    } catch (err) {
-        console.log('error====', err)
-        return err?.response?.data
-    }
-}
-
-export const getDashboardInsight = async () => {
-    try {
-        const url = `${environment.baseUrl}admin/get-insight`
-        const response = await axios.get(url)
-        return response
-    } catch (err) {
-        console.log('error in getDashboardInsight api file', err)
-        return err?.response?.data
-    }
-}
-
-// ====================Get All User Api===================
-export const getAllEqnuires = async (data) => {
-    try {
-        const url = `${environment.baseUrl}admin/contact-us?status=${data?.status}&email=${data?.email}&phoneNumber=${data?.phoneNumber}&name=${data?.name}&page=${data?.p}&limit=${data?.records}`;
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-}
-
-export const deleteStorage = async (id) => {
-    const url = `${environment.baseUrl}edit-storage/${id}`;
-    try {
-        const response = await axios.delete(url)
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-};
-
-/* =============== User API ================= */
-
-export const createUser = async (data) => {
-    const url = `${environment.baseUrl}registration/`;
-    try {
-        const response = await axios.post(url, data)
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-};
-
-export const getUser = async () => {
-    const url = `${environment.baseUrl}registration/`;
-    try {
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-};
-
-export const editUser = async (id, data) => {
-    const url = `${environment.baseUrl}edit-user/${id}`;
-    try {
-        const response = await axios.put(url, data)
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-};
-
-export const delUser = async (id) => {
-    const url = `${environment.baseUrl}edit-user/${id}`;
-    try {
-        const response = await axios.delete(url)
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-};
-
-
-// ====================User Contact Us Api===================
-
-export const userContactUs = async (data) => {
-    const url = `${environment.baseUrl}user/contact-us`;
-    try {
-        const response = await axios.post(url, data)
-        return response.data
-    }
-    catch (err) {
-        console.log("==========error in userContactUs api file", err);
-        return err?.response?.data
-    }
-};
-
 // ==================== Upload to Cloudinary Api===================
 
 
@@ -385,34 +174,6 @@ export const uploadToCloudinary = async (file) => {
     }
 };
 
-
-// ============================== casting page apis =========================
-
-
-export const getLetestCasting = async () => {
-    try {
-        const url = `${environment.baseUrl}user/lastest-casting`
-        const response = await axios.get(url)
-        return response.data.data
-    } catch (err) {
-        console.log('error in get latest casting api file', err)
-        return err?.response?.data
-    }
-}
-
-export const getFilterCasting = async (role) => {
-    try {
-        const url = `${environment.baseUrl}user/filtered-casting?role=${role || ""}`
-        const response = await axios.get(url)
-        return response.data.data
-    } catch (err) {
-        console.log('error in get Filtered casting api file', err)
-        return err?.response?.data
-    }
-}
-
-/* =============== Payment API ================= */
-
 export const adminTransactionPagination = async (data) => {
     const url = `${environment.baseUrl}admin/transaction-pagination?status=${data?.status}&email=${data?.email}&orderId=${data?.orderId}&page=${data?.p || 1}&limit=${data?.records || 10}`;
     try {
@@ -424,81 +185,10 @@ export const adminTransactionPagination = async (data) => {
         return err?.response?.data
     }
 }
-
-// ====================Get All User Api===================
-export const getAllRejectedUser = async (data) => {
-    try {
-        const url = `${environment.baseUrl}admin/rejected-pagination?&role=${data?.role == 'castingDirector' || data?.role == 'castingAgency' ? 'castingTeam' : data?.role}&subRole=${data?.role == 'castingDirector' || data?.role == 'castingAgency' ? data?.role : ''}&email=${data?.email}&page=${data?.p}&limit=${data?.records}`;
-        const response = await axios.get(url)
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-        return err?.response?.data
-    }
-}
-
-export const createRefund = async (id, data) => {
-    const url = `${environment.baseUrl}admin/create-refund?id=${id}`;
-    try {
-        const response = await axios.post(url, data)
-        return response
-    }
-    catch (err) {
-        console.log("==========error in createRefund api file", err);
-        return err?.response?.data
-    }
-}
-
-export const addAdminUser = async (data) => {
-    const url = `${environment.baseUrl}admin/admin-add-actor`;
-    try {
-        const response = await axios.post(url, data)
-        return response
-    }
-    catch (err) {
-        console.log("==========error in addAdminUser api file", err);
-        return err?.response?.data
-    }
-}
-
-export const deleteUser = async (id) => {
-    try {
-        const url = `${environment.baseUrl}admin/delete-user?id=${id}`
-        const response = await axios.delete(url)
-        return response
-    } catch (error) {
-        console.log('error in delete user api file ', error)
-    }
-}
-
-export const permanentDeleteUser = async (id, data) => {
-    try {
-        const url = `${environment.baseUrl}admin/permanent-delete-user?id=${id}`
-        const response = await axios.post(url, data)
-        return response
-    } catch (error) {
-        console.log('error in permanent delete user api file ', error)
-    }
-}
-
-export const editProfile = async (id, data) => {
-    try {
-        const url = `${environment.baseUrl}admin/admin-edit-actor/${id}`
-        const response = await axios.put(url, data)
-        return response
-    } catch (error) {
-        console.log('error in edit profile api file', error)
-    }
-}
-
-
-// =============================== Api Binding Start ==============================
-
 // ====================== Product Categories Api ======================
 export const getProductCategories = async (data) => {
     try {
-        const url = `${environment.baseUrl}product-categories/get-all?page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}product-categories/get-all?name=${data?.name || ""}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -548,7 +238,7 @@ export const editProductCategory = async (id, data) => {
 // ======================= Product Sub Categories Api ======================
 export const getProductSubCategories = async (data) => {
     try {
-        const url = `${environment.baseUrl}product-subcategories/get-all?page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}product-subcategories/get-all?name=${data?.name || ""}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -608,7 +298,7 @@ export const deleteProductSubCategory = async (id) => {
 // ====================== Service Categories Api ======================
 export const getServiceCategories = async (data) => {
     try {
-        const url = `${environment.baseUrl}service-categories/get-all?page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}service-categories/get-all?name=${data?.name || ""}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -809,7 +499,6 @@ export const getPublicProductsFilter = async () => {
 }
 
 export const getProducts = async (data) => {
-    console.log('data', data)
     try {
         const url = `${environment.baseUrl}product/get-all?name=${data?.name || ''}&categoryId=${data?.categoryId || ''}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
@@ -899,7 +588,7 @@ export const editEmployee = async (id, data) => {
 
 export const getAllCustomers = async (data) => {
     try {
-        const url = `${environment.baseUrl}customer-users/get-all?name=${data?.name}&page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}customer-users/get-all?name=${data?.name || ""}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -938,7 +627,7 @@ export const editCustomer = async (id, data) => {
 
 export const getAllBanners = async (data) => {
     try {
-        const url = `${environment.baseUrl}banners/get-all?page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}banners/get-all?name=${data?.name || ""}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -1477,7 +1166,7 @@ export const adminSlots = async (date) => {
 
 export const getAdminAllTestimonials = async (data) => {
     try {
-        const url = `${environment.baseUrl}testimonials/get-all?page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}testimonials/get-all?name=${data?.name || ""}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url)
         return response.data
     }
@@ -1582,7 +1271,7 @@ export const getAllPublicCoupons = async (type, couponCode) => {
 
 export const getAllCoupons = async (data) => {
     try {
-        const url = `${environment.baseUrl}coupon/get-all?page=${data?.p}&limit=${data?.records}`;
+        const url = `${environment.baseUrl}coupon/get-all?name=${data?.name || ""}&page=${data?.p}&limit=${data?.records}`;
         const response = await axios.get(url);
         return response.data;
     } catch (err) {
@@ -1626,8 +1315,8 @@ export const deleteCoupon = async (id) => {
 
 // ======================= Testimonials Api ========================
 
-export const getAllPublicTestimonials = async (page = 1, limit = 10) => {
-    const url = `${environment.baseUrl}testimonials/public/get-all?page=${page}&limit=${limit}`;
+export const getAllPublicTestimonials = async (data) => {
+    const url = `${environment.baseUrl}testimonials/public/get-all?name=${data?.name || ""}&page=${data?.p}&limit=${data?.records}`;
     try {
         const response = await axios.get(url);
         return response.data;
@@ -1645,6 +1334,91 @@ export const createPublicTestimonial = async (data) => {
         return response.data;
     } catch (err) {
         console.log("==========error in createPublicTestimonial api file", err);
+        return err?.response?.data;
+    }
+};
+
+
+// =======================Admin User Profile Api ========================
+
+export const updateAdminUserProfile = async (id, data) => {
+    const url = `${environment.baseUrl}admin-users/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in updateAdminUserProfile api file", err);
+        return err?.response?.data;
+    }
+};
+
+
+// ======================== Rating Api ========================
+
+export const getAdminAllReviews = async (data) => {
+    try {
+        const url = `${environment.baseUrl}reviews/get-all?name=${data?.name || ""}&page=${data?.p}&limit=${data?.records}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getAdminAllReviews api file", err);
+        return err?.response?.data
+    }
+}
+export const editReviews = async (id, data) => {
+    const url = `${environment.baseUrl}reviews/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in editReviews api file", err);
+        return err?.response?.data
+    }
+}
+
+export const deleteReview = async (id) => {
+    const url = `${environment.baseUrl}reviews/delete?id=${id}`;
+    try {
+        const response = await axios.delete(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in deleteReview api file", err);
+        return err?.response?.data
+    }
+}
+
+export const getRatings = async (data) => {
+    const url = `${environment.baseUrl}reviews/filter?user=${data?.user || ""}&product=${data?.product || ""}&service=${data?.service || ""}`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getRatings api file", err);
+        return err?.response?.data;
+    }
+};
+
+export const addRating = async (data) => {
+    const url = `${environment.baseUrl}reviews/create`;
+    try {
+        const response = await axios.post(url, data);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in addRating api file", err);
+        return err?.response?.data;
+    }
+};
+
+export const editRating = async (id, data) => {
+    const url = `${environment.baseUrl}reviews/update?id=${id}`;
+    try {
+        const response = await axios.put(url, data);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in editRating api file", err);
         return err?.response?.data;
     }
 };

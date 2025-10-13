@@ -300,7 +300,7 @@ const ProductTab = ({ product, quantityBy }) => {
 
             <div className="lg:col-span-5">
                 <div className="rounded-lg lg:sticky lg:top-8">
-                    <AddressSelector />
+                    <AddressSelector edit={false} />
 
                     {coupon ?
                         <div className="w-full bg-green-100 rounded-xl p-3 flex items-center justify-between ">

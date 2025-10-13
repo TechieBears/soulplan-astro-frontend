@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SidebarLink from './SidebarLink';
 import Navbar from './Navbar';
@@ -9,9 +9,14 @@ import logo from '../../assets/logo.png';
 const Sidebar = ({ children }) => {
     const [isActiveLink, setIsActiveLink] = useState(false);
     const [mobileSidebar, setMobileSidebar] = useState(false);
+    const location = useLocation();
 
     const userDetails = useSelector(state => state.user.userDetails);
-    const userRole = userDetails?.user?.role;
+    const userRole = userDetails?.role;
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [location.pathname]);
 
     const getSidebarApi = () => {
         switch (userRole) {
@@ -46,6 +51,7 @@ const Sidebar = ({ children }) => {
                                     key={i}
                                     item={item}
                                     isActiveLink={isActiveLink}
+                                    setMobileSidebar={setMobileSidebar}
                                 />
                             )}
                         </ul>

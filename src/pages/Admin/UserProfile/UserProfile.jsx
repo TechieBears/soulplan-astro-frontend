@@ -9,7 +9,7 @@ import SelectTextInput from '../../../components/TextInput/SelectTextInput';
 import MultiSelectTextInput from '../../../components/TextInput/MultiSelectTextInput';
 import ImageUploadInput from '../../../components/TextInput/ImageUploadInput';
 import LoadBox from '../../../components/Loader/LoadBox';
-import { editEmployee, getPublicServicesDropdown } from '../../../api';
+import { editEmployee, getPublicServicesDropdown, updateAdminUserProfile } from '../../../api';
 import { validateAlphabets, validateEmail, validatePhoneNumber, validateCommision } from '../../../utils/validateFunction';
 import { formBtn1 } from '../../../utils/CustomClass';
 import { setUserDetails } from '../../../redux/Slices/loginSlice';
@@ -93,18 +93,30 @@ const AdminProfile = () => {
 
     const onSubmit = async (data) => {
         try {
-            setLoading(true);
-            const response = await editEmployee(user?._id, data);
-            if (response?.success) {
-                toast.success('Profile updated successfully!');
-                setIsEditing(false);
-                dispatch(setUserDetails({
-                    user: response.data.user
-                }));
-                setLoading(false);
+            if (user.role == "admin") {
+                setLoading(true);
+                const response = await updateAdminUserProfile(user?._id, data);
+                if (response?.success) {
+                    toast.success('Profile updated successfully!');
+                    setIsEditing(false);
+                    dispatch(setUserDetails(response?.data?.user))
+                    setLoading(false);
+                } else {
+                    toast.error(response?.message || 'Failed to update profile');
+                    setLoading(false);
+                }
             } else {
-                toast.error(response?.message || 'Failed to update profile');
-                setLoading(false);
+                setLoading(true);
+                const response = await editEmployee(user?._id, data);
+                if (response?.success) {
+                    toast.success('Profile updated successfully!');
+                    setIsEditing(false);
+                    dispatch(setUserDetails(response?.data?.user))
+                    setLoading(false);
+                } else {
+                    toast.error(response?.message || 'Failed to update profile');
+                    setLoading(false);
+                }
             }
         } catch (error) {
             console.error('Error updating profile:', error);

@@ -2,14 +2,20 @@ import { useEffect, useState } from "react";
 import { formBtn3 } from "../../utils/CustomClass";
 import { Mobile } from "iconsax-reactjs";
 import Breadcrumbs from "../../components/breadcrum";
-import { CaretRight, ClockCountdown } from "@phosphor-icons/react";
-import { getPublicServicesDropdown, getPublicServicesSingle } from "../../api";
+import { CaretRight, ClockCountdown, Star } from "@phosphor-icons/react";
+import { addRating, getPublicServicesDropdown, getPublicServicesSingle, getRatings } from "../../api";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Keyboard } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { ArrowLeft2, ArrowRight2 } from "iconsax-reactjs";
+import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { Controller, useForm } from "react-hook-form";
+import CustomTextArea from "../TextInput/CustomTextArea";
+import { PulseLoader } from "react-spinners";
+import moment from "moment";
 
 const SidebarLayout = () => {
     const params = useLocation();
@@ -89,6 +95,67 @@ const SideBar = ({ services, active, setActive }) => {
 
 const MainSection = ({ content }) => {
     const navigate = useNavigate();
+    const [ratings, setRatings] = useState(null);
+    const [ratingsLoading, setRatingsLoading] = useState(false);
+    const login = useSelector((state) => state.user.isLogged);
+    const user = useSelector((state) => state.user.userDetails);
+
+
+
+    const { register, handleSubmit, control, formState: { errors }, reset } = useForm({
+        defaultValues: {
+            rating: 0,
+            reviewText: "",
+        }
+    });
+
+    const fetchRatings = async () => {
+        try {
+            setRatingsLoading(true);
+            const res = await getRatings({ service: content?._id });
+            setRatings(res?.data);
+        } catch (err) {
+            console.log("==========err in fetchRatings", err);
+            setRatings([]);
+        } finally {
+            setRatingsLoading(false);
+        }
+    };
+
+
+    const handleAddRating = async (data) => {
+        console.log("⚡️🤯 ~ ProductDetail.jsx:111 ~ handleAddRating ~ data:", data)
+        if (data?.rating === 0) {
+            toast.error("Please select a rating");
+            return;
+        }
+        try {
+            const payload = {
+                user_id: user?._id,
+                service_id: content?._id,
+                product_id: null,
+                message: data?.reviewText,
+                rating: data?.rating
+            }
+            await addRating(payload).then(res => {
+                if (res?.success) {
+                    toast.success("Review Added Successfully");
+                    fetchRatings();
+                    reset();
+                } else {
+                    toast.error(res?.message || "Something went wrong");
+                }
+            })
+        } catch (error) {
+            console.log('Error submitting form:', error);
+            toast.error("Failed to add Review");
+        }
+    }
+    useEffect(() => {
+        fetchRatings();
+    }, [content?._id]);
+
+
 
     if (!content) {
         return (
@@ -106,6 +173,8 @@ const MainSection = ({ content }) => {
         temp.innerHTML = html;
         return temp.textContent || temp.innerText || "";
     };
+
+
 
     return (
         <main className="flex-1 !my-0 ">
@@ -240,6 +309,152 @@ const MainSection = ({ content }) => {
                             </Swiper>
                         </>
                     )}
+                </div>
+
+                <div className="">
+                    {
+                        login ? (
+                            <form onSubmit={handleSubmit(handleAddRating)}>
+                                <div className="mt-3 flex flex-col gap-3  rounded-lg">
+                                    <h4 className="font-semibold text-gray-800 font-tbPop">Write a Review</h4>
+
+                                    <div className="flex flex-col gap-2">
+                                        <Controller
+                                            name="rating"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <div className="flex items-center gap-1">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <button
+                                                            key={star}
+                                                            type="button"
+                                                            onClick={() => field.onChange(star)}
+                                                            className="focus:outline-none"
+                                                        >
+                                                            <Star
+                                                                className={`w-6 h-6 ${star <= field.value
+                                                                    ? "text-yellow-400 fill-current"
+                                                                    : "text-gray-300"
+                                                                    } hover:text-yellow-400 transition-colors`}
+
+                                                                weight={star <= field.value ? "fill" : "regular"}
+                                                            />
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        />
+                                    </div>
+
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-sm font-medium text-gray-700 font-tbPop">Review</label>
+                                        <Controller
+                                            name="reviewText"
+                                            control={control}
+                                            rules={{ required: "Please write a review" }}
+                                            render={({ field, fieldState }) => (
+                                                <div>
+                                                    <CustomTextArea
+                                                        placeholder="Write your review here..."
+                                                        props={{
+                                                            ...field,
+                                                            rows: 3,
+                                                        }}
+                                                        style="font-tbPop"
+                                                    />
+                                                    {fieldState.error && (
+                                                        <p className="text-red-500 text-xs mt-1 font-tbPop">
+                                                            {fieldState.error.message}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            )}
+                                        />
+                                    </div>
+
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                reset();
+                                            }}
+                                            className="px-3 py-2 text-sm rounded-lg border hover:bg-gray-100 transition font-tbPop"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="px-3 py-2 text-sm rounded-lg bg-black text-white hover:bg-gray-800 transition font-tbPop"
+                                        >
+                                            Submit Review
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        ) : (
+                            <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
+                                <div className="flex items-center justify-between gap-4">
+                                    <h3 className="text-lg font-bold text-gray-900">
+                                        Add review
+                                    </h3>
+                                    <button
+                                        onClick={() => navigate("/login")}
+                                        className={`${formBtn3} !w-auto py-1 `}
+                                    >
+                                        Login to Review
+                                    </button>
+                                </div>
+                            </div>
+                        )
+                    }
+
+
+                    <div className="space-y-6 mt-3">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-lg font-semibold font-tbPop text-black">
+                                Customer Reviews
+                            </h3>
+                        </div>
+
+                        {/* Sample Reviews */}
+                        {ratingsLoading ? <div className="flex justify-center items-center h-40"> Loading<PulseLoader color="#000" size={4} /></div> :
+                            ratings?.length > 0 ?
+                                <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                                    {ratings?.map((review) => (
+                                        <div
+                                            key={review?._id}
+                                            className="border-b border-gray-100 pb-4"
+                                        >
+                                            <div className="flex items-center space-x-2 mb-2">
+                                                <div className="flex">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <Star
+                                                            size={16}
+                                                            className={`${star <= review?.rating
+                                                                ? "text-yellow-400 fill-current"
+                                                                : "text-gray-300"
+                                                                } hover:text-yellow-400 transition-colors`}
+                                                            weight={star <= review?.rating ? "fill" : "regular"}
+                                                        />
+                                                    ))}
+                                                </div>
+                                                <span className="font-medium font-tbPop capitalize text-sm ">
+                                                    {review?.user?.firstName || "----- ----- "} {review?.user?.lastName || "----- ----- "}
+                                                </span>
+                                                <span className="text-sm text-gray-500 capitalize">
+                                                    • {moment(review?.createdAt).format("DD MMM YYYY")}
+                                                </span>
+                                            </div>
+                                            <p className="text-gray-600 font-tbPop text-sm">
+                                                {review?.message}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div> :
+                                <div className="text-slate-500 font-tbPop text-base text-center py-20  rounded-lg">
+                                    No reviews available
+                                </div>}
+                    </div>
                 </div>
             </div>
         </main>
