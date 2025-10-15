@@ -7,7 +7,6 @@ import { getActiveBanners } from "../../api";
 import { environment } from "../../env";
 
 const HomePage = () => {
-    const [banners, setBanners] = useState([]);
     const [slidesData, setSlidesData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
