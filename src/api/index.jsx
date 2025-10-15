@@ -259,6 +259,18 @@ export const getProductSubCategoriesByCategory = async (id) => {
     }
 }
 
+export const getProductSubCategoriesDropdown = async () => {
+    try {
+        const url = `${environment.baseUrl}product-subcategories/get-dropdown`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getProductSubCategoriesDropdown api file", err);
+        return err?.response?.data
+    }
+}
+
 export const addProductSubCategory = async (data) => {
     const url = `${environment.baseUrl}product-subcategories/create`;
     try {
@@ -506,6 +518,18 @@ export const getProducts = async (data) => {
     }
     catch (err) {
         console.log("==========error in getProducts api file", err);
+        return err?.response?.data
+    }
+}
+
+export const getProductsDropdown = async () => {
+    try {
+        const url = `${environment.baseUrl}product/get-dropdown`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getProductsDropdown api file", err);
         return err?.response?.data
     }
 }

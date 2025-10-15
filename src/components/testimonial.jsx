@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { getAllPublicTestimonials } from "../api";
 import userImage from '../assets/user.webp';
 import { Star } from "@phosphor-icons/react";
+import underline from '../assets/undertext.png';
+import TestimonialModal from "./Modals/TestimonialModal";
 
 
 const Testimonials = () => {
@@ -51,9 +53,16 @@ const Testimonials = () => {
                 </div>
                 <div className="container mx-auto px-8 md:px-6 xl:px-0 text-center space-y-6 xl:space-y-10">
                     {/* Title */}
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-center leading-snug text-p">
-                        What Our Clients Are Saying
-                    </h2>
+                    <>
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold  text-center leading-snug">
+                            <span className="text-p">See What Our Happy Customers Are Saying!</span>
+                        </h2>
+                        <img
+                            src={underline}
+                            alt="Underline"
+                            className="w-40 md:w-56 h-auto  mx-auto object-contain"
+                        />
+                    </>
                     {/* Swiper */}
                     <div className="">
                         {loading ? (
@@ -79,13 +88,10 @@ const Testimonials = () => {
                             </div>
                         ) : testimonials?.length > 0 ? (
                             <Swiper
-                                autoplay={{ delay: 2500, disableOnInteraction: false, pauseOnMouseEnter: true }}
-                                modules={[Autoplay]}
                                 spaceBetween={30}
                                 centeredSlides={true}
-                                loop={testimonials?.length > 1}
-                                rewind
                                 className="pb-12 overflow-visible"
+                                slidesPerView={1}
                                 breakpoints={{
                                     768: { slidesPerView: 2, centeredSlides: true },
                                     1024: { slidesPerView: 3, centeredSlides: true },
@@ -152,16 +158,32 @@ const Testimonials = () => {
                 </div>
             </section>
 
-            <section className="bg-[#fff6ef]">
+            <section className="bg-neutral-100">
+                <div className="container mx-auto text-center py-20 space-y-6">
+                    <div className="text-center mb-12 space-y-3">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold  text-center leading-snug">
+                            <span className="text-p capitalize">Share your experience with us</span>
+                        </h2>
+                        <p className="text-black text-sm lg:text-base text-center mb-2 max-w-2xl mx-auto">
+                            "We’d love to know how your experience was! Your feedback helps us understand what we’re doing right and where we can improve to serve you even better."
+                        </p>
+                    </div>
+                    <div className="flex justify-center">
+                        <TestimonialModal />
+                    </div>
+                </div>
+            </section>
+
+            <section className="bg-[#FFEED3]">
                 <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center justify-between pt-16 md:pt-20 gap-10 xl:gap-10 px-5 xl:px-0">
                     <div className="text-left flex flex-col justify-center items-center md:items-start">
-                        <h2 className="text-xl md:text-2xl xl:text-5xl w-full font-bold font-tbPop text-p text-center md:text-left pb-3">
-                            Download Our Astrologer App Today
+                        <h2 className="text-xl md:text-2xl xl:text-5xl w-full font-bold font-tbPop text-black text-center md:text-left pb-3">
+                            Download Our <span className="text-p">"Soulplane"</span> App Today
                         </h2>
                         <p className="text-gray-600 text-sm lg:text-base text-center md:text-left mb-2">
                             For a sameless experience, download our apps on your phone
                         </p>
-                        <div className="flex justify-start">
+                        <div className="flex justify-start pt-4">
                             <a href="#" target="_blank" rel="noopener noreferrer">
                                 <img src={playstore} alt="Google Play" className="h-10 lg:h-14" />
                             </a>
@@ -171,23 +193,24 @@ const Testimonials = () => {
                         <img
                             src={phoneMockup}
                             alt="App Preview"
-                            className="w-full h-[30rem] relative z-10 object-contain"
+                            className="w-full h-[30rem] relative z-10 object-contain "
                         />
                     </div>
                 </div>
             </section >
 
-            <section className="bg-[#FFEED3]">
-                <div className="container mx-auto text-center py-20 space-y-2">
-                    <p className="text-p text-sm md:text-base font-tbLex tracking-tight">
-                        DISCOVER YOUR SELF
-                    </p>
-                    <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-medium text-black pb-5">
-                        Explore a complete range of spiritual{" "}
-                        <br className="hidden sm:block" />
-                        and healing services.
-                    </h2>
-                    <button className={`btn justify-self-center ${formBtn3} !w-fit`} onClick={() => { navigate('/services'), window.scrollTo(0, 0, { behavior: 'smooth' }) }}>Book Your Session</button>
+            <section className="bg-neutral-100">
+                <div className="container mx-auto text-center py-20 space-y-6">
+                    <div className="text-center mb-12 space-y-3">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold  text-center leading-snug">
+                            <span className="text-p capitalize">Contact Us Today</span>
+                        </h2>
+                        <p className="text-black text-sm lg:text-base text-center mb-2 max-w-2xl mx-auto">
+                            We are here to help you with any questions or concerns you may have. <br />
+                            Click the button below to contact us.
+                        </p>
+                    </div>
+                    <button className={`btn justify-self-center ${formBtn3} !w-fit`} onClick={() => { navigate('/contact'), window.scrollTo(0, 0, { behavior: 'smooth' }) }}>Contact Now</button>
                 </div>
             </section>
             <section />

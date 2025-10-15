@@ -18,6 +18,7 @@ import {
     requestNotificationPermission,
 } from './utils/pushNotifications';
 import { useEffect } from "react";
+// import ComingSoonModal from "./components/Modals/ComingSoonModal";
 
 const App = () => {
     gsap.registerPlugin(SplitText, ScrollTrigger);
@@ -39,10 +40,12 @@ const App = () => {
         <>
             <Provider store={store}>
                 <PersistGate loading={null} persistor={persistor}>
+                    {/* <ComingSoonModal isVisible={true} /> */}
                     <PrimeReactProvider>
                         <ProjectRoutes />
                     </PrimeReactProvider>
                 </PersistGate>
+
             </Provider>
         </>
     )

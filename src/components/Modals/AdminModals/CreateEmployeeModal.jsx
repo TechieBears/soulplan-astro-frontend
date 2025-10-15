@@ -181,7 +181,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        First Name
+                                                        First Name <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <TextInput
                                                         label="Enter First Name*"
@@ -196,7 +196,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Last Name
+                                                        Last Name <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <TextInput
                                                         label="Enter Last Name*"
@@ -211,7 +211,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Employee Image
+                                                        Employee Image <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <ImageUploadInput
                                                         label="Upload Employee Image"
@@ -229,7 +229,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Email {edit ? "(Cannot be edited)" : ""}
+                                                        Email <span className="text-red-500 text-xs font-tbLex">*</span> {edit ? "(Cannot be edited)" : ""}
                                                     </h4>
                                                     <TextInput
                                                         label="Enter Your Email"
@@ -245,7 +245,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Phone Number
+                                                        Phone Number <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <TextInput
                                                         label="Enter Your Phone Number"
@@ -376,7 +376,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Start Time
+                                                        Start Time <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <TextInput
                                                         label="Start Time*"
@@ -398,7 +398,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        End Time
+                                                        End Time <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <div className="">
                                                         <TextInput

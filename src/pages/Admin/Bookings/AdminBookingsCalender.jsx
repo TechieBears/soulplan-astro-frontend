@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import moment from "moment";
 import BookingDetailsModal from '../../../components/Modals/AdminModals/BookingDetailsModal';
-import Preloaders from '../../../components/Loader/Preloaders';
 import { adminSlots } from "../../../api";
 import HorizontalSlotCalendar from '../../../components/Calender/HorizontalSlotCalender';
 import BlockCalenderSlotsModal from "../../../components/Modals/AdminModals/BlockCalenderSlotsModal";
@@ -31,6 +30,52 @@ const SkeletonSlot = () => (
         </div>
     </div>
 );
+
+const SkeletonTable = () => {
+    const dummyTimeSlots = Array.from({ length: 12 }, (_, i) => i);
+    const dummyAstrologers = Array.from({ length: 4 }, (_, i) => i);
+
+    return (
+        <table className="min-w-max table-fixed w-full border-separate border border-slate-100 rounded-lg">
+            <colgroup>
+                <col style={{ width: "200px" }} />
+                {dummyAstrologers.map((_, idx) => (
+                    <col key={`col-skeleton-${idx}`} style={{ width: "200px" }} />
+                ))}
+            </colgroup>
+
+            <thead className="bg-slate-100">
+                <tr>
+                    <th className="sticky left-0 z-30 bg-slate-100 w-[200px] px-3 py-4">
+                        <div className="h-5 bg-gray-300 rounded animate-pulse mx-auto w-24"></div>
+                    </th>
+                    {dummyAstrologers.map((_, idx) => (
+                        <th key={`th-skeleton-${idx}`} className="px-3 py-4">
+                            <div className="h-5 bg-gray-300 rounded animate-pulse mx-auto w-32"></div>
+                        </th>
+                    ))}
+                </tr>
+            </thead>
+
+            <tbody>
+                {dummyTimeSlots.map((_, rowIdx) => (
+                    <tr key={`row-skeleton-${rowIdx}`} className="hover:bg-slate-50">
+                        <td className="sticky left-0 z-20 bg-white w-[200px] px-3 py-2 text-center">
+                            <div className="h-4 bg-gray-200 rounded animate-pulse mx-auto w-28"></div>
+                        </td>
+                        {dummyAstrologers.map((_, colIdx) => (
+                            <td key={`cell-skeleton-${rowIdx}-${colIdx}`} className="w-[200px] px-2 py-2">
+                                <div className="w-full">
+                                    <SkeletonSlot />
+                                </div>
+                            </td>
+                        ))}
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    );
+};
 
 const SlotCard = ({ status, booking, onClick, isLoading }) => {
     if (isLoading) return <SkeletonSlot />;
@@ -211,7 +256,7 @@ const VenueCalendar = () => {
             <div className="overflow-x-auto w-full">
                 <div className={isLoading ? "block w-full min-h-[60vh]" : "block w-full"}>
                     {isLoading ? (
-                        <Preloaders />
+                        <SkeletonTable />
                     ) : (
                         // ⬇️ min-w-max ensures table can grow beyond viewport width
                         <table className="min-w-max  table-fixed w-full border-separate border border-slate-100 rounded-lg">
