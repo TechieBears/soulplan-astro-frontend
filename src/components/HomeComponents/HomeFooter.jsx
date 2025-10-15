@@ -37,7 +37,7 @@ const HomeFooter = () => {
                 href="mailto:mohanmamidala2004@gmail.com?subject=Contact%20From%20Website"
                 className="hover:underline transition-colors duration-200"
               >
-                mohanmamidala2004@gmail.com
+                support@soulplan.com
               </a>
             </p>
             <p className="flex items-center gap-2 text-sm">

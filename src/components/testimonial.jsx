@@ -79,7 +79,7 @@ const Testimonials = () => {
                             </div>
                         ) : testimonials?.length > 0 ? (
                             <Swiper
-                                autoplay={{ delay: 2500, disableOnInteraction: false, pauseOnMouseEnter: true }}
+                                autoplay={{ delay: 1500, disableOnInteraction: false, pauseOnMouseEnter: true }}
                                 modules={[Autoplay]}
                                 spaceBetween={30}
                                 centeredSlides={true}
