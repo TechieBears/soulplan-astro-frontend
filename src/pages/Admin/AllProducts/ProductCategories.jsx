@@ -183,7 +183,7 @@ const ProductCategoriesPanel = () => {
             header: 'Image',
             body: imageBodyTemp,
             style: true,
-            sortable: false
+            sortable: true
         },
         {
             field: '_id',
@@ -218,7 +218,7 @@ const ProductCategoriesPanel = () => {
             header: 'Action',
             body: actionBodyTemplate,
             style: true,
-            sortable: false
+            sortable: true
         }
     ];
 
@@ -429,7 +429,7 @@ const SubProductCategoriesPanel = () => {
             header: 'Image',
             body: imageBodyTemp,
             style: true,
-            sortable: false
+            sortable: true
         },
         {
             field: '_id',
@@ -471,7 +471,7 @@ const SubProductCategoriesPanel = () => {
             header: 'Action',
             body: actionBodyTemplate,
             style: true,
-            sortable: false
+            sortable: true
         }
     ];
 

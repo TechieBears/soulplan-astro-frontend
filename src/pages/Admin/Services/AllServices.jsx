@@ -187,7 +187,7 @@ const AllServices = () => {
             header: 'Image',
             body: imageBody,
             style: true,
-            sortable: false
+            sortable: true
         },
         {
             field: '_id',
@@ -201,7 +201,7 @@ const AllServices = () => {
             header: 'Service Details',
             body: serviceDetailsBody,
             style: true,
-            sortable: false
+            sortable: true
         },
         {
             field: 'serviceType',

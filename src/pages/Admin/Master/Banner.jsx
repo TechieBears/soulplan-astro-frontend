@@ -201,7 +201,7 @@ const Banner = () => {
             header: "Banner Image",
             body: imageBodyTemp,
             style: true,
-            sortable: false
+            sortable: true
         },
         {
             field: '_id',

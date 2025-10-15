@@ -152,7 +152,7 @@ function AllUserProfiles() {
 
 
     const columns = [
-        { field: "image", header: "Image", body: imageBodyTemp, style: true, sortable: false },
+        { field: "image", header: "Image", body: imageBodyTemp, style: true, sortable: true },
         {
             field: 'code', header: 'Product ID', body: (row) => (
                 <div className="flex items-center gap-2">
@@ -170,7 +170,7 @@ function AllUserProfiles() {
                 </div>
             ), style: true, sortable: true
         },
-        { field: 'productDetails', header: 'Product Details', body: productDetailsTemp, style: true, sortable: false },
+        { field: 'productDetails', header: 'Product Details', body: productDetailsTemp, style: true, sortable: true },
         { field: 'pricing', header: 'Pricing', body: priceBodyTemp, style: true, sortable: true },
         { field: 'stock', header: 'Stock', body: stockBodyTemp, style: true, sortable: true },
         {
@@ -190,7 +190,7 @@ function AllUserProfiles() {
             body: activeBody,
             style: true, sortable: true
         },
-        { field: "action", header: "Actions", body: actionBodyTemplate, style: true, sortable: false }
+        { field: "action", header: "Actions", body: actionBodyTemplate, style: true, sortable: true }
     ];
 
 

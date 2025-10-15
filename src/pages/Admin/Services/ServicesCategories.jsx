@@ -148,7 +148,7 @@ const ServicesCategories = () => {
             header: 'Image',
             body: imageBodyTemp,
             style: true,
-            sortable: false
+            sortable: true
         },
         {
             field: '_id',
@@ -183,7 +183,7 @@ const ServicesCategories = () => {
             header: 'Action',
             body: actionBodyTemplate,
             style: true,
-            sortable: false
+            sortable: true
         }
     ];
 

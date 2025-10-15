@@ -334,7 +334,7 @@ function OffersCoupons() {
             header: 'Applicable To',
             body: applicableItemsBody,
             style: true,
-            sortable: false
+            sortable: true
         },
         {
             field: 'dates',
@@ -376,7 +376,7 @@ function OffersCoupons() {
             header: 'Action',
             body: actionBodyTemplate,
             style: true,
-            sortable: false
+            sortable: true
         }
     ];
 
