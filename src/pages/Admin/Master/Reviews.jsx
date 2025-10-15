@@ -115,7 +115,8 @@ export default function Reviews() {
                     </div>
                 </div>
             ),
-            style: true
+            style: true,
+            sortable: true
         },
         {
             field: 'service',
@@ -126,12 +127,14 @@ export default function Reviews() {
                 </span>
             ),
             style: true
+            , sortable: true
         },
         {
             field: 'rating',
             header: 'Rating',
             body: (row) => <StarRating rating={row?.rating || 0} />,
             style: true
+            , sortable: true
         },
         {
             field: 'createdAt',
@@ -143,8 +146,9 @@ export default function Reviews() {
                 </div>
             ),
             style: true
+            , sortable: true
         },
-        { field: 'message', header: 'Message', body: (row) => <textarea className='capitalize overflow-y-auto w-[20rem] h-[5rem] text-wrap rounded-md px-2 py-1 resize-none cursor-default' value={row?.message || "---- -----"} readOnly />, style: true },
+        { field: 'message', header: 'Message', body: (row) => <textarea className='capitalize overflow-y-auto w-[20rem] h-[5rem] text-wrap rounded-md px-2 py-1 resize-none cursor-default' value={row?.message || "---- -----"} readOnly />, style: true , sortable: true},
         { field: "isactive", header: "Visible On Website", body: activeBody, sortable: true, style: true },
     ];
 

@@ -115,7 +115,8 @@ export default function Testimonials() {
                     </div>
                 </div>
             ),
-            style: true
+            style: true,
+            sortable: true
         },
         {
             field: 'service',
@@ -125,13 +126,15 @@ export default function Testimonials() {
                     {row?.service?.name || row?.service?.title || "N/A"}
                 </span>
             ),
-            style: true
+            style: true,
+            sortable: true
         },
         {
             field: 'rating',
             header: 'Rating',
             body: (row) => <StarRating rating={row?.rating || 0} />,
             style: true
+            , sortable: true
         },
         {
             field: 'createdAt',
@@ -143,8 +146,9 @@ export default function Testimonials() {
                 </div>
             ),
             style: true
+            , sortable: true
         },
-        { field: 'message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true },
+        { field: 'message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true , sortable: true },
         { field: "isactive", header: "Visible On Website", body: activeBody, sortable: true, style: true },
     ];
 

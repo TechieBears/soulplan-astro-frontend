@@ -92,6 +92,12 @@ const Testimonials = () => {
                                 centeredSlides={true}
                                 className="pb-12 overflow-visible"
                                 slidesPerView={1}
+                                modules={[Autoplay]}
+                                autoplay={{
+                                    delay: 2000,
+                                    disableOnInteraction: false,
+                                }}
+                                loop={true}
                                 breakpoints={{
                                     768: { slidesPerView: 2, centeredSlides: true },
                                     1024: { slidesPerView: 3, centeredSlides: true },
