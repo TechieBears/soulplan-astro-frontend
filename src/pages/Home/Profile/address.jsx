@@ -21,6 +21,7 @@ const AddressPage = () => {
     const [showAddForm, setShowAddForm] = useState(false);
     const [editingAddress, setEditingAddress] = useState(null);
     const [addresses, setAddress] = useState([]);
+    console.log("⚡️🤯 ~ address.jsx:24 ~ AddressPage ~ addresses:", addresses)
     const [loading, setLoading] = useState(false);
     const [fetchLoading, setFetchLoading] = useState(true);
     const dispatch = useDispatch()
@@ -91,21 +92,21 @@ const AddressPage = () => {
         try {
             setFetchLoading(true);
             const res = await getAllAddress();
-            if (res?.data?.length > 0) {
+            if (res?.success) {
+                setAddress(res?.data || []);
                 const defaultAddress = res?.data?.filter(item => item?.isDefault)
                 dispatch(setAddresses(defaultAddress[0]))
+            } else {
+                setAddress([]);
+                toast.error(res?.message || 'Failed to fetch addresses');
             }
-            setAddress(res?.data);
         } catch (err) {
             setAddress([]);
             toast.error(err.message || 'Failed to fetch addresses');
-            console.error('Error fetching addresses', err);
         } finally {
-            setAddress([]);
             setFetchLoading(false);
         }
     }
-
     useEffect(() => {
         fetchAddresses();
         window.scrollTo(0, 0);

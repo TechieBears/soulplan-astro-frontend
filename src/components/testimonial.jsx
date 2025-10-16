@@ -6,12 +6,10 @@ import "swiper/css/navigation";
 import playstore from "../../src/assets/google-play-black.png";
 import phoneMockup from "../../src/assets/phone-mockup.png";
 import { formBtn3 } from "../utils/CustomClass";
-import { QuoteUp } from "iconsax-reactjs";
 import handImage from '../assets/helperImages/handImage.png'
 import { useNavigate } from "react-router-dom";
 import { getAllPublicTestimonials } from "../api";
 import userImage from '../assets/user.webp';
-import { Star } from "@phosphor-icons/react";
 import underline from '../assets/undertext.png';
 import TestimonialModal from "./Modals/TestimonialModal";
 
@@ -105,52 +103,70 @@ const Testimonials = () => {
                                 onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
                             >
                                 {testimonials?.map((t, index) => (
-                                    <SwiperSlide key={t._id || index} className="flex h-full">
+                                    <SwiperSlide key={t._id || index} className="flex">
                                         <div
-                                            className={`w-full p-6 rounded-lg transition-colors duration-300 flex flex-col items-center justify-between text-center shadow-md min-h-[320px] ${activeIndex === index
-                                                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white scale-105 shadow-xl z-10"
-                                                : "bg-white border text-gray-700 opacity-80"
+                                            className={`w-full bg-white rounded-xl shadow-lg transition-all duration-300 overflow-hidden justify-between flex flex-col ${activeIndex === index
+                                                ? "scale-105 shadow-2xl ring-2 ring-orange-400"
+                                                : "hover:shadow-xl"
                                                 }`}
                                         >
-                                            {/* Quote Icon */}
-                                            <QuoteUp className={`absolute z-10 top-5 left-5 transition-all duration-300 ${activeIndex === index ? "text-white" : "text-slate-200"}`} size={70} variant="Bold" />
-
-                                            {/* Avatar */}
-                                            <img
-                                                src={t?.user_id?.profileImage || t?.user_id?.image || t?.image || userImage}
-                                                alt={`${t?.user_id?.profile?.firstName || t?.user_id?.name || t?.name || "User"}'s testimonial`}
-                                                className="w-20 h-20 rounded-full border-2 border-white mb-4 object-cover"
-                                                onError={(e) => {
-                                                    e.target.src = userImage;
-                                                }}
-                                            />
-
-                                            {/* Testimonial Text */}
-                                            <p className="text-sm mb-4 leading-relaxed font-tbPop !font-normal line-clamp-3">
-                                                {t?.message || t?.text}
-                                            </p>
-
-                                            {/* Stars */}
-                                            <div className="flex justify-center space-x-1">
-                                                {Array.from({ length: t.rating || 5 }).map((_, index) => (
-                                                    <Star
-                                                        key={index}
-                                                        size={20}
-                                                        weight="fill"
-                                                        color={index < t.rating ? "#FFD700" : "#E5E7EB"}
+                                            {/* Card Header */}
+                                            <div className="p-4 border-b border-gray-100">
+                                                <div className="flex items-center space-x-3">
+                                                    {/* Avatar */}
+                                                    <img
+                                                        src={t?.user?.profileImage || t?.user_id?.profileImage || t?.user_id?.image || t?.image || userImage}
+                                                        alt={`${t?.user?.firstName || t?.user_id?.profile?.firstName || t?.user_id?.name || t?.name || "User"}'s testimonial`}
+                                                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                                                        onError={(e) => {
+                                                            e.target.src = userImage;
+                                                        }}
                                                     />
-                                                ))}
+                                                    <div>
+                                                        <h4 className="font-semibold text-gray-800 text-sm capitalize text-left">
+                                                            {t?.user?.firstName && t?.user?.lastName
+                                                                ? `${t.user.firstName} ${t.user.lastName}`
+                                                                : t?.user_id?.profile?.firstName && t?.user_id?.profile?.lastName
+                                                                    ? `${t.user_id.profile.firstName} ${t.user_id.profile.lastName}`
+                                                                    : t?.user_id?.name || t?.name || "Anonymous User"}
+                                                        </h4>
+                                                        <p className="text-xs text-gray-500 text-left">
+                                                            {[t?.city, t?.state, t?.country].filter(Boolean).join(", ")}
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            {/* Name */}
-                                            <h4
-                                                className={`font-normal tracking-tight capitalize font-tbLex line-clamp-1 ${activeIndex === index ? "text-white" : "text-gray-700"
-                                                    }`}
-                                            >
-                                                {t?.user_id?.profile?.firstName && t?.user_id?.profile?.lastName
-                                                    ? `${t.user_id.profile.firstName} ${t.user_id.profile.lastName}`
-                                                    : t?.user_id?.name || t?.name || "Anonymous User"}
-                                            </h4>
+                                            {/* Card Content */}
+                                            <div className="p-4">
+                                                {/* Service/Product Badge */}
+                                                {(t?.service || t?.product) && (
+                                                    <div className="inline-block bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-medium mb-3">
+                                                        {t?.service?.name || t?.service?.title || t?.product?.name}
+                                                    </div>
+                                                )}
+
+                                                {/* Testimonial Text */}
+                                                <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-3 overflow-hidden">
+                                                    {t?.message || t?.text}
+                                                </p>
+                                            </div>
+
+                                            {/* Media Image Section */}
+                                            {t?.media && t?.media?.length > 0 && (
+                                                <div className="px-4 pb-4">
+                                                    <div className="relative">
+                                                        <img
+                                                            src={t.media[0]}
+                                                            alt="Testimonial media"
+                                                            className="w-full h-32 object-cover rounded-lg"
+                                                            onError={(e) => {
+                                                                e.target.style.display = 'none';
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </SwiperSlide>
                                 ))}

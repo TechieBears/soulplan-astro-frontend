@@ -1245,8 +1245,8 @@ export const getSingleServiceOrder = async (orderId) => {
     }
 };
 
-export const getAllTestimonials = async (page = 1, limit = 10, isActive = true) => {
-    const url = `${environment.baseUrl}testimonials/public/get-all?page=${page}&limit=${limit}&isActive=${isActive}`;
+export const getAllTestimonials = async (page, limit, name) => {
+    const url = `${environment.baseUrl}testimonials/public/get-all?page=${page || 1}&limit=${limit || 10}&name=${name || ''}`;
     try {
         const response = await axios.get(url);
         return response.data;
@@ -1340,7 +1340,7 @@ export const deleteCoupon = async (id) => {
 // ======================= Testimonials Api ========================
 
 export const getAllPublicTestimonials = async (data) => {
-    const url = `${environment.baseUrl}testimonials/public/get-all?name=${data?.name || ""}&page=${data?.p}&limit=${data?.records}`;
+    const url = `${environment.baseUrl}testimonials/public/get-all?page=${data?.p || 1}&limit=${data?.records || 10}&name=${data?.name || ''}`;
     try {
         const response = await axios.get(url);
         return response.data;
