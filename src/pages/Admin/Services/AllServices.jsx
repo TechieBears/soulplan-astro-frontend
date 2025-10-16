@@ -89,15 +89,8 @@ const AllServices = () => {
     );
 
     const serviceDetailsBody = (row) => (
-        <div className="space-y-2">
-            <div className="text-sm">
-                <div className="font-medium capitalize">{row?.name || "---- -----"}</div>
-                {row?.subTitle && (
-                    <div className="text-xs text-gray-400 capitalize mt-1">
-                        {row.subTitle.length > 50 ? `${row.subTitle.substring(0, 50)}...` : row.subTitle}
-                    </div>
-                )}
-            </div>
+        <div className="text-sm">
+            <div className="font-medium capitalize">{row?.name || "---- -----"}</div>
         </div>
     );
 
@@ -194,7 +187,7 @@ const AllServices = () => {
             header: 'Image',
             body: imageBody,
             style: true,
-            sortable: false
+            sortable: true
         },
         {
             field: '_id',
@@ -208,7 +201,7 @@ const AllServices = () => {
             header: 'Service Details',
             body: serviceDetailsBody,
             style: true,
-            sortable: false
+            sortable: true
         },
         {
             field: 'serviceType',
@@ -230,13 +223,6 @@ const AllServices = () => {
             body: priceDetailsBody,
             style: true,
             sortable: true
-        },
-        {
-            field: 'content',
-            header: 'Content & Media',
-            body: contentBody,
-            style: true,
-            sortable: false
         },
         {
             field: 'status',

@@ -1,24 +1,27 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaStar, FaChevronUp, FaChevronDown } from "react-icons/fa";
 import { formBtn3 } from "../../utils/CustomClass";
-import { ShoppingCartIcon } from "@phosphor-icons/react";
+import { ShoppingCartIcon, Star } from "@phosphor-icons/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import ProductCard from "../../components/Products/ProductCard";
 import star from "../../assets/helperImages/star.png";
 import sun from "../../assets/helperImages/sun.png";
-import { addProductToCart, getPublicProductsSingle } from "../../api";
-import { MoonLoader } from "react-spinners";
+import { addProductToCart, addRating, getPublicProductsSingle, getRatings } from "../../api";
 import { Autoplay, FreeMode, Navigation } from "swiper/modules";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { setCartProductCount } from "../../redux/Slices/cartSlice";
 import Preloaders from "../../components/Loader/Preloaders";
+import moment from "moment";
+import CustomTextArea from "../../components/TextInput/CustomTextArea";
+import { Controller, useForm } from "react-hook-form";
+import { PulseLoader } from "react-spinners";
 
 const ProductDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const login = useSelector((state) => state.user.isLogged);
+    const user = useSelector((state) => state.user.userDetails);
     const [quantity, setQuantity] = useState(1);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [activeTab, setActiveTab] = useState("description");
@@ -26,7 +29,29 @@ const ProductDetail = () => {
     const [relatedProducts, setRelatedProducts] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [ratings, setRatings] = useState(null);
+    const [ratingsLoading, setRatingsLoading] = useState(false);
     const dispatch = useDispatch();
+
+    const { register, handleSubmit, control, formState: { errors }, reset } = useForm({
+        defaultValues: {
+            rating: 0,
+            reviewText: "",
+        }
+    });
+
+    const fetchRatings = async () => {
+        try {
+            setRatingsLoading(true);
+            const res = await getRatings({ product: id });
+            setRatings(res?.data);
+        } catch (err) {
+            console.log("==========err in fetchRatings", err);
+            setRatings([]);
+        } finally {
+            setRatingsLoading(false);
+        }
+    };
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -44,6 +69,7 @@ const ProductDetail = () => {
             }
         };
         fetchProduct();
+        fetchRatings();
         window.scrollTo(0, 0);
     }, [id]);
 
@@ -66,6 +92,48 @@ const ProductDetail = () => {
             toast.error(err?.message || "Something went wrong");
         }
     };
+
+    const handleBuyNow = (productId) => {
+        if (!login) {
+            toast.error('Please login to continue with your purchase');
+            return;
+        }
+        navigate('/buy-now', {
+            state: {
+                product: product,
+                quantity: quantity
+            }
+        });
+    };
+
+    const handleAddRating = async (data) => {
+        console.log("⚡️🤯 ~ ProductDetail.jsx:111 ~ handleAddRating ~ data:", data)
+        if (data?.rating === 0) {
+            toast.error("Please select a rating");
+            return;
+        }
+        try {
+            const payload = {
+                user_id: user?._id,
+                service_id: null,
+                product_id: product?._id,
+                message: data?.reviewText,
+                rating: data?.rating
+            }
+            await addRating(payload).then(res => {
+                if (res?.success) {
+                    toast.success("Review Added Successfully");
+                    fetchRatings();
+                    reset();
+                } else {
+                    toast.error(res?.message || "Something went wrong");
+                }
+            })
+        } catch (error) {
+            console.log('Error submitting form:', error);
+            toast.error("Failed to add Review");
+        }
+    }
 
     if (loading) {
         return (
@@ -195,12 +263,12 @@ const ProductDetail = () => {
                         <div className="col-span-6 md:col-span-12 lg:col-span-6">
                             {/* Title & Price */}
                             <div className="mb-4">
-                                <div className="text-sm text-gray-500 mb-2">
+                                <div className="text-sm text-gray-500 mb-2 capitalize  font-tbPop">
                                     {product?.category?.name}{" "}
                                     {product?.subcategory?.name &&
                                         `> ${product?.subcategory?.name}`}
                                 </div>
-                                <h2 className="text-xl lg:text-3xl font-medium font-tbPop text-slate-800 mb-2">
+                                <h2 className="text-xl lg:text-3xl font-medium font-tbPop text-slate-800 mb-2 capitalize">
                                     {product?.name}
                                 </h2>
                                 <div className="flex items-center space-x-4 mb-3">
@@ -209,13 +277,13 @@ const ProductDetail = () => {
                                             ₹{product?.sellingPrice?.toLocaleString()}
                                         </span>
                                         {product?.mrpPrice > product?.sellingPrice && (
-                                            <span className="text-base lg:text-lg text-slate-500 font-tbPop line-through">
+                                            <span className="text-base lg:text-lg text-slate-400 font-tbPop line-through">
                                                 ₹{product?.mrpPrice?.toLocaleString()}
                                             </span>
                                         )}
                                     </div>
                                     {product?.discountPercentage > 0 && (
-                                        <span className="bg-red-100 text-red-600 px-2 py-1  text-sm lg:text-base font-tbPop font-semibold">
+                                        <span className="bg-red-100 text-red-600 px-2 py-1  text-sm lg:text-base font-tbPop font-semibold capitalize">
                                             {product?.discountPercentage}% OFF
                                         </span>
                                     )}
@@ -231,27 +299,12 @@ const ProductDetail = () => {
                                             }`}
                                     >
                                         {product?.stock > 0
-                                            ? `In Stock (${product?.stock} available)`
+                                            ? `In Stock `
                                             : "Out of Stock"}
                                     </span>
                                 </div>
                             </div>
 
-                            {/* Stock Status */}
-                            {/* <div className="mb-4">
-              {product.inStock ? (
-                <div className="flex items-center space-x-2 text-green-600">
-                  <FaCheck className="w-4 h-4" />
-                  <span className="text-sm font-medium">
-                    In Stock ({product.stockCount} available)
-                  </span>
-                </div>
-              ) : (
-                <div className="text-red-600 text-sm font-medium">
-                  Out of Stock
-                </div>
-              )}
-            </div> */}
 
                             {/* Product Description */}
                             <div className="space-y-2 mb-4">
@@ -295,7 +348,7 @@ const ProductDetail = () => {
 
                                 {/* Action Buttons */}
                                 <div className="flex gap-3 !w-full flex-row-reverse md:flex-row">
-                                    <button className={`${formBtn3} `}>Buy Now</button>
+                                    <button className={`${formBtn3} `} disabled={product?.stock === 0} onClick={() => handleBuyNow(product?._id)}>Buy Now</button>
                                     <button
                                         className={`h-[48px] lg:h-[46px] xl:h-[51px] py-3 text-white !font-medium !tracking-normal text-sm xl:text-base bg-primary-gradient hover:opacity-90  disabled:opacity-50  transition  w-full rounded relative `}
                                         onClick={() => handleAddToCart(product?._id)}
@@ -376,7 +429,7 @@ const ProductDetail = () => {
                                         : "text-gray-500 hover:text-gray-700"
                                         }`}
                                 >
-                                    Reviews (3)
+                                    Reviews ({ratings?.length || 0})
                                 </button>
                             </nav>
                         </div>
@@ -403,7 +456,7 @@ const ProductDetail = () => {
 
                             {activeTab === "specifications" && (
                                 <div className="space-y-4">
-                                    {product?.specification ? (
+                                    {/* {product?.specification ? (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {Object.entries(product.specification).map(
                                                 ([key, value]) => (
@@ -435,51 +488,154 @@ const ProductDetail = () => {
                                                 {product?.additionalInfo}
                                             </p>
                                         </div>
-                                    )}
+                                    )} */}
                                 </div>
                             )}
 
                             {activeTab === "reviews" && (
-                                <div className="space-y-6">
-                                    <div className="flex items-center justify-between">
-                                        <h3 className="text-lg font-semibold font-tbPop text-black">
-                                            Customer Reviews
-                                        </h3>
-                                        <button className={`${formBtn3} px-4 py-2 text-sm !w-auto`}>
-                                            Write a Review
-                                        </button>
-                                    </div>
+                                <div className="">
+                                    {
+                                        login ? (
+                                            <form onSubmit={handleSubmit(handleAddRating)}>
+                                                <div className="mt-3 flex flex-col gap-3 p-4 bg-white/30 rounded-lg">
+                                                    <h4 className="font-semibold text-gray-800 font-tbPop">Write a Review</h4>
 
-                                    {/* Sample Reviews */}
-                                    <div className="space-y-4">
-                                        {[1, 2, 3].map((review) => (
-                                            <div
-                                                key={review}
-                                                className="border-b border-gray-100 pb-4"
-                                            >
-                                                <div className="flex items-center space-x-2 mb-2">
-                                                    <div className="flex">
-                                                        {[...Array(5)].map((_, i) => (
-                                                            <FaStar
-                                                                key={i}
-                                                                className="w-4 h-4 text-yellow-400"
-                                                            />
-                                                        ))}
+                                                    <div className="flex flex-col gap-2">
+                                                        <Controller
+                                                            name="rating"
+                                                            control={control}
+                                                            render={({ field }) => (
+                                                                <div className="flex items-center gap-1">
+                                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                                        <button
+                                                                            key={star}
+                                                                            type="button"
+                                                                            onClick={() => field.onChange(star)}
+                                                                            className="focus:outline-none"
+                                                                        >
+                                                                            <Star
+                                                                                className={`w-6 h-6 ${star <= field.value
+                                                                                    ? "text-yellow-400 fill-current"
+                                                                                    : "text-gray-300"
+                                                                                    } hover:text-yellow-400 transition-colors`}
+
+                                                                                weight={star <= field.value ? "fill" : "regular"}
+                                                                            />
+                                                                        </button>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        />
                                                     </div>
-                                                    <span className="font-medium font-tbPop">
-                                                        Customer {review}
-                                                    </span>
-                                                    <span className="text-sm text-gray-500">
-                                                        • 2 days ago
-                                                    </span>
+
+                                                    <div className="flex flex-col gap-2">
+                                                        <label className="text-sm font-medium text-gray-700 font-tbPop">Review</label>
+                                                        <Controller
+                                                            name="reviewText"
+                                                            control={control}
+                                                            rules={{ required: "Please write a review" }}
+                                                            render={({ field, fieldState }) => (
+                                                                <div>
+                                                                    <CustomTextArea
+                                                                        placeholder="Write your review here..."
+                                                                        props={{
+                                                                            ...field,
+                                                                            rows: 3,
+                                                                        }}
+                                                                        style="font-tbPop"
+                                                                    />
+                                                                    {fieldState.error && (
+                                                                        <p className="text-red-500 text-xs mt-1 font-tbPop">
+                                                                            {fieldState.error.message}
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                        />
+                                                    </div>
+
+                                                    <div className="flex justify-end gap-2">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                reset();
+                                                            }}
+                                                            className="px-3 py-2 text-sm rounded-lg border hover:bg-gray-100 transition font-tbPop"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <button
+                                                            type="submit"
+                                                            className="px-3 py-2 text-sm rounded-lg bg-black text-white hover:bg-gray-800 transition font-tbPop"
+                                                        >
+                                                            Submit Review
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <p className="text-gray-600 font-tbPop text-sm">
-                                                    Excellent quality product! Very satisfied with the
-                                                    purchase. The spiritual energy is amazing and it
-                                                    arrived quickly.
-                                                </p>
+                                            </form>
+                                        ) : (
+                                            <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
+                                                <div className="flex items-center justify-between gap-4">
+                                                    <h3 className="text-lg font-bold text-gray-900">
+                                                        Add review
+                                                    </h3>
+                                                    <button
+                                                        onClick={() => navigate("/login")}
+                                                        className={`${formBtn3} !w-auto py-1 `}
+                                                    >
+                                                        Login to Review
+                                                    </button>
+                                                </div>
                                             </div>
-                                        ))}
+                                        )
+                                    }
+
+
+                                    <div className="space-y-6 mt-3">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="text-lg font-semibold font-tbPop text-black">
+                                                Customer Reviews
+                                            </h3>
+                                        </div>
+
+                                        {/* Sample Reviews */}
+                                        {ratingsLoading ? <div className="flex justify-center items-center h-40"> <PulseLoader color="#000" size={4} /></div> :
+                                            ratings?.length > 0 ?
+                                                <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                                                    {ratings?.map((review) => (
+                                                        <div
+                                                            key={review?._id}
+                                                            className="border-b border-gray-100 pb-4"
+                                                        >
+                                                            <div className="flex items-center space-x-2 mb-2">
+                                                                <div className="flex">
+                                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                                        <Star
+                                                                            size={16}
+                                                                            className={`${star <= review?.rating
+                                                                                ? "text-yellow-400 fill-current"
+                                                                                : "text-gray-300"
+                                                                                } hover:text-yellow-400 transition-colors`}
+                                                                            weight={star <= review?.rating ? "fill" : "regular"}
+                                                                        />
+                                                                    ))}
+                                                                </div>
+                                                                <span className="font-medium font-tbPop capitalize text-sm ">
+                                                                    {review?.user?.firstName || "----- ----- "} {review?.user?.lastName || "----- ----- "}
+                                                                </span>
+                                                                <span className="text-sm text-gray-500 capitalize">
+                                                                    • {moment(review?.createdAt).format("DD MMM YYYY")}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-gray-600 font-tbPop text-sm">
+                                                                {review?.message}
+                                                            </p>
+                                                        </div>
+                                                    ))}
+                                                </div> :
+                                                <div className="text-slate-500 font-tbPop text-base text-center py-20 bg-white/60 rounded-lg">
+                                                    No reviews available
+                                                </div>}
                                     </div>
                                 </div>
                             )}
@@ -494,8 +650,8 @@ const ProductDetail = () => {
                         <RelatedProducts data={relatedProducts} />
                     </div>
                 </div>
-            </section>
-        </div>
+            </section >
+        </div >
     );
 };
 

@@ -121,7 +121,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
-                                                            Banner Image
+                                                            Banner Image <span className="text-red-500 text-xs font-tbLex">*</span>
                                                         </h4>
                                                         <ImageUploadInput
                                                             label="Upload Banner Image"
@@ -140,7 +140,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
-                                                            Title
+                                                            Title <span className="text-red-500 text-xs font-tbLex">*</span>
                                                         </h4>
                                                         <TextInput
                                                             label="Enter Title*"
@@ -155,7 +155,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
-                                                            Description
+                                                            Description <span className="text-red-500 text-xs font-tbLex">*</span>
                                                         </h4>
                                                         <CustomTextArea
                                                             label="Enter Description"
@@ -177,7 +177,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
-                                                            Banner Type
+                                                            Banner Type <span className="text-red-500 text-xs font-tbLex">*</span>
                                                         </h4>
                                                         <div className="">
                                                             <SelectTextInput
@@ -201,7 +201,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
-                                                            Position
+                                                            Position <span className="text-red-500 text-xs font-tbLex">*</span>
                                                         </h4>
                                                         <TextInput
                                                             label="Enter Position"
@@ -216,7 +216,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
-                                                            Start Date Time
+                                                            Start Date Time <span className="text-red-500 text-xs font-tbLex">*</span>
                                                         </h4>
                                                         <TextInput
                                                             label="Start Date Time"
@@ -231,7 +231,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
-                                                            End Date Time
+                                                            End Date Time <span className="text-red-500 text-xs font-tbLex">*</span>
                                                         </h4>
                                                         <TextInput
                                                             label="End Date Time"

@@ -3,16 +3,32 @@ import moment from 'moment'
 import { useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
 import Switch from "react-js-switch";
-import { getAdminAllTestimonials, editTestimonials } from '../../../api';
+import { getAdminAllReviews, editReviews } from '../../../api';
 import Table from '../../../components/Table/Table'
 import TableHeader from '../../../components/Table/TableHeader'
 import usePagination from '../../../utils/customHooks/usePagination'
-import TextInput from '../../../components/TextInput/TextInput'
-import { formBtn1 } from '../../../utils/CustomClass'
-import { useForm } from 'react-hook-form'
+import { validateAlphabets } from '../../../utils/validateFunction';
+import { formBtn1 } from '../../../utils/CustomClass';
+import TextInput from '../../../components/TextInput/TextInput';
+import { useForm } from 'react-hook-form';
 
+const StarRating = ({ rating, maxStars = 5 }) => {
+    return (
+        <div className="flex items-center gap-1 justify-center">
+            {[...Array(maxStars)].map((_, index) => (
+                <Star1
+                    key={index}
+                    size={16}
+                    variant={index < rating ? "Bold" : "Outline"}
+                    color={index < rating ? "#FFD700" : "#E5E7EB"}
+                />
+            ))}
+            <span className="ml-2 text-sm text-gray-600">({rating}/5)</span>
+        </div>
+    );
+};
 
-export default function Testimonials() {
+export default function Reviews() {
     const initialFilterState = {
         name: ''
     };
@@ -34,10 +50,10 @@ export default function Testimonials() {
         recordChangeHandler,
         records,
         error
-    } = usePagination(1, 10, getAdminAllTestimonials, combinedFilters);
+    } = usePagination(1, 10, getAdminAllReviews, combinedFilters);
 
     useEffect(() => {
-        if (error) toast.error('Failed to fetch testimonials');
+        if (error) toast.error('Failed to fetch reviews');
     }, [error]);
 
     const handleFilterSubmit = (data) => {
@@ -55,12 +71,9 @@ export default function Testimonials() {
     const handleActiveChange = async (id, isActive) => {
         try {
             const updatedData = {
-                isActive: !isActive,
-                city: 'Mumbai',
-                state: 'Maharashtra',
-                country: 'india',
+                isActive: !isActive
             }
-            await editTestimonials(id, updatedData);
+            await editReviews(id, updatedData);
             setRefreshTrigger(prev => prev + 1);
             toast.success('Status updated successfully');
         }
@@ -89,14 +102,16 @@ export default function Testimonials() {
                     <img
                         src={row?.user?.profileImage || '/api/placeholder/32/32'}
                         alt={`${row?.user?.firstName} ${row?.user?.lastName}`}
-                        className="w-14 h-14 rounded-full object-cover ring-1 ring-gray-200"
+                        className="w-8 h-8 rounded-full object-cover ring-1 ring-gray-200"
                         onError={(e) => {
                             e.target.src = `https://ui-avatars.com/api/?name=${row?.user?.firstName}+${row?.user?.lastName}&background=8833FF&color=fff&size=32`;
                         }}
                     />
-                    <div>
+                    <div className=''>
                         <p className="font-medium capitalize text-sm">{row?.user?.firstName} {row?.user?.lastName}</p>
-                        <p className="text-xs text-gray-500">{row?.user?.email}</p>
+                        <p className="text-xs text-gray-500 truncate max-w-[130px]" title={row?.user?.email}>
+                            {row?.user?.email}
+                        </p>
                     </div>
                 </div>
             ),
@@ -105,28 +120,21 @@ export default function Testimonials() {
         },
         {
             field: 'service',
-            header: 'Service / Product',
-            body: (row) => {
-                if (row?.service) {
-                    return (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                            {row?.service?.name || row?.service?.title || "N/A"}
-                        </span>
-                    );
-                } else if (row?.product) {
-                    return (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            {row?.product?.name || "N/A"}
-                        </span>
-                    );
-                } else {
-                    return (
-                        <span className="text-gray-400 text-xs">-</span>
-                    );
-                }
-            },
-            style: true,
-            sortable: true
+            header: 'Service/Product',
+            body: (row) => (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    {row?.service?.name || row?.service?.title || row?.product?.name || "N/A"}
+                </span>
+            ),
+            style: true
+            , sortable: true
+        },
+        {
+            field: 'rating',
+            header: 'Rating',
+            body: (row) => <StarRating rating={row?.rating || 0} />,
+            style: true
+            , sortable: true
         },
         {
             field: 'createdAt',
@@ -140,7 +148,7 @@ export default function Testimonials() {
             style: true
             , sortable: true
         },
-        { field: 'message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true, sortable: true },
+        { field: 'message', header: 'Message', body: (row) => <textarea className='capitalize overflow-y-auto w-[20rem] h-[5rem] text-wrap rounded-md px-2 py-1 resize-none cursor-default' value={row?.message || "---- -----"} readOnly />, style: true , sortable: true},
         { field: "isactive", header: "Visible On Website", body: activeBody, sortable: true, style: true },
     ];
 
@@ -154,7 +162,7 @@ export default function Testimonials() {
                             placeholder="Enter User Name"
                             type="text"
                             registerName="name"
-                            props={{ ...register('name') }}
+                            props={{ ...register('name', { validate: validateAlphabets }) }}
                         />
                     </div>
                     <div className="flex space-x-2">
@@ -164,7 +172,7 @@ export default function Testimonials() {
                 </form>
             </div>
             <div className="bg-white rounded-xl m-4 sm:m-5 shadow-sm  p-5 sm:p-7 ">
-                <TableHeader title="All Testimonials" subtitle="Recently added testimonials will appear here" />
+                <TableHeader title="All Reviews" subtitle="Recently added Reviews will appear here" />
                 <Table data={filterData} columns={columns} />
 
                 {/* Pagination */}

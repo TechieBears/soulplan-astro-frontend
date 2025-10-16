@@ -27,14 +27,12 @@ import ProductCategories from "../pages/Admin/AllProducts/ProductCategories";
 import AllServices from "../pages/Admin/Services/AllServices";
 import AllUserProfiles from "../pages/Admin/UserManagement/AllUserProfiles";
 import UserTransactios from "../pages/Admin/Transactios/UserTransactios";
-// import DeepLinkRedirect from "../pages/DeepLinkRedirect";
 import Employees from "../pages/Admin/UserManagement/Employees";
 import Banner from "../pages/Admin/Master/Banner";
 import Notifications from "../pages/Admin/Master/Notifications";
 import OffersCoupons from "../pages/Admin/Master/OffersCoupons";
 import ReferEarn from "../pages/Admin/Master/ReferEarn";
 import Testimonials from "../pages/Admin/Master/Testimonials";
-
 import AddressPage from "../pages/Home/Profile/address";
 import ProfilePage from "../pages/Home/Profile/account";
 import CustomerSupport from "../pages/Home/Profile/customersupport";
@@ -44,8 +42,6 @@ import ProductsPage from "../pages/Home/Profile/productspage";
 import ProductDetail from "../pages/Home/ProductDetail";
 import Cart from "../pages/Home/Cart";
 import PaymentSuccess from "../pages/Home/PaymentSuccess";
-
-// Service Pages
 import ServiceSidebar from "../components/Sidebar/ServiceSidebar";
 import BookingPage from "../pages/Home/BookingPage";
 import AdminProfile from "../pages/Admin/UserProfile/UserProfile";
@@ -54,6 +50,9 @@ import ProductBookings from "../pages/Admin/Bookings/ProductBookings";
 import ServiceBookings from "../pages/Admin/Bookings/ServiceBookings";
 import CustomerFeedback from "../pages/Admin/CustomerFeedback/CustomerFeedback";
 import VenueCalendar from '../pages/Admin/Bookings/AdminBookingsCalender';
+import { Whatsapp } from "iconsax-reactjs";
+import BuyNowPage from "../pages/Home/BuyNowPage";
+import Reviews from "../pages/Admin/Master/Reviews";
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
@@ -85,7 +84,7 @@ const ProjectRoutes = () => {
         <div className="min-h-screen transition-all duration-300">
             {loading ? (
                 <Preloaders />
-            ) : user?.role == "admin" || user?.role == "employee" ? (
+            ) : user?.role == "admin" || user?.role == "employee" || user?.role == "astrologer" ? (
                 // ============ Logged in (Admin or Employee) ============
                 <Sidebar>
                     <Routes>
@@ -109,6 +108,7 @@ const ProjectRoutes = () => {
                         <Route path="/notifications" element={<Notifications />} />
                         <Route path="/offersCoupons" element={<OffersCoupons />} />
                         <Route path="/referEarn" element={<ReferEarn />} />
+                        <Route path="/reviews" element={<Reviews />} />
                         <Route path="/testimonials" element={<Testimonials />} />
                         <Route path="/admin-profile" element={<AdminProfile />} />
                         <Route path="*" element={<ErrorPage />} />
@@ -116,7 +116,7 @@ const ProjectRoutes = () => {
                 </Sidebar>
             ) : (
                 // ============ Guest / Before Login ============
-                <main className="min-h-screen w-full overflow-x-hidden">
+                <main className="min-h-screen w-full overflow-x-hidden max-lg:px-5">
                     <HomeNavbar />
                     <Routes>
                         <Route path="/" element={<HomePage />} />
@@ -186,6 +186,15 @@ const ProjectRoutes = () => {
                                 </ProtectedRoute>
                             }
                         />
+                        <Route
+                            path="/buy-now"
+                            element={
+                                <ProtectedRoute>
+                                    <BuyNowPage />
+                                </ProtectedRoute>
+                            }
+                        />
+
                         <Route
                             path="/payment-success"
                             element={

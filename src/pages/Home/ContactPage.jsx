@@ -12,6 +12,10 @@ import SelectTextInput from "../../components/TextInput/SelectTextInput";
 
 const ContactPage = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
+      useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
 
     const [loader, setLoader] = useState()
     const onSubmit = async (data) => {
@@ -84,14 +88,24 @@ const ContactPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Full Name
+                                        Full Name*
                                     </h4>
                                     <TextInput
                                         label="Enter Full Name*"
                                         placeholder="Enter Full Name"
                                         type="text"
                                         registerName="fullName"
-                                        props={{ ...register('fullName', { required: "Full name is required" }), minLength: 3 }}
+                                        props={{ ...register('fullName', { 
+                                            required: "Full name is required",
+                                            minLength: {
+                                                value: 3,
+                                                message: "Full name must be at least 3 characters"
+                                            },
+                                            pattern: {
+                                                value: /^[A-Za-z\s]+$/,
+                                                message: "Full name should only contain letters and spaces"
+                                            }
+                                        }) }}
                                         errors={errors.fullName}
                                     />
                                 </div>
@@ -99,7 +113,7 @@ const ContactPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Subject
+                                        Subject*
                                     </h4>
                                     <div className="">
                                         <SelectTextInput
@@ -112,7 +126,7 @@ const ContactPage = () => {
                                             ]}
                                             placeholder="Select Subject"
                                             props={{
-                                                ...register('subject')
+                                                ...register('subject', { required: "Subject is required" })
                                             }}
                                             errors={errors.subject}
                                         />
@@ -122,14 +136,17 @@ const ContactPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Email
+                                        Email*
                                     </h4>
                                     <TextInput
                                         label="Enter Your Email"
                                         placeholder="Enter Your Email"
-                                        type="text"
+                                        type="email"
                                         registerName="email"
-                                        props={{ ...register('email'), valdate: validateEmail, required: "Email is required" }}
+                                        props={{ ...register('email', { 
+                                            required: "Email is required",
+                                            validate: validateEmail
+                                        }) }}
                                         errors={errors.email}
                                     />
                                 </div>
@@ -137,14 +154,29 @@ const ContactPage = () => {
                                     <h4
                                         className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
                                     >
-                                        Phone Number
+                                        Phone Number*
                                     </h4>
                                     <TextInput
                                         label="Enter Your Phone Number"
                                         placeholder="Enter Your Phone Number"
                                         type="tel"
                                         registerName="mobileNumber"
-                                        props={{ ...register('mobileNumber', { validate: validatePhoneNumber, required: true }), maxLength: 10, minLength: 10 }}
+                                        props={{ ...register('mobileNumber', { 
+                                            required: "Phone number is required",
+                                            validate: validatePhoneNumber,
+                                            pattern: {
+                                                value: /^[0-9]+$/,
+                                                message: "Phone number should only contain numbers"
+                                            },
+                                            minLength: {
+                                                value: 10,
+                                                message: "Phone number must be at least 10 digits"
+                                            },
+                                            maxLength: {
+                                                value: 10,
+                                                message: "Phone number must not exceed 10 digits"
+                                            }
+                                        }) }}
                                         errors={errors.mobileNumber}
                                     />
                                 </div>

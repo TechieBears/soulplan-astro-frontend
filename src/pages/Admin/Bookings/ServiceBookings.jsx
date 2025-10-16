@@ -140,7 +140,7 @@ const ServiceBookings = () => {
                     ))}
                 </div>
             ),
-            style: true, sortable: false
+            style: true, sortable: true
         },
         {
             field: 'address',
@@ -152,7 +152,7 @@ const ServiceBookings = () => {
                     <div className="text-xs text-gray-500">{row?.address?.address}, {row?.address?.city}, {row?.address?.state}</div>
                 </div>
             ) : <span className="text-xs text-gray-400">-- No Address --</span>,
-            style: true, sortable: false
+            style: true, sortable: true
         },
         {
             field: 'finalAmount',
@@ -196,7 +196,7 @@ const ServiceBookings = () => {
             body: (row) => <div className="flex items-center gap-2">
                 <ServiceBookingViewModal bookingData={row} />
             </div>,
-            style: true, sortable: false
+            style: true, sortable: true
         }
     ];
 

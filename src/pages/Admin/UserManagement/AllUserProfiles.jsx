@@ -17,10 +17,9 @@ const initialFilterState = {
 };
 
 function AllUserProfiles() {
-    const { register, handleSubmit, reset } = useForm({ defaultValues: initialFilterState });
+    const { register, handleSubmit, reset, watch } = useForm({ defaultValues: initialFilterState });
     const [filterCriteria, setFilterCriteria] = useState(initialFilterState);
-    const [refreshTrigger, setRefreshTrigger] = useState(0)
-
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
     const combinedFilters = useMemo(() => ({
         ...filterCriteria,
         refresh: refreshTrigger
@@ -41,13 +40,11 @@ function AllUserProfiles() {
         if (error) toast.error('Failed to fetch users');
     }, [error]);
 
-
     const handleFilterSubmit = (data) => {
         setFilterCriteria(data);
         pageChangeHandler(1);
         toast.success('Filters applied');
     };
-
     const handleClearFilters = () => {
         reset(initialFilterState);
         setFilterCriteria(initialFilterState);
@@ -205,7 +202,7 @@ function AllUserProfiles() {
             header: 'Profile',
             body: profileImageBody,
             style: true,
-            sortable: false
+            sortable: true
         },
         {
             field: '_id',

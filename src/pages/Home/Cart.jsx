@@ -274,6 +274,7 @@ const ProductTab = () => {
                 console.log("⚡️🤯 ~ Cart.jsx:282 ~ handleBooking ~ res:", res);
                 if (res?.success) {
                     toast.success(res?.message);
+                    dispatch(setCartProductCount(0));
                     navigate("/payment-success", {
                         state: { type: "products", orderDetails: res?.data },
                     });
@@ -292,8 +293,10 @@ const ProductTab = () => {
     const fetchAddresses = async () => {
         try {
             const res = await getAllAddress();
-            const defaultAddress = res?.data?.filter((item) => item?.isDefault);
-            dispatch(setAddresses(defaultAddress[0]));
+            if (res?.data?.length > 0) {
+                const defaultAddress = res?.data?.filter(item => item?.isDefault)
+                dispatch(setAddresses(defaultAddress[0]))
+            }
         } catch (err) {
             toast.error(err.message || "Failed to fetch addresses");
             console.error("Error fetching addresses", err);
@@ -542,7 +545,7 @@ const ProductTab = () => {
                         </div>
                     </div>
 
-                    <button
+                    {addresses?._id && <button
                         onClick={() => handleBooking()}
                         disabled={bookingLoading}
                         className={`${formBtn3} w-full py-3 text-white rounded-md ${bookingLoading ? "opacity-50 cursor-not-allowed" : ""
@@ -556,7 +559,7 @@ const ProductTab = () => {
                         ) : (
                             "Continue to Pay"
                         )}
-                    </button>
+                    </button>}
                 </div>
             </div>
         </div>
@@ -657,7 +660,7 @@ const ServiceTab = () => {
             const payload = {
                 serviceItems: cartItems?.map((item) => ({
                     serviceId: item?.serviceId || "",
-                    astrologerId: "68ca9cf272e2d0202ee1b902",
+                    astrologerId: item?.astrologer || "",
                     bookingDate: moment(item?.date).format("YYYY-MM-DD"),
                     startTime: item?.startTime || "",
                     firstName: item?.cust?.firstName || "",

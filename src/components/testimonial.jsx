@@ -6,12 +6,12 @@ import "swiper/css/navigation";
 import playstore from "../../src/assets/google-play-black.png";
 import phoneMockup from "../../src/assets/phone-mockup.png";
 import { formBtn3 } from "../utils/CustomClass";
-import { QuoteUp } from "iconsax-reactjs";
 import handImage from '../assets/helperImages/handImage.png'
 import { useNavigate } from "react-router-dom";
 import { getAllPublicTestimonials } from "../api";
 import userImage from '../assets/user.webp';
-import { Star } from "@phosphor-icons/react";
+import underline from '../assets/undertext.png';
+import TestimonialModal from "./Modals/TestimonialModal";
 
 
 const Testimonials = () => {
@@ -51,9 +51,16 @@ const Testimonials = () => {
                 </div>
                 <div className="container mx-auto px-8 md:px-6 xl:px-0 text-center space-y-6 xl:space-y-10">
                     {/* Title */}
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-center leading-snug text-p">
-                        What Our Clients Are Saying
-                    </h2>
+                    <>
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold  text-center leading-snug">
+                            <span className="text-p">See What Our Happy Customers Are Saying!</span>
+                        </h2>
+                        <img
+                            src={underline}
+                            alt="Underline"
+                            className="w-40 md:w-56 h-auto  mx-auto object-contain"
+                        />
+                    </>
                     {/* Swiper */}
                     <div className="">
                         {loading ? (
@@ -79,13 +86,16 @@ const Testimonials = () => {
                             </div>
                         ) : testimonials?.length > 0 ? (
                             <Swiper
-                                autoplay={{ delay: 2500, disableOnInteraction: false, pauseOnMouseEnter: true }}
-                                modules={[Autoplay]}
                                 spaceBetween={30}
                                 centeredSlides={true}
-                                loop={testimonials?.length > 1}
-                                rewind
                                 className="pb-12 overflow-visible"
+                                slidesPerView={1}
+                                modules={[Autoplay]}
+                                autoplay={{
+                                    delay: 2000,
+                                    disableOnInteraction: false,
+                                }}
+                                loop={true}
                                 breakpoints={{
                                     768: { slidesPerView: 2, centeredSlides: true },
                                     1024: { slidesPerView: 3, centeredSlides: true },
@@ -93,52 +103,70 @@ const Testimonials = () => {
                                 onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
                             >
                                 {testimonials?.map((t, index) => (
-                                    <SwiperSlide key={t._id || index} className="flex h-full">
+                                    <SwiperSlide key={t._id || index} className="flex">
                                         <div
-                                            className={`w-full p-6 rounded-lg transition-colors duration-300 flex flex-col items-center justify-between text-center shadow-md min-h-[320px] ${activeIndex === index
-                                                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 text-white scale-105 shadow-xl z-10"
-                                                : "bg-white border text-gray-700 opacity-80"
+                                            className={`w-full bg-white rounded-xl shadow-lg transition-all duration-300 overflow-hidden justify-between flex flex-col ${activeIndex === index
+                                                ? "scale-105 shadow-2xl ring-2 ring-orange-400"
+                                                : "hover:shadow-xl"
                                                 }`}
                                         >
-                                            {/* Quote Icon */}
-                                            <QuoteUp className={`absolute z-10 top-5 left-5 transition-all duration-300 ${activeIndex === index ? "text-white" : "text-slate-200"}`} size={70} variant="Bold" />
-
-                                            {/* Avatar */}
-                                            <img
-                                                src={t?.user_id?.profileImage || t?.user_id?.image || t?.image || userImage}
-                                                alt={`${t?.user_id?.profile?.firstName || t?.user_id?.name || t?.name || "User"}'s testimonial`}
-                                                className="w-20 h-20 rounded-full border-2 border-white mb-4 object-cover"
-                                                onError={(e) => {
-                                                    e.target.src = userImage;
-                                                }}
-                                            />
-
-                                            {/* Testimonial Text */}
-                                            <p className="text-sm mb-4 leading-relaxed font-tbPop !font-normal line-clamp-3">
-                                                {t?.message || t?.text}
-                                            </p>
-
-                                            {/* Stars */}
-                                            <div className="flex justify-center space-x-1">
-                                                {Array.from({ length: t.rating || 5 }).map((_, index) => (
-                                                    <Star
-                                                        key={index}
-                                                        size={20}
-                                                        weight="fill"
-                                                        color={index < t.rating ? "#FFD700" : "#E5E7EB"}
+                                            {/* Card Header */}
+                                            <div className="p-4 border-b border-gray-100">
+                                                <div className="flex items-center space-x-3">
+                                                    {/* Avatar */}
+                                                    <img
+                                                        src={t?.user?.profileImage || t?.user_id?.profileImage || t?.user_id?.image || t?.image || userImage}
+                                                        alt={`${t?.user?.firstName || t?.user_id?.profile?.firstName || t?.user_id?.name || t?.name || "User"}'s testimonial`}
+                                                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                                                        onError={(e) => {
+                                                            e.target.src = userImage;
+                                                        }}
                                                     />
-                                                ))}
+                                                    <div>
+                                                        <h4 className="font-semibold text-gray-800 text-sm capitalize text-left">
+                                                            {t?.user?.firstName && t?.user?.lastName
+                                                                ? `${t.user.firstName} ${t.user.lastName}`
+                                                                : t?.user_id?.profile?.firstName && t?.user_id?.profile?.lastName
+                                                                    ? `${t.user_id.profile.firstName} ${t.user_id.profile.lastName}`
+                                                                    : t?.user_id?.name || t?.name || "Anonymous User"}
+                                                        </h4>
+                                                        <p className="text-xs text-gray-500 text-left">
+                                                            {[t?.city, t?.state, t?.country].filter(Boolean).join(", ")}
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            {/* Name */}
-                                            <h4
-                                                className={`font-normal tracking-tight capitalize font-tbLex line-clamp-1 ${activeIndex === index ? "text-white" : "text-gray-700"
-                                                    }`}
-                                            >
-                                                {t?.user_id?.profile?.firstName && t?.user_id?.profile?.lastName
-                                                    ? `${t.user_id.profile.firstName} ${t.user_id.profile.lastName}`
-                                                    : t?.user_id?.name || t?.name || "Anonymous User"}
-                                            </h4>
+                                            {/* Card Content */}
+                                            <div className="p-4">
+                                                {/* Service/Product Badge */}
+                                                {(t?.service || t?.product) && (
+                                                    <div className="inline-block bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-medium mb-3">
+                                                        {t?.service?.name || t?.service?.title || t?.product?.name}
+                                                    </div>
+                                                )}
+
+                                                {/* Testimonial Text */}
+                                                <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-3 overflow-hidden">
+                                                    {t?.message || t?.text}
+                                                </p>
+                                            </div>
+
+                                            {/* Media Image Section */}
+                                            {t?.media && t?.media?.length > 0 && (
+                                                <div className="px-4 pb-4">
+                                                    <div className="relative">
+                                                        <img
+                                                            src={t.media[0]}
+                                                            alt="Testimonial media"
+                                                            className="w-full h-32 object-cover rounded-lg"
+                                                            onError={(e) => {
+                                                                e.target.style.display = 'none';
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </SwiperSlide>
                                 ))}
@@ -152,16 +180,32 @@ const Testimonials = () => {
                 </div>
             </section>
 
-            <section className="bg-[#fff6ef]">
-                <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center justify-between pt-16 md:pt-20 gap-10 xl:gap-10 px-5 xl:px-0">
-                    <div className="text-left flex flex-col justify-center items-center md:items-start space-y-3">
-                        <h2 className="text-xl md:text-2xl xl:text-5xl w-full font-bold font-tbPop text-p text-center md:text-left ">
-                            “Astrology, Reimagined for Your Soul”
+            <section className="bg-neutral-100">
+                <div className="container mx-auto text-center py-20 space-y-6">
+                    <div className="text-center mb-12 space-y-3">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold  text-center leading-snug">
+                            <span className="text-p capitalize">Share your experience with us</span>
                         </h2>
-                        <p className="text-gray-600 text-sm lg:text-base text-center md:text-left">
-                            Download Our App Today
+                        <p className="text-black text-sm lg:text-base text-center mb-2 max-w-2xl mx-auto">
+                            "We’d love to know how your experience was! Your feedback helps us understand what we’re doing right and where we can improve to serve you even better."
                         </p>
-                        <div className="flex justify-start">
+                    </div>
+                    <div className="flex justify-center">
+                        <TestimonialModal />
+                    </div>
+                </div>
+            </section>
+
+            <section className="bg-[#FFEED3]">
+                <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center justify-between pt-16 md:pt-20 gap-10 xl:gap-10 px-5 xl:px-0">
+                    <div className="text-left flex flex-col justify-center items-center md:items-start">
+                        <h2 className="text-xl md:text-2xl xl:text-5xl w-full font-bold font-tbPop text-black text-center md:text-left pb-3">
+                            Download Our <span className="text-p">"Soulplane"</span> App Today
+                        </h2>
+                        <p className="text-gray-600 text-sm lg:text-base text-center md:text-left mb-2">
+                            For a sameless experience, download our apps on your phone
+                        </p>
+                        <div className="flex justify-start pt-4">
                             <a href="#" target="_blank" rel="noopener noreferrer">
                                 <img src={playstore} alt="Google Play" className="h-10 lg:h-14" />
                             </a>
@@ -171,23 +215,24 @@ const Testimonials = () => {
                         <img
                             src={phoneMockup}
                             alt="App Preview"
-                            className="w-full h-[30rem] relative z-10 object-contain"
+                            className="w-full h-[30rem] relative z-10 object-contain "
                         />
                     </div>
                 </div>
             </section >
 
-            <section className="bg-[#FFEED3]">
-                <div className="container mx-auto text-center py-20 space-y-2">
-                    <p className="text-p text-sm md:text-base font-tbLex tracking-tight">
-                        DISCOVER YOUR SELF
-                    </p>
-                    <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-medium text-black pb-5">
-                        Explore a complete range of spiritual{" "}
-                        <br className="hidden sm:block" />
-                        and healing services.
-                    </h2>
-                    <button className={`btn justify-self-center ${formBtn3} !w-fit`} onClick={() => { navigate('/services'), window.scrollTo(0, 0, { behavior: 'smooth' }) }}>Book Your Session</button>
+            <section className="bg-neutral-100">
+                <div className="container mx-auto text-center py-20 space-y-6">
+                    <div className="text-center mb-12 space-y-3">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold  text-center leading-snug">
+                            <span className="text-p capitalize">Contact Us Today</span>
+                        </h2>
+                        <p className="text-black text-sm lg:text-base text-center mb-2 max-w-2xl mx-auto">
+                            We are here to help you with any questions or concerns you may have. <br />
+                            Click the button below to contact us.
+                        </p>
+                    </div>
+                    <button className={`btn justify-self-center ${formBtn3} !w-fit`} onClick={() => { navigate('/contact'), window.scrollTo(0, 0, { behavior: 'smooth' }) }}>Contact Now</button>
                 </div>
             </section>
             <section />

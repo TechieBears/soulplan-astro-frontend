@@ -62,28 +62,33 @@ const UserTransactios = () => {
             field: 'orderId',
             header: 'Transaction ID',
             body: (row) => <>{row?.paymentDetails?.order?.order_id}</>,
-            style: true
+            style: true,
+            sortable: true
         },
         {
             field: 'fullName',
             header: 'Name',
-            style: true
+            style: true,
+            sortable: true
         },
         {
             field: 'email',
             header: 'Email',
-            style: true
+            style: true,
+            sortable: true
         },
         {
             field: 'phoneNumber',
             header: 'Phone No',
-            style: true
+            style: true,
+            sortable: true
         },
         {
             field: 'amount',
             header: 'Amount (₹)',
             body: (row) => <>{row?.paymentDetails?.order?.order_amount}</>,
-            style: true
+            style: true,
+            sortable: true
         },
         {
             field: 'status',
@@ -91,13 +96,15 @@ const UserTransactios = () => {
             body: (row) => <>
                 <h4 className={`${row?.paymentStatus === 'success' ? 'text-green-500 bg-green-100' : row?.paymentStatus === 'failed' ? 'text-red-500 bg-red-100' : 'text-yellow-500 bg-yellow-100'} self-center p-2 px-4 rounded-full capitalize font-tbPop`}>{row?.paymentStatus}</h4>
             </>,
-            style: true
+            style: true,
+            sortable: true
         },
         {
             field: 'createdAt',
             header: 'Transaction Date',
             body: (row) => <>{moment(row?.paymentDetails?.createdAt).format('DD-MM-YYYY hh:mm A')}</>,
-            style: true
+            style: true,
+            sortable: true
         }
     ];
 

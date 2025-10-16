@@ -22,6 +22,7 @@
         "@mui/material": "^5.14.7",
         "@mui/x-charts": "^8.7.0",
         "@mui/x-date-pickers": "^6.12.1",
+        "@number-flow/react": "^0.5.10",
         "@phosphor-icons/react": "^2.0.13",
         "@redux-devtools/extension": "^3.3.0",
         "@reduxjs/toolkit": "^2.6.1",

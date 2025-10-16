@@ -156,7 +156,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Category
+                                                        Service Category <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <div className="">
                                                         <SelectTextInput
@@ -179,7 +179,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Mode
+                                                        Service Mode <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <div className="">
                                                         <SelectTextInput
@@ -203,7 +203,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Name
+                                                        Service Name <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <TextInput
                                                         label="Enter Service Name"
@@ -219,7 +219,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Title
+                                                        Service Title <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <TextInput
                                                         label="Enter Service Title"
@@ -235,7 +235,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Sub Title
+                                                        Service Sub Title <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <TextInput
                                                         label="Enter Service Sub Title"
@@ -273,7 +273,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Price
+                                                        Service Price <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <TextInput
                                                         label="Enter Service Price"
@@ -289,7 +289,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Duration (Minutes)
+                                                        Service Duration (Minutes) <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <div className="flex items-center space-x-3">
                                                         <button
@@ -337,7 +337,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Image
+                                                        Service Image <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <ImageUploadInput
                                                         label="Upload Service Image"
@@ -403,7 +403,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                             </div>
                                             <div className="pt-4">
                                                 <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
-                                                    Service Description
+                                                    Service Description <span className="text-red-500 text-xs font-tbLex">*</span>
                                                 </h4>
                                                 <Controller
                                                     name="htmlContent"

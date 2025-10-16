@@ -7,7 +7,6 @@ import { getActiveBanners } from "../../api";
 import { environment } from "../../env";
 
 const HomePage = () => {
-    const [banners, setBanners] = useState([]);
     const [slidesData, setSlidesData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -58,7 +57,7 @@ const HomePage = () => {
                         background: true,
                         video: null,
                         onClick: () => {
-                            window.location.href = '/services';
+                            window.location.href = "/services";
                         },
                         onImageError: (e) => {
                             console.error("Image failed to load:", finalImageUrl);
@@ -75,13 +74,12 @@ const HomePage = () => {
     }, []);
 
     return (
-        <div>
+        <>
             <HomeBanner slidesData={slidesData} isLoading={isLoading} />
             <HomeCertifications />
             <HomeBestServices />
             <Testimonials />
-            {/* <HomeFooter /> */}
-        </div>
+        </>
     );
 };
 
