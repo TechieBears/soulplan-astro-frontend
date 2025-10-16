@@ -151,15 +151,15 @@ const OrderViewModal = ({ isOpen, onClose, orderData = null, orderType = "produc
                                                             <span className="font-tbLex">Subtotal:</span>
                                                             <span className="font-tbPop">₹{orderData.totalAmount?.toLocaleString()}</span>
                                                         </div>
-                                                        {orderData.amount?.gst && (
+                                                        {/* {orderData.amount?.gst && (
                                                             <div className="flex justify-between">
                                                                 <span className="font-tbLex">GST:</span>
                                                                 <span className="font-tbPop">₹{orderData.amount.gst?.toLocaleString()}</span>
                                                             </div>
-                                                        )}
+                                                        )} */}
                                                         <div className="flex justify-between font-semibold text-lg border-t pt-2">
                                                             <span className="font-tbLex">Total:</span>
-                                                            <span className="font-tbPop">₹{orderData.finalAmount?.toLocaleString()}</span>
+                                                            <span className="font-tbPop">₹{orderData.totalAmount?.toLocaleString()}</span>
                                                         </div>
                                                         <div className="flex justify-between">
                                                             <span className="font-tbLex">Payment Method:</span>

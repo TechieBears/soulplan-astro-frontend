@@ -274,6 +274,7 @@ const ProductTab = () => {
                 console.log("⚡️🤯 ~ Cart.jsx:282 ~ handleBooking ~ res:", res);
                 if (res?.success) {
                     toast.success(res?.message);
+                    dispatch(setCartProductCount(0));
                     navigate("/payment-success", {
                         state: { type: "products", orderDetails: res?.data },
                     });
@@ -659,7 +660,7 @@ const ServiceTab = () => {
             const payload = {
                 serviceItems: cartItems?.map((item) => ({
                     serviceId: item?.serviceId || "",
-                    astrologerId: "68ca9cf272e2d0202ee1b902",
+                    astrologerId: item?.astrologer || "",
                     bookingDate: moment(item?.date).format("YYYY-MM-DD"),
                     startTime: item?.startTime || "",
                     firstName: item?.cust?.firstName || "",

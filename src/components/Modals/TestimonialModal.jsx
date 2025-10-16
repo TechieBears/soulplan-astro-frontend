@@ -1,14 +1,13 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import LoadBox from '../Loader/LoadBox';
 import ImageUploadInput from '../TextInput/ImageUploadInput';
 import TextInput from '../TextInput/TextInput';
 import { formBtn1, formBtn3 } from '../../utils/CustomClass';
-import { TableTitle } from '../../helper/Helper';
 import SelectTextInput from '../TextInput/SelectTextInput';
-import { Star, X } from "@phosphor-icons/react";
+import { X } from "@phosphor-icons/react";
 import CustomTextArea from '../TextInput/CustomTextArea';
 import { useSelector } from 'react-redux';
 import { getPublicServicesDropdown, getProductsDropdown } from '../../api';
@@ -24,7 +23,6 @@ function TestimonialModal() {
             service_id: '',
             product_id: '',
             message: '',
-            rating: 0,
             city: '',
             state: '',
             country: ''
@@ -121,11 +119,6 @@ function TestimonialModal() {
             return;
         }
 
-        if (data.rating === 0) {
-            toast.error('Please provide a rating');
-            return;
-        }
-
         try {
             setLoader(true);
             const testimonialData = {
@@ -133,7 +126,6 @@ function TestimonialModal() {
                 service_id: data.service_id || null,
                 product_id: data.product_id || null,
                 message: data.message,
-                rating: data.rating,
                 media: data.media,
                 city: data.city,
                 state: data.state,
@@ -241,36 +233,6 @@ function TestimonialModal() {
                                                     />
                                                 </div>}
 
-                                                <div className=''>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Rating <span className="text-red-500">*</span>
-                                                    </label>
-                                                    <Controller
-                                                        name="rating"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <div className="flex items-center gap-1">
-                                                                {[1, 2, 3, 4, 5].map((star) => (
-                                                                    <button
-                                                                        key={star}
-                                                                        type="button"
-                                                                        onClick={() => field.onChange(star)}
-                                                                        className="focus:outline-none"
-                                                                    >
-                                                                        <Star
-                                                                            className={`w-6 h-6 ${star <= field.value
-                                                                                ? "text-yellow-400 fill-current"
-                                                                                : "text-gray-300"
-                                                                                } hover:text-yellow-400 transition-colors`}
-
-                                                                            weight={star <= field.value ? "fill" : "regular"}
-                                                                        />
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    />
-                                                </div>
                                                 <div className=''>
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"

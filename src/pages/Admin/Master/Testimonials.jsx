@@ -11,21 +11,6 @@ import TextInput from '../../../components/TextInput/TextInput'
 import { formBtn1 } from '../../../utils/CustomClass'
 import { useForm } from 'react-hook-form'
 
-const StarRating = ({ rating, maxStars = 5 }) => {
-    return (
-        <div className="flex items-center gap-1 justify-center">
-            {[...Array(maxStars)].map((_, index) => (
-                <Star1
-                    key={index}
-                    size={16}
-                    variant={index < rating ? "Bold" : "Outline"}
-                    color={index < rating ? "#FFD700" : "#E5E7EB"}
-                />
-            ))}
-            <span className="ml-2 text-sm text-gray-600">({rating}/5)</span>
-        </div>
-    );
-};
 
 export default function Testimonials() {
     const initialFilterState = {
@@ -104,7 +89,7 @@ export default function Testimonials() {
                     <img
                         src={row?.user?.profileImage || '/api/placeholder/32/32'}
                         alt={`${row?.user?.firstName} ${row?.user?.lastName}`}
-                        className="w-8 h-8 rounded-full object-cover ring-1 ring-gray-200"
+                        className="w-14 h-14 rounded-full object-cover ring-1 ring-gray-200"
                         onError={(e) => {
                             e.target.src = `https://ui-avatars.com/api/?name=${row?.user?.firstName}+${row?.user?.lastName}&background=8833FF&color=fff&size=32`;
                         }}
@@ -120,21 +105,28 @@ export default function Testimonials() {
         },
         {
             field: 'service',
-            header: 'Service',
-            body: (row) => (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                    {row?.service?.name || row?.service?.title || "N/A"}
-                </span>
-            ),
+            header: 'Service / Product',
+            body: (row) => {
+                if (row?.service) {
+                    return (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            {row?.service?.name || row?.service?.title || "N/A"}
+                        </span>
+                    );
+                } else if (row?.product) {
+                    return (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {row?.product?.name || "N/A"}
+                        </span>
+                    );
+                } else {
+                    return (
+                        <span className="text-gray-400 text-xs">-</span>
+                    );
+                }
+            },
             style: true,
             sortable: true
-        },
-        {
-            field: 'rating',
-            header: 'Rating',
-            body: (row) => <StarRating rating={row?.rating || 0} />,
-            style: true
-            , sortable: true
         },
         {
             field: 'createdAt',
@@ -148,7 +140,7 @@ export default function Testimonials() {
             style: true
             , sortable: true
         },
-        { field: 'message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true , sortable: true },
+        { field: 'message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true, sortable: true },
         { field: "isactive", header: "Visible On Website", body: activeBody, sortable: true, style: true },
     ];
 
