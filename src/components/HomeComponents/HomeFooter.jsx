@@ -52,7 +52,7 @@ const HomeFooter = () => {
           </div>
 
           <div className="flex flex-col sm:items-center sm:text-center">
-            <a href="#">
+            <a href="/">
               <img
                 src={logo}
                 alt="Soulplane Logo"
