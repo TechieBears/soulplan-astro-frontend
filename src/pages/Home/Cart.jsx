@@ -34,7 +34,6 @@ const CartPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const type = location.state?.type;
-    console.log("⚡️🤯 ~ Cart.jsx:29 ~ CartPage ~ type:", type);
     const [activeTab, setActiveTab] = useState(type || "products");
 
     return (
@@ -582,6 +581,7 @@ const ServiceTab = () => {
                 setIsLoading(true);
             }
             const res = await getServiceFromCart();
+            console.log("⚡️🤯 ~ Cart.jsx:585 ~ fetchServiceCart ~ res:", res)
             dispatch(setCoupon(null));
             setCartItems(res?.data?.items || []);
         } catch (err) {
@@ -656,11 +656,12 @@ const ServiceTab = () => {
     }
 
     const handleBooking = async () => {
+        console.log("⚡️🤯 ~ Cart.jsx:659 ~ handleBooking ~ cartItems:", cartItems)
         try {
             const payload = {
                 serviceItems: cartItems?.map((item) => ({
                     serviceId: item?.serviceId || "",
-                    astrologerId: item?.astrologer || "",
+                    astrologerId: item?.astrologer?._id || "",
                     bookingDate: moment(item?.date).format("YYYY-MM-DD"),
                     startTime: item?.startTime || "",
                     firstName: item?.cust?.firstName || "",
