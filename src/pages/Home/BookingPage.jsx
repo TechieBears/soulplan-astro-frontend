@@ -67,12 +67,11 @@ const BookingPage = () => {
     ];
 
     const handleBooking = async (data) => {
-        console.log("⚡️🤯 ~ BookingPage.jsx:71 ~ handleBooking ~ data:", data)
         try {
             setIsLoadingService(true);
             const payload = {
                 serviceId: serviceTypeWatch,
-                astrologerId: data.astrologer,
+                astrologer: astrologerWatch || "",
                 bookingType: data?.bookingType,
                 date: moment(dateWatch).format("YYYY-MM-DD"),
                 serviceMode: "online",
@@ -84,10 +83,6 @@ const BookingPage = () => {
                 email: data?.email,
                 phone: data?.mobileNo,
             };
-            console.log(
-                "⚡️🤯 ~ BookingPage.jsx:80 ~ handleBooking ~ payload:",
-                payload
-            );
             await addServiceToCart(payload).then((res) => {
                 if (res?.success) {
                     setIsLoadingService(false);
@@ -115,7 +110,6 @@ const BookingPage = () => {
         };
         setIsLoading(true);
         await checkAvailability(payload).then((res) => {
-            console.log("⚡️🤯 ~ BookingPage.jsx:107 ~ fetchService ~ res:", res);
             if (res?.success) {
                 const availableSlots = res?.data?.timeSlots?.filter(
                     (item) => !item?.booked && item?.status === "available"
@@ -169,10 +163,6 @@ const BookingPage = () => {
         try {
             setIsAstrologersLoading(true);
             const response = await getAllAstrologer();
-            console.log(
-                "⚡️🤯 ~ BookingPage.jsx:127 ~ BookingPage ~ response:",
-                response
-            );
             if (response?.success) {
                 setAstrologers(response.data || []);
             } else {
@@ -192,7 +182,7 @@ const BookingPage = () => {
         if (!astrologers.length) return [];
         return astrologers.map((astrologer) => ({
             value: astrologer._id,
-            label: astrologer.fullName,
+            label: astrologer?.profile?.firstName + " " + astrologer.profile?.lastName,
         }));
     }, [astrologers]);
 

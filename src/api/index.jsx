@@ -903,10 +903,10 @@ export const addServiceToCart = async (data) => {
     }
 }
 
-export const getServiceFromCart = async (data) => {
+export const getServiceFromCart = async () => {
     const url = `${environment.baseUrl}service-cart/public/get`;
     try {
-        const response = await axios.get(url, data)
+        const response = await axios.get(url)
         return response.data
     }
     catch (err) {
