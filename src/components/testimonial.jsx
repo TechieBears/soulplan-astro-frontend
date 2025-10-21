@@ -95,7 +95,7 @@ const Testimonials = () => {
                 slidesPerView={1}
                 modules={[Autoplay]}
                 autoplay={{
-                  delay: 2500,
+                  delay: 1500,
                   disableOnInteraction: false,
                 }}
                 loop={true}
