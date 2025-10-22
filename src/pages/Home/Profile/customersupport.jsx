@@ -20,7 +20,7 @@ export default function CustomerSupport() {
                 <UserDashboard>
                     <ProfileSidebar>
                         <div className="bg-white ">
-                            <h2 className="text-xl font-medium text-black font-tbLex">Customer Care</h2>
+                            <h2 className="text-lg sm:text-left font-medium  text-gray-800  p-4 font-tbLex">Customer Care</h2>
 
                             {/* Container */}
                             <div className="flex flex-col py-10 px-4 sm:px-8 lg:px-16 lg:flex-row items-center lg:items-center justify-center gap-12 lg:gap-20">

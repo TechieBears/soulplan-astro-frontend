@@ -114,8 +114,8 @@ const AddressPage = () => {
 
     return (
         <ProfileSidebar>
-            <div className="flex justify-between items-center gap-4 mb-6">
-                <h2 className="text-2xl font-medium text-secondary">My Address</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+                <h2 className="text-lg text-center font-medium  text-gray-800  p-4 font-tbLex">My Address</h2>
 
                 <div className="flex gap-3">
                     <button

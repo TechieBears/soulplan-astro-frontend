@@ -46,8 +46,8 @@ export default function AccountPage() {
                 <UserDashboard>
                     <ProfileSidebar>
                         {/* Header */}
-                        <div className="flex flex-row justify-between items-start md:items-center mb-6 gap-4">
-                            <h2 className="text-xl font-medium text-black font-tbLex">My Account</h2>
+                        <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+                            <h2 className="text-lg text-center font-medium  text-gray-800  p-4 font-tbLex">My Account</h2>
 
                             <div className="flex gap-3">
                                 {!isEditable && (
