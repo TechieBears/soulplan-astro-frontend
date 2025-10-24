@@ -121,6 +121,15 @@ const HomeFooter = () => {
             >
               Customer Support
             </button>
+            <button
+              onClick={() => {
+                navigate("/terms-conditions"),
+                  window.scrollTo(0, 0, { behavior: "smooth" });
+              }}
+              className="hover:underline"
+            >
+              Terms & conditions
+            </button>
           </div>
         </div>
       </div>

@@ -39,7 +39,7 @@ const HomeBanner = ({ slidesData, isLoading }) => {
                                         <h1 className="text-3xl lg:text-4xl xl:text-6xl pb-2 font-tbLex font-bold text-p tracking-tighter banner-title">
                                             {slide.title}
                                         </h1>
-                                        <p className="text-xs md:text-sm font-tbPop w-full md:w-2/3  text-slate-200 pb-1 text-center md:text-left banner-description">
+                                        <p className="text-md md:text-md     font-tbPop w-full md:w-2/3  text-slate-200 pb-1 text-center md:text-left banner-description">
                                             {slide.description}
                                         </p>
                                         {slide.button && (

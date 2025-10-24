@@ -118,7 +118,7 @@ const Testimonials = () => {
                     className="!flex !justify-center"
                   >
                     <div
-                      className={`w-full border-3 border-orange-500 bg-white rounded-xl shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between border hover:shadow-xl`}
+                      className={`w-full h-[400px] border-3 border-orange-500 bg-white rounded-xl shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between border hover:shadow-xl`}
                     >
                       {/* Card Header */}
                       <div className="p-4 border-b border-gray-100">
