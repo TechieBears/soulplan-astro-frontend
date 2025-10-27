@@ -89,7 +89,7 @@ export default function Testimonials() {
                     <img
                         src={row?.user?.profileImage || '/api/placeholder/32/32'}
                         alt={`${row?.user?.firstName} ${row?.user?.lastName}`}
-                        className="w-14 h-14 rounded-full object-cover ring-1 ring-gray-200"
+                        className="w-8 h-8 rounded-full object-cover ring-1 ring-gray-200"
                         onError={(e) => {
                             e.target.src = `https://ui-avatars.com/api/?name=${row?.user?.firstName}+${row?.user?.lastName}&background=8833FF&color=fff&size=32`;
                         }}
@@ -100,34 +100,24 @@ export default function Testimonials() {
                     </div>
                 </div>
             ),
-            style: true,
-            sortable: true
+            style: true
         },
         {
             field: 'service',
-            header: 'Service / Product',
-            body: (row) => {
-                if (row?.service) {
-                    return (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                            {row?.service?.name || row?.service?.title || "N/A"}
-                        </span>
-                    );
-                } else if (row?.product) {
-                    return (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            {row?.product?.name || "N/A"}
-                        </span>
-                    );
-                } else {
-                    return (
-                        <span className="text-gray-400 text-xs">-</span>
-                    );
-                }
-            },
-            style: true,
-            sortable: true
+            header: 'Services/Products',
+            body: (row) => (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    {row?.product?.name || row?.service?.title || "N/A"}
+                </span>
+            ),
+            style: true
         },
+        // {
+        //     field: 'rating',
+        //     header: 'Rating',
+        //     body: (row) => <StarRating rating={row?.rating || 0} />,
+        //     style: true
+        // },
         {
             field: 'createdAt',
             header: 'Date',
@@ -138,9 +128,8 @@ export default function Testimonials() {
                 </div>
             ),
             style: true
-            , sortable: true
         },
-        { field: 'message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true, sortable: true },
+        { field: 'message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true },
         { field: "isactive", header: "Visible On Website", body: activeBody, sortable: true, style: true },
     ];
 
@@ -150,8 +139,8 @@ export default function Testimonials() {
                 <form onSubmit={handleSubmit(handleFilterSubmit)} className="flex flex-col lg:flex-row gap-2">
                     <div className="grid grid-cols-1 w-full gap-2">
                         <TextInput
-                            label="Enter User Name*"
-                            placeholder="Enter User Name"
+                            label="Search User"
+                            placeholder="Search User"
                             type="text"
                             registerName="name"
                             props={{ ...register('name') }}

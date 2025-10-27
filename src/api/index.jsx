@@ -131,7 +131,7 @@ export const resetPassword = async (data) => {
 
 
 export const uploadToCloudinary = async (file) => {
-    const cloudName = 'astroguid';
+    const cloudName = 'soulplan';
     const apiKey = import.meta.env.VITE_CLOUDINARY_KEY;
     const uploadPreset = 'ml_default';
 
@@ -1446,3 +1446,55 @@ export const editRating = async (id, data) => {
         return err?.response?.data;
     }
 };
+
+
+// =================== Refer & Earn Api ==================
+
+export const getWalletBalance = async () => {
+    const url = `${environment.baseUrl}customer-users/get-wallet-balance`;
+    try {
+        const response = await axios.get(url);
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getWalletBalance api file", err);
+        return err?.response?.data
+    }
+}
+
+
+// ===================== Customer Notification Api =====================
+
+export const getAllNotifications = async (data) => {
+    try {
+        const url = `${environment.baseUrl}notification/get-all?page=${data?.p || 1}&limit=${data?.records || 10}&status=${data?.status || 'active'}&userType=${data?.userType || 'all-customers'}&from=${data?.from || 'admin'}`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getAllNotifications api file", err);
+        return err?.response?.data;
+    }
+}
+
+export const addNotification = async (data) => {
+    const url = `${environment.baseUrl}notification/create`;
+    try {
+        const response = await axios.post(url, data);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in addNotification api file", err);
+        return err?.response?.data;
+    }
+};
+
+
+export const getCustomerUsersDropdown = async () => {
+    try {
+        const url = `${environment.baseUrl}customer-users/dropdown`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getCustomerUsersDropdown api file", err);
+        return err?.response?.data;
+    }
+}
