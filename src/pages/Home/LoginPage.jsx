@@ -107,71 +107,79 @@ const LoginPage = () => {
     }, [])
 
     const handerGoogleSignIn = async () => {
-        if (googleLoading) {
-            return;
-        }
+        // Prevent multiple simultaneous requests
+        if (googleLoading) return;
 
         setGoogleLoading(true);
         const provider = new GoogleAuthProvider();
-        provider.addScope('email');
-        provider.addScope('profile');
 
         try {
             const result = await signInWithPopup(auth, provider);
-
             const playload = {
-                title: "Mr",
                 firstName: result?.user?.displayName?.split(' ')[0] || '',
                 lastName: result?.user?.displayName?.split(' ')[1] || '',
                 email: result?.user?.email || '',
-                mobileNo: result?.user?.providerData[0]?.phoneNumber || '7796500494',
+                mobileNo: result?.user?.providerData[0]?.phoneNumber || '',
                 profileImage: result?.user?.photoURL || '',
                 gender: result?.user?.providerData[0]?.gender || 'other' || '',
                 registerType: 'google'
             }
 
-            const response = await registerUser(playload);
-            if (response?.success) {
-                dispatch(setUserDetails(response?.data?.user))
-                dispatch(setLoggedUser(true))
-                dispatch(setRoleIs(response?.data?.user?.role))
-                localStorage.setItem('token', response?.data?.token);
-                toast.success("Login Successfully 🥳");
+            try {
+                const response = await registerUser(playload);
+                console.log("⚡️🤯 ~ LoginPage.jsx:129 ~ handerGoogleSignIn ~ response:", response)
+                if (response?.success) {
+                    dispatch(setUserDetails(response?.data?.user))
+                    dispatch(setLoggedUser(true))
+                    dispatch(setRoleIs(response?.data?.user?.role))
+                    localStorage.setItem('token', response?.data?.token);
+                    toast.success("Login Successfully 🥳");
 
-                const from = location.state?.from || '/';
-                navigate(from, { replace: true });
-            } else {
-                toast.error(response?.message || response?.error || 'Login failed');
+                    // Redirect to the intended destination or home page
+                    const from = location.state?.from || '/';
+                    navigate(from, { replace: true });
+                } else {
+                    toast.error(response?.message || response?.error || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                if (error.code === 'ERR_NETWORK') {
+                    toast.error('Network error. Please check your connection or try again later.');
+                } else {
+                    toast.error(error?.message || 'Something went wrong. Please try again.');
+                }
             }
         } catch (error) {
-            console.error('Google Sign-in error:', error);
+            console.error('Google sign-in error:', error);
+
+            // Handle specific Firebase auth errors
             switch (error.code) {
                 case 'auth/cancelled-popup-request':
-                    toast.error('Authentication was cancelled. Please try again.');
+                    // User cancelled the popup - don't show error message
+                    console.log('User cancelled Google sign-in popup');
                     break;
                 case 'auth/popup-closed-by-user':
-                    toast.error('Authentication popup was closed. Please try again.');
+                    // User closed the popup - don't show error message
+                    console.log('User closed Google sign-in popup');
                     break;
                 case 'auth/popup-blocked':
                     toast.error('Popup was blocked by your browser. Please allow popups and try again.');
                     break;
                 case 'auth/network-request-failed':
-                    toast.error('Network error. Please check your connection and try again.');
+                    toast.error('Network error. Please check your internet connection and try again.');
                     break;
                 case 'auth/too-many-requests':
                     toast.error('Too many failed attempts. Please try again later.');
                     break;
-                case 'auth/user-disabled':
-                    toast.error('This account has been disabled. Please contact support.');
-                    break;
-                case 'auth/operation-not-allowed':
-                    toast.error('Google sign-in is not enabled. Please contact support.');
+                case 'auth/account-exists-with-different-credential':
+                    toast.error('An account already exists with this email using a different sign-in method.');
                     break;
                 default:
-                    if (error.code === 'ERR_NETWORK') {
-                        toast.error('Network error. Please check your connection or try again later.');
+                    // Only show error for unexpected errors
+                    if (error.code && error.code.startsWith('auth/')) {
+                        toast.error('Authentication failed. Please try again.');
                     } else {
-                        toast.error(error.message || 'Something went wrong. Please try again.');
+                        toast.error('Something went wrong. Please try again.');
                     }
             }
         } finally {
@@ -273,15 +281,15 @@ const LoginPage = () => {
                     <div className="flex justify-center gap-4">
                         <button
                             type="button"
-                            disabled={googleLoading || loading}
-                            className={`p-3 px-5 w-full h-[51px] flex justify-center items-center rounded-full shadow-md border border-slate-100 gap-2 transition-colors ${googleLoading || loading
+                            disabled={googleLoading}
+                            className={`p-3 px-5 w-full h-[51px] flex justify-center items-center rounded-full shadow-md border border-slate-100 gap-2 transition-colors ${loading
                                 ? 'bg-gray-100 cursor-not-allowed opacity-70'
                                 : 'bg-white hover:bg-gray-100'
                                 }`}
                             onClick={handerGoogleSignIn}
                         >
                             {googleLoading ? (
-                                <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+                                <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
                             ) : (
                                 <FcGoogle size={22} />
                             )}

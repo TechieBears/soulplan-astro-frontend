@@ -53,6 +53,7 @@ import VenueCalendar from '../pages/Admin/Bookings/AdminBookingsCalender';
 import { Whatsapp } from "iconsax-reactjs";
 import BuyNowPage from "../pages/Home/BuyNowPage";
 import Reviews from "../pages/Admin/Master/Reviews";
+import ReferAndEarn from "../pages/Home/Profile/ReferAndEarn";
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
@@ -176,6 +177,14 @@ const ProjectRoutes = () => {
                                 </ProtectedRoute>
                             }
                         />
+                        <Route
+                            path="/profile/refer"
+                            element={
+                                <ProtectedRoute>
+                                    <ReferAndEarn />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route path="/products" element={<ProductsPage />} />
                         <Route path="/product/:id" element={<ProductDetail />} />
                         <Route
@@ -206,6 +215,14 @@ const ProjectRoutes = () => {
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
                     <HomeFooter />
+                    <a
+                        href={`https://wa.me/${8693000900}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 cursor-pointer"
+                    >
+                        <Whatsapp size={30} className="text-white" />
+                    </a>
                 </main>
             )}
 
