@@ -52,7 +52,7 @@ const HomeFooter = () => {
                     </div>
 
                     <div className="flex flex-col sm:items-center sm:text-center">
-                        <a href="#">
+                        <a href="/">
                             <img
                                 src={logo}
                                 alt="Soul Plan Logo"
@@ -120,6 +120,15 @@ const HomeFooter = () => {
                             className="hover:underline"
                         >
                             Customer Support
+                        </button>
+                        <button
+                            onClick={() => {
+                                navigate("/terms-conditions"),
+                                    window.scrollTo(0, 0, { behavior: "smooth" });
+                            }}
+                            className="hover:underline"
+                        >
+                            Terms & conditions
                         </button>
                     </div>
                 </div>
