@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import LoadBox from '../Loader/LoadBox';
-import ImageUploadInput from '../TextInput/ImageUploadInput';
+import ImageCropUpload from '../TextInput/ImageCropUpload';
 import TextInput from '../TextInput/TextInput';
 import { formBtn1, formBtn3 } from '../../utils/CustomClass';
 import SelectTextInput from '../TextInput/SelectTextInput';
@@ -239,16 +239,17 @@ function TestimonialModal() {
                                                     >
                                                         Your Image <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
-                                                    <ImageUploadInput
+                                                    <ImageCropUpload
                                                         label="Upload Your Image"
-                                                        multiple={false}
                                                         registerName="media"
                                                         errors={errors.media}
                                                         {...register("media", { required: "Your Image is required" })}
                                                         register={register}
                                                         setValue={setValue}
-                                                        control={control}
                                                         defaultValue={''}
+                                                        cropAspectRatio={1}
+                                                        cropWidth={400}
+                                                        cropHeight={400}
                                                     />
                                                 </div>
                                                 <div className="">
