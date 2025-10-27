@@ -14,7 +14,7 @@ export default function BasicBars(data) {
 
     return (
         <div className="py-4 bg-white rounded-2xl w-full">
-            <BarChart
+            {/* <BarChart
                 xAxis={[{
                     data: allMonths,
                     scaleType: 'band',
@@ -26,7 +26,7 @@ export default function BasicBars(data) {
                 }]}
                 borderRadius={8}
                 height={350}
-            />
+            /> */}
         </div>
     );
 }

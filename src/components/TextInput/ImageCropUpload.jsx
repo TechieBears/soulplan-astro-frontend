@@ -11,6 +11,7 @@ import ImageView from "../Modals/ImageView/ImageView";
 const ImageCropUpload = ({
   label,
   errors,
+  multiple,
   register,
   registerName,
   setValue,

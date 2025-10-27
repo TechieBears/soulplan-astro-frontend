@@ -6,7 +6,7 @@ import LoadBox from '../../Loader/LoadBox';
 import TextInput from '../../TextInput/TextInput';
 import toast from 'react-hot-toast';
 import { Edit } from 'iconsax-reactjs';
-import ImageUploadInput from '../../TextInput/ImageUploadInput';
+// import ImageUploadInput from '../../TextInput/ImageUploadInput';
 import SelectTextInput from '../../TextInput/SelectTextInput';
 import { addService, editService, getServiceCategoriesDropdown } from '../../../api';
 import { configTextEditor, TableTitle } from '../../../helper/Helper';
@@ -16,6 +16,7 @@ import { validateYoutubeUrl } from '../../../utils/validateFunction';
 import Error from '../../Errors/Error';
 import CustomTextArea from '../../TextInput/CustomTextArea';
 import { setServiceCategories } from '../../../redux/Slices/rootSlice';
+import ImageCropUpload from '../../TextInput/ImageCropUpload';
 
 function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
@@ -337,7 +338,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     >
                                                         Service Image <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
-                                                    <ImageUploadInput
+                                                    <ImageCropUpload
                                                         label="Upload Service Image"
                                                         multiple={false}
                                                         registerName="image"
@@ -347,6 +348,10 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         setValue={setValue}
                                                         control={control}
                                                         defaultValue={userData?.image}
+                                                        cropAspectRatio={1}
+                                                        cropWidth={500}
+                                                        cropHeight={300}
+                                                        
                                                     />
 
                                                 </div>
