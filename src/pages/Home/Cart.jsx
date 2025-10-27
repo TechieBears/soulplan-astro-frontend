@@ -11,6 +11,7 @@ import {
     getAllAddress,
     getProductFromCart,
     getServiceFromCart,
+    getWalletBalance,
     PlaceProductOrder,
     removeProductFromCart,
     removeServiceFromCart,
@@ -28,6 +29,7 @@ import emptyCart from "../../assets/emptyCart.svg";
 import ServicesCartCard from "../../components/Cards/ServicesCartCard";
 import moment from "moment";
 import { ExternalLink } from "lucide-react";
+import Switch from 'react-js-switch';
 
 
 const CartPage = () => {
@@ -170,6 +172,25 @@ const ProductTab = () => {
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
     const dispatch = useDispatch();
+
+    const [walletBalance, setWalletBalance] = useState(0);
+    const [isWalletChecked, setIsWalletChecked] = useState(false);
+
+    useEffect(() => {
+        const fetchWalletBalance = async () => {
+            try {
+                const res = await getWalletBalance();
+                if (res?.success) {
+                    setWalletBalance(res?.data?.balance || 0);
+                }
+            } catch (err) {
+                toast.error(err.message || "Failed to fetch wallet balance");
+                console.error("Error fetching wallet balance", err);
+            }
+        }
+        fetchWalletBalance();
+    }, []);
+
     const fetchProductCart = async (showLoading = false) => {
         try {
             if (showLoading && isInitialLoad) {
@@ -511,6 +532,25 @@ const ProductTab = () => {
                         Amount Payable
                     </h3>
 
+                    <div className="space-y-3 mb-2 bg-gray-100 p-4 rounded-lg">
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center">
+                                <input
+                                    id="remember-me"
+                                    name="remember-me"
+                                    type="checkbox"
+                                    checked={isWalletChecked}
+                                    onChange={(e) => setIsWalletChecked(e.target.checked)}
+                                    className="h-4 w-4 text-primary border-primary outline-none rounded focus:ring-primary"
+                                />
+                                <label htmlFor="remember-me" className="ml-2 text-slate-800">
+                                    You want to pay with wallet credit?
+                                </label>
+                            </div>
+                            <span className="text-slate-800">₹ {walletBalance || 0}</span>
+                        </div>
+                    </div>
+                    <div className="border-t border-gray-300 my-2"></div>
                     <div className="space-y-3 mb-6 bg-gray-100 p-4 rounded-lg">
                         <div className="flex justify-between items-center">
                             <span className="text-gray-600">
@@ -574,6 +614,21 @@ const ServiceTab = () => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
+
+    const [isWalletChecked, setIsWalletChecked] = useState(true);
+    const [walletBalance, setWalletBalance] = useState(0);
+
+
+    useEffect(() => {
+        const fetchWalletBalance = async () => {
+            const res = await getWalletBalance();
+            if (res?.success) {
+                setWalletBalance(res?.data?.balance || 0);
+            }
+        }
+        fetchWalletBalance();
+    }, []);
+
     const coupon = useSelector((state) => state.cart?.coupon);
     const fetchServiceCart = async (showLoading = false) => {
         try {
@@ -760,6 +815,24 @@ const ServiceTab = () => {
                         Amount Payable
                     </h3>
 
+                    <div className="space-y-3 mb-2 bg-gray-100 p-4 rounded-lg">
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center">
+                                <input
+                                    id="remember-me"
+                                    name="remember-me"
+                                    type="checkbox"
+                                    checked={isWalletChecked}
+                                    onChange={(e) => setIsWalletChecked(e.target.checked)}
+                                    className="h-4 w-4 text-primary border-primary outline-none rounded focus:ring-primary"
+                                />
+                                <label htmlFor="remember-me" className="ml-2 text-slate-800">
+                                    You want to pay with wallet credit?
+                                </label>
+                            </div>
+                            <span className="text-slate-800">₹ {walletBalance || 0}</span>
+                        </div>
+                    </div>
                     <div className="space-y-3 mb-6 bg-gray-100 p-4 rounded-lg">
                         <div className="flex justify-between items-center">
                             <span className="text-gray-600">

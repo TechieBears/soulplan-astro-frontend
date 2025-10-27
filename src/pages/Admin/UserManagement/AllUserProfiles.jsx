@@ -170,7 +170,6 @@ function AllUserProfiles() {
     };
 
     const statusBody = (row) => {
-        console.log("⚡️🤯 ~ AllUserProfiles.jsx:173 ~ statusBody ~ row:", row)
         return (
             <div className="space-y-2">
                 <div className="flex items-center">
@@ -203,7 +202,7 @@ function AllUserProfiles() {
             header: 'Profile',
             body: profileImageBody,
             style: true,
-            sortable: true
+            sortable: false
         },
         {
             field: '_id',
@@ -233,13 +232,13 @@ function AllUserProfiles() {
             style: true,
             sortable: true
         },
-        {
-            field: 'gender',
-            header: 'Gender',
-            body: genderBody,
-            style: true,
-            sortable: true
-        },
+        // {
+        //     field: 'gender',
+        //     header: 'Gender',
+        //     body: genderBody,
+        //     style: true,
+        //     sortable: true
+        // },
         {
             field: 'status',
             header: 'Status',

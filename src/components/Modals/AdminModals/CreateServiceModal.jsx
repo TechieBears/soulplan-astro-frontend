@@ -187,8 +187,8 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                             registerName="serviceType"
                                                             options={[
                                                                 { value: 'online', label: 'Online' },
-                                                                { value: 'pandit_center', label: `Pandit's Center` },
-                                                                { value: 'pooja_at_home', label: 'Pooja at Home' },
+                                                                // { value: 'pandit_center', label: `Pandit's Center` },
+                                                                // { value: 'pooja_at_home', label: 'Pooja at Home' },
                                                             ]}
                                                             placeholder="Select Service Mode"
                                                             props={{
@@ -304,11 +304,16 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                             -
                                                         </button>
                                                         <div className="flex-1 min-w-0">
-                                                            <div className="h-12 bg-gray-50 border border-gray-300 rounded-lg flex items-center justify-center">
-                                                                <span className="text-lg font-semibold text-gray-700">
-                                                                    {watch('durationInMinutes') || 30} min
-                                                                </span>
-                                                            </div>
+                                                            <input
+                                                                type="number"
+                                                                {...register('durationInMinutes', {
+                                                                    required: "Service duration is required",
+                                                                    min: { value: 30, message: "Minimum duration is 30 minutes" },
+                                                                    valueAsNumber: true
+                                                                })}
+                                                                className="w-full h-12 bg-gray-50 border border-gray-300 rounded-lg px-3 text-lg font-semibold text-gray-700 text-center focus:outline-none focus:border-blue-500"
+                                                                placeholder="30"
+                                                            />
                                                         </div>
                                                         <button
                                                             type="button"
@@ -322,13 +327,6 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                             +
                                                         </button>
                                                     </div>
-                                                    <input
-                                                        type="hidden"
-                                                        {...register('durationInMinutes', {
-                                                            required: "Service duration is required",
-                                                            min: { value: 30, message: "Minimum duration is 30 minutes" }
-                                                        })}
-                                                    />
                                                     {errors.durationInMinutes && (
                                                         <p className="text-red-500 text-sm mt-1">{errors.durationInMinutes.message}</p>
                                                     )}

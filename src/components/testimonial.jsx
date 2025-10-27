@@ -105,10 +105,11 @@ const Testimonials = () => {
                                 {testimonials?.map((t, index) => (
                                     <SwiperSlide key={t._id || index} className="flex">
                                         <div
-                                            className={`w-full bg-white rounded-xl shadow-lg transition-all duration-300 overflow-hidden justify-between flex flex-col ${activeIndex === index
+                                            className={`w-full bg-white rounded-xl shadow-lg transition-all duration-300 overflow-hidden justify-between flex flex-col h-full ${activeIndex === index
                                                 ? "scale-105 shadow-2xl ring-2 ring-orange-400"
                                                 : "hover:shadow-xl"
                                                 }`}
+                                            style={{ minHeight: '400px' }}
                                         >
                                             {/* Card Header */}
                                             <div className="p-4 border-b border-gray-100">
@@ -200,7 +201,7 @@ const Testimonials = () => {
                 <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center justify-between pt-16 md:pt-20 gap-10 xl:gap-10 px-5 xl:px-0">
                     <div className="text-left flex flex-col justify-center items-center md:items-start">
                         <h2 className="text-xl md:text-2xl xl:text-5xl w-full font-bold font-tbPop text-black text-center md:text-left pb-3">
-                            Download Our <span className="text-p">"Soulplane"</span> App Today
+                            Download Our <span className="text-p">"Soul Plan"</span> App Today
                         </h2>
                         <p className="text-gray-600 text-sm lg:text-base text-center md:text-left mb-2">
                             For a sameless experience, download our apps on your phone

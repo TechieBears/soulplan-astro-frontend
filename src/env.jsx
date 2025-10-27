@@ -1,6 +1,6 @@
 export const environment = {
     // -------------------- Local Server Api URL --------------------
-    // baseUrl: 'http://192.168.0.116:6020/api/',
+    // baseUrl: 'http://192.168.0.134:6020/api/',
     // production: false,
 
 
