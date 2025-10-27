@@ -66,7 +66,7 @@ const SideBar = ({ services, active, setActive }) => {
                 {services?.map((service) => (
                     <li key={service.name}>
                         <button
-                            onClick={() => setActive(service?._id)}
+                            onClick={() => {setActive(service?._id); window.scrollTo(0, 0, { behavior: "smooth" })} }
                             className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${active === service?._id
                                 ? "text-p bg-[#ffecd2]"
                                 : "hover:bg-[#ffecd2]/50 text-slate-700"
