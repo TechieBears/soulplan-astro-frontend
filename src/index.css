@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './crop.css';  /* Import crop styles */
+
+
 :root {
     --primaryColor: #4f46e5;
     --font-name: 'Plus Jakarta Sans';
