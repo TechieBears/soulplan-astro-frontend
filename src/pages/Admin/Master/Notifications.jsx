@@ -43,7 +43,7 @@ export default function Notifications() {
 
 
     const columns = [
-        { field: "image", header: "Image", body: imageBodyTemp, style: true },
+        { field: "image", header: "Image", body: imageBodyTemp, style: true , sortable: true},
         { field: 'title', header: 'Notification title', body: (row) => <h5 className='capitalize text-wrap w-[12rem]'>{row?.title}</h5>, sortable: true, style: true },
         { field: 'description', header: 'Notification description', body: (row) => <h5 className='capitalize text-wrap w-[12rem]'>{row?.description}</h5>, sortable: true, style: true },
         { field: 'type', header: 'Notification For', body: (row) => <h5>{row?.type}</h5>, sortable: true, style: true },
