@@ -12,7 +12,7 @@ import TextInput from '../../../TextInput/TextInput';
 import SelectTextInput from '../../../TextInput/SelectTextInput';
 import CustomTextArea from '../../../TextInput/CustomTextArea';
 import { TableTitle } from '../../../../helper/Helper';
-import ImageUploadInput from '../../../TextInput/ImageUploadInput';
+import ImageCropUpload from '../../../../components/TextInput/ImageCropUpload';
 
 function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
     const [open, setOpen] = useState(false);
@@ -123,7 +123,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                                         >
                                                             Banner Image <span className="text-red-500 text-xs font-tbLex">*</span>
                                                         </h4>
-                                                        <ImageUploadInput
+                                                        <ImageCropUpload
                                                             label="Upload Banner Image"
                                                             multiple={false}
                                                             registerName="image"
@@ -133,6 +133,9 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                                             setValue={setValue}
                                                             control={control}
                                                             defaultValue={userData?.image}
+                                                            cropAspectRatio={1}
+                                                            cropHeight={250}
+                                                            cropWidth={600}
                                                         />
 
                                                     </div>
