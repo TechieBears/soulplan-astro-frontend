@@ -4,6 +4,7 @@ import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
 import { formBtn3 } from "../../../utils/CustomClass";
 import TextInput from "../../../components/TextInput/TextInput";
 import ImageUploadInput from "../../../components/TextInput/ImageUploadInput";
+import ImageCropUpload from "../../../components/TextInput/ImageCropUpload";
 import { validateAlphabets, validateEmail, validatePhoneNumber } from '../../../utils/validateFunction';
 import { useForm } from "react-hook-form";
 import SelectTextInput from "../../../components/TextInput/SelectTextInput";
@@ -143,7 +144,7 @@ export default function AccountPage() {
                                 >
                                     Profile Image*
                                 </h4>
-                                <ImageUploadInput
+                                <ImageCropUpload
                                     label="Upload Profile Image*"
                                     multiple={false}
                                     registerName="profileImage"
@@ -156,6 +157,9 @@ export default function AccountPage() {
                                     setValue={setValue}
                                     control={control}
                                     defaultValue={user?.profileImage}
+                                    cropAspectRatio={1}
+                                    cropHeight={300}
+                                    cropWidth={300}
                                 />
                             </div>
 
