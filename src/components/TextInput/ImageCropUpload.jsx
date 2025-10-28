@@ -18,7 +18,7 @@ const ImageCropUpload = ({
   defaultValue,
   style,
   disabled,
-  cropAspectRatio = 5 / 3, // rectangular shape
+  cropAspectRatio = 5 / 3, 
   cropWidth = 500,
   cropHeight = 300,
 }) => {
@@ -39,33 +39,72 @@ const ImageCropUpload = ({
   const imgRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Load existing image (edit mode)
+  // Load existing image(s) (edit mode)
   useEffect(() => {
     if (defaultValue) {
-      const dummyFile = {
-        name: defaultValue.split("/").pop(),
-        url: defaultValue,
-      };
-      setFiles([dummyFile]);
-      setFileName(dummyFile.name);
-      setValue(registerName, defaultValue);
+      if (multiple && Array.isArray(defaultValue)) {
+        // Handle multiple images
+        const dummyFiles = defaultValue.map(url => ({
+          name: url.split("/").pop(),
+          url
+        }));
+        setFiles(dummyFiles);
+        setFileName(dummyFiles.length === 1 ? dummyFiles[0].name : `${dummyFiles.length} files selected`);
+        setValue(registerName, defaultValue);
+      } else if (!multiple && typeof defaultValue === 'string') {
+        // Handle single image
+        const dummyFile = {
+          name: defaultValue.split("/").pop(),
+          url: defaultValue,
+        };
+        setFiles([dummyFile]);
+        setFileName(dummyFile.name);
+        setValue(registerName, defaultValue);
+      }
     }
-  }, [defaultValue, registerName, setValue]);
+  }, [defaultValue, registerName, setValue, multiple]);
 
   const handleFileChange = (e) => {
     if (e?.target?.files?.length > 0) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        setSelectedImage({
-          file,
-          src: reader.result,
-          name: file.name,
-        });
-        setShowCropModal(true);
-      };
-      reader.readAsDataURL(file);
+      if (multiple) {
+        // Process multiple files sequentially
+        const fileArray = Array.from(e.target.files);
+        processFilesSequentially(fileArray, 0);
+      } else {
+        // Process single file
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          setSelectedImage({
+            file,
+            src: reader.result,
+            name: file.name,
+          });
+          setShowCropModal(true);
+        };
+        reader.readAsDataURL(file);
+      }
     }
+  };
+
+  const processFilesSequentially = (fileArray, index) => {
+    if (index >= fileArray.length) return;
+    
+    const file = fileArray[index];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSelectedImage({
+        file,
+        src: reader.result,
+        name: file.name,
+        isMultiple: true,
+        currentIndex: index,
+        totalFiles: fileArray.length,
+        remainingFiles: fileArray.slice(index + 1)
+      });
+      setShowCropModal(true);
+    };
+    reader.readAsDataURL(file);
   };
 
   const onImageLoad = useCallback(
@@ -128,18 +167,36 @@ const ImageCropUpload = ({
       });
 
       const url = await uploadToCloudinary(croppedFile);
-      setValue(registerName, url);
-
+      
       const previewFile = {
         file: croppedFile,
         name: selectedImage.name,
         url: url,
       };
 
-      setFiles([previewFile]);
-      setFileName(selectedImage.name);
-      setShowCropModal(false);
-      setSelectedImage(null);
+      if (multiple) {
+        // Add to existing files for multiple images
+        const newFiles = [...files, previewFile];
+        setFiles(newFiles);
+        setFileName(`${newFiles.length} files selected`);
+        setValue(registerName, newFiles.map(f => f.url));
+        
+        // Process next file if available
+        if (selectedImage.remainingFiles && selectedImage.remainingFiles.length > 0) {
+          setShowCropModal(false);
+          processFilesSequentially(selectedImage.remainingFiles, 0);
+        } else {
+          setShowCropModal(false);
+          setSelectedImage(null);
+        }
+      } else {
+        // Replace for single image
+        setFiles([previewFile]);
+        setFileName(selectedImage.name);
+        setValue(registerName, url);
+        setShowCropModal(false);
+        setSelectedImage(null);
+      }
     } catch (error) {
       console.error("Upload failed:", error);
     } finally {
@@ -163,6 +220,7 @@ const ImageCropUpload = ({
           type="file"
           id={registerName}
           accept="image/*"
+          multiple={multiple}
           className={`peer w-full bg-transparent outline-none px-4 text-base font-tbLex text-black rounded-lg bg-slate1 ${style}
             ${
               !errors?.ref?.value && errors?.type === "required"
@@ -256,7 +314,10 @@ const ImageCropUpload = ({
                     as="h3"
                     className="text-lg font-medium leading-6 text-white bg-linear-gradient py-4 px-6 relative"
                   >
-                    Crop Your Image
+                    {selectedImage?.isMultiple 
+                      ? `Crop Image ${(selectedImage.currentIndex || 0) + 1} of ${selectedImage.totalFiles || 1}`
+                      : "Crop Your Image"
+                    }
                     <button
                       onClick={handleCropCancel}
                       className="absolute right-4 top-4 text-white hover:text-gray-200"
