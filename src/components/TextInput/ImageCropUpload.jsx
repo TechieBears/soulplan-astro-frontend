@@ -39,11 +39,9 @@ const ImageCropUpload = ({
   const imgRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Load existing image(s) (edit mode)
   useEffect(() => {
     if (defaultValue) {
       if (multiple && Array.isArray(defaultValue)) {
-        // Handle multiple images
         const dummyFiles = defaultValue.map(url => ({
           name: url.split("/").pop(),
           url
@@ -52,7 +50,6 @@ const ImageCropUpload = ({
         setFileName(dummyFiles.length === 1 ? dummyFiles[0].name : `${dummyFiles.length} files selected`);
         setValue(registerName, defaultValue);
       } else if (!multiple && typeof defaultValue === 'string') {
-        // Handle single image
         const dummyFile = {
           name: defaultValue.split("/").pop(),
           url: defaultValue,
@@ -67,11 +64,9 @@ const ImageCropUpload = ({
   const handleFileChange = (e) => {
     if (e?.target?.files?.length > 0) {
       if (multiple) {
-        // Process multiple files sequentially
         const fileArray = Array.from(e.target.files);
         processFilesSequentially(fileArray, 0);
       } else {
-        // Process single file
         const file = e.target.files[0];
         const reader = new FileReader();
         reader.onload = () => {
@@ -175,13 +170,11 @@ const ImageCropUpload = ({
       };
 
       if (multiple) {
-        // Add to existing files for multiple images
         const newFiles = [...files, previewFile];
         setFiles(newFiles);
         setFileName(`${newFiles.length} files selected`);
         setValue(registerName, newFiles.map(f => f.url));
         
-        // Process next file if available
         if (selectedImage.remainingFiles && selectedImage.remainingFiles.length > 0) {
           setShowCropModal(false);
           processFilesSequentially(selectedImage.remainingFiles, 0);
@@ -190,13 +183,15 @@ const ImageCropUpload = ({
           setSelectedImage(null);
         }
       } else {
-        // Replace for single image
         setFiles([previewFile]);
         setFileName(selectedImage.name);
         setValue(registerName, url);
         setShowCropModal(false);
         setSelectedImage(null);
       }
+      
+      const fileInput = document.getElementById(registerName);
+      if (fileInput) fileInput.value = '';
     } catch (error) {
       console.error("Upload failed:", error);
     } finally {
@@ -209,6 +204,9 @@ const ImageCropUpload = ({
     setSelectedImage(null);
     setCrop({ x: 0, y: 0, width: cropWidth, height: cropHeight });
     setCompletedCrop(null);
+    
+    const fileInput = document.getElementById(registerName);
+    if (fileInput) fileInput.value = '';
   };
 
   return (
@@ -283,7 +281,6 @@ const ImageCropUpload = ({
         />
       )}
 
-      {/* Crop Modal */}
       <Transition appear show={showCropModal} as={Fragment}>
         <Dialog as="div" className="relative z-[1001]" onClose={handleCropCancel}>
           <Transition.Child
@@ -334,7 +331,7 @@ const ImageCropUpload = ({
                           onChange={(newCrop) => setCrop(newCrop)}
                           onComplete={(c) => setCompletedCrop(c)}
                           aspect={cropAspectRatio}
-                          locked={true} // ✅ Prevent resizing
+                          locked={true} 
                           className="max-w-full"
                           ruleOfThirds={false}
                         >
