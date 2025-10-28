@@ -255,6 +255,9 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                         <ImageCropUpload
                                                             label="Upload Product Images"
                                                             multiple={true}
+                                                            cropAspectRatio={1}
+                                                            cropHeight={400}
+                                                            cropWidth={400}
                                                             registerName="images"
                                                             errors={errors.images}
                                                             register={register}
