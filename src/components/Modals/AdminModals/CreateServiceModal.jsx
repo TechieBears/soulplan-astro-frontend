@@ -17,6 +17,7 @@ import Error from '../../Errors/Error';
 import CustomTextArea from '../../TextInput/CustomTextArea';
 import { setServiceCategories } from '../../../redux/Slices/rootSlice';
 import ImageCropUpload from '../../TextInput/ImageCropUpload';
+import MultiSelectTextInput from '../../TextInput/MultiSelectTextInput';
 
 function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
@@ -176,27 +177,29 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="">
+                                                <div>
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Mode <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                        Service Mode <span className="text-red-500 text-xs font-tbLex">*</span> (Multiple)
                                                     </h4>
                                                     <div className="">
-                                                        <SelectTextInput
-                                                            label="Select Service Mode"
-                                                            registerName="serviceType"
-                                                            options={[
-                                                                { value: 'online', label: 'Online' },
-                                                                // { value: 'pandit_center', label: `Pandit's Center` },
-                                                                // { value: 'pooja_at_home', label: 'Pooja at Home' },
-                                                            ]}
-                                                            placeholder="Select Service Mode"
-                                                            props={{
-                                                                ...register('serviceType', { required: true }),
-                                                                value: watch('serviceType') || ''
-                                                            }}
-                                                            errors={errors.serviceType}
+                                                        <Controller
+                                                            name="serviceType"
+                                                            control={control}
+                                                            render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                                                <MultiSelectTextInput
+                                                                    label="Select Service Mode"
+                                                                    options={[
+                                                                        { value: 'online', label: 'Online' },
+                                                                        { value: 'pandit_center', label: `Pandit's Center` },
+                                                                    ]}
+                                                                    key={'serviceType'}
+                                                                    value={value || []}
+                                                                    onChange={onChange}
+                                                                    errors={errors.serviceType}
+                                                                />
+                                                            )}
                                                         />
                                                     </div>
                                                 </div>
@@ -351,7 +354,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         cropAspectRatio={1}
                                                         cropWidth={500}
                                                         cropHeight={300}
-                                                        
+
                                                     />
 
                                                 </div>
