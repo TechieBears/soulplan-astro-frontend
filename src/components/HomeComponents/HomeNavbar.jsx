@@ -42,6 +42,7 @@ const HomeNavbar = () => {
     const [prevScrollPos, setPrevScrollPos] = useState(0);
     const dispatch = useDispatch();
     const [walletBalance, setWalletBalance] = useState(0);
+    const mobileMenuRef = useRef(null);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -68,6 +69,22 @@ const HomeNavbar = () => {
             duration: 1.2,
         });
     }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+                setIsMenuOpen(false);
+            }
+        };
+
+        if (isMenuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isMenuOpen]);
 
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -234,7 +251,7 @@ const HomeNavbar = () => {
 
                 {/* ===== Mobile Menu ===== */}
                 {isMenuOpen && (
-                    <div className="lg:hidden bg-white border-t">
+                    <div ref={mobileMenuRef} className="lg:hidden bg-white border-t">
                         <div className="container mx-auto px-5 py-4">
                             {/* Regular Nav Links */}
                             <div className="space-y-2 mb-4">
