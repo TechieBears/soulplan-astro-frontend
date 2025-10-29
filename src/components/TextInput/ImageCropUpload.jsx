@@ -282,7 +282,7 @@ const ImageCropUpload = ({
       )}
 
       <Transition appear show={showCropModal} as={Fragment}>
-        <Dialog as="div" className="relative z-[1001]" onClose={handleCropCancel}>
+        <Dialog as="div" className="relative z-[1000]" onClose={handleCropCancel}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -292,7 +292,7 @@ const ImageCropUpload = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 backdrop-blur-[2.3px] bg-black/50" />
+            <div className="fixed inset-0 " />
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
@@ -306,7 +306,7 @@ const ImageCropUpload = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-lg bg-white text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-2xl  rounded-lg bg-white text-left align-middle ">
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-white bg-linear-gradient py-4 px-6 relative"
@@ -356,7 +356,7 @@ const ImageCropUpload = ({
                     <button
                       type="button"
                       onClick={handleCropCancel}
-                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white  rounded-md hover:bg-gray-50"
                     >
                       Cancel
                     </button>
@@ -364,7 +364,7 @@ const ImageCropUpload = ({
                       type="button"
                       onClick={handleCropComplete}
                       disabled={isUploading}
-                      className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-primary/90 disabled:opacity-50"
+                      className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md "
                     >
                       {isUploading ? "Uploading..." : "Crop & Upload"}
                     </button>
