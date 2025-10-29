@@ -1475,6 +1475,37 @@ export const getAllNotifications = async (data) => {
         return err?.response?.data;
     }
 }
+export const getNotificationsDropdown = async () => {
+    try {
+        const url = `${environment.baseUrl}notification/dropdown-dashboard`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getNotificationsDropdown api file", err);
+        return err?.response?.data;
+    }
+}
+export const getNotificationsDropdownCustomer = async () => {
+    try {
+        const url = `${environment.baseUrl}notifications/dropdown-customer`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getNotificationsDropdownCustomer api file", err);
+        return err?.response?.data;
+    }
+}
+
+export const clearAllNotifications = async () => {
+    try {
+        const url = `${environment.baseUrl}notification/remove-all`;
+        const response = await axios.delete(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in clearAllNotifications api file", err);
+        return err?.response?.data;
+    }
+}
 
 export const addNotification = async (data) => {
     const url = `${environment.baseUrl}notification/create`;
@@ -1495,6 +1526,19 @@ export const getCustomerUsersDropdown = async () => {
         return response.data;
     } catch (err) {
         console.log("==========error in getCustomerUsersDropdown api file", err);
+        return err?.response?.data;
+    }
+}
+
+// ========================== dashboard insights api ========================
+
+export const getDashboardInsights = async () => {
+    try {
+        const url = `${environment.baseUrl}dashboard/get-dashboard-data`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getDashboardData api file", err);
         return err?.response?.data;
     }
 }

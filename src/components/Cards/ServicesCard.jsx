@@ -38,7 +38,7 @@ const ServicesCard = ({ service, idx }) => {
                 alt="divider"
             />
             <p className="text-slate-500 mt-2 px-4 text-sm font-tbPop font-medium tracking-tight line-clamp-2 flex-grow">{service.subTitle || ""}</p>
-            <span className="mt-3 inline-block text-black text-lg">
+            <span className="mt-3 inline-block text-black text-lg self-center">
                 <ArrowRight size={20} weight="bold" />
             </span>
         </div>

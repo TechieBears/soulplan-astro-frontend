@@ -4,7 +4,6 @@
 @tailwind utilities;
 
 
-
 :root {
     --primaryColor: #4f46e5;
     --font-name: 'Plus Jakarta Sans';
@@ -370,6 +369,15 @@ body::-webkit-scrollbar-thumb {
     background-repeat: no-repeat;
     background-size: cover;
 } */
+
+
+[style*="position: absolute"][style*="pointer-events: none"][style*="MUI X Missing license key"] {
+    display: none !important;
+}
+
+div[style*="position: absolute"][style*="z-index: 100000"][style*="pointer-events: none"] {
+    display: none !important;
+}
 
 .glass {
     background: rgba(255, 255, 255, 0.55);
@@ -1124,16 +1132,18 @@ video {
 
 
 @keyframes ping {
-  0% {
-    transform: scale(0.8);
-    opacity: 1;
-  }
-  75%, 100% {
-    transform: scale(1.2);
-    opacity: 0;
-  }
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+
+    75%,
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
 }
 
 .animation-delay-1000 {
-  animation-delay: 1s;
+    animation-delay: 1s;
 }

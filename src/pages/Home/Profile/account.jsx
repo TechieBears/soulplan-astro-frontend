@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
 import { formBtn3 } from "../../../utils/CustomClass";
 import TextInput from "../../../components/TextInput/TextInput";
-import ImageUploadInput from "../../../components/TextInput/ImageUploadInput";
 import ImageCropUpload from "../../../components/TextInput/ImageCropUpload";
 import { validateAlphabets, validateEmail, validatePhoneNumber } from '../../../utils/validateFunction';
 import { useForm } from "react-hook-form";
