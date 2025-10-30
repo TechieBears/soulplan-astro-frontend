@@ -89,7 +89,7 @@ export default function Testimonials() {
                     <img
                         src={row?.user?.profileImage || '/api/placeholder/32/32'}
                         alt={`${row?.user?.firstName} ${row?.user?.lastName}`}
-                        className="w-8 h-8 rounded-full object-cover ring-1 ring-gray-200"
+                        className="w-16 h-16 rounded-full object-cover ring-1 ring-gray-200"
                         onError={(e) => {
                             e.target.src = `https://ui-avatars.com/api/?name=${row?.user?.firstName}+${row?.user?.lastName}&background=8833FF&color=fff&size=32`;
                         }}
@@ -100,7 +100,8 @@ export default function Testimonials() {
                     </div>
                 </div>
             ),
-            style: true
+            style: true,
+            sortable: true
         },
         {
             field: 'service',
@@ -110,7 +111,8 @@ export default function Testimonials() {
                     {row?.product?.name || row?.service?.title || "N/A"}
                 </span>
             ),
-            style: true
+            style: true,
+            sortable: true
         },
         // {
         //     field: 'rating',
@@ -127,9 +129,10 @@ export default function Testimonials() {
                     <p className="text-xs text-gray-500">{moment(row?.createdAt)?.format('hh:mm A') || ""}</p>
                 </div>
             ),
-            style: true
+            style: true,
+            sortable: true
         },
-        { field: 'message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true },
+        { field: 'message', header: 'Message', body: (row) => <div className='capitalize overflow-y-scroll w-[20rem] h-[5rem] text-wrap bg-slate-100 rounded-md px-2 py-1'>{row?.message || "---- -----"}</div>, style: true, sortable: true },
         { field: "isactive", header: "Visible On Website", body: activeBody, sortable: true, style: true },
     ];
 
@@ -139,8 +142,8 @@ export default function Testimonials() {
                 <form onSubmit={handleSubmit(handleFilterSubmit)} className="flex flex-col lg:flex-row gap-2">
                     <div className="grid grid-cols-1 w-full gap-2">
                         <TextInput
-                            label="Search User"
-                            placeholder="Search User"
+                            label="Enter User Name*"
+                            placeholder="Enter User Name"
                             type="text"
                             registerName="name"
                             props={{ ...register('name') }}

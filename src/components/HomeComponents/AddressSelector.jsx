@@ -19,6 +19,8 @@ const AddressSelector = () => {
             if (res?.data?.length > 0) {
                 const defaultAddress = res?.data?.filter(item => item?.isDefault)
                 dispatch(setAddresses(defaultAddress[0]))
+            } else {
+                dispatch(setAddresses([]));
             }
         } catch (err) {
             toast.error(err.message || "Failed to fetch addresses");

@@ -63,9 +63,9 @@ const Testimonials = () => {
                         />
                     </>
                     {/* Swiper */}
-                    <div className="">
+                    <div className="pl-[2px]">
                         {loading ? (
-                            <div className="flex justify-center items-center space-x-6 pb-12">
+                            <div className="flex justify-center items-center space-x-6 pb-12 ">
                                 {[1, 2, 3]?.map((item) => (
                                     <div key={item} className="animate-pulse w-[400px]">
                                         <div className="w-full max-w-sm p-6 rounded-lg bg-slate-100 shadow-md min-h-[320px] flex flex-col items-center justify-between">
