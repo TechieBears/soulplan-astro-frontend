@@ -4,11 +4,10 @@ import logo from "../../assets/logo.png";
 import { formBtn1, formBtn3 } from "../../utils/CustomClass";
 import { CaretDown, List, Share } from "@phosphor-icons/react";
 import { useDispatch, useSelector } from "react-redux";
-import { LoginCurve, User, Box, Building4, CallCalling, Information, Wallet, NotificationBing, SmsNotification } from "iconsax-reactjs";
+import { LoginCurve, User, Box, Building4, CallCalling, Information, Wallet, NotificationBing, SmsNotification, ShoppingCart } from "iconsax-reactjs";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { clearAllNotifications, getActiveServiceCategories, getNotificationsDropdown, getNotificationsDropdownCustomer, getProductFromCart, getPublicServicesDropdown, getWalletBalance } from "../../api";
-import { ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
 import { setCartProductCount } from "../../redux/Slices/cartSlice";
 import moment from "moment";
@@ -218,15 +217,19 @@ const HomeNavbar = () => {
                             </div>
                         </div>}
                         {login && <NotificationSection />}
-                        {login && <button
-                            onClick={() => navigate("/cart", { state: { type: "products" } })}
-                            className="relative p-2 text-gray-800 hover:text-blue-600 transition-colors"
-                        >
-                            <ShoppingCart size={24} />
-                            <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center border-2 border-white">
-                                {cartProductCount || 0}
-                            </span>
-                        </button>}
+                        {login &&
+                            <button className=' relative' ref={trigger}
+                                onClick={() => navigate("/cart", { state: { type: "products" } })}>
+                                {cartProductCount > 0 && <span className="absolute flex top-0 -right-2 h-3.5 w-3.5">
+                                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-6 w-6 flex items-center justify-center border-2 border-white">
+                                        {cartProductCount || 0}
+                                    </span>
+                                </span>}
+                                <div className="flex items-center space-x-2 p-2 bg-slate-100 rounded-full">
+                                    <ShoppingCart size={24} className='text-black' />
+                                </div>
+                            </button>
+                        }
 
                         {login ? (
                             <div className="relative">
@@ -600,7 +603,7 @@ const NotificationSection = () => {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                             </span>}
-                            <div className="flex items-center space-x-2 p-1.5 bg-slate-100 rounded-full">
+                            <div className="flex items-center space-x-2 p-2 bg-slate-100 rounded-full">
                                 <NotificationBing size="26" className='text-black' variant='TwoTone' />
                             </div>
                         </button>

@@ -30,6 +30,7 @@ import ServicesCartCard from "../../components/Cards/ServicesCartCard";
 import moment from "moment";
 import { ExternalLink } from "lucide-react";
 import Switch from 'react-js-switch';
+import AddressChangeModal from "../../components/Modals/AddressChangeModal";
 
 
 const CartPage = () => {
@@ -316,6 +317,8 @@ const ProductTab = () => {
             if (res?.data?.length > 0) {
                 const defaultAddress = res?.data?.filter(item => item?.isDefault)
                 dispatch(setAddresses(defaultAddress[0]))
+            } else {
+                dispatch(setAddresses([]));
             }
         } catch (err) {
             toast.error(err.message || "Failed to fetch addresses");
@@ -452,7 +455,7 @@ const ProductTab = () => {
 
             <div className="lg:col-span-5">
                 <div className="rounded-lg lg:sticky lg:top-8">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full pb-4 bg-white rounded-md  border-b border-slate-200 mb-4">
+                    {addresses?._id && <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full pb-4 bg-white rounded-md  border-b border-slate-200 mb-4">
                         <div className="flex-1 flex flex-col">
                             <h3 className="text-sm font-semibold font-tbLex text-gray-800">
                                 Deliver to:
@@ -479,7 +482,7 @@ const ProductTab = () => {
                             <Edit className="w-4 h-4" />
                             Change
                         </button>
-                    </div>
+                    </div>}
 
                     {coupon ?
                         <div className="w-full bg-green-100 rounded-xl p-3 flex items-center justify-between ">
@@ -584,7 +587,7 @@ const ProductTab = () => {
                         </div>
                     </div>
 
-                    {addresses?._id && <button
+                    {addresses?._id ? <button
                         onClick={() => handleBooking()}
                         disabled={bookingLoading}
                         className={`${formBtn3} w-full py-3 text-white rounded-md ${bookingLoading ? "opacity-50 cursor-not-allowed" : ""
@@ -598,7 +601,7 @@ const ProductTab = () => {
                         ) : (
                             "Continue to Pay"
                         )}
-                    </button>}
+                    </button> : <AddressChangeModal edit={false} />}
                 </div>
             </div>
         </div>

@@ -78,6 +78,7 @@ function AddressChangeModal({ edit }) {
                 setShowEditForm(false);
                 setEditingAddress(null);
                 reset();
+                toggle();
                 fetchAddresses();
             } else {
                 toast.error(response?.message || "Something went wrong");
@@ -114,6 +115,8 @@ function AddressChangeModal({ edit }) {
             if (res?.data?.length > 0) {
                 const defaultAddress = res?.data?.filter(item => item?.isDefault)
                 dispatch(setAddresses(defaultAddress[0]))
+            } else {
+                dispatch(setAddresses([]));
             }
             setAddress(res?.data);
         } catch (err) {
