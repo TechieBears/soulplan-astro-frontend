@@ -9,7 +9,7 @@ import Table from '../../../components/Table/Table'
 import TextInput from '../../../components/TextInput/TextInput'
 import usePagination from '../../../utils/customHooks/usePagination'
 import { formBtn1, tableBtn } from '../../../utils/CustomClass'
-import { validateAlphabets } from '../../../utils/validateFunction';
+import { validateAlphabetic } from '../../../utils/validateFunction';
 import CreateEmployeeModal from '../../../components/Modals/AdminModals/CreateEmployeeModal';
 import TableHeader from '../../../components/Table/TableHeader';
 
@@ -355,7 +355,7 @@ const Employees = () => {
                             placeholder="Enter Full Name"
                             type="text"
                             registerName="name"
-                            props={{ ...register('name', { validate: validateAlphabets }) }}
+                            props={{ ...register('name', { validate: validateAlphabetic }) }}
                         />
                     </div>
                     <div className="flex space-x-2">

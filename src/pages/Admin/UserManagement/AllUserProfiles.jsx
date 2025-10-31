@@ -10,7 +10,7 @@ import TextInput from '../../../components/TextInput/TextInput';
 import TableHeader from '../../../components/Table/TableHeader';
 import { formBtn1 } from '../../../utils/CustomClass';
 import usePagination from '../../../utils/customHooks/usePagination';
-import { validateAlphabets } from '../../../utils/validateFunction';
+import { validateAlphabetic } from '../../../utils/validateFunction';
 
 const initialFilterState = {
     name: ''
@@ -266,7 +266,7 @@ function AllUserProfiles() {
                             placeholder="Enter Full Name"
                             type="text"
                             registerName="name"
-                            props={{ ...register('name', { validate: validateAlphabets }) }}
+                            props={{ ...register('name', { validate: validateAlphabetic }) }}
                         />
                     </div>
                     <div className="flex space-x-2">
