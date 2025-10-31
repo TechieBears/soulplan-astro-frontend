@@ -66,7 +66,7 @@ const SideBar = ({ services, active, setActive }) => {
                 {services?.map((service) => (
                     <li key={service.name}>
                         <button
-                            onClick={() => {setActive(service?._id); window.scrollTo(0, 0, { behavior: "smooth" })} }
+                            onClick={() => { setActive(service?._id); window.scrollTo(0, 0, { behavior: "smooth" }) }}
                             className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${active === service?._id
                                 ? "text-p bg-[#ffecd2]"
                                 : "hover:bg-[#ffecd2]/50 text-slate-700"
@@ -203,7 +203,11 @@ const MainSection = ({ content }) => {
                             <div className="space-x-1.5 flex items-center">
                                 <Mobile size={20} />
                                 <h4 className="text-slate-700 text-sm font-tbPop font-normal capitalize">
-                                    Mode: {content.serviceType?.replaceAll("_", " ")}
+                                    Mode: {content?.serviceType?.map((skill, index) => (
+                                        <span key={index} className="px-2 py-1 text-sm font-tbPop capitalize">
+                                            {skill}
+                                        </span>
+                                    ))}
                                 </h4>
                             </div>
                         </div>

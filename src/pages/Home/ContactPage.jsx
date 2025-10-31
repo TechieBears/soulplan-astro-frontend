@@ -82,7 +82,8 @@ const ContactPage = () => {
 
                         {/* Right Side - Form */}
                         <form onSubmit={handleSubmit(onSubmit)} >
-                            <div className='bg-white p-3 md:p-5 xl:p-8 rounded-lg
+                            <div className="bg-white p-3 ">
+                            <div className='md:p-5 xl:p-8 rounded-lg
                             grid  md:grid-cols-2 gap-5 items-center' >
                                 <div className="">
                                     <h4
@@ -200,13 +201,13 @@ const ContactPage = () => {
                                             })
                                         }}
                                         errors={errors.message}
-                                    />
-                                </div>
-                                <div className="flex justify-start">
-                                    {loader ? <LoadBox className={`${formBtn3} !w-auto`} /> : <button type='submit' className={`${formBtn3} !w-auto`}>submit</button>}
+                                    />  
                                 </div>
                             </div>
-
+                                <div className="flex justify-self-center p-4">
+                                    {loader ? <LoadBox className={`${formBtn3} !w-auto`} /> : <button type='submit' className={`${formBtn3} !w-auto`}>submit</button>}
+                                </div>
+</div>
 
                         </form>
                     </div>

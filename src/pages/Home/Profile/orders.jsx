@@ -191,6 +191,7 @@ export default function MyOrders() {
                                                                     <div className="flex items-center gap-3 bg-white/10 rounded-lg p-3 backdrop-blur-sm">
                                                                         <Icon icon="ph:device-mobile" className="w-5 h-5 text-purple-300 flex-shrink-0" />
                                                                         <div>
+                                                                            {console.log("ddddd=====", service)}
                                                                             <div className="text-purple-200 text-xs">Mode</div>
                                                                             <div className="text-white text-sm font-medium">{service?.serviceType}</div>
                                                                         </div>
