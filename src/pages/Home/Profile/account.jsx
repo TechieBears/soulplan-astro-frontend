@@ -37,6 +37,7 @@ export default function AccountPage() {
     }
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         reset(user);
     }, [user]);
 

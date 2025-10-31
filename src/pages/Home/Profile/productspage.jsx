@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ProductCard from "../../../components/Products/ProductCard";
 import ProductCardSkeleton from "../../../components/Loader/ProductCardSkeleton";
 import FilterSidebar from "../../../components/Products/FilterSidebar";
@@ -30,6 +30,10 @@ const ProductsPage = () => {
   const PRICE_MIN = 0;
   const PRICE_MAX = 10000;
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   // Fetch filter data
   React.useEffect(() => {
     const fetchFilters = async () => {

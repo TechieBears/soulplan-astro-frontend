@@ -16,6 +16,7 @@ const HomePage = () => {
 
     const [open, setOpen] = useState(false);
     useEffect(() => {
+        window.scrollTo(0, 0);
         if (login && user?._id) {
             const dontShowAgain = localStorage.getItem(`dontShowReferralModal_${user._id}`);
             setOpen(!dontShowAgain);
