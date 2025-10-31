@@ -714,7 +714,6 @@ const ServiceTab = () => {
     }
 
     const handleBooking = async () => {
-        console.log("⚡️🤯 ~ Cart.jsx:659 ~ handleBooking ~ cartItems:", cartItems)
         try {
             const payload = {
                 serviceItems: cartItems?.map((item) => ({
@@ -727,6 +726,7 @@ const ServiceTab = () => {
                     email: item?.cust?.email || "",
                     phone: item?.cust?.phone || "",
                     address: item?.cust?.address || "",
+                    serviceType: item?.serviceMode || "",
                 })),
                 paymentType: "COD",
                 currencyType: "INR",
