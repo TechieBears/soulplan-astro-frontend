@@ -169,7 +169,7 @@ const PaymentSuccess = () => {
                                                 </p>
                                                 <p className="flex items-center gap-3">
                                                     <Icon icon="ph:device-mobile" className="w-5 h-5 text-green-600" />
-                                                    <span className="text-sm">Mode: {service?.serviceType}</span>
+                                                    <span className="text-sm">Mode: {service?.service?.serviceType}</span>
                                                 </p>
                                                 <p className="flex items-center gap-3">
                                                     <Icon icon="ph:clock" className="w-5 h-5 text-orange-600" />
