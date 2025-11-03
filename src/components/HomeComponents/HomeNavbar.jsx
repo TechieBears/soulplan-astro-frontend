@@ -23,6 +23,7 @@ const HomeNavbar = () => {
 
     const profileNavLinks = [
         { name: "My Account", path: "/profile/account" },
+        { name: "My Cart", path: "/cart" },
         { name: "My Orders", path: "/profile/my-orders" },
         { name: "My Address", path: "/profile/address" },
         { name: "Refer & Earn", path: "/profile/refer" },
