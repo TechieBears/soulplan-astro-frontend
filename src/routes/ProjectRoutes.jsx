@@ -117,7 +117,7 @@ const ProjectRoutes = () => {
                 </Sidebar>
             ) : (
                 // ============ Guest / Before Login ============
-                <main className="min-h-screen w-full overflow-x-hidden max-lg:px-5">
+                <main className="min-h-screen w-full overflow-x-hidden ">
                     <HomeNavbar />
                     <Routes>
                         <Route path="/" element={<HomePage />} />
