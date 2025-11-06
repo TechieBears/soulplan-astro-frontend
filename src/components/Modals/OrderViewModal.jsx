@@ -591,7 +591,9 @@ const RenderServiceView = ({ service, serviceIndex, orderData }) => {
                         }}
                     >
                         <div className="text-center p-8">
-                            <Calendar className="w-16 h-16 mx-auto mb-4 text-purple-600" />
+                            <span className="w-16 h-16 mx-auto mb-4 text-purple-600"> 
+                                {service.serviceImage}
+                            </span>
                             <h3 className="text-xl font-semibold text-gray-800 font-tbPop">
                                 {service.serviceName}
                             </h3>
