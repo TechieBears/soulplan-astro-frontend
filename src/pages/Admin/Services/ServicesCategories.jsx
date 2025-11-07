@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 import { ArrowLeft2, ArrowRight2 } from 'iconsax-reactjs';
 import { getServiceCategories, editServiceCategory } from '../../../api';
 import { useForm } from 'react-hook-form';
-import { validateAlphabets } from '../../../utils/validateFunction';
+import { validateAlphabetic } from '../../../utils/validateFunction';
 import TextInput from '../../../components/TextInput/TextInput';
 import { formBtn1 } from '../../../utils/CustomClass';
 
@@ -199,7 +199,7 @@ const ServicesCategories = () => {
                             placeholder="Enter Category Name"
                             type="text"
                             registerName="name"
-                            props={{ ...register('name', { validate: validateAlphabets }) }}
+                            props={{ ...register('name', { validate: validateAlphabetic }) }}
                         />
                     </div>
                     <div className="flex space-x-2">

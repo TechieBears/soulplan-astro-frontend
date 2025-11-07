@@ -15,6 +15,7 @@ const ReferAndEarn = () => {
     const [walletBalance, setWalletBalance] = useState(0);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         const fetchWalletBalance = async () => {
             const res = await getWalletBalance();
             if (res?.success) {

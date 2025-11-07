@@ -13,6 +13,17 @@ const HomeBanner = ({ slidesData, isLoading }) => {
         );
     }
 
+    if (!slidesData || slidesData.length === 0) {
+        return (
+            <section className='w-full h-screen bg-[#FFF9EF] flex items-center justify-center'>
+                <div className='text-center'>
+                    <h2 className='text-2xl font-tbLex font-bold text-gray-600 mb-2'>No Banners Available</h2>
+                    <p className='text-gray-500 font-tbPop'>Please check back later for updates.</p>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className='w-full h-screen'>
             <Swiper

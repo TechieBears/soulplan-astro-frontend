@@ -14,7 +14,7 @@ import { ArrowLeft2, ArrowRight2 } from 'iconsax-reactjs';
 import TextInput from '../../../components/TextInput/TextInput';
 import { formBtn1 } from '../../../utils/CustomClass';
 import { useForm } from 'react-hook-form';
-import { validateAlphabets } from '../../../utils/validateFunction';
+import { validateAlphabetic } from '../../../utils/validateFunction';
 
 const ProductCategories = () => {
     const [selectedTab, setSelectedTab] = useState(0);
@@ -234,7 +234,7 @@ const ProductCategoriesPanel = () => {
                             placeholder="Enter Category Name"
                             type="text"
                             registerName="name"
-                            props={{ ...register('name', { validate: validateAlphabets }) }}
+                            props={{ ...register('name', { validate: validateAlphabetic }) }}
                         />
                     </div>
                     <div className="flex space-x-2">
@@ -487,7 +487,7 @@ const SubProductCategoriesPanel = () => {
                             placeholder="Enter Subcategory Name"
                             type="text"
                             registerName="name"
-                            props={{ ...register('name', { validate: validateAlphabets }) }}
+                            props={{ ...register('name', { validate: validateAlphabetic }) }}
                         />
                     </div>
                     <div className="flex space-x-2">

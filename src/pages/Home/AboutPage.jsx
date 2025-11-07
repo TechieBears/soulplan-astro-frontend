@@ -16,7 +16,7 @@ import moon from "../../assets/helperImages/moon.png";
 import sun from "../../assets/helperImages/sun.png";
 import rightImage from "../../assets/helperImages/rightDesign.png";
 import NumberFlow from "@number-flow/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -69,9 +69,14 @@ const features = [
   },
 ];
 
+
 const AboutPage = () => {
   const statsContainerRef = useRef(null);
   const [animatedStats, setAnimatedStats] = useState(stats.map(() => 0));
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useGSAP(
     () => {

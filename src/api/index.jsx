@@ -11,7 +11,7 @@ const handleLogout = () => {
     toast.error('Your session has expired. Please login again.');
     window.location.href = '/login';
 };
-
+ 
 axios.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -1114,6 +1114,7 @@ export const getProductBookingsConfirmed = async (data) => {
     const url = `${environment.baseUrl}product-order/public/get-all`;
     try {
         const response = await axios.get(url, data)
+        console.log("⚡️🤯 ~ index.jsx:1373 ~ getProductBookingsConfirmed ~ response:", response)
         return response.data;
     }
     catch (err) {

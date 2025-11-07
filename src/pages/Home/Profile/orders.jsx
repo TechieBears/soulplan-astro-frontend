@@ -40,6 +40,7 @@ export default function MyOrders() {
     };
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         const fetchProductOrders = async () => {
             try {
                 setIsLoadingProducts(true);

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { formBtn1, formBtn3 } from "../../utils/CustomClass";
-import { CaretDown, List, Share } from "@phosphor-icons/react";
+import { CaretDown, List, Share, X } from "@phosphor-icons/react";
 import { useDispatch, useSelector } from "react-redux";
 import { LoginCurve, User, Box, Building4, CallCalling, Information, Wallet, NotificationBing, SmsNotification, ShoppingCart } from "iconsax-reactjs";
 import { useGSAP } from "@gsap/react";
@@ -23,6 +23,7 @@ const HomeNavbar = () => {
 
     const profileNavLinks = [
         { name: "My Account", path: "/profile/account" },
+        { name: "My Cart", path: "/cart" },
         { name: "My Orders", path: "/profile/my-orders" },
         { name: "My Address", path: "/profile/address" },
         { name: "Refer & Earn", path: "/profile/refer" },
@@ -247,11 +248,19 @@ const HomeNavbar = () => {
 
                     {/* ===== Mobile Menu Icon ===== */}
                     <div className="flex items-center gap-3 lg:hidden">
-                        <List
-                            size={30}
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="cursor-pointer"
-                        />
+                        {isMenuOpen ? (
+                            <X
+                                size={30}
+                                onClick={() => setIsMenuOpen(false)}
+                                className="cursor-pointer"
+                            />
+                        ) : (
+                            <List
+                                size={30}
+                                onClick={() => setIsMenuOpen(true)}
+                                className="cursor-pointer"
+                            />
+                        )}
                     </div>
                 </div>
 
