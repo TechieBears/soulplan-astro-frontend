@@ -127,6 +127,20 @@ export const resetPassword = async (data) => {
     }
 };
 
+export const deleteUser = async () => {
+    const url = `${environment.baseUrl}customer-users/delete`;
+    try {
+        const response = await axios.delete(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in deleteUser api file", err);
+        return {
+            success: false,
+            message: err.response?.data?.message || err.response?.data?.error || "Account deletion failed. Please try again."
+        };
+    }
+};
+
 // ==================== Upload to Cloudinary Api===================
 
 
@@ -1130,6 +1144,7 @@ export const getAllServiceOrdersAdmin = async (data) => {
     try {
         const url = `${environment.baseUrl}service-order/get-all?orderId=${data?.orderId || ""}&date=${data?.date || ""}&status=${data?.status || ""}&page=${data?.p}&limit=${data?.records}&astrologerId=${data?.astrologerId || ""}`;
         const response = await axios.get(url)
+        console.log("⚡️🤯 ~ index.jsx:1407 ~ getAllServiceOrdersAdmin ~ response:", response)
         return response.data
     }
     catch (err) {
