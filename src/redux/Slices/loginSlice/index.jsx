@@ -9,6 +9,7 @@ const initialState = {
   error: null,
   loading: false,
   message: null,
+  isRegistered: false,
 };
 const loginSlice = createSlice({
   name: "user",
@@ -39,6 +40,9 @@ const loginSlice = createSlice({
     setMessage: (state, action) => {
       state.message = action.payload;
     },
+    setIsRegistered: (state, action) => {
+      state.isRegistered = action.payload;
+    },
     deleteUserSuccess: (state) => {
       state.loading = false;
       state.error = null;
@@ -61,6 +65,7 @@ export const {
   setError,
   setLoading,
   setMessage,
+  setIsRegistered,
   deleteUserSuccess,
 } = loginSlice.actions;
 

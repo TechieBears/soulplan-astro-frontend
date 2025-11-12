@@ -287,8 +287,8 @@ const BookingPage = () => {
                                             }
                                             prev2Label="«"
                                             next2Label="»"
-                                            prevLabel={null}
-                                            nextLabel={null}
+                                            // prevLabel="‹"
+                                            // nextLabel="›"
                                         />
                                     )}
                                 />

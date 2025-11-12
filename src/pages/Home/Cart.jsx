@@ -367,9 +367,9 @@ const ProductTab = () => {
             {cartItems?.map((item, index) => (
               <div
                 key={item._id}
-                className="bg-[#9E52D8] rounded-lg p-4 flex flex-col md:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 cart-item-enter"
+                className="bg-[#8B3FC1] rounded-lg p-4 flex flex-col md:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 cart-item-enter cursor-pointer hover:bg-[#9E52D8] transition-colors"
                 style={{ animationDelay: `${index * 0.1}s` }}
-                // onClick={() => navigate(`/product-detail/${item.id}`)}
+                onClick={() => navigate(`/product/${item.productId || item._id}`)}
               >
                 <div
                   className="relative w-full md:w-32 h-44 md:h-32  mx-auto aspect-square rounded-lg overflow-hidden"
@@ -411,7 +411,10 @@ const ProductTab = () => {
 
                 <div className="flex w-full md:w-auto flex-row-reverse justify-between  md:flex-col md:items-end space-y-2 md:mt-2 ">
                   <button
-                    onClick={() => removeItem(item?._id || item?.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeItem(item?._id || item?.id);
+                    }}
                     disabled={isUpdating}
                     className={`p-2 text-white rounded-md transition-colors flex-shrink-0 ${
                       isUpdating
@@ -426,12 +429,13 @@ const ProductTab = () => {
                     <span className="text-white text-sm font-medium">QTY:</span>
                     <div className="flex items-center rounded-md bg-white overflow-hidden w-28 h-9 border border-gray-300">
                       <button
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           updateQuantity(
                             item?._id || item?.id,
                             item?.quantity - 1
-                          )
-                        }
+                          );
+                        }}
                         disabled={isUpdating || item?.quantity <= 1}
                         className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${
                           isUpdating || item?.quantity <= 1
@@ -447,12 +451,13 @@ const ProductTab = () => {
                       </div>
 
                       <button
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           updateQuantity(
                             item?._id || item?.id,
                             item?.quantity + 1
-                          )
-                        }
+                          );
+                        }}
                         disabled={isUpdating}
                         className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${
                           isUpdating
@@ -474,7 +479,7 @@ const ProductTab = () => {
       <div className="lg:col-span-5">
         <div className="rounded-lg lg:sticky lg:top-8">
           {addresses?._id && (
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full pb-4 bg-white rounded-md  border-b border-slate-200 mb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full p-4 bg-white rounded-md  border border-slate-900 mb-4">
               <div className="flex-1 flex flex-col">
                 <h3 className="text-sm font-semibold font-tbLex text-gray-800">
                   Deliver to:

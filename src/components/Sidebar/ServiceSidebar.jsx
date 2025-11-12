@@ -24,6 +24,7 @@ const SidebarLayout = () => {
     const [activeId, setActiveId] = useState(
         params?.state?.serviceData?._id || null
     );
+    const serviceName = params.pathname.split('/services/')[1];
 
     useEffect(() => {
         const fetchService = async () => {
@@ -37,13 +38,21 @@ const SidebarLayout = () => {
         const fetchServiceCategories = async () => {
             const response = await getPublicServicesDropdown();
             setServices(response?.data);
+            
+            // If navigating with service name, find and set the activeId
+            if (serviceName && response?.data) {
+                const foundService = response.data.find(service => service.name === decodeURIComponent(serviceName));
+                if (foundService) {
+                    setActiveId(foundService._id);
+                }
+            }
         };
         fetchServiceCategories();
-    }, []);
+    }, [serviceName]);
 
     return (
         <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
-            <Breadcrumbs currentService={params?.state?.serviceData?.name} />
+            <Breadcrumbs currentService={singleService?.name || params?.state?.serviceData?.name} />
             <div className="container mx-auto px-5 xl:px-0 flex flex-col-reverse lg:flex-row xl:py-10 space-y-5 lg:space-x-10">
                 {/* Sidebar */}
                 <SideBar

@@ -9,7 +9,7 @@ import TextInput from "../../components/TextInput/TextInput";
 import SelectTextInput from "../../components/TextInput/SelectTextInput";
 import LoadBox from "../../components/Loader/LoadBox";
 import { registerUser } from "../../api";
-import { setLoggedUser, setUserDetails } from "../../redux/Slices/loginSlice";
+import { setLoggedUser, setUserDetails, setIsRegistered } from "../../redux/Slices/loginSlice";
 import {
     validateEmail,
     validatePassword,
@@ -45,6 +45,7 @@ const RegisterPage = () => {
                 document.title = `SoulPlan : Dashboard | ${response?.user?.role || ""}`;
                 dispatch(setLoggedUser(true));
                 dispatch(setUserDetails(response?.user || response?.data));
+                dispatch(setIsRegistered(true));
                 toast.success("Account created successfully!");
                 setLoader(false);
                 reset();
