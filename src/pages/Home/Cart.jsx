@@ -620,7 +620,7 @@ const ProductTab = () => {
 
             <div className="border-t border-gray-300 my-2"></div>
 
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
+            <div className="flex sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
               <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-left">
                 Total
               </span>
@@ -942,7 +942,7 @@ const ServiceTab = () => {
 
             <div className="border-t border-gray-300 my-2"></div>
 
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
+            <div className="flex sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
               <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-left">
                 Total
               </span>

@@ -147,7 +147,7 @@ const ProfileSidebar = ({ children }) => {
                         </aside>
 
                         {/* Main Content */}
-                        <main className="flex-1 bg-white rounded-2xl p-2 md:p-4 border border-slate-200">
+                        <main className="flex-1 bg-white rounded-2xl p-2 md:p-4 border border-slate-200 px-4">
                             {children}
                         </main>
                     </div>
