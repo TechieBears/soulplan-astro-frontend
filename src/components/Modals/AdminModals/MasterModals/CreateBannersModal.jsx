@@ -23,6 +23,9 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
     const formSubmit = async (data) => {
         try {
             setLoader(true);
+            if (data.type !== 'app') {
+                delete data.bannerFor;
+            }
             if (edit) {
                 await editBanner(userData?._id, data).then(res => {
                     if (res?.success) {
@@ -63,6 +66,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
             setValue('title', userData?.title);
             setValue('description', userData?.description);
             setValue('type', userData?.type);
+            setValue('bannerFor', userData?.bannerFor);
             setValue('position', userData?.position);
             setValue('startDate', userData?.startDate?.split('T')[0]);
             setValue('endDate', userData?.endDate?.split('T')[0]);
@@ -72,6 +76,12 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
             reset();
         }
     }, [edit, userData, reset, setValue, open]);
+
+    useEffect(() => {
+        if (watch('type') !== 'app') {
+            setValue('bannerFor', undefined);
+        }
+    }, [watch('type')]);
 
     return (
         <>
@@ -200,6 +210,32 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                                             />
                                                         </div>
                                                     </div>
+                                                    {watch('type') === 'app' && (
+                                                        <div className="">
+                                                            <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
+                                                                Banner For <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                            </h4>
+
+                                                            <SelectTextInput
+                                                                label="Select Banner For"
+                                                                registerName="bannerFor"
+                                                                options={[
+                                                                    { value: 'home', label: 'Home' },
+                                                                    { value: 'products', label: 'Products' },
+                                                                    { value: 'services', label: 'Services' },
+                                                                ]}
+                                                                placeholder="Select Banner For"
+                                                                props={{
+                                                                    ...register('bannerFor', {
+                                                                        required: watch('type') === 'app' ? "Banner For is required" : false
+                                                                    }),
+                                                                    value: watch('bannerFor') || ''
+                                                                }}
+                                                                errors={errors.bannerFor}
+                                                                defaultValue={userData?.bannerFor}
+                                                            />
+                                                        </div>
+                                                    )}
                                                     <div>
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
