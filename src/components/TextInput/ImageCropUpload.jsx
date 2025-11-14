@@ -247,10 +247,9 @@ const ImageCropUpload = ({
           accept="image/*"
           multiple={multiple}
           className={`peer w-full bg-transparent outline-none px-4 text-base font-tbLex text-black rounded-lg bg-slate1 ${style}
-            ${
-              !errors?.ref?.value && errors?.type === "required"
-                ? "border-red-500"
-                : "border-slate-300 focus:border-primary"
+            ${!errors?.ref?.value && errors?.type === "required"
+              ? "border-red-500"
+              : "border-slate-300 focus:border-primary"
             }
             opacity-0 absolute z-10 cursor-pointer ${style}`}
           onChange={handleFileChange}
@@ -258,24 +257,21 @@ const ImageCropUpload = ({
         />
         <div
           className={`w-full h-full flex items-center px-4 rounded-lg cursor-pointer
-          ${
-            !errors?.ref?.value && errors?.type === "required"
+          ${!errors?.ref?.value && errors?.type === "required"
               ? "border-red-500"
               : "border-slate-300 peer-focus:border-primary"
-          } ${style}`}
+            } ${style}`}
         >
           <label
             htmlFor={registerName}
             className={`px-2 bg-slate1 text-base font-tbLex ${style}
-              ${
-                !errors?.ref?.value && errors?.type === "required"
-                  ? "text-red-500"
-                  : fileName
+              ${!errors?.ref?.value && errors?.type === "required"
+                ? "text-red-500"
+                : fileName
                   ? "text-primary"
                   : "text-slate-400"
               }
-              ${
-                fileName ? "top-0 left-3 text-sm" : ""
+              ${fileName ? "top-0 left-3 text-sm" : ""
               } transition-all duration-150 flex items-center gap-2 cursor-pointer overflow-hidden`}
           >
             {!fileName && (
@@ -351,9 +347,8 @@ const ImageCropUpload = ({
                     className="text-lg font-medium leading-6 text-white bg-linear-gradient py-4 px-6 relative"
                   >
                     {selectedImage?.isMultiple
-                      ? `Crop Image ${
-                          (selectedImage.currentIndex || 0) + 1
-                        } of ${selectedImage.totalFiles || 1}`
+                      ? `Crop Image ${(selectedImage.currentIndex || 0) + 1
+                      } of ${selectedImage.totalFiles || 1}`
                       : "Crop Your Image"}
                     <button
                       onClick={handleCropCancel}
@@ -454,7 +449,6 @@ const ImageCropUpload = ({
         toggle={() => setShowImageModal(false)}
         files={files}
       />
-
       <canvas ref={canvasRef} style={{ display: "none" }} />
     </>
   );
