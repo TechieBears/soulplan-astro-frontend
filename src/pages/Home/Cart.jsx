@@ -620,7 +620,7 @@ const ProductTab = () => {
 
             <div className="border-t border-gray-300 my-2"></div>
 
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
+            <div className="flex sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
               <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-left">
                 Total
               </span>
@@ -771,6 +771,14 @@ const ServiceTab = () => {
 
   const handleBooking = async () => {
     try {
+      setBookingLoading(true);
+      
+      // Validate cart items
+      if (!cartItems || cartItems.length === 0) {
+        toast.error("Cart is empty");
+        return;
+      }
+
       const payload = {
         serviceItems: cartItems?.map((item) => ({
           serviceId: item?.serviceId || "",
@@ -795,19 +803,21 @@ const ServiceTab = () => {
         },
       };
       console.log("⚡️🤯 ~ Cart.jsx:602 ~ handleBooking ~ payload:", payload);
-      await createServiceOrder(payload).then((res) => {
-        if (res?.success) {
-          navigate("/payment-success", {
-            state: { type: "services", orderDetails: res?.order },
-          });
-          toast.success(res?.message || "Booking Successfully");
-        } else {
-          toast.error(res?.message || "Something went wrong");
-        }
-      });
+      
+      const res = await createServiceOrder(payload);
+      if (res?.success) {
+        navigate("/payment-success", {
+          state: { type: "services", orderDetails: res?.order },
+        });
+        toast.success(res?.message || "Booking Successfully");
+      } else {
+        toast.error(res?.message || "Something went wrong");
+      }
     } catch (error) {
       console.log("Error submitting form:", error);
-      toast.error(error?.message || "Failed to book Service");
+      toast.error(error?.response?.data?.message || error?.message || "Failed to book Service");
+    } finally {
+      setBookingLoading(false);
     }
   };
   return (
@@ -932,7 +942,7 @@ const ServiceTab = () => {
 
             <div className="border-t border-gray-300 my-2"></div>
 
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
+            <div className="flex sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
               <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-left">
                 Total
               </span>
@@ -947,10 +957,10 @@ const ServiceTab = () => {
           </div>
 
           <button
-            onClick={() => handleBooking()}
-            disabled={bookingLoading}
+            onClick={handleBooking}
+            disabled={bookingLoading || cartItems?.length === 0}
             className={`${formBtn3} w-full py-3 text-white rounded-md ${
-              bookingLoading ? "opacity-50 cursor-not-allowed" : ""
+              bookingLoading || cartItems?.length === 0 ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
             {bookingLoading ? (
