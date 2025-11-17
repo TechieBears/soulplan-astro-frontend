@@ -54,15 +54,28 @@ import { Whatsapp } from "iconsax-reactjs";
 import BuyNowPage from "../pages/Home/BuyNowPage";
 import Reviews from "../pages/Admin/Master/Reviews";
 import ReferAndEarn from "../pages/Home/Profile/ReferAndEarn";
+import ReferralPromptModal from "../components/Modals/ReferralPromptModal";
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
+    const [showProfileModal, setShowProfileModal] = useState(false);
     const user = useSelector((state) => state.user.userDetails);
+    const isLogged = useSelector((state) => state.user.isLogged);
     // ============ Page Loader ============
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 2800);
         return () => clearTimeout(timer);
     }, []);
+
+    // ============ Profile Completion Check ============
+    useEffect(() => {
+        if (isLogged && user && user.role === 'customer') {
+            const isProfileComplete = user?.firstName && user?.lastName && user?.mobileNo && user?.gender;
+            if (!isProfileComplete) {
+                setShowProfileModal(true);
+            }
+        }
+    }, [isLogged, user]);
 
     // ============ Online/Offline Toast ============
     useEffect(() => {
@@ -225,6 +238,14 @@ const ProjectRoutes = () => {
                     </a>
                 </main>
             )}
+
+            {/* Profile Completion Modal */}
+            <ReferralPromptModal 
+                open={showProfileModal}
+                toggle={() => setShowProfileModal(false)}
+                forceProfileScreen={true}
+                onModalClose={() => setShowProfileModal(false)}
+            />
 
             {/* Toaster Notifications */}
             <Toaster position="top-right" reverseOrder={false} />
