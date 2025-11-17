@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import TextInput from '../TextInput/TextInput';
 import toast from 'react-hot-toast';
-import { updateCustomerProfile } from '../../api';
+import { editUserCustomer } from '../../api';
 import { useSelector, useDispatch } from 'react-redux';
 import { validateAlphabets } from '../../utils/validateFunction';
 import { X, CheckCircle, Gift, User, Phone, Users, CheckSquare, Square } from 'lucide-react';
