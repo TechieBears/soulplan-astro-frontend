@@ -112,13 +112,15 @@ const ImageCropUpload = ({
       const { width, height } = e.currentTarget;
       const centerX = Math.max(0, (width - cropWidth) / 2);
       const centerY = Math.max(0, (height - cropHeight) / 2);
-      setCrop({
+      const initialCrop = {
         unit: "px",
         width: cropWidth,
         height: cropHeight,
         x: centerX,
         y: centerY,
-      });
+      };
+      setCrop(initialCrop);
+      setCompletedCrop(initialCrop);
       setZoom(1);
     },
     [cropWidth, cropHeight]
@@ -172,11 +174,12 @@ const ImageCropUpload = ({
   );
 
   const handleCropComplete = async () => {
-    if (!completedCrop || !imgRef.current) return;
+    const cropToUse = completedCrop || crop;
+    if (!cropToUse || !imgRef.current) return;
 
     setIsUploading(true);
     try {
-      const croppedBlob = await getCroppedImg(imgRef.current, completedCrop);
+      const croppedBlob = await getCroppedImg(imgRef.current, cropToUse);
       const croppedFile = new File([croppedBlob], selectedImage.name, {
         type: "image/jpeg",
       });
