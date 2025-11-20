@@ -131,6 +131,9 @@ function ProductCategoriesModal({ edit, userData, setRefreshTrigger, refreshTrig
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
                                                             Category Image <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                             <span className="text-[11px] text-orange-500 ml-2">
+                                                                (Recommended size: 300px × 300px)
+                                                            </span>
                                                         </h4>
                                                         <ImageCropUpload
                                                             label="Upload Category Image"

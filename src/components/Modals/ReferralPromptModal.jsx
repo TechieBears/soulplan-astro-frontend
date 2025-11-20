@@ -166,7 +166,7 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
                             >
                                 <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all">
                                     {/* Header */}
-                                    <div className="relative bg-button-gradient-orange px-6 py-8">
+                                    <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-8">
                                         <button
                                             onClick={() => {
                                                 dispatch(setIsRegistered(false));
@@ -386,11 +386,11 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
                                                         type='submit'
                                                         disabled={showOnlyReferral && !watch('referralCode')?.trim() && !isProfileComplete}
                                                         className={`flex-1 px-4 py-3 text-sm font-semibold rounded-lg transition-all shadow-md ${showOnlyReferral && !watch('referralCode')?.trim()
-                                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                                            : 'text-white bg-button-gradient-orange hover:opacity-90 hover:shadow-lg active:scale-95 cursor-pointer'
+                                                            ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white cursor-not-allowed'
+                                                            : 'text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 hover:shadow-lg active:scale-95 cursor-pointer'
                                                             }`}
                                                     >
-                                                        {showOnlyReferral ? 'Continue' : 'Complete Profile'}
+                                                        {showOnlyReferral ? 'Submit' : 'Complete Profile'}
                                                     </button>
                                                 )}
                                             </div>

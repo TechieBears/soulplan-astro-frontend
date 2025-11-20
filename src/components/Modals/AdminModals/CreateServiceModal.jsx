@@ -348,7 +348,9 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Image <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                        Service Image <span className="text-red-500 text-xs font-tbLex">*</span>  <span className="text-[11px] text-orange-500">
+            (Recommended size: 500px × 300px)
+        </span>
                                                     </h4>
                                                     <ImageCropUpload
                                                         label="Upload Service Image"
