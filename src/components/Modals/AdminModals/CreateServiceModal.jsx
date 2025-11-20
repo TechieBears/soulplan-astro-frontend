@@ -17,7 +17,7 @@ import Error from '../../Errors/Error';
 import CustomTextArea from '../../TextInput/CustomTextArea';
 import { setServiceCategories } from '../../../redux/Slices/rootSlice';
 import ImageCropUpload from '../../TextInput/ImageCropUpload';
-import MultiSelectTextInput from '../../TextInput/MultiSelectTextInput';
+// import MultiSelectTextInput from '../../TextInput/MultiSelectTextInput';
 
 function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
@@ -33,37 +33,39 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
     });
 
     const formSubmit = async (data) => {
+        if (loader) return;
+        
         try {
             setLoader(true);
+            
             if (edit) {
-                await editService(userData?._id, data).then(res => {
-                    if (res?.success) {
-                        toast.success(res?.message)
-                        setLoader(false);
-                        reset();
-                        setRefreshTrigger(prev => prev + 1);
-                        toggle();
-                    } else {
-                        toast.error(res?.message || "Something went wrong")
-                        setLoader(false);
-                    }
-                })
+                const res = await editService(userData?._id, data);
+                
+                if (res?.success) {
+                    toast.success(res?.message)
+                    setLoader(false);
+                    reset();
+                    setRefreshTrigger(prev => prev + 1);
+                    toggle();
+                } else {
+                    toast.error(res?.message || "Something went wrong")
+                    setLoader(false);
+                }
             } else {
-                await addService(data).then(res => {
-                    if (res?.success) {
-                        setLoader(false);
-                        reset();
-                        setRefreshTrigger(prev => prev + 1);
-                        toggle();
-                        toast.success("Service Added Successfully");
-                    } else {
-                        setLoader(false);
-                        toast.error(res?.message || "Something went wrong");
-                    }
-                })
+                const res = await addService(data);
+                
+                if (res?.success) {
+                    setLoader(false);
+                    reset();
+                    setRefreshTrigger(prev => prev + 1);
+                    toggle();
+                    toast.success("Service Added Successfully");
+                } else {
+                    setLoader(false);
+                    toast.error(res?.message || "Something went wrong");
+                }
             }
         } catch (error) {
-            console.log('Error submitting form:', error);
             setLoader(false);
             toast.error("Failed to add Service");
         }
@@ -75,7 +77,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
             reset({
                 name: userData?.name,
                 image: userData?.image,
-                serviceType: userData?.serviceType,
+                serviceType: userData?.serviceType?.[0] || userData?.serviceType,
                 title: userData?.title,
                 subTitle: userData?.subTitle,
                 price: userData?.price,
@@ -88,7 +90,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
         } else {
             reset({
                 category: '',
-                serviceType: [],
+                serviceType: '',
                 name: '',
                 title: '',
                 subTitle: '',
@@ -189,26 +191,22 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Mode <span className="text-red-500 text-xs font-tbLex">*</span> (Multiple)
+                                                        Service Mode <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <div className="">
-                                                        <Controller
-                                                            name="serviceType"
-                                                            control={control}
-                                                            render={({ field: { onChange, value }, fieldState: { error } }) => (
-                                                                <MultiSelectTextInput
-                                                                    label="Select Service Mode"
-                                                                    options={[
-                                                                        { value: 'online', label: 'Online' },
-                                                                        { value: 'pandit_center', label: `Pandit's Center` },
-                                                                        { value: 'pooja_at_home', label: 'Pooja at Home' },
-                                                                    ]}
-                                                                    key={'serviceType'}
-                                                                    value={value || []}
-                                                                    onChange={onChange}
-                                                                    errors={errors.serviceType}
-                                                                />
-                                                            )}
+                                                        <SelectTextInput
+                                                            label="Select Service Mode"
+                                                            registerName="serviceType"
+                                                            options={[
+                                                                { value: 'online', label: 'Online' },
+                                                                { value: 'pandit_center', label: `Pandit's Center` },
+                                                                { value: 'pooja_at_home', label: 'Pooja at Home' },
+                                                            ]}
+                                                            placeholder="Select Service Mode"
+                                                            props={{
+                                                                ...register('serviceType', { required: 'Service mode is required' })
+                                                            }}
+                                                            errors={errors.serviceType}
                                                         />
                                                     </div>
                                                 </div>
@@ -450,7 +448,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                             </div>
                                         </div>
                                         <footer className="py-3 flex bg-primary/5 justify-end px-4 space-x-3">
-                                            {loader ? <LoadBox className={formBtn1} /> : <button type='submit' className={formBtn1}>submit</button>}
+                                            {loader ? <LoadBox className={formBtn1} /> : <button type='submit' disabled={loader} className={formBtn1}>submit</button>}
                                         </footer>
                                     </form>
                                 </div>
