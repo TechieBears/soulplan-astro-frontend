@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaWhatsapp, FaLink, FaCopy, FaCheck } from "react-icons/fa";
+import { FaWhatsapp, FaLink, FaCopy, FaCheck, FaSync } from "react-icons/fa";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
 import { Info } from "@phosphor-icons/react";
 import { useSelector } from "react-redux";
@@ -12,6 +12,7 @@ const ReferAndEarn = () => {
     const [copied, setCopied] = useState(false);
     const user = useSelector((state) => state.user.userDetails);
     const [walletBalance, setWalletBalance] = useState(0);
+    const [refreshing, setRefreshing] = useState(false);
 
     // Debug user data
     console.log('User data:', user);
@@ -23,14 +24,24 @@ const ReferAndEarn = () => {
     
     console.log('Final referral code:', referralCode);
 
+    const fetchWalletBalance = async () => {
+        console.log('🔄 Fetching wallet balance...');
+        setRefreshing(true);
+        const res = await getWalletBalance();
+        console.log('💰 Wallet API Response:', res);
+        
+        if (res?.success) {
+            console.log('✅ Wallet balance data:', res?.data);
+            console.log('💵 Balance amount:', res?.data?.balance);
+            setWalletBalance(res?.data?.balance || 0);
+        } else {
+            console.log('❌ Wallet API failed:', res?.message);
+        }
+        setRefreshing(false);
+    };
+
     useEffect(() => {
         window.scrollTo(0, 0);
-        const fetchWalletBalance = async () => {
-            const res = await getWalletBalance();
-            if (res?.success) {
-                setWalletBalance(res?.data?.balance || 0);
-            }
-        }
         fetchWalletBalance();
     }, []);
 
@@ -55,7 +66,7 @@ const ReferAndEarn = () => {
     };
 
     const shareLink = () => {
-        const link = `https://soulplan.net/register?referralCode=${referralCode}`;
+        const link = `https://soulplan-astro-frontend.vercel.app/register?referralCode=${referralCode}`;
         navigator.clipboard.writeText(link);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -83,9 +94,19 @@ const ReferAndEarn = () => {
                                 <div className="relative bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 hover:border-slate-200 transition-all duration-300">
                                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
                                         <div className="w-full sm:w-auto">
-                                            <p className="text-xs sm:text-sm font-tbPop  font-medium text-gray-500 mb-1">Your Total Rewards</p>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <p className="text-xs sm:text-sm font-tbPop font-medium text-gray-500">Your Total Rewards</p>
+                                                <button
+                                                    onClick={fetchWalletBalance}
+                                                    disabled={refreshing}
+                                                    className={`p-1 rounded-full hover:bg-gray-100 transition-colors ${refreshing ? 'animate-spin' : ''}`}
+                                                    title="Refresh balance"
+                                                >
+                                                    <FaSync size={12} className="text-gray-400" />
+                                                </button>
+                                            </div>
                                             <div className="flex items-baseline gap-2">
-                                                <h2 className="text-4xl sm:text-5xl md:text-6xl font-tbLex  font-black text-p bg-clip-text text-transparent">
+                                                <h2 className="text-4xl sm:text-5xl md:text-6xl font-tbLex font-black text-p bg-clip-text text-transparent">
                                                     ₹{walletBalance || 0}
                                                 </h2>
                                             </div>
@@ -144,11 +165,11 @@ const ReferAndEarn = () => {
                                         </li>
                                         <li className="flex gap-2">
                                             <span className="font-tbPop  font-bold text-yellow-600 flex-shrink-0">2.</span>
-                                            <span>They sign up & purchase</span>
+                                            <span>They sign up & make first purchase</span>
                                         </li>
                                         <li className="flex gap-2">
                                             <span className="font-tbPop  font-bold text-yellow-600 flex-shrink-0">3.</span>
-                                            <span>Get ₹100 rewards</span>
+                                            <span>Both get ₹100 rewards</span>
                                         </li>
                                     </ol>
                                 </div>

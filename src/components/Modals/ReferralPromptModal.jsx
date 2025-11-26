@@ -76,7 +76,7 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
                 ...data
             };
 
-            const res = await updateCustomerProfile(payload);
+            const res = await editUserCustomer(payload);
             console.log('API response:', res);
 
             if (res?.success) {
