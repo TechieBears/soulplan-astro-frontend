@@ -53,15 +53,29 @@ import VenueCalendar from '../pages/Admin/Bookings/AdminBookingsCalender';
 import { Whatsapp } from "iconsax-reactjs";
 import BuyNowPage from "../pages/Home/BuyNowPage";
 import Reviews from "../pages/Admin/Master/Reviews";
+import ReferAndEarn from "../pages/Home/Profile/ReferAndEarn";
+import ReferralPromptModal from "../components/Modals/ReferralPromptModal";
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
+    const [showProfileModal, setShowProfileModal] = useState(false);
     const user = useSelector((state) => state.user.userDetails);
+    const isLogged = useSelector((state) => state.user.isLogged);
     // ============ Page Loader ============
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 2800);
         return () => clearTimeout(timer);
     }, []);
+
+    // ============ Profile Completion Check ============
+    useEffect(() => {
+        if (isLogged && user && user.role === 'customer') {
+            const isProfileComplete = user?.firstName && user?.lastName && user?.mobileNo && user?.gender;
+            if (!isProfileComplete) {
+                setShowProfileModal(true);
+            }
+        }
+    }, [isLogged, user]);
 
     // ============ Online/Offline Toast ============
     useEffect(() => {
@@ -116,7 +130,7 @@ const ProjectRoutes = () => {
                 </Sidebar>
             ) : (
                 // ============ Guest / Before Login ============
-                <main className="min-h-screen w-full overflow-x-hidden max-lg:px-5">
+                <main className="min-h-screen w-full overflow-x-hidden ">
                     <HomeNavbar />
                     <Routes>
                         <Route path="/" element={<HomePage />} />
@@ -176,6 +190,14 @@ const ProjectRoutes = () => {
                                 </ProtectedRoute>
                             }
                         />
+                        <Route
+                            path="/profile/refer"
+                            element={
+                                <ProtectedRoute>
+                                    <ReferAndEarn />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route path="/products" element={<ProductsPage />} />
                         <Route path="/product/:id" element={<ProductDetail />} />
                         <Route
@@ -206,8 +228,24 @@ const ProjectRoutes = () => {
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
                     <HomeFooter />
+                    <a
+                        href={`https://wa.me/${8693000900}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 cursor-pointer"
+                    >
+                        <Whatsapp size={30} className="text-white" />
+                    </a>
                 </main>
             )}
+
+            {/* Profile Completion Modal */}
+            <ReferralPromptModal 
+                open={showProfileModal}
+                toggle={() => setShowProfileModal(false)}
+                forceProfileScreen={true}
+                onModalClose={() => setShowProfileModal(false)}
+            />
 
             {/* Toaster Notifications */}
             <Toaster position="top-right" reverseOrder={false} />

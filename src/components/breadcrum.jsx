@@ -44,8 +44,8 @@ const Breadcrumbs = ({ currentService }) => {
                                     width={18}
                                     height={18}
                                 />
-                                {isLast && !currentService ? (
-                                    <span className="text-white font-medium">{formattedName}</span>
+                                {isLast ? (
+                                    <span className="text-white font-medium">{currentService || formattedName}</span>
                                 ) : (
                                     <Link
                                         to={routeTo}

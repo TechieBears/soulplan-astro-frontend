@@ -7,12 +7,13 @@ import PathName from '../../../components/PathName/PathName';
 import TextInput from '../../../components/TextInput/TextInput';
 import SelectTextInput from '../../../components/TextInput/SelectTextInput';
 import MultiSelectTextInput from '../../../components/TextInput/MultiSelectTextInput';
-import ImageUploadInput from '../../../components/TextInput/ImageUploadInput';
+// import ImageUploadInput from '../../../components/TextInput/ImageUploadInput';
 import LoadBox from '../../../components/Loader/LoadBox';
 import { editEmployee, getPublicServicesDropdown, updateAdminUserProfile } from '../../../api';
 import { validateAlphabets, validateEmail, validatePhoneNumber, validateCommision } from '../../../utils/validateFunction';
 import { formBtn1 } from '../../../utils/CustomClass';
 import { setUserDetails } from '../../../redux/Slices/loginSlice';
+import ImageCropUpload from '../../../components/TextInput/ImageCropUpload';
 
 const AdminProfile = () => {
     const user = useSelector(state => state.user.userDetails);
@@ -99,7 +100,14 @@ const AdminProfile = () => {
                 if (response?.success) {
                     toast.success('Profile updated successfully!');
                     setIsEditing(false);
-                    dispatch(setUserDetails(response?.data?.user))
+                    const updatedUser = {
+                        ...user,
+                        ...response?.data,
+                        ...response?.data?.profile,
+                        _id: user._id,
+                        role: user.role
+                    };
+                    dispatch(setUserDetails(updatedUser))          
                     setLoading(false);
                 } else {
                     toast.error(response?.message || 'Failed to update profile');
@@ -111,7 +119,14 @@ const AdminProfile = () => {
                 if (response?.success) {
                     toast.success('Profile updated successfully!');
                     setIsEditing(false);
-                    dispatch(setUserDetails(response?.data?.user))
+                    const updatedUser = {
+                        ...user,
+                        ...response?.data,
+                        ...response?.data?.profile,
+                        _id: user._id,
+                        role: user.role
+                    };
+                    dispatch(setUserDetails(updatedUser))     
                     setLoading(false);
                 } else {
                     toast.error(response?.message || 'Failed to update profile');
@@ -300,8 +315,11 @@ const AdminProfile = () => {
                             <div className=''>
                                 <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
                                     Profile Image
+                                  <span className="text-[11px] text-orange-500 ml-2">
+                                                                (Recommended size: 300px × 300px)
+                                                            </span>
                                 </h4>
-                                <ImageUploadInput
+                                <ImageCropUpload
                                     label="Upload Profile Image"
                                     multiple={false}
                                     registerName="profileImage"
@@ -311,6 +329,9 @@ const AdminProfile = () => {
                                     setValue={setValue}
                                     control={control}
                                     defaultValue={user?.profileImage}
+                                    cropAspectRatio={1}
+                                    cropWidth={400}
+                                    cropHeight={400}
                                 />
                             </div>
                         )}

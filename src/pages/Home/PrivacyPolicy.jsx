@@ -1,127 +1,194 @@
 import { useEffect } from "react";
 
-const Private = ({ children }) => children;
-const UserDashboard = ({ children }) => children;
-
 const PrivacyPolicy = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  return (
-    <>
-      <div className="p-8 pt-20">
-        <h1 className="text-lg font-medium text-center text-gray-800  p-4 font-tbLex sm:text-center">
-          Privacy Policy
-        </h1>
 
-        <div className="sm:p-8">
-          {/* <p className="text-md text-gray-700 mb-6 font-tbPop">
-            At AstroMax, we take your privacy seriously. This Privacy Policy
-            outlines the types of personal information we collect and how we
-            use, store, and protect it.
-          </p> */}
-          <h2 className="text-lg font-medium text-gray-800 mb-4 font-tbLex">
-            1. Information We Collect
-          </h2>
-          <p className="text-lg text-gray-700 mb-4 font-tbPop">
-            We collect personal information that you provide to us directly,
-            such as:
+  const styles = {
+    wrapper: "flex justify-center w-full bg-white py-10 px-4 sm:px-6",
+    container:
+      "max-w-4xl w-full bg-white rounded-lg shadow-md p-6 sm:p-10 overflow-y-auto",
+    mainHeading: "font-semibold text-2xl sm:text-3xl mb-6 text-p text-center",
+    mainHeadingWithMargin:
+      "font-semibold text-2xl sm:text-3xl mb-6 mt-10 text-p text-center",
+    subHeading: "text-lg font-semibold mt-8 mb-3 text-gray-800",
+    subSubHeading: "text-base font-semibold mt-4 mb-2 text-gray-800",
+    paragraph: "text-gray-700 mb-4 text-base leading-relaxed",
+    list: "list-disc pl-6 space-y-2 mb-4 text-gray-700 text-base",
+    listSpaced: "list-disc pl-6 space-y-3 text-gray-700",
+  };
+
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
+        <h2 className={styles.mainHeading}>Privacy Policy</h2>
+
+        <p className={styles.paragraph}>
+          This Privacy Policy describes our policies and procedures on the
+          collection, use, and disclosure of your information when you use the
+          Service and informs you about your privacy rights and how the law
+          protects you. We use your personal data to provide and improve the
+          Service. By using the Service, you agree to the collection and use of
+          information in accordance with this Privacy Policy.
+        </p>
+
+        <h2 className={styles.mainHeading}>Interpretation and Definitions</h2>
+
+        <h3 className={styles.subHeading}>Interpretation</h3>
+        <p className={styles.paragraph}>
+          Words with initial capital letters have meanings defined under the
+          following conditions. The following definitions shall have the same
+          meaning whether they appear in singular or plural.
+        </p>
+
+        <h3 className={styles.subHeading}>Definitions</h3>
+        <div className={styles.paragraph}>
+          <p className="mb-3">
+            For the purposes of this Privacy Policy:
           </p>
-          <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
+          <ul className={styles.listSpaced}>
             <li>
-              {/* <strong className="font-tbLex">Personal Information:</strong>{" "} */}
-              Name, email address, phone number, etc.
+              <strong>Account</strong> means a unique account created for you to
+              access our Service or parts of our Service.
             </li>
             <li>
-              {/* <strong className="font-tbLex">Usage Data:</strong> */}
-              Information on how you interact with our services, including pages
-              visited, time spent on each page, etc.
+              <strong>Company</strong> (referred to as either "the Company",
+              "We", "Us", or "Our" in this Agreement) refers to Puja.
             </li>
             <li>
-              {/* <strong className="font-tbLex">Cookies:</strong>  */}
-              Payment information processed through secure third-party gateways
+              <strong>Cookies</strong> are small files placed on your computer,
+              mobile device, or any other device by a website, containing
+              details of your browsing history among its various uses.
+            </li>
+            <li>
+              <strong>Country</strong> refers to India.
+            </li>
+            <li>
+              <strong>Device</strong> means any device that can access the
+              Service, such as a computer, cellphone, or digital tablet.
+            </li>
+            <li>
+              <strong>Personal Data</strong> means any information that relates
+              to an identified or identifiable individual.
+            </li>
+            <li>
+              <strong>Service</strong> refers to the Website.
+            </li>
+            <li>
+              <strong>Service Provider</strong> means any natural or legal
+              person who processes data on behalf of the Company. It refers to
+              third-party companies or individuals employed by the Company to
+              facilitate the Service, provide the Service on behalf of the
+              Company, perform services related to the Service, or assist the
+              Company in analyzing how the Service is used.
+            </li>
+            <li>
+              <strong>Usage Data</strong> refers to data collected automatically,
+              either generated by the use of the Service or from the Service
+              infrastructure itself (for example, the duration of a page visit).
+            </li>
+            <li>
+              <strong>Website</strong> refers to Puja, accessible from{" "}
+              <a
+                href="https://www.soulplan.net"
+                className="text-blue-600 underline"
+              >
+                https://www.soulplan.net
+              </a>
+            </li>
+            <li>
+              <strong>You</strong> means the individual accessing or using the
+              Service, or the company or other legal entity on behalf of which
+              such individual is accessing or using the Service, as applicable.
             </li>
           </ul>
-          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-            2. Use of Information
-          </h2>
-          <p className="text-lg text-gray-700 mb-4 font-tbPop">
-            We use your information to:
-          </p>
-          <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
-            <li>Provide and manage our services</li>
-            <li>Communicate with you regarding bookings and updates</li>
-            <li>Improve our website and services</li>
-          </ul>
-          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-            3. Cookies and Tracking
-          </h2>
-          <p className="text-lg text-gray-700 mb-4 font-tbPop">
-            We use cookies to enhance user experience and analyze website
-            traffic. You can manage cookie preferences through your browser
-            settings.
-          </p>
-          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-            4. Data Security
-          </h2>
-          <p className="text-lg text-gray-700 mb-4 font-tbPop">
-            We implement reasonable security measures to protect your personal
-            information. However, no method of transmission over the internet is
-            100% secure.
-          </p>
-          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-            5. Sharing of Information
-          </h2>
-          <p className="text-lg text-gray-700 mb-4 font-tbPop">
-            We do not sell or rent your personal information. We may share your
-            information with:
-          </p>
-          <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
-            <li>Service providers who assist in delivering our services</li>
-            <li>Legal authorities if required by law.</li>
-          </ul>
-          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-            6. You have the right to:
-          </h2>
-          <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
-            <li>Access, correct, or delete your personal information</li>
-            <li>Opt-out of marketing communications</li>
-          </ul>{" "}
-          <h2 className="text-lg font-medium text-gray-800 mt-6 mb-4 font-tbLex">
-            7. Changes to Privacy Policy
-          </h2>
-          <p className="text-lg text-gray-700 mb-4 font-tbPop">
-            We may update this Privacy Policy periodically. Users will be
-            notified of significant changes.
-          </p>
-          <h2 className="text-lg font-medium text-gray-800  mb-4 font-tbLex">
-            8. International Users
-          </h2>
-          <p className="text-lg text-gray-700 mb-6 font-tbPop">
-            If you are accessing our services from outside [Insert Country],
-            your information may be transferred to and processed in [Insert
-            Country].
-          </p>
-          <h2 className="text-lg font-medium text-gray-800  mb-4 font-tbLex">
-            8. Contact Us
-          </h2>
-          <p className="text-lg text-gray-700 mb-6 font-tbPop">
-            For questions or concerns regarding this Privacy Policy, please
-            contact us at:
-          </p>
-          <ul className="list-disc pl-6 space-y-2 text-gray-700 font-tbPop">
-            <li>Email: [Insert Email Address]</li>
-            <li>
-              Phone: [Insert Phone Number]
-              <li>Address: [Insert Physical Address]</li>
-            </li>
-          </ul>{" "}
-          <p className="text-center text-sm text-gray-500 italic font-tbPop">
-            Last updated: [Date]
-          </p>
         </div>
+
+        <h2 className={styles.mainHeadingWithMargin}>
+          Collecting and Using Your Personal Data
+        </h2>
+
+        <h3 className={styles.subHeading}>Types of Data Collected</h3>
+
+        <h4 className={styles.subSubHeading}>Personal Data</h4>
+        <p className={styles.paragraph}>
+          While using our Service, we may ask you to provide certain personally
+          identifiable information that can be used to contact or identify you.
+          Personally identifiable information may include, but is not limited
+          to:
+        </p>
+        <ul className={styles.list}>
+          <li>Email address</li>
+          <li>First name and last name</li>
+          <li>Phone number</li>
+          <li>Address, State, Province, ZIP/Postal code, City</li>
+        </ul>
+
+        <h4 className={styles.subSubHeading}>Usage Data</h4>
+        <p className={styles.paragraph}>
+          Usage Data is collected automatically when using the Service. It may
+          include information such as your device's IP address, browser type and
+          version, the pages you visit, time spent, and diagnostic data.
+        </p>
+
+        <h3 className={styles.subHeading}>
+          Tracking Technologies and Cookies
+        </h3>
+        <p className={styles.paragraph}>
+          We use cookies and similar tracking technologies to track activity on
+          our Service and store certain information. These include beacons,
+          tags, and scripts used to analyze and improve performance.
+        </p>
+
+        <h4 className={styles.subSubHeading}>Types of Cookies</h4>
+        <ul className={styles.list}>
+          <li>
+            <strong>Necessary / Essential Cookies</strong> – Required for core
+            functionality.
+          </li>
+          <li>
+            <strong>Notice Acceptance Cookies</strong> – Identify if users have
+            accepted the use of cookies.
+          </li>
+          <li>
+            <strong>Functionality Cookies</strong> – Remember your preferences
+            such as login details or language.
+          </li>
+        </ul>
+
+        <h3 className={styles.subHeading}>Use of Your Personal Data</h3>
+        <ul className={styles.list}>
+          <li>To provide and maintain our Service.</li>
+          <li>To manage your Account and registration.</li>
+          <li>To perform a contract for purchased products or services.</li>
+          <li>
+            To contact you via email, calls, SMS, or push notifications.
+          </li>
+          <li>
+            To provide news, offers, and updates (unless you opt out).
+          </li>
+          <li>To manage your requests and improve user experience.</li>
+        </ul>
+
+        <h3 className={styles.subHeading}>Security of Your Personal Data</h3>
+        <p className={styles.paragraph}>
+          We use commercially acceptable means to protect your Personal Data,
+          but no method of transmission or storage is 100% secure.
+        </p>
+
+        <h3 className={styles.subHeading}>Contact Us</h3>
+        <p className={styles.paragraph}>
+          📧 Email:{" "}
+          <a
+            href="mailto:services@soulplan.net"
+            className="text-blue-600 underline"
+          >
+            support@souplan.net
+          </a>
+        </p>
       </div>
-    </>
+    </div>
   );
 };
 

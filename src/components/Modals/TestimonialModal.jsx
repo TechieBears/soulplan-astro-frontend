@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import LoadBox from '../Loader/LoadBox';
-import ImageUploadInput from '../TextInput/ImageUploadInput';
+import ImageCropUpload from '../TextInput/ImageCropUpload';
 import TextInput from '../TextInput/TextInput';
 import { formBtn1, formBtn3 } from '../../utils/CustomClass';
 import SelectTextInput from '../TextInput/SelectTextInput';
@@ -237,18 +237,21 @@ function TestimonialModal() {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Your Image <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                        Your Image <span className="text-red-500 text-xs font-tbLex">*</span> <span className="text-[11px] text-orange-500">
+            (Recommended size: 315px × 200px)
+        </span>
                                                     </h4>
-                                                    <ImageUploadInput
+                                                    <ImageCropUpload
                                                         label="Upload Your Image"
-                                                        multiple={false}
                                                         registerName="media"
                                                         errors={errors.media}
                                                         {...register("media", { required: "Your Image is required" })}
                                                         register={register}
                                                         setValue={setValue}
-                                                        control={control}
                                                         defaultValue={''}
+                                                        cropAspectRatio={315 / 200}
+                                                        cropWidth={315}
+                                                        cropHeight={200}
                                                     />
                                                 </div>
                                                 <div className="">

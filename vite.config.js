@@ -7,5 +7,13 @@ export default defineConfig({
     define: {
         // Ensure environment variables are available
         'import.meta.env': JSON.stringify(process.env)
+    },
+    server: {
+    hmr: {
+      overlay: false
     }
+  },
+
+  logLevel: 'error'
+
 })

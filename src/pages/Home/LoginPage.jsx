@@ -6,7 +6,7 @@ import TextInput from "../../components/TextInput/TextInput";
 import { FcGoogle } from "react-icons/fc";
 import ForgetPasswordModal from "../../components/Modals/ForgetPassword/ForgetPasswordModal";
 import { loginUser, registerUser } from "../../api";
-import { setLoggedUser, setRoleIs, setUserDetails } from "../../redux/Slices/loginSlice";
+import { setLoggedUser, setRoleIs, setUserDetails, setIsRegistered } from "../../redux/Slices/loginSlice";
 import { validateEmail, validatePassword } from "../../utils/validateFunction";
 import { useForm } from "react-hook-form";
 import LoadBox from "../../components/Loader/LoadBox";
@@ -18,6 +18,7 @@ import { auth } from "../../utils/firebase/firebase";
 
 const LoginPage = () => {
     const [loading, setLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
     const [showForgetPasswordModal, setShowForgetPasswordModal] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const {
@@ -71,6 +72,18 @@ const LoginPage = () => {
                 setLoading(false)
                 dispatch(setLoggedUser(true))
                 dispatch(setRoleIs(response?.data?.user?.role))
+                
+                // Check if profile is incomplete for customers
+                if (response?.data?.user?.role === 'customer') {
+                    const isProfileComplete = response?.data?.user?.firstName && 
+                                            response?.data?.user?.lastName && 
+                                            response?.data?.user?.mobileNo && 
+                                            response?.data?.user?.gender;
+                    if (!isProfileComplete) {
+                        dispatch(setIsRegistered(true));
+                    }
+                }
+                
                 if (!rememberMe) {
                     reset()
                     setRememberMe(false);
@@ -106,25 +119,43 @@ const LoginPage = () => {
     }, [])
 
     const handerGoogleSignIn = async () => {
+        // Prevent multiple simultaneous requests
+        if (googleLoading) return;
+
+        setGoogleLoading(true);
         const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider).then(async (result) => {
-            setLoading(true);
+
+        try {
+            const result = await signInWithPopup(auth, provider);
             const playload = {
                 firstName: result?.user?.displayName?.split(' ')[0] || '',
                 lastName: result?.user?.displayName?.split(' ')[1] || '',
                 email: result?.user?.email || '',
-                phoneNumber: result?.user?.providerData[0]?.phoneNumber || '',
+                mobileNo: result?.user?.providerData[0]?.phoneNumber || '',
                 profileImage: result?.user?.photoURL || '',
                 gender: result?.user?.providerData[0]?.gender || 'other' || '',
                 registerType: 'google'
             }
+
             try {
                 const response = await registerUser(playload);
+                console.log("⚡️🤯 ~ LoginPage.jsx:129 ~ handerGoogleSignIn ~ response:", response)
                 if (response?.success) {
                     dispatch(setUserDetails(response?.data?.user))
-                    setLoading(false)
                     dispatch(setLoggedUser(true))
                     dispatch(setRoleIs(response?.data?.user?.role))
+                    
+                    // Check if profile is incomplete for customers
+                    if (response?.data?.user?.role === 'customer') {
+                        const isProfileComplete = response?.data?.user?.firstName && 
+                                                response?.data?.user?.lastName && 
+                                                response?.data?.user?.mobileNo && 
+                                                response?.data?.user?.gender;
+                        if (!isProfileComplete) {
+                            dispatch(setIsRegistered(true));
+                        }
+                    }
+                    
                     localStorage.setItem('token', response?.data?.token);
                     toast.success("Login Successfully 🥳");
 
@@ -139,14 +170,45 @@ const LoginPage = () => {
                 if (error.code === 'ERR_NETWORK') {
                     toast.error('Network error. Please check your connection or try again later.');
                 } else {
-                    toast.error(error || 'Something went wrong. Please try again.');
+                    toast.error(error?.message || 'Something went wrong. Please try again.');
                 }
-            } finally {
-                setLoading(false);
             }
-        }).catch((error) => {
-            console.log(error);
-        });
+        } catch (error) {
+            console.error('Google sign-in error:', error);
+
+            // Handle specific Firebase auth errors
+            switch (error.code) {
+                case 'auth/cancelled-popup-request':
+                    // User cancelled the popup - don't show error message
+                    console.log('User cancelled Google sign-in popup');
+                    break;
+                case 'auth/popup-closed-by-user':
+                    // User closed the popup - don't show error message
+                    console.log('User closed Google sign-in popup');
+                    break;
+                case 'auth/popup-blocked':
+                    toast.error('Popup was blocked by your browser. Please allow popups and try again.');
+                    break;
+                case 'auth/network-request-failed':
+                    toast.error('Network error. Please check your internet connection and try again.');
+                    break;
+                case 'auth/too-many-requests':
+                    toast.error('Too many failed attempts. Please try again later.');
+                    break;
+                case 'auth/account-exists-with-different-credential':
+                    toast.error('An account already exists with this email using a different sign-in method.');
+                    break;
+                default:
+                    // Only show error for unexpected errors
+                    if (error.code && error.code.startsWith('auth/')) {
+                        toast.error('Authentication failed. Please try again.');
+                    } else {
+                        toast.error('Something went wrong. Please try again.');
+                    }
+            }
+        } finally {
+            setGoogleLoading(false);
+        }
     }
 
     return (
@@ -243,12 +305,21 @@ const LoginPage = () => {
                     <div className="flex justify-center gap-4">
                         <button
                             type="button"
-                            className="p-3 px-5 w-full h-[51px] flex justify-center items-center rounded-full shadow-md bg-white hover:bg-gray-100 border border-slate-100 gap-2"
+                            disabled={googleLoading}
+                            className={`p-3 px-5 w-full h-[51px] flex justify-center items-center rounded-full shadow-md border border-slate-100 gap-2 transition-colors ${loading
+                                ? 'bg-gray-100 cursor-not-allowed opacity-70'
+                                : 'bg-white hover:bg-gray-100'
+                                }`}
                             onClick={handerGoogleSignIn}
                         >
-
-                            <FcGoogle size={22} />
-                            <span className="text-sm font-tbLex font-normal">Continue with Google</span>
+                            {googleLoading ? (
+                                <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+                            ) : (
+                                <FcGoogle size={22} />
+                            )}
+                            <span className="text-sm font-tbLex font-normal">
+                                {googleLoading ? 'Signing in...' : 'Continue with Google'}
+                            </span>
                         </button>
 
                         {/* <button

@@ -1,0 +1,777 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta content="width=device-width, initial-scale=1" name="viewport">
+      <meta name="x-apple-disable-message-reformatting">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta content="telephone=no" name="format-detection">
+      <title>Soulplan Upcoming Booking Reminder</title>
+      <style type="text/css">
+         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600;700;800&display=swap');
+         * {
+         font-family: 'Poppins', sans-serif;
+         }
+         .body {
+         width: 100%;
+         height: 100%;
+         padding: 0;
+         margin: 0;
+         }
+         .es-wrapper-color {
+         background-color: #f6f6f6;
+         }
+         .es-wrapper {
+         width: 100%;
+         height: 100%;
+         background-color: #eaebed;
+         background-repeat: repeat;
+         background-position: center top;
+         }
+         .es-header-body {
+         background-color: #ffffff;
+         width: 600px;
+         }
+         .rollover:hover .rollover-first {
+         max-height: 0px !important;
+         display: none !important;
+         }
+         .rollover:hover .rollover-second {
+         max-height: none !important;
+         display: block !important;
+         }
+         .rollover span {
+         font-size: 0px;
+         }
+         u+.body img~div div {
+         display: none;
+         }
+         #outlook a {
+         padding: 0;
+         }
+         span.MsoHyperlink,
+         span.MsoHyperlinkFollowed {
+         color: inherit;
+         mso-style-priority: 99;
+         }
+         a.es-button {
+         mso-style-priority: 100 !important;
+         text-decoration: none !important;
+         }
+         a[x-apple-data-detectors] {
+         color: inherit !important;
+         text-decoration: none !important;
+         font-size: inherit !important;
+         font-family: inherit !important;
+         font-weight: inherit !important;
+         line-height: inherit !important;
+         }
+         .es-desk-hidden {
+         display: none;
+         float: left;
+         overflow: hidden;
+         width: 0;
+         max-height: 0;
+         line-height: 0;
+         mso-hide: all;
+         }
+         .es-button-border:hover>a.es-button {
+         color: #ffffff !important;
+         }
+         @media only screen and (max-width:600px) {
+         .es-m-p5b {
+         padding-bottom: 5px !important
+         }
+         .es-m-p0r {
+         padding-right: 0px !important
+         }
+         .es-m-p20b {
+         padding-bottom: 20px !important
+         }
+         *[class="gmail-fix"] {
+         display: none !important
+         }
+         p,
+         a {
+         line-height: 150% !important
+         }
+         h1,
+         h1 a {
+         line-height: 120% !important
+         }
+         h2,
+         h2 a {
+         line-height: 120% !important
+         }
+         h3,
+         h3 a {
+         line-height: 120% !important
+         }
+         h4,
+         h4 a {
+         line-height: 120% !important
+         }
+         h5,
+         h5 a {
+         line-height: 120% !important
+         }
+         h6,
+         h6 a {
+         line-height: 120% !important
+         }
+         h1 {
+         font-size: 30px !important;
+         text-align: left
+         }
+         h2 {
+         font-size: 24px !important;
+         text-align: left
+         }
+         h3 {
+         font-size: 20px !important;
+         text-align: left
+         }
+         h4 {
+         font-size: 24px !important;
+         text-align: left
+         }
+         h5 {
+         font-size: 20px !important;
+         text-align: left
+         }
+         h6 {
+         font-size: 16px !important;
+         text-align: left
+         }
+         .es-header-body h1 a,
+         .es-content-body h1 a,
+         .es-footer-body h1 a {
+         font-size: 30px !important
+         }
+         .es-header-body h2 a,
+         .es-content-body h2 a,
+         .es-footer-body h2 a {
+         font-size: 24px !important
+         }
+         .es-header-body h3 a,
+         .es-content-body h3 a,
+         .es-footer-body h3 a {
+         font-size: 20px !important
+         }
+         .es-header-body h4 a,
+         .es-content-body h4 a,
+         .es-footer-body h4 a {
+         font-size: 24px !important
+         }
+         .es-header-body h5 a,
+         .es-content-body h5 a,
+         .es-footer-body h5 a {
+         font-size: 20px !important
+         }
+         .es-header-body h6 a,
+         .es-content-body h6 a,
+         .es-footer-body h6 a {
+         font-size: 16px !important
+         }
+         .es-menu td a {
+         font-size: 14px !important
+         }
+         .es-header-body p,
+         .es-header-body a {
+         font-size: 14px !important
+         }
+         .es-content-body p,
+         .es-content-body a {
+         font-size: 14px !important
+         }
+         .es-footer-body p,
+         .es-footer-body a {
+         font-size: 14px !important
+         }
+         .es-infoblock p,
+         .es-infoblock a {
+         font-size: 12px !important
+         }
+         .es-m-txt-c,
+         .es-m-txt-c h1,
+         .es-m-txt-c h2,
+         .es-m-txt-c h3,
+         .es-m-txt-c h4,
+         .es-m-txt-c h5,
+         .es-m-txt-c h6 {
+         text-align: center !important
+         }
+         .es-m-txt-r,
+         .es-m-txt-r h1,
+         .es-m-txt-r h2,
+         .es-m-txt-r h3,
+         .es-m-txt-r h4,
+         .es-m-txt-r h5,
+         .es-m-txt-r h6 {
+         text-align: right !important
+         }
+         .es-m-txt-j,
+         .es-m-txt-j h1,
+         .es-m-txt-j h2,
+         .es-m-txt-j h3,
+         .es-m-txt-j h4,
+         .es-m-txt-j h5,
+         .es-m-txt-j h6 {
+         text-align: justify !important
+         }
+         .es-m-txt-l,
+         .es-m-txt-l h1,
+         .es-m-txt-l h2,
+         .es-m-txt-l h3,
+         .es-m-txt-l h4,
+         .es-m-txt-l h5,
+         .es-m-txt-l h6 {
+         text-align: left !important
+         }
+         .es-m-txt-r img,
+         .es-m-txt-c img,
+         .es-m-txt-l img {
+         display: inline !important
+         }
+         .es-m-txt-r .rollover:hover .rollover-second,
+         .es-m-txt-c .rollover:hover .rollover-second,
+         .es-m-txt-l .rollover:hover .rollover-second {
+         display: inline !important
+         }
+         .es-m-txt-r .rollover span,
+         .es-m-txt-c .rollover span,
+         .es-m-txt-l .rollover span {
+         line-height: 0 !important;
+         font-size: 0 !important
+         }
+         .es-spacer {
+         display: inline-table
+         }
+         a.es-button,
+         button.es-button {
+         font-size: 18px !important;
+         line-height: 120% !important
+         }
+         a.es-button,
+         button.es-button,
+         .es-button-border {
+         display: inline-block !important
+         }
+         .es-m-fw,
+         .es-m-fw.es-fw,
+         .es-m-fw .es-button {
+         display: block !important
+         }
+         .es-m-il,
+         .es-m-il .es-button,
+         .es-social,
+         .es-social td,
+         .es-menu {
+         display: inline-block !important
+         }
+         .es-adaptive table,
+         .es-left,
+         .es-right {
+         width: 100% !important
+         }
+         .es-content table,
+         .es-header table,
+         .es-footer table,
+         .es-content,
+         .es-footer,
+         .es-header {
+         width: 100% !important;
+         max-width: 600px !important
+         }
+         .adapt-img {
+         width: 100% !important;
+         height: auto !important
+         }
+         .es-mobile-hidden,
+         .es-hidden {
+         display: none !important
+         }
+         .es-desk-hidden {
+         width: auto !important;
+         overflow: visible !important;
+         float: none !important;
+         max-height: inherit !important;
+         line-height: inherit !important
+         }
+         tr.es-desk-hidden {
+         display: table-row !important
+         }
+         table.es-desk-hidden {
+         display: table !important
+         }
+         td.es-desk-menu-hidden {
+         display: table-cell !important
+         }
+         .es-menu td {
+         width: 1% !important
+         }
+         table.es-table-not-adapt,
+         .esd-block-html table {
+         width: auto !important
+         }
+         .es-social td {
+         padding-bottom: 10px
+         }
+         .h-auto {
+         height: auto !important
+         }
+         .img-9323 {
+         width: 113px !important
+         }
+         .img-9968 {
+         width: 158px !important
+         }
+         .img-7899 {
+         width: 58px !important
+         }
+         .img-6373 {
+         width: 58px !important
+         }
+         .img-1724 {
+         height: 58px !important
+         }
+         td.es-spacer-7628 {
+         height: 20px !important
+         }
+         .img-3570 {
+         width: 203px !important
+         }
+         .footer-icon {
+         width: 48px !important;
+         height: 48px !important;
+         }
+         .footer-icon-td {
+         padding: 0 10px !important;
+         }
+         }
+         @media screen and (max-width:384px) {
+         .mail-message-content {
+         width: 414px !important
+         }
+         }
+         /* Mobile: reduce icon size but keep single row */
+         @media only screen and (max-width:600px) {
+         .footer-icon {
+         width: 40px !important;
+         height: 40px !important;
+         }
+         .footer-icon-td {
+         padding: 0 8px !important;
+         }
+         }
+        @media only screen and (max-width:420px) {
+        
+         .welcome-img {
+         width: 180px !important;
+         }
+         .main-title {
+         font-size: 22px !important;
+         }
+         .footer-icon {
+         width: 32px !important;
+         height: 32px !important;
+         }
+         }
+         
+         @media only screen and (max-width:600px) {
+         .es-wrapper {
+         width: 100% !important;
+         }
+         .es-header-body {
+         width: 100% !important;
+         max-width: 600px !important;
+         }
+         .es-footer-body {
+         width: 100% !important;
+         max-width: 600px !important;
+         }
+         .es-m-txt-c {
+         text-align: center !important;
+         }
+         .logo-img {
+         width: 40px !important;
+         }
+         .header-title {
+         font-size: 24px !important;
+         }
+         .welcome-img {
+         width: 200px !important;
+         height: auto !important;
+         }
+         .main-title {
+         font-size: 26px !important;
+         }
+         .subtitle {
+         font-size: 16px !important;
+         }
+         .getting-started {
+         padding: 20px !important;
+         }
+         .cta-button {
+         padding: 12px 24px !important;
+         font-size: 14px !important;
+         }
+         .footer-icon {
+         width: 36px !important;
+         height: 36px !important;
+         }
+         .content-padding {
+         padding: 30px 15px !important;
+         }
+         }
+         @media only screen and (max-width:420px) {
+         .logo-img {
+         width: 35px !important;
+         }
+         .header-title {
+         font-size: 20px !important;
+         }
+         .welcome-img {
+         width: 180px !important;
+         }
+         .main-title {
+         font-size: 22px !important;
+         }
+         .footer-icon {
+         width: 32px !important;
+         height: 32px !important;
+         }
+         }
+      </style>
+   </head>
+   <body class="body" style="width:100%;height:100%;padding:0;Margin:0">
+      <div dir="ltr" class="es-wrapper-color" lang="en" style="background-color:#f6f6f6">
+         <table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0"
+            style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;padding:0;Margin:0;width:100%;height:100%;background-repeat:repeat;background-position:center top;background-color:#eaebed">
+            <tr>
+               <td valign="top" style="padding:0;Margin:0">
+                  <!-- Header -->
+                  <table class="es-header" cellspacing="0" cellpadding="0" align="center" width="100%">
+                     <tr>
+                        <td align="center">
+                           <table class="es-header-body" cellspacing="0" cellpadding="0" bgcolor="#ffffff" align="center">
+                              <tr>
+                                 <td align="left" bgcolor="#f1f5f9" 
+                                    style="padding:20px;Margin:0;background-color:#f1f5f9">
+                                    <table cellpadding="0" cellspacing="0" width="100%">
+                                       <tr>
+                                          <td width="560" align="center" valign="top">
+                                             <table cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                   <td align="center" style="padding:0;Margin:0">
+                                                      <table cellpadding="0" cellspacing="0" class="es-table-not-adapt">
+                                                         <tr>
+                                                            <td align="right" valign="middle" style="padding-right:10px">
+                                                               <a href="https://soulplan.net" target="_blank">
+                                                                  <img src="../../src/assets/logo.png" 
+                                                                       alt="Soulplan Logo" 
+                                                                       title="Soulplan" 
+                                                                       width="50" 
+                                                                       class="logo-img"
+                                                                       style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic">
+                                                               </a>
+                                                            </td>
+                                                            <td align="left" valign="middle">
+                                                               <h1 class="header-title" 
+                                                                  style="Margin:0;font-family:'Poppins',sans-serif;font-size:30px;font-style:normal;font-weight:600;line-height:36px;color:#000000">
+                                                                  <strong>SOUL PLAN</strong>
+                                                               </h1>
+                                                            </td>
+                                                         </tr>
+                                                      </table>
+                                                   </td>
+                                                </tr>
+                                             </table>
+                                          </td>
+                                       </tr>
+                                    </table>
+                                 </td>
+                              </tr>
+                           </table>
+                        </td>
+                     </tr>
+                  </table>
+                  
+                  <!-- Main Content -->
+                  <table class="es-content" cellspacing="0" cellpadding="0" align="center"
+                     style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;width:100%;table-layout:fixed !important;background-color:transparent;background-repeat:repeat;background-position:center top">
+                     <tr>
+                        <td align="center" style="padding:0;Margin:0">
+                           <table class="es-content-body" cellspacing="0" cellpadding="0" bgcolor="#ffffff" align="center"
+                              style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#ffffff;width:600px">
+                              <tr>
+                                 <td align="left" class="content-padding"
+                                    style="Margin:0;padding-top:20px;padding-right:20px;padding-left:20px;padding-bottom:10px">
+                                    <table cellpadding="0" cellspacing="0" align="right" class="es-right"
+                                       style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right">
+                                       <tr>
+                                          <td align="left" style="padding:0;Margin:0;width:560px">
+                                             <table cellpadding="0" cellspacing="0" width="100%" role="presentation"
+                                                style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
+                                                <tr>
+                                                   <td align="center" style="padding:10px;Margin:0;font-size:0;"><img
+                                                      src="../../src/assets/calendar.png"
+                                                      alt="Calendar" height="50" width="50" class="calendar-icon"
+                                                      style="display:block;font-size:14px;border:0;outline:none;text-decoration:none;object-fit:contain;padding:2px;border-radius:50%;max-width:100%;height:auto;">
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td align="left" style="padding:0;Margin:0">
+                                                      <h1 align="center" class="es-m-txt-c main-title"
+                                                         style="Margin:0; font-family: 'Poppins', sans-serif;mso-line-height-rule:exactly;letter-spacing:0;font-size:30px;font-style:normal;font-weight:normal;line-height:36px;color:#16a34a">
+                                                         <strong>Upcoming Booking Reminder</strong>
+                                                      </h1>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td align="left" style="padding:0;Margin:0;padding-top:35px;">
+                                                      <p align="left" class="subtitle"
+                                                         style="Margin:0;mso-line-height-rule:exactly; font-family: 'Poppins', sans-serif;line-height:21px;letter-spacing:0;color:#64748b;font-size:18px;font-weight: normal">
+                                                         Hi Mohan,
+                                                      </p>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td align="left" style="padding:0;Margin:0;padding-top:10px;">
+                                                      <p align="left"
+                                                         style="Margin:0;mso-line-height-rule:exactly; font-family: 'Poppins', sans-serif;line-height:21px;letter-spacing:0;color:#64748b;font-size:16px;font-weight: normal;">
+                                                         Your Astrology consultancy session has been confirmed successfully. Below are the details of the booking
+                                                      </p>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td align="left" style="padding:0;Margin:0;padding-bottom:10px;padding-top:30px">
+                                                      <h5 align="center" class=" es-m-txt-c"
+                                                         style="Margin:0; font-family: 'Poppins', sans-serif;mso-line-height-rule:exactly;letter-spacing:0;font-size:20px;font-style:normal;font-weight:normal;line-height:24px;color:#333333">
+                                                         <small>Booking Details</small>
+                                                      </h5>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td align="center" style="padding:0;Margin:0;padding-top:10px">
+                                                      <table border="0" width="100%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#f8fafc;border-radius:8px">
+                                                         <tr>
+                                                            <td class="booking-details" style="padding:15px;Margin:0">
+                                                               <table width="100%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
+                                                                  <tr>
+                                                                     <td style="padding:8px 0;Margin:0;border-bottom:1px solid #e2e8f0">
+                                                                        <table width="100%" cellspacing="0" cellpadding="0">
+                                                                           <tr>
+                                                                              <td align="left" style="padding:0;Margin:0;width:60%">
+                                                                                 <p style="Margin:0;font-family:'Poppins',sans-serif;font-size:16px;color:#334155;font-weight:500">Booking ID:</p>
+                                                                              </td>
+                                                                              <td align="right" style="padding:0;Margin:0;width:40%">
+                                                                                 <p style="Margin:0;font-family:'Poppins',sans-serif;font-size:16px;color:#64748b">XXXXX</p>
+                                                                              </td>
+                                                                           </tr>
+                                                                        </table>
+                                                                     </td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                     <td style="padding:8px 0;Margin:0;border-bottom:1px solid #e2e8f0">
+                                                                        <table width="100%" cellspacing="0" cellpadding="0">
+                                                                           <tr>
+                                                                              <td align="left" style="padding:0;Margin:0;width:60%">
+                                                                                 <p style="Margin:0;font-family:'Poppins',sans-serif;font-size:16px;color:#334155;font-weight:500">Date:</p>
+                                                                              </td>
+                                                                              <td align="right" style="padding:0;Margin:0;width:40%">
+                                                                                 <p style="Margin:0;font-family:'Poppins',sans-serif;font-size:16px;color:#64748b">[dd mm yyyy] [hh mm] for [minutes]</p>
+                                                                              </td>
+                                                                           </tr>
+                                                                        </table>
+                                                                     </td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                     <td style="padding:8px 0;Margin:0;border-bottom:1px solid #e2e8f0">
+                                                                        <table width="100%" cellspacing="0" cellpadding="0">
+                                                                           <tr>
+                                                                              <td align="left" style="padding:0;Margin:0;width:60%">
+                                                                                 <p style="Margin:0;font-family:'Poppins',sans-serif;font-size:16px;color:#334155;font-weight:500">Place:</p>
+                                                                              </td>
+                                                                              <td align="right" style="padding:0;Margin:0;width:40%">
+                                                                                 <p style="Margin:0;font-family:'Poppins',sans-serif;font-size:16px;color:#64748b">[At your Location/At Pandit's Location/Online]</p>
+                                                                              </td>
+                                                                           </tr>
+                                                                        </table>
+                                                                     </td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                     <td style="padding:8px 0;Margin:0;border-bottom:1px solid #e2e8f0">
+                                                                        <table width="100%" cellspacing="0" cellpadding="0">
+                                                                           <tr>
+                                                                              <td align="left" style="padding:0;Margin:0;width:60%">
+                                                                                 <p style="Margin:0;font-family:'Poppins',sans-serif;font-size:16px;color:#334155;font-weight:500">Name of Service:</p>
+                                                                              </td>
+                                                                              <td align="right" style="padding:0;Margin:0;width:40%">
+                                                                                 <p style="Margin:0;font-family:'Poppins',sans-serif;font-size:16px;color:#64748b">XXXX</p>
+                                                                              </td>
+                                                                           </tr>
+                                                                        </table>
+                                                                     </td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                     <td style="padding:8px 0;Margin:0">
+                                                                        <table width="100%" cellspacing="0" cellpadding="0">
+                                                                           <tr>
+                                                                              <td align="left" style="padding:0;Margin:0;width:60%">
+                                                                                 <p style="Margin:0;font-family:'Poppins',sans-serif;font-size:16px;color:#334155;font-weight:500">Astrologer:</p>
+                                                                              </td>
+                                                                              <td align="right" style="padding:0;Margin:0;width:40%">
+                                                                                 <p style="Margin:0;font-family:'Poppins',sans-serif;font-size:16px;color:#64748b">[Astrologer Name]</p>
+                                                                              </td>
+                                                                           </tr>
+                                                                        </table>
+                                                                     </td>
+                                                                  </tr>
+                                                               </table>
+                                                            </td>
+                                                         </tr>
+                                                      </table>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td align="center" style="padding:20px 0;">
+                                                      <a href="[Meeting URL]" class="cta-button" style="display:inline-block;background-color:#420098;color:#ffffff;padding:12px 25px;text-decoration:none;border-radius:6px;font-family:'Poppins',sans-serif;font-size:16px;font-weight:500;">
+                                                      Join Online Meeting
+                                                      </a>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td align="left" style="padding:0;Margin:0;padding-top:15px;">
+                                                      <h5 align="center" class=" es-m-txt-c"
+                                                         style="Margin:0; font-family: 'Poppins', sans-serif;mso-line-height-rule:exactly;letter-spacing:0;font-size:18px;font-style:normal;font-weight:600;line-height:22px;color:#333333">
+                                                         Special Instructions:
+                                                      </h5>
+                                                      <p align="center"
+                                                         style="Margin:0;mso-line-height-rule:exactly; font-family: 'Poppins', sans-serif;line-height:21px;letter-spacing:0;color:#64748b;font-size:16px;font-weight: normal;padding-top:5px;">
+                                                         [appointment note]
+                                                      </p>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td align="left" style="padding:0;Margin:0;padding-top:20px;">
+                                                      <div class="info-box" style="background-color:#e0f2fe;border-radius:8px;padding:20px;border-left:4px solid #0ea5e9;">
+                                                         <h6 style="Margin:0;font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;color:#0c4a6e;margin-bottom:10px;">
+                                                            For Online Booking:
+                                                         </h6>
+                                                         <p style="Margin:0;font-family:'Poppins',sans-serif;line-height:20px;color:#0c4a6e;font-size:14px;margin-bottom:15px;">
+                                                            Please join the zoom link at least 10 mins before start time so that you resolve tech or device issues if any. Ensure that you are connected to Internet.
+                                                         </p>
+                                                      </div>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td align="left" style="padding:0;Margin:0;padding-top:20px;">
+                                                      <p align="center"
+                                                         style="Margin:0;mso-line-height-rule:exactly; font-family: 'Poppins', sans-serif;line-height:21px;letter-spacing:0;color:#64748b;font-size:16px;font-weight: normal;">
+                                                         For any further support and help please contact us on +91 9321806791
+                                                      </p>
+                                                   </td>
+                                                </tr>
+                                             </table>
+                                          </td>
+                                       </tr>
+                                    </table>
+                                 </td>
+                              </tr>
+                           </table>
+                        </td>
+                     </tr>
+                  </table>
+                  
+                  <table class="es-footer" cellspacing="0" cellpadding="0" align="center"
+                     style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;width:100%;table-layout:fixed !important;background-color:transparent;background-repeat:repeat;background-position:center top">
+                     <tr>
+                        <td align="center" style="padding:0;Margin:0">
+                           <table class="es-footer-body" cellspacing="0" cellpadding="0" bgcolor="#ffffff" align="center"
+                              style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;width:600px">
+                              <tr>
+                                 <td align="center" bgcolor="#420098"
+                                    style="padding:20px;Margin:0;background-color:#420098">
+                                    <table cellpadding="0" cellspacing="0" align="center" width="100%"
+                                       style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;text-align:center">
+                                       <tr>
+                                          <td align="center" style="padding:0;Margin:0;text-align:center">
+                                             <div style="text-align:center">
+                                                <a href="tel:+91 7678047222" style="display:inline-block;margin:0 10px;text-decoration:none">
+                                                <img src="../../src/assets/call.png"
+                                                   alt="Phone" width="40" height="40"
+                                                   style="display:block;border:0;outline:none;background-color:#fff;padding:6px;border-radius:50%;vertical-align:middle">
+                                                </a>
+                                                <a target="_blank" href="https://wa.me/+917678047222?text=Hii Soulplan 👋🏻" style="display:inline-block;margin:0 10px;text-decoration:none">
+                                                <img src="../../src/assets/whatsapp.png"
+                                                   alt="WhatsApp" width="40" height="40"
+                                                   style="display:block;border:0;outline:none;background-color:#fff;padding:6px;border-radius:50%;vertical-align:middle">
+                                                </a>
+                                                <a target="_blank" href="mailto:support@soulplan.net" style="display:inline-block;margin:0 10px;text-decoration:none">
+                                                <img src="../../src/assets/mail.png"
+                                                   alt="Email" width="40" height="40"
+                                                   style="display:block;border:0;outline:none;background-color:#fff;padding:6px;border-radius:50%;object-fit:contain;vertical-align:middle">
+                                                </a>
+                                             </div>
+                                          </td>
+                                       </tr>
+                                    </table>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td align="left" bgcolor="#420098"
+                                    style="padding:0;Margin:0;padding-top:20px;padding-right:20px;padding-left:20px;background-color:#420098">
+                                    <table cellpadding="0" cellspacing="0"
+                                       style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
+                                       <tr>
+                                          <td align="left" style="padding:0;Margin:0;width:560px">
+                                             <table cellpadding="0" cellspacing="0" width="100%" role="presentation"
+                                                style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
+                                                <tr>
+                                                   <td align="left" style="padding:0;Margin:0">
+                                                      <p class=" es-m-txt-c" align="center"
+                                                         style="Margin:0;mso-line-height-rule:exactly; font-family: 'Poppins', sans-serif;line-height:20px;letter-spacing:0;color:#ffffff;font-size:15px;font-weight: 500;">
+                                                         Soul Plan, 10th Floor, Plot No # R-1, Tower # 1, Seawoods Grand Central,
+                                                         Sector # 14, Nerul Node, Navi Mumbai – 400 706
+                                                      </p>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td align="center"
+                                                      style="padding:0;Margin:0;padding-bottom:10px;padding-top:10px;font-size:0">
+                                                      <table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0"
+                                                         class="es-spacer"
+                                                         style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
+                                                         <tr>
+                                                            <td
+                                                               style="padding:0;Margin:0;border-bottom:2px solid #fff;background:none;height:1px;width:100%;margin:0px">
+                                                            </td>
+                                                         </tr>
+                                                      </table>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td align="left" style="padding:0;Margin:0;padding-bottom:10px">
+                                                      <p align="center"
+                                                         style="Margin:0;mso-line-height-rule:exactly; font-family: 'Poppins', sans-serif;line-height:21px;letter-spacing:0;color:#ffffff;font-size:15px;font-weight: 500;">
+                                                         Copyright © 2025 Soul Plan, All rights reserved.
+                                                      </p>
+                                                   </td>
+                                                </tr>
+                                             </table>
+                                          </td>
+                                       </tr>
+                                    </table>
+                                 </td>
+                              </tr>
+                           </table>
+                        </td>
+                     </tr>
+                  </table>
+               </td>
+            </tr>
+         </table>
+      </div>
+   </body>
+</html>

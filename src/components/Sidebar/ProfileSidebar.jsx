@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { formBtn1 } from "../../utils/CustomClass";
 import { CaretRight, Power, Trash } from "@phosphor-icons/react";
 
+
 const ProfileSidebar = ({ children }) => {
     const user = useSelector((state) => state.user);
     const isLoggedIn = user?.isLogged;
@@ -37,15 +38,20 @@ const ProfileSidebar = ({ children }) => {
             icon: "bitcoin-icons:address-book-outline",
         },
         {
+            label: "Refer & Earn",
+            path: "/profile/refer",
+            icon: "material-symbols:share",
+        },
+        {
             label: "Customer Support",
             path: "/profile/customer-support",
             icon: "material-symbols:support-agent",
         },
-        // {
-        //     label: "Privacy Policy",
-        //     path: "/privacy-policy",
-        //     icon: "material-symbols:privacy-tip-outline",
-        // },
+        {
+            label: "Privacy Policy",
+            path: "/privacy-policy",
+            icon: "material-symbols:privacy-tip-outline",
+        },
     ];
 
     const handleLogout = async () => {
@@ -63,7 +69,7 @@ const ProfileSidebar = ({ children }) => {
 
     return (
         <div className="bg-[#FFF9EF]  pt-20 lg:pt-24 pb-10">
-            <section className="w-full lg:py-2 xl:py-4 px-5 xl:px-0">
+            <section className="w-full lg:py-2 xl:py-4 sm:px-5 xl:px-0">
                 <div className="container mx-auto ">
                     <div className="flex flex-col lg:flex-row gap-6">
                         {/* Sidebar */}
@@ -80,20 +86,28 @@ const ProfileSidebar = ({ children }) => {
                                                 <Link
                                                     to={item.path}
                                                     className={`flex items-center justify-between font-normal font-tbPop transition-all duration-300 ${isActive(item.path)
-                                                        ? "bg-linear-gradient text-white px-3 py-[18px]"
-                                                        : "px-3 py-[18px] text-slate-900"
+                                                            ? "bg-linear-gradient text-white px-3 py-[18px]"
+                                                            : "px-3 py-[18px] text-slate-900"
                                                         }`}
                                                 >
                                                     <span className="flex items-center gap-2 text-base font-tbPop">
                                                         {item.label}
                                                     </span>
-                                                    <CaretRight size={15} weight="bold" className={isActive(item.path) ? "text-slate-100" : "text-slate-700"} />
+                                                    <CaretRight
+                                                        size={15}
+                                                        weight="bold"
+                                                        className={
+                                                            isActive(item.path)
+                                                                ? "text-slate-100"
+                                                                : "text-slate-700"
+                                                        }
+                                                    />
                                                 </Link>
                                             ) : (
                                                 <button
                                                     className={`flex items-center justify-between px-3 py-[18px] rounded-lg font-medium transition ${isActive(item.path)
-                                                        ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white"
-                                                        : "hover:bg-gray-100 text-[#1d2e36]"
+                                                            ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white"
+                                                            : "hover:bg-gray-100 text-[#1d2e36]"
                                                         }`}
                                                 >
                                                     <span className="flex items-center gap-2">
@@ -133,7 +147,7 @@ const ProfileSidebar = ({ children }) => {
                         </aside>
 
                         {/* Main Content */}
-                        <main className="flex-1 bg-white rounded-2xl p-4 lg:p-6 border border-slate-200">
+                        <main className="flex-1 bg-white rounded-2xl p-2 md:p-4 border border-slate-200 px-4">
                             {children}
                         </main>
                     </div>

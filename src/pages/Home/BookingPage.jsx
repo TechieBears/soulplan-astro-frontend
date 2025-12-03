@@ -29,6 +29,7 @@ const BookingPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const service = location.state;
+    console.log("⚡️🤯 ~ BookingPage.jsx:32 ~ BookingPage ~ service:", service)
     const {
         register,
         handleSubmit,
@@ -67,15 +68,14 @@ const BookingPage = () => {
     ];
 
     const handleBooking = async (data) => {
-        console.log("⚡️🤯 ~ BookingPage.jsx:71 ~ handleBooking ~ data:", data)
         try {
             setIsLoadingService(true);
             const payload = {
                 serviceId: serviceTypeWatch,
-                astrologerId: data.astrologer,
+                astrologer: astrologerWatch || "",
                 bookingType: data?.bookingType,
                 date: moment(dateWatch).format("YYYY-MM-DD"),
-                serviceMode: "online",
+                serviceMode: data?.serviceMode,
                 startTime: data?.timeSlot?.split(" - ")[0],
                 endTime: data?.timeSlot?.split(" - ")[1],
                 currency: data?.currency,
@@ -84,10 +84,6 @@ const BookingPage = () => {
                 email: data?.email,
                 phone: data?.mobileNo,
             };
-            console.log(
-                "⚡️🤯 ~ BookingPage.jsx:80 ~ handleBooking ~ payload:",
-                payload
-            );
             await addServiceToCart(payload).then((res) => {
                 if (res?.success) {
                     setIsLoadingService(false);
@@ -115,7 +111,6 @@ const BookingPage = () => {
         };
         setIsLoading(true);
         await checkAvailability(payload).then((res) => {
-            console.log("⚡️🤯 ~ BookingPage.jsx:107 ~ fetchService ~ res:", res);
             if (res?.success) {
                 const availableSlots = res?.data?.timeSlots?.filter(
                     (item) => !item?.booked && item?.status === "available"
@@ -169,10 +164,6 @@ const BookingPage = () => {
         try {
             setIsAstrologersLoading(true);
             const response = await getAllAstrologer();
-            console.log(
-                "⚡️🤯 ~ BookingPage.jsx:127 ~ BookingPage ~ response:",
-                response
-            );
             if (response?.success) {
                 setAstrologers(response.data || []);
             } else {
@@ -192,7 +183,8 @@ const BookingPage = () => {
         if (!astrologers.length) return [];
         return astrologers.map((astrologer) => ({
             value: astrologer._id,
-            label: astrologer.fullName,
+            label:
+                astrologer?.profile?.firstName + " " + astrologer.profile?.lastName,
         }));
     }, [astrologers]);
 
@@ -202,13 +194,13 @@ const BookingPage = () => {
 
     return (
         <div className="min-h-screen bg-[#FFF9EF]  pt-16 lg:pt-24 relative">
-            <div className="absolute top-1/4 left-0 ">
+            <div className="hidden md:absolute md:top-1/4 md:left-0 md:block">
+                <img src={star} alt="" className="w-full h-full object-fill " />
+            </div>
+            <div className="hidden md:absolute md:bottom-40 md:right-0 md:rotate-45 md:scale-75 md:block">
                 <img src={star} alt="" className="w-full h-full object-fill" />
             </div>
-            <div className="absolute bottom-40 right-0 rotate-45 scale-75">
-                <img src={star} alt="" className="w-full h-full object-fill" />
-            </div>
-            <div className="container mx-auto px-5 xl:px-0 py-5">
+            <div className="container mx-auto xl:px-0 px-4 py-5">
                 {/* Header */}
                 <div className="relative flex items-center justify-center mb-6 sm:mb-8 px-4 sm:px-0">
                     <div className="absolute left-0 sm:left-4">
@@ -226,7 +218,7 @@ const BookingPage = () => {
                         </button>
                     </div>
 
-                    <h1 className="text-lg xs:text-xl sm:text-2xl font-tbLex font-normal tracking-tight text-slate-800 text-center px-10 xs:px-0">
+                    <h1 className="text-md xs:text-xl sm:text-2xl font-tbLex font-normal tracking-tight text-slate-800 text-center px-10 xs:px-0">
                         Booking Calendar
                     </h1>
                 </div>
@@ -295,8 +287,8 @@ const BookingPage = () => {
                                             }
                                             prev2Label="«"
                                             next2Label="»"
-                                            prevLabel={null}
-                                            nextLabel={null}
+                                            // prevLabel="‹"
+                                            // nextLabel="›"
                                         />
                                     )}
                                 />
@@ -304,8 +296,8 @@ const BookingPage = () => {
                         </div>
                         <div className="space-y-5 ">
                             <div className="">
-                                <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
-                                    Time Slots*
+                                <h4 className="text-sm font-tbLex font-normal text-slate-800 py-2.5">
+                                    Service Mode*
                                 </h4>
                                 <SelectTextInput
                                     label="Select Time Slots"
@@ -317,6 +309,25 @@ const BookingPage = () => {
                                         value: watch("timeSlot") || "",
                                     }}
                                     errors={errors.timeSlot}
+                                />
+                            </div>
+                            <div className="">
+                                <h4 className="text-sm font-tbLex font-normal text-slate-800 py-2.5">
+                                    Service Mode*
+                                </h4>
+                                <SelectTextInput
+                                    label="Select Service Mode"
+                                    registerName="serviceMode"
+                                    options={service?.service?.serviceType?.map((type) => ({
+                                        value: type,
+                                        label: type,
+                                    }))}
+                                    placeholder="Select Service Mode"
+                                    props={{
+                                        ...register("serviceMode", { required: true }),
+                                        value: watch("serviceMode") || "",
+                                    }}
+                                    errors={errors.serviceMode}
                                 />
                             </div>
                             <div className="">
@@ -367,7 +378,7 @@ const BookingPage = () => {
                                     )}
                                 />
                             </div>
-                            <div className="grid grid-cols-2 gap-5">
+                            <div className="sm:grid grid-cols-2 gap-5">
                                 <div className="">
                                     <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
                                         First Name{" "}

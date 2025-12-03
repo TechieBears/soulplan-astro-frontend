@@ -11,8 +11,9 @@ import { addEmployee, editEmployee, getPublicServicesDropdown } from '../../../a
 import { TableTitle } from '../../../helper/Helper';
 import MultiSelectTextInput from '../../TextInput/MultiSelectTextInput';
 import { Controller } from 'react-hook-form';
-import ImageUploadInput from '../../TextInput/ImageUploadInput';
+// import ImageUploadInput from '../../TextInput/ImageUploadInput';
 import SelectTextInput from '../../TextInput/SelectTextInput';
+import ImageCropUpload from '../../TextInput/ImageCropUpload';
 
 function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
     const { register, handleSubmit, control, watch, reset, setValue, formState: { errors } } = useForm();
@@ -211,9 +212,11 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Employee Image <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                        Employee Image <span className="text-red-500 text-xs font-tbLex">*</span> <span className="text-[11px] text-orange-500">
+            (Recommended size: 400px × 400px)
+        </span>
                                                     </h4>
-                                                    <ImageUploadInput
+                                                    <ImageCropUpload
                                                         label="Upload Employee Image"
                                                         multiple={false}
                                                         registerName="profileImage"
@@ -223,6 +226,9 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                         setValue={setValue}
                                                         control={control}
                                                         defaultValue={userData?.profileImage}
+                                                        cropAspectRatio={1}
+                                                        cropHeight={400}
+                                                        cropWidth={400}
                                                     />
                                                 </div>
                                                 <div className="">

@@ -10,7 +10,7 @@ import TextInput from '../../../components/TextInput/TextInput';
 import TableHeader from '../../../components/Table/TableHeader';
 import { formBtn1 } from '../../../utils/CustomClass';
 import usePagination from '../../../utils/customHooks/usePagination';
-import { validateAlphabets } from '../../../utils/validateFunction';
+import { validateAlphabetic } from '../../../utils/validateFunction';
 
 const initialFilterState = {
     name: ''
@@ -175,7 +175,7 @@ function AllUserProfiles() {
                 <div className="flex items-center">
                     <Switch
                         value={row?.isActive}
-                        onChange={() => handleActiveChange(row?._id, row?.isActive)}
+                        onChange={() => handleActiveChange(row?.profile?._id, row?.isActive)}
                         size={50}
                         backgroundColor={{ on: "#86d993", off: "#c6c6c6" }}
                         borderColor={{ on: "#86d993", off: "#c6c6c6" }}
@@ -232,13 +232,13 @@ function AllUserProfiles() {
             style: true,
             sortable: true
         },
-        {
-            field: 'gender',
-            header: 'Gender',
-            body: genderBody,
-            style: true,
-            sortable: true
-        },
+        // {
+        //     field: 'gender',
+        //     header: 'Gender',
+        //     body: genderBody,
+        //     style: true,
+        //     sortable: true
+        // },
         {
             field: 'status',
             header: 'Status',
@@ -266,7 +266,7 @@ function AllUserProfiles() {
                             placeholder="Enter Full Name"
                             type="text"
                             registerName="name"
-                            props={{ ...register('name', { validate: validateAlphabets }) }}
+                            props={{ ...register('name', { validate: validateAlphabetic }) }}
                         />
                     </div>
                     <div className="flex space-x-2">

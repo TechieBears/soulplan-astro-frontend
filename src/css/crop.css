@@ -1,0 +1,131 @@
+.ReactCrop {
+  position: relative;
+  display: inline-block;
+  cursor: crosshair;
+  max-width: 100%;
+  background: #000;
+}
+
+.ReactCrop__image {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.ReactCrop__crop-selection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate3d(0, 0, 0);
+  box-sizing: border-box;
+  cursor: move;
+  /* box-shadow: 0 0 0 9999em rgba(0, 0, 0, 0.5); */
+  /* border: 1px solid rgba(255, 255, 255, 0.5); */
+  background: transparent;
+}
+
+.ReactCrop__drag-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  outline: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.ReactCrop__drag-handle::after {
+  position: absolute;
+  content: '';
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: #000;
+  transform: translate(-50%, -50%);
+}
+
+.ReactCrop__drag-handle--ne {
+  top: -6px;
+  right: -6px;
+  cursor: ne-resize;
+}
+
+.ReactCrop__drag-handle--se {
+  bottom: -6px;
+  right: -6px;
+  cursor: se-resize;
+}
+
+.ReactCrop__drag-handle--sw {
+  bottom: -6px;
+  left: -6px;
+  cursor: sw-resize;
+}
+
+.ReactCrop__drag-handle--nw {
+  top: -6px;
+  left: -6px;
+  cursor: nw-resize;
+}
+
+.ReactCrop__drag-handle--n {
+  top: -6px;
+  left: 50%;
+  cursor: n-resize;
+  margin-left: -6px;
+}
+
+.ReactCrop__drag-handle--e {
+  top: 50%;
+  right: -6px;
+  cursor: e-resize;
+  margin-top: -6px;
+}
+
+.ReactCrop__drag-handle--s {
+  bottom: -6px;
+  left: 50%;
+  cursor: s-resize;
+  margin-left: -6px;
+}
+
+.ReactCrop__drag-handle--w {
+  top: 50%;
+  left: -6px;
+  cursor: w-resize;
+  margin-top: -6px;
+}
+
+.ReactCrop--disabled .ReactCrop__drag-handle {
+  cursor: inherit;
+}
+
+.ReactCrop--circular-crop .ReactCrop__crop-selection {
+  border-radius: 50%;
+}
+
+.ReactCrop--rule-of-thirds .ReactCrop__crop-selection::before,
+.ReactCrop--rule-of-thirds .ReactCrop__crop-selection::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
+  border-right: 1px solid rgba(255, 255, 255, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  box-sizing: border-box;
+}
+
+.ReactCrop--rule-of-thirds .ReactCrop__crop-selection::before {
+  left: 33.333%;
+  right: 33.333%;
+}
+
+.ReactCrop--rule-of-thirds .ReactCrop__crop-selection::after {
+  top: 33.333%;
+  bottom: 33.333%;
+}

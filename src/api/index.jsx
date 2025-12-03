@@ -11,7 +11,7 @@ const handleLogout = () => {
     toast.error('Your session has expired. Please login again.');
     window.location.href = '/login';
 };
-
+ 
 axios.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -127,11 +127,25 @@ export const resetPassword = async (data) => {
     }
 };
 
+export const deleteUser = async () => {
+    const url = `${environment.baseUrl}customer-users/delete`;
+    try {
+        const response = await axios.delete(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in deleteUser api file", err);
+        return {
+            success: false,
+            message: err.response?.data?.message || err.response?.data?.error || "Account deletion failed. Please try again."
+        };
+    }
+};
+
 // ==================== Upload to Cloudinary Api===================
 
 
 export const uploadToCloudinary = async (file) => {
-    const cloudName = 'astroguid';
+    const cloudName = 'soulplan';
     const apiKey = import.meta.env.VITE_CLOUDINARY_KEY;
     const uploadPreset = 'ml_default';
 
@@ -903,10 +917,10 @@ export const addServiceToCart = async (data) => {
     }
 }
 
-export const getServiceFromCart = async (data) => {
+export const getServiceFromCart = async () => {
     const url = `${environment.baseUrl}service-cart/public/get`;
     try {
-        const response = await axios.get(url, data)
+        const response = await axios.get(url)
         return response.data
     }
     catch (err) {
@@ -1114,6 +1128,7 @@ export const getProductBookingsConfirmed = async (data) => {
     const url = `${environment.baseUrl}product-order/public/get-all`;
     try {
         const response = await axios.get(url, data)
+        console.log("⚡️🤯 ~ index.jsx:1373 ~ getProductBookingsConfirmed ~ response:", response)
         return response.data;
     }
     catch (err) {
@@ -1129,6 +1144,7 @@ export const getAllServiceOrdersAdmin = async (data) => {
     try {
         const url = `${environment.baseUrl}service-order/get-all?orderId=${data?.orderId || ""}&date=${data?.date || ""}&status=${data?.status || ""}&page=${data?.p}&limit=${data?.records}&astrologerId=${data?.astrologerId || ""}`;
         const response = await axios.get(url)
+        console.log("⚡️🤯 ~ index.jsx:1407 ~ getAllServiceOrdersAdmin ~ response:", response)
         return response.data
     }
     catch (err) {
@@ -1446,3 +1462,99 @@ export const editRating = async (id, data) => {
         return err?.response?.data;
     }
 };
+
+
+// =================== Refer & Earn Api ==================
+
+export const getWalletBalance = async () => {
+    const url = `${environment.baseUrl}customer-users/get-wallet-balance`;
+    try {
+        const response = await axios.get(url);
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getWalletBalance api file", err);
+        return err?.response?.data
+    }
+}
+
+
+// ===================== Customer Notification Api =====================
+
+export const getAllNotifications = async (data) => {
+    try {
+        const url = `${environment.baseUrl}notification/get-all?page=${data?.p || 1}&limit=${data?.records || 10}&status=${data?.status || 'active'}&userType=${data?.userType || 'all-customers'}&from=${data?.from || 'admin'}`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getAllNotifications api file", err);
+        return err?.response?.data;
+    }
+}
+export const getNotificationsDropdown = async () => {
+    try {
+        const url = `${environment.baseUrl}notification/dropdown-dashboard`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getNotificationsDropdown api file", err);
+        return err?.response?.data;
+    }
+}
+export const getNotificationsDropdownCustomer = async () => {
+    try {
+        const url = `${environment.baseUrl}notifications/dropdown-customer`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getNotificationsDropdownCustomer api file", err);
+        return err?.response?.data;
+    }
+}
+
+export const clearAllNotifications = async () => {
+    try {
+        const url = `${environment.baseUrl}notification/remove-all`;
+        const response = await axios.delete(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in clearAllNotifications api file", err);
+        return err?.response?.data;
+    }
+}
+
+export const addNotification = async (data) => {
+    const url = `${environment.baseUrl}notification/create`;
+    try {
+        const response = await axios.post(url, data);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in addNotification api file", err);
+        return err?.response?.data;
+    }
+};
+
+
+export const getCustomerUsersDropdown = async () => {
+    try {
+        const url = `${environment.baseUrl}customer-users/dropdown`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getCustomerUsersDropdown api file", err);
+        return err?.response?.data;
+    }
+}
+
+// ========================== dashboard insights api ========================
+
+export const getDashboardInsights = async () => {
+    try {
+        const url = `${environment.baseUrl}dashboard/get-dashboard-data`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in getDashboardData api file", err);
+        return err?.response?.data;
+    }
+}

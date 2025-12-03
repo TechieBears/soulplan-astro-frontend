@@ -5,10 +5,30 @@ import Testimonials from "../../components/testimonial";
 import { useEffect, useState } from "react";
 import { getActiveBanners } from "../../api";
 import { environment } from "../../env";
+import ReferralPromptModal from "../../components/Modals/ReferralPromptModal";
+import { useSelector } from "react-redux";
 
 const HomePage = () => {
     const [slidesData, setSlidesData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const login = useSelector((state) => state.user.isLogged);
+    const user = useSelector((state) => state.user.userDetails);
+
+    const [open, setOpen] = useState(false);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        if (login && user?._id) {
+            const dontShowAgain = localStorage.getItem(`dontShowReferralModal_${user._id}`);
+            setOpen(!dontShowAgain);
+        } else {
+            setOpen(false);
+        }
+    }, [login, user?._id]);
+
+    const toggle = () => {
+        setOpen(!open);
+    }
+
 
     useEffect(() => {
         const fetchSlides = async () => {
@@ -79,6 +99,7 @@ const HomePage = () => {
             <HomeCertifications />
             <HomeBestServices />
             <Testimonials />
+            {login && <ReferralPromptModal open={open} toggle={toggle} />}
         </>
     );
 };

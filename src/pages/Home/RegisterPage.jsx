@@ -9,7 +9,7 @@ import TextInput from "../../components/TextInput/TextInput";
 import SelectTextInput from "../../components/TextInput/SelectTextInput";
 import LoadBox from "../../components/Loader/LoadBox";
 import { registerUser } from "../../api";
-import { setLoggedUser, setUserDetails } from "../../redux/Slices/loginSlice";
+import { setLoggedUser, setUserDetails, setIsRegistered } from "../../redux/Slices/loginSlice";
 import {
     validateEmail,
     validatePassword,
@@ -45,6 +45,7 @@ const RegisterPage = () => {
                 document.title = `SoulPlan : Dashboard | ${response?.user?.role || ""}`;
                 dispatch(setLoggedUser(true));
                 dispatch(setUserDetails(response?.user || response?.data));
+                dispatch(setIsRegistered(true));
                 toast.success("Account created successfully!");
                 setLoader(false);
                 reset();
@@ -87,7 +88,7 @@ const RegisterPage = () => {
                     {/* First Name */}
                     <div className="col-span-2">
                         <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
-                            Title *
+                            Title <span className="text-red-500">*</span>
                         </h4>
                         <div className="sm:flex sm:gap-2 space-x-2 space-y-2 sm:space-y-0">
                             {["Mr", "Mrs", "Miss", "Baby", "Master"].map((type) => (
@@ -115,12 +116,9 @@ const RegisterPage = () => {
                         </div>
                     </div>
                     <div className="col-span-1">
-                        <label
-                            htmlFor="firstName"
-                            className="block text-sm font-medium text-gray-700 mb-1.5"
-                        >
-                            First Name *
-                        </label>
+                        <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
+                            First Name <span className="text-red-500">*</span>
+                        </h4>
                         <TextInput
                             label="First Name"
                             type="text"
@@ -150,12 +148,9 @@ const RegisterPage = () => {
 
                     {/* Last Name */}
                     <div className="col-span-1">
-                        <label
-                            htmlFor="lastName"
-                            className="block text-sm font-medium text-gray-700 mb-1.5"
-                        >
-                            Last Name *
-                        </label>
+                        <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
+                            Last Name <span className="text-red-500">*</span>
+                        </h4>
                         <TextInput
                             label="Last Name"
                             type="text"
@@ -185,12 +180,9 @@ const RegisterPage = () => {
 
                     {/* Email */}
                     <div className="col-span-1 md:col-span-2">
-                        <label
-                            htmlFor="email"
-                            className="block text-sm font-medium text-gray-700 mb-1.5"
-                        >
-                            Email *
-                        </label>
+                        <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
+                            Email <span className="text-red-500">*</span>
+                        </h4>
                         <TextInput
                             label="Enter Your Email"
                             placeholder="Enter Your Email"
@@ -211,12 +203,9 @@ const RegisterPage = () => {
 
                     {/* Phone */}
                     <div className="col-span-1">
-                        <label
-                            htmlFor="mobileNo"
-                            className="block text-sm font-medium text-gray-700 mb-1.5"
-                        >
-                            Phone Number *
-                        </label>
+                        <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
+                            Phone Number <span className="text-red-500">*</span>
+                        </h4>
                         <TextInput
                             label="Enter Your Phone Number"
                             placeholder="Enter Your Phone Number"
@@ -230,6 +219,8 @@ const RegisterPage = () => {
                                         message: "Enter a valid 10-digit number",
                                     },
                                 }),
+                                maxLength: 10,
+                                minLength: 10,
                             }}
                             errors={errors.mobileNo}
                         />
@@ -237,12 +228,9 @@ const RegisterPage = () => {
 
                     {/* Gender */}
                     <div className="col-span-1">
-                        <label
-                            htmlFor="gender"
-                            className="block text-sm font-medium text-gray-700 mb-1.5"
-                        >
-                            Gender *
-                        </label>
+                        <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
+                            Gender <span className="text-red-500">*</span>
+                        </h4>
                         <SelectTextInput
                             label="Select Gender"
                             placeholder="Select Gender"
@@ -265,12 +253,9 @@ const RegisterPage = () => {
 
                     {/* Password */}
                     <div className="col-span-1">
-                        <label
-                            htmlFor="password"
-                            className="block text-sm font-medium text-gray-700 mb-1.5"
-                        >
-                            Password *
-                        </label>
+                        <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
+                            Password <span className="text-red-500">*</span>
+                        </h4>
                         <TextInput
                             label="Enter Your Password"
                             placeholder="Enter Your Password"
@@ -289,12 +274,9 @@ const RegisterPage = () => {
 
                     {/* Confirm Password */}
                     <div className="col-span-1">
-                        <label
-                            htmlFor="confirmPassword"
-                            className="block text-sm font-medium text-gray-700 mb-1.5"
-                        >
-                            Confirm Password *
-                        </label>
+                        <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
+                            Confirm Password <span className="text-red-500">*</span>
+                        </h4>
                         <TextInput
                             label="Enter Your Confirm Password"
                             placeholder="Enter Your Confirm Password"

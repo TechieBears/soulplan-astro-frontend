@@ -136,9 +136,9 @@ const Banner = () => {
             return <span className="text-xs text-gray-400">Not configured</span>;
         }
 
-        const now = moment();
-        const start = moment(startDate);
-        const end = moment(endDate);
+        const now = moment.utc();
+        const start = moment.utc(startDate);
+        const end = moment.utc(endDate);
 
         let statusColor = 'text-gray-500';
         let statusText = 'Scheduled';
@@ -146,7 +146,7 @@ const Banner = () => {
         if (now.isBefore(start)) {
             statusColor = 'text-blue-600';
             statusText = 'Upcoming';
-        } else if (now.isBetween(start, end)) {
+        } else if (now.isSameOrAfter(start) && now.isSameOrBefore(end)) {
             statusColor = 'text-green-600';
             statusText = 'Active';
         } else if (now.isAfter(end)) {
@@ -157,9 +157,9 @@ const Banner = () => {
         return (
             <div className="space-y-1">
                 <div className="text-xs font-medium">
-                    <div>{moment(startDate).format('DD-MM-YYYY, HH:mm')}</div>
+                    <div>{moment(startDate).local().format('DD-MM-YYYY, hh:mm A')}</div>
                     <div className="text-gray-400">to</div>
-                    <div>{moment(endDate).format('DD-MM-YYYY, HH:mm')}</div>
+                    <div>{moment(endDate).local().format('DD-MM-YYYY, hh:mm A')}</div>
                 </div>
                 <div className={`text-xs font-medium ${statusColor}`}>
                     {statusText}

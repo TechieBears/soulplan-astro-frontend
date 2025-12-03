@@ -13,6 +13,17 @@ const HomeBanner = ({ slidesData, isLoading }) => {
         );
     }
 
+    if (!slidesData || slidesData.length === 0) {
+        return (
+            <section className='w-full h-screen bg-[#FFF9EF] flex items-center justify-center'>
+                <div className='text-center'>
+                    <h2 className='text-2xl font-tbLex font-bold text-gray-600 mb-2'>No Banners Available</h2>
+                    <p className='text-gray-500 font-tbPop'>Please check back later for updates.</p>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className='w-full h-screen'>
             <Swiper
@@ -39,7 +50,7 @@ const HomeBanner = ({ slidesData, isLoading }) => {
                                         <h1 className="text-3xl lg:text-4xl xl:text-6xl pb-2 font-tbLex font-bold text-p tracking-tighter banner-title">
                                             {slide.title}
                                         </h1>
-                                        <p className="text-xs md:text-sm font-tbPop w-full md:w-2/3  text-slate-200 pb-1 text-center md:text-left banner-description">
+                                        <p className="text-md md:text-md     font-tbPop w-full md:w-2/3  text-slate-200 pb-1 text-center md:text-left banner-description">
                                             {slide.description}
                                         </p>
                                         {slide.button && (

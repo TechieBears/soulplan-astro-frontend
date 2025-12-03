@@ -21,8 +21,9 @@ const ServicesCard = ({ service, idx }) => {
     return (
         <div
             key={idx}
-            className="bg-[#FFF9EF] rounded-lg border border-gray-200 overflow-hidden text-center p-3 transition-all duration-300 cursor-pointer hover:shadow-lg hover:border-gray-300 ease-in-out"
+            className="bg-[#FFF9EF] rounded-lg border border-gray-200 overflow-hidden text-center p-3 transition-all duration-300 cursor-pointer hover:shadow-lg hover:border-gray-300 ease-in-out flex flex-col"
             onClick={handleServiceClick}
+            style={{ minHeight: '350px' }}
         >
             <img
                 src={service.image || ""}
@@ -36,8 +37,8 @@ const ServicesCard = ({ service, idx }) => {
                 src={curly}
                 alt="divider"
             />
-            <p className="text-slate-500 mt-2 px-4 text-sm font-tbPop font-medium tracking-tight line-clamp-2">{service.subTitle || ""}</p>
-            <span className="mt-3 inline-block text-black text-lg">
+            <p className="text-slate-500 mt-2 px-4 text-sm font-tbPop font-medium tracking-tight line-clamp-2 flex-grow">{service.subTitle || ""}</p>
+            <span className="mt-3 inline-block text-black text-lg self-center">
                 <ArrowRight size={20} weight="bold" />
             </span>
         </div>

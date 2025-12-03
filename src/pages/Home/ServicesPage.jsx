@@ -52,7 +52,10 @@ const ServicesPage = () => {
 
     useEffect(() => {
         fetchServices();
+        window.scrollTo(0, 0);
     }, []);
+
+
     return (
         <div className="bg-[#FFF9EF]  pt-10 lg:pt-16 relative">
             <div className="absolute top-50 -left-80 ">

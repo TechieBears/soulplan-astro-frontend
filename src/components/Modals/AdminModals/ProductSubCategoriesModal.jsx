@@ -6,10 +6,11 @@ import LoadBox from '../../Loader/LoadBox';
 import TextInput from '../../TextInput/TextInput';
 import toast from 'react-hot-toast';
 import { Edit } from 'iconsax-reactjs';
-import ImageUploadInput from '../../TextInput/ImageUploadInput';
+// import ImageUploadInput from '../../TextInput/ImageUploadInput';
 import SelectTextInput from '../../TextInput/SelectTextInput';
 import { addProductSubCategory, editProductSubCategory, getProductCategoriesDropdown } from '../../../api';
 import { TableTitle } from '../../../helper/Helper';
+import ImageCropUpload from '../../TextInput/ImageCropUpload';
 
 function ProductSubCategoriesModal({ edit, userData, setRefreshTrigger }) {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
@@ -187,8 +188,11 @@ function ProductSubCategoriesModal({ edit, userData, setRefreshTrigger }) {
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
                                                             Sub Category Image <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                              <span className="text-[11px] text-orange-500 ml-2">
+                                                                (Recommended size: 300px × 300px)
+                                                            </span>
                                                         </h4>
-                                                        <ImageUploadInput
+                                                        <ImageCropUpload
                                                             label="Upload Sub Category Image*"
                                                             multiple={false}
                                                             registerName="image"
@@ -198,6 +202,9 @@ function ProductSubCategoriesModal({ edit, userData, setRefreshTrigger }) {
                                                             setValue={setValue}
                                                             control={control}
                                                             defaultValue={userData?.image}
+                                                             cropAspectRatio={1}
+                                                            cropWidth={300}
+                                                            cropHeight={300}
                                                         />
 
                                                     </div>

@@ -6,7 +6,7 @@ import LoadBox from '../../Loader/LoadBox';
 import TextInput from '../../TextInput/TextInput';
 import toast from 'react-hot-toast';
 import { Edit } from 'iconsax-reactjs';
-import ImageUploadInput from '../../TextInput/ImageUploadInput';
+// import ImageUploadInput from '../../TextInput/ImageUploadInput';
 import SelectTextInput from '../../TextInput/SelectTextInput';
 import { addService, editService, getServiceCategoriesDropdown } from '../../../api';
 import { configTextEditor, TableTitle } from '../../../helper/Helper';
@@ -16,6 +16,8 @@ import { validateYoutubeUrl } from '../../../utils/validateFunction';
 import Error from '../../Errors/Error';
 import CustomTextArea from '../../TextInput/CustomTextArea';
 import { setServiceCategories } from '../../../redux/Slices/rootSlice';
+import ImageCropUpload from '../../TextInput/ImageCropUpload';
+// import MultiSelectTextInput from '../../TextInput/MultiSelectTextInput';
 
 function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
@@ -31,37 +33,39 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
     });
 
     const formSubmit = async (data) => {
+        if (loader) return;
+        
         try {
             setLoader(true);
+            
             if (edit) {
-                await editService(userData?._id, data).then(res => {
-                    if (res?.success) {
-                        toast.success(res?.message)
-                        setLoader(false);
-                        reset();
-                        setRefreshTrigger(prev => prev + 1);
-                        toggle();
-                    } else {
-                        toast.error(res?.message || "Something went wrong")
-                        setLoader(false);
-                    }
-                })
+                const res = await editService(userData?._id, data);
+                
+                if (res?.success) {
+                    toast.success(res?.message)
+                    setLoader(false);
+                    reset();
+                    setRefreshTrigger(prev => prev + 1);
+                    toggle();
+                } else {
+                    toast.error(res?.message || "Something went wrong")
+                    setLoader(false);
+                }
             } else {
-                await addService(data).then(res => {
-                    if (res?.success) {
-                        setLoader(false);
-                        reset();
-                        setRefreshTrigger(prev => prev + 1);
-                        toggle();
-                        toast.success("Service Added Successfully");
-                    } else {
-                        setLoader(false);
-                        toast.error(res?.message || "Something went wrong");
-                    }
-                })
+                const res = await addService(data);
+                
+                if (res?.success) {
+                    setLoader(false);
+                    reset();
+                    setRefreshTrigger(prev => prev + 1);
+                    toggle();
+                    toast.success("Service Added Successfully");
+                } else {
+                    setLoader(false);
+                    toast.error(res?.message || "Something went wrong");
+                }
             }
         } catch (error) {
-            console.log('Error submitting form:', error);
             setLoader(false);
             toast.error("Failed to add Service");
         }
@@ -73,7 +77,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
             reset({
                 name: userData?.name,
                 image: userData?.image,
-                serviceType: userData?.serviceType,
+                serviceType: userData?.serviceType?.[0] || userData?.serviceType,
                 title: userData?.title,
                 subTitle: userData?.subTitle,
                 price: userData?.price,
@@ -119,7 +123,15 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
         }
 
         <Transition appear show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-[1000]" onClose={() => toggle()}>
+            <Dialog as="div" className="relative z-[1000]" onClose={(value) => {
+                // Prevent closing when clicking on JoditEditor elements
+                const joditElements = document.querySelectorAll('.jodit-container, .jodit-toolbar, .jodit-workplace, .jodit-popup, .jodit-dialog');
+                const clickedOnJodit = Array.from(joditElements).some(el => el.contains(document.activeElement) || el.contains(event?.target));
+
+                if (!clickedOnJodit) {
+                    toggle();
+                }
+            }}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -166,7 +178,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                             placeholder="Select Service Category"
                                                             props={{
                                                                 ...register('category', { required: true }),
-                                                                value: watch('category') || '',
+                                                                value: typeof watch('category') === 'string' ? watch('category') : (watch('category')?._id || ''),
                                                                 onChange: (e) => {
                                                                     setValue('category', e.target.value);
                                                                 }
@@ -175,7 +187,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="">
+                                                <div>
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
@@ -192,8 +204,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                             ]}
                                                             placeholder="Select Service Mode"
                                                             props={{
-                                                                ...register('serviceType', { required: true }),
-                                                                value: watch('serviceType') || ''
+                                                                ...register('serviceType', { required: 'Service mode is required' })
                                                             }}
                                                             errors={errors.serviceType}
                                                         />
@@ -304,11 +315,16 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                             -
                                                         </button>
                                                         <div className="flex-1 min-w-0">
-                                                            <div className="h-12 bg-gray-50 border border-gray-300 rounded-lg flex items-center justify-center">
-                                                                <span className="text-lg font-semibold text-gray-700">
-                                                                    {watch('durationInMinutes') || 30} min
-                                                                </span>
-                                                            </div>
+                                                            <input
+                                                                type="number"
+                                                                {...register('durationInMinutes', {
+                                                                    required: "Service duration is required",
+                                                                    min: { value: 30, message: "Minimum duration is 30 minutes" },
+                                                                    valueAsNumber: true
+                                                                })}
+                                                                className="w-full h-12 bg-gray-50 border border-gray-300 rounded-lg px-3 text-lg font-semibold text-gray-700 text-center focus:outline-none focus:border-blue-500"
+                                                                placeholder="30"
+                                                            />
                                                         </div>
                                                         <button
                                                             type="button"
@@ -322,13 +338,6 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                             +
                                                         </button>
                                                     </div>
-                                                    <input
-                                                        type="hidden"
-                                                        {...register('durationInMinutes', {
-                                                            required: "Service duration is required",
-                                                            min: { value: 30, message: "Minimum duration is 30 minutes" }
-                                                        })}
-                                                    />
                                                     {errors.durationInMinutes && (
                                                         <p className="text-red-500 text-sm mt-1">{errors.durationInMinutes.message}</p>
                                                     )}
@@ -337,9 +346,11 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Image <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                        Service Image <span className="text-red-500 text-xs font-tbLex">*</span>  <span className="text-[11px] text-orange-500">
+            (Recommended size: 500px × 300px)
+        </span>
                                                     </h4>
-                                                    <ImageUploadInput
+                                                    <ImageCropUpload
                                                         label="Upload Service Image"
                                                         multiple={false}
                                                         registerName="image"
@@ -349,6 +360,10 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         setValue={setValue}
                                                         control={control}
                                                         defaultValue={userData?.image}
+                                                        cropAspectRatio={1}
+                                                        cropWidth={500}
+                                                        cropHeight={300}
+
                                                     />
 
                                                 </div>
@@ -433,7 +448,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                             </div>
                                         </div>
                                         <footer className="py-3 flex bg-primary/5 justify-end px-4 space-x-3">
-                                            {loader ? <LoadBox className={formBtn1} /> : <button type='submit' className={formBtn1}>submit</button>}
+                                            {loader ? <LoadBox className={formBtn1} /> : <button type='submit' disabled={loader} className={formBtn1}>submit</button>}
                                         </footer>
                                     </form>
                                 </div>
