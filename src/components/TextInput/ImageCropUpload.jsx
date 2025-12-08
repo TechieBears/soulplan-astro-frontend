@@ -212,9 +212,12 @@ const ImageCropUpload = ({
         const newFiles = [...files, previewFile];
         setFiles(newFiles);
         setFileName(`${newFiles.length} files selected`);
+        
+        // If uploading to cloud, we map to URLs (f.value is url)
+        // If binary mode (shouldUploadToCloudinary=false), we map to File objects (f.value is File)
         setValue(
           registerName,
-          newFiles.map((f) => f.value || f.url)
+          newFiles.map((f) => f.value)
         );
 
         if (

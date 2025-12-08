@@ -566,8 +566,19 @@ export const getProductsDropdown = async () => {
 
 export const addProduct = async (data) => {
     const url = `${environment.baseUrl}product/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (key === 'images' && Array.isArray(data[key])) {
+            data[key].forEach((file) => formData.append('images', file));
+        } else if (key === 'specification' && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
+
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -578,8 +589,20 @@ export const addProduct = async (data) => {
 
 export const editProduct = async (id, data) => {
     const url = `${environment.baseUrl}product/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (key === 'images' && Array.isArray(data[key])) {
+            data[key].forEach((file) => formData.append('images', file));
+        } else if (key === 'specification' && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else if (key === 'deletedImages' && Array.isArray(data[key])) {
+            data[key].forEach((img) => formData.append('deletedImages', img));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
