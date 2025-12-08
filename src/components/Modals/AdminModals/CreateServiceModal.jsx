@@ -363,7 +363,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         cropAspectRatio={1}
                                                         cropWidth={500}
                                                         cropHeight={300}
-
+                                                        shouldUploadToCloudinary={false}
                                                     />
 
                                                 </div>

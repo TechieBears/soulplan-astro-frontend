@@ -374,8 +374,12 @@ export const getActiveServiceCategories = async () => {
 
 export const addServiceCategory = async (data) => {
     const url = `${environment.baseUrl}service-categories/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -386,8 +390,12 @@ export const addServiceCategory = async (data) => {
 
 export const editServiceCategory = async (id, data) => {
     const url = `${environment.baseUrl}service-categories/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -469,8 +477,16 @@ export const getPublicServicesSingle = async (data) => {
 
 export const addService = async (data) => {
     const url = `${environment.baseUrl}service/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (key === 'videoUrl' && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -481,8 +497,16 @@ export const addService = async (data) => {
 
 export const editService = async (id, data) => {
     const url = `${environment.baseUrl}service/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (key === 'videoUrl' && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
