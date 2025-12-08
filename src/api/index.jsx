@@ -225,8 +225,12 @@ export const getProductCategoriesDropdown = async () => {
 
 export const addProductCategory = async (data) => {
     const url = `${environment.baseUrl}product-categories/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -237,8 +241,12 @@ export const addProductCategory = async (data) => {
 
 export const editProductCategory = async (id, data) => {
     const url = `${environment.baseUrl}product-categories/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -287,8 +295,12 @@ export const getProductSubCategoriesDropdown = async () => {
 
 export const addProductSubCategory = async (data) => {
     const url = `${environment.baseUrl}product-subcategories/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -299,8 +311,12 @@ export const addProductSubCategory = async (data) => {
 
 export const editProductSubCategory = async (id, data) => {
     const url = `${environment.baseUrl}product-subcategories/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
