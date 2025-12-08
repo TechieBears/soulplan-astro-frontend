@@ -6,3 +6,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Zoom Meeting Embedded Styles */
+#meetingSDKElement {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.meeting-app,
+.meeting-client {
+    position: relative !important;
+    height: 100% !important;
+    width: 100% !important;
+}
