@@ -380,7 +380,7 @@ const AdminProfile = () => {
                         </div>
 
                         {/* Astrologer-specific fields */}
-                        {(employeeType === 'astrologer' || user?.employeeType === 'astrologer') && (
+                        {(employeeType?.toLowerCase() === 'astrologer' || user?.employeeType?.toLowerCase() === 'astrologer' || user?.role?.toLowerCase() === 'astrologer') && (
                             <>
                                 {/* Skills */}
                                 <div>
@@ -476,43 +476,49 @@ const AdminProfile = () => {
                                         </div>
                                     )}
                                 </div>
+                            </>
+                        )}
 
-                                {/* Available Days */}
-                                <div>
-                                    <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
-                                        Available Days (Multiple)
-                                    </h4>
-                                    {isEditing ? (
-                                        <Controller
-                                            name="days"
-                                            control={control}
-                                            render={({ field: { onChange, value } }) => (
-                                                <MultiSelectTextInput
-                                                    label="Select Days"
-                                                    options={dayOptions}
-                                                    value={value || []}
-                                                    onChange={onChange}
-                                                    errors={errors.days}
-                                                />
-                                            )}
-                                        />
-                                    ) : (
-                                        <div className="p-3 bg-slate-100 rounded-md">
-                                            {user?.days?.length > 0 ? (
-                                                <div className="flex flex-wrap gap-2">
-                                                    {user?.days?.map((day, index) => (
-                                                        <span key={index} className="px-2 py-1 bg-purple-100 text-purple-800 font-tbLex capitalize rounded-full text-sm">
-                                                            {typeof day === 'object' ? day.label : day}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                'Not specified'
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
+                        {/* Available Days */}
+                        {(['astrologer', 'employee'].includes(employeeType?.toLowerCase()) || ['astrologer', 'employee'].includes(user?.employeeType?.toLowerCase()) || ['astrologer', 'employee'].includes(user?.role?.toLowerCase())) && (
+                            <div>
+                                <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
+                                    Available Days (Multiple)
+                                </h4>
+                                {isEditing ? (
+                                    <Controller
+                                        name="days"
+                                        control={control}
+                                        render={({ field: { onChange, value } }) => (
+                                            <MultiSelectTextInput
+                                                label="Select Days"
+                                                options={dayOptions}
+                                                value={value || []}
+                                                onChange={onChange}
+                                                errors={errors.days}
+                                            />
+                                        )}
+                                    />
+                                ) : (
+                                    <div className="p-3 bg-slate-100 rounded-md">
+                                        {user?.days?.length > 0 ? (
+                                            <div className="flex flex-wrap gap-2">
+                                                {user?.days?.map((day, index) => (
+                                                    <span key={index} className="px-2 py-1 bg-purple-100 text-purple-800 font-tbLex capitalize rounded-full text-sm">
+                                                        {typeof day === 'object' ? day.label : day}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            'Not specified'
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
+                        {(['astrologer', 'employee'].includes(employeeType?.toLowerCase()) || ['astrologer', 'employee'].includes(user?.employeeType?.toLowerCase()) || ['astrologer', 'employee'].includes(user?.role?.toLowerCase())) && (
+                            <>
                                 {/* Start Time */}
                                 <div>
                                     <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
