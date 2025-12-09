@@ -388,7 +388,7 @@ const ImageCropUpload = ({
                           onChange={(newCrop) => setCrop(newCrop)}
                           onComplete={(c) => setCompletedCrop(c)}
                           aspect={cropAspectRatio}
-                          locked={true}
+                          locked={false}
                           className="max-w-full"
                           ruleOfThirds={true}
                         >

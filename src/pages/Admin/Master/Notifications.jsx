@@ -247,13 +247,13 @@ export default function Notifications() {
             style: true,
             sortable: true
         },
-        {
-            field: 'action',
-            header: 'Action',
-            body: actionBodyTemplate,
-            style: true,
-            sortable: true
-        }
+        // {
+        //     field: 'action',
+        //     header: 'Action',
+        //     body: actionBodyTemplate,
+        //     style: true,
+        //     sortable: true
+        // }
     ];
 
     return (
