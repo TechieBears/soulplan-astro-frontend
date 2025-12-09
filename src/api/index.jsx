@@ -225,8 +225,12 @@ export const getProductCategoriesDropdown = async () => {
 
 export const addProductCategory = async (data) => {
     const url = `${environment.baseUrl}product-categories/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -237,8 +241,12 @@ export const addProductCategory = async (data) => {
 
 export const editProductCategory = async (id, data) => {
     const url = `${environment.baseUrl}product-categories/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -287,8 +295,12 @@ export const getProductSubCategoriesDropdown = async () => {
 
 export const addProductSubCategory = async (data) => {
     const url = `${environment.baseUrl}product-subcategories/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -299,8 +311,12 @@ export const addProductSubCategory = async (data) => {
 
 export const editProductSubCategory = async (id, data) => {
     const url = `${environment.baseUrl}product-subcategories/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -358,8 +374,12 @@ export const getActiveServiceCategories = async () => {
 
 export const addServiceCategory = async (data) => {
     const url = `${environment.baseUrl}service-categories/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -370,8 +390,12 @@ export const addServiceCategory = async (data) => {
 
 export const editServiceCategory = async (id, data) => {
     const url = `${environment.baseUrl}service-categories/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -453,8 +477,16 @@ export const getPublicServicesSingle = async (data) => {
 
 export const addService = async (data) => {
     const url = `${environment.baseUrl}service/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (key === 'videoUrl' && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -465,8 +497,16 @@ export const addService = async (data) => {
 
 export const editService = async (id, data) => {
     const url = `${environment.baseUrl}service/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (key === 'videoUrl' && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -550,8 +590,19 @@ export const getProductsDropdown = async () => {
 
 export const addProduct = async (data) => {
     const url = `${environment.baseUrl}product/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (key === 'images' && Array.isArray(data[key])) {
+            data[key].forEach((file) => formData.append('images', file));
+        } else if (key === 'specification' && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
+
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -562,8 +613,20 @@ export const addProduct = async (data) => {
 
 export const editProduct = async (id, data) => {
     const url = `${environment.baseUrl}product/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (key === 'images' && Array.isArray(data[key])) {
+            data[key].forEach((file) => formData.append('images', file));
+        } else if (key === 'specification' && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else if (key === 'deletedImages' && Array.isArray(data[key])) {
+            data[key].forEach((img) => formData.append('deletedImages', img));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -600,8 +663,23 @@ export const getAllEmployees = async (data) => {
 
 export const addEmployee = async (data) => {
     const url = `${environment.baseUrl}employee-users/register`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            // Handle arrays - stringify arrays of objects, append arrays of primitives individually
+            if (data[key].length > 0 && typeof data[key][0] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                data[key].forEach((item) => {
+                    formData.append(key, item);
+                });
+            }
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -612,8 +690,23 @@ export const addEmployee = async (data) => {
 
 export const editEmployee = async (id, data) => {
     const url = `${environment.baseUrl}employee-users/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            // Handle arrays - stringify arrays of objects, append arrays of primitives individually
+            if (data[key].length > 0 && typeof data[key][0] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                data[key].forEach((item) => {
+                    formData.append(key, item);
+                });
+            }
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -638,8 +731,23 @@ export const getAllCustomers = async (data) => {
 
 export const editUserCustomer = async (data) => {
     const url = `${environment.baseUrl}customer-users/update`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            // Handle arrays - stringify arrays of objects, append arrays of primitives individually
+            if (data[key].length > 0 && typeof data[key][0] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                data[key].forEach((item) => {
+                    formData.append(key, item);
+                });
+            }
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -678,8 +786,23 @@ export const getAllBanners = async (data) => {
 
 export const addBanner = async (data) => {
     const url = `${environment.baseUrl}banners/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            // Handle arrays - stringify arrays of objects, append arrays of primitives individually
+            if (data[key].length > 0 && typeof data[key][0] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                data[key].forEach((item) => {
+                    formData.append(key, item);
+                });
+            }
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -690,8 +813,23 @@ export const addBanner = async (data) => {
 
 export const editBanner = async (id, data) => {
     const url = `${environment.baseUrl}banners/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            // Handle arrays - stringify arrays of objects, append arrays of primitives individually
+            if (data[key].length > 0 && typeof data[key][0] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                data[key].forEach((item) => {
+                    formData.append(key, item);
+                });
+            }
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {

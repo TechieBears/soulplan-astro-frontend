@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
 import { formBtn3, formBtn1 } from "../../../utils/CustomClass";
 import TextInput from "../../../components/TextInput/TextInput";
@@ -13,7 +14,7 @@ import { useForm } from "react-hook-form";
 import SelectTextInput from "../../../components/TextInput/SelectTextInput";
 import { editUserCustomer } from "../../../api";
 import toast from "react-hot-toast";
-import { setUserDetails } from "../../../redux/Slices/loginSlice";
+import { setUserDetails, setLoggedUser, setLoggedUserDetails } from "../../../redux/Slices/loginSlice";
 import { CaretRight, Power, Trash } from "@phosphor-icons/react";
 
 const Private = ({ children }) => children;
@@ -32,12 +33,19 @@ export default function AccountPage() {
   const [isEditable, setIsEditable] = useState(false);
   const user = useSelector((state) => state.user.userDetails);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const formSubmit = async (data) => {
-    const payload = {
-      ...data,
+    const updatedData = {
       id: user?._id,
+      firstName: data?.firstName,
+      lastName: data?.lastName,
+      email: data?.email,
+      mobileNo: data?.mobileNo,
+      image: data?.profileImage,
+      gender: data?.gender
     };
-    await editUserCustomer(payload).then((res) => {
+
+    await editUserCustomer(updatedData).then((res) => {
       if (res?.success) {
         console.log(res?.data?.user);
         dispatch(setUserDetails(res?.data?.user));
@@ -52,8 +60,17 @@ export default function AccountPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    reset(user);
-  }, [user]);
+    if (user) {
+      reset({
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        email: user?.email,
+        mobileNo: user?.mobileNo,
+        profileImage: user?.profileImage,
+        gender: user?.gender
+      });
+    }
+  }, [user, reset]);
 
   const handleLogout = async () => {
     try {
@@ -205,9 +222,6 @@ export default function AccountPage() {
                   {...register("profileImage", {
                     required: "Profile Image is required",
                   })}
-                  value={user?.profileImage}
-                  disabled={!isEditable}
-                  readOnly={!isEditable}
                   register={register}
                   setValue={setValue}
                   control={control}
@@ -215,6 +229,7 @@ export default function AccountPage() {
                   cropAspectRatio={1}
                   cropHeight={300}
                   cropWidth={300}
+                  shouldUploadToCloudinary={false}
                 />
               </div>
 

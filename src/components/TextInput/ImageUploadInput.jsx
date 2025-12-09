@@ -14,6 +14,7 @@ const ImageUploadInput = ({
     defaultValue,
     style,
     disabled,
+    shouldUploadToCloudinary = true,
 }) => {
     const [fileName, setFileName] = useState("");
     const [files, setFiles] = useState([]);
@@ -40,8 +41,17 @@ const ImageUploadInput = ({
             const newFiles = Array.from(e.target.files);
 
             try {
-                const uploadPromises = newFiles.map(file => uploadToCloudinary(file));
-                const urls = await Promise.all(uploadPromises);
+                let urls;
+                let previewUrls;
+
+                if (shouldUploadToCloudinary) {
+                    const uploadPromises = newFiles.map(file => uploadToCloudinary(file));
+                    urls = await Promise.all(uploadPromises);
+                    previewUrls = urls;
+                } else {
+                    urls = newFiles; // Return the File objects directly
+                    previewUrls = newFiles.map(file => URL.createObjectURL(file));
+                }
 
                 if (multiple) {
                     setValue(registerName, urls);
@@ -52,7 +62,7 @@ const ImageUploadInput = ({
                 const previewFiles = newFiles.map((file, idx) => ({
                     file,
                     name: file.name,
-                    url: urls[idx]
+                    url: previewUrls[idx]
                 }));
 
                 setFiles(previewFiles);

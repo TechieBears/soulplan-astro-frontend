@@ -4,16 +4,9 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [react()],
-    define: {
-        // Ensure environment variables are available
-        'import.meta.env': JSON.stringify(process.env)
-    },
     server: {
-    hmr: {
-      overlay: false
-    }
-  },
-
-  logLevel: 'error'
-
+        hmr: {
+            overlay: false
+        }
+    },
 })
