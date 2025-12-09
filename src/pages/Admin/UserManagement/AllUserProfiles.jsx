@@ -85,7 +85,7 @@ function AllUserProfiles() {
         <div className='w-16 h-16 rounded-full overflow-hidden'>
             <img
                 loading="lazy"
-                src={row?.profileImage || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                src={row?.profileImage || row?.profile?.profileImage || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                 alt="profile"
                 className='w-full h-full object-cover bg-slate-100'
             />

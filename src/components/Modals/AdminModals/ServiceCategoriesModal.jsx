@@ -191,6 +191,7 @@ function ServiceCategoriesModal({ edit, userData, setRefreshTrigger }) {
                               cropAspectRatio={1}
                               cropWidth={300}
                               cropHeight={300}
+                              shouldUploadToCloudinary={false}
                             />
                           </div>
                         </div>
