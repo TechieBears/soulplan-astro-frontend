@@ -731,8 +731,23 @@ export const getAllCustomers = async (data) => {
 
 export const editUserCustomer = async (data) => {
     const url = `${environment.baseUrl}customer-users/update`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            // Handle arrays - stringify arrays of objects, append arrays of primitives individually
+            if (data[key].length > 0 && typeof data[key][0] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                data[key].forEach((item) => {
+                    formData.append(key, item);
+                });
+            }
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
