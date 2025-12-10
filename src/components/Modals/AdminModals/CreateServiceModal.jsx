@@ -39,18 +39,13 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
             setLoader(true);
 
             // Ensure serviceType is sent as array
-            let serviceTypeArray;
-            if (Array.isArray(data.serviceType)) {
-                serviceTypeArray = data.serviceType;
-            } else if (typeof data.serviceType === 'string') {
-                serviceTypeArray = data.serviceType.split(',').map(s => s.trim());
-            } else {
-                serviceTypeArray = [data.serviceType].filter(Boolean);
-            }
-
             const formData = {
                 ...data,
-                serviceType: serviceTypeArray
+                serviceType: Array.isArray(data.serviceType) 
+                    ? data.serviceType 
+                    : typeof data.serviceType === 'string'
+                        ? data.serviceType.split(',').map(s => s.trim())
+                        : [data.serviceType].filter(Boolean)
             };
 
             if (edit) {
