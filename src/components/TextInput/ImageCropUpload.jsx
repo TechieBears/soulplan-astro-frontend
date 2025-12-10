@@ -22,9 +22,11 @@ const ImageCropUpload = ({
   cropWidth = 500,
   cropHeight = 300,
   shouldUploadToCloudinary = true,
+  showRemoveOption = false,
 }) => {
   const [fileName, setFileName] = useState("");
   const [files, setFiles] = useState([]);
+  const [deletedImages, setDeletedImages] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [showCropModal, setShowCropModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -67,6 +69,8 @@ const ImageCropUpload = ({
         setValue(registerName, defaultValue);
       }
     }
+    // Initialize deletedImages as empty array
+    setValue('deletedImages', []);
   }, [defaultValue, registerName, setValue, multiple]);
 
   const handleFileChange = (e) => {
@@ -258,6 +262,28 @@ const ImageCropUpload = ({
     if (fileInput) fileInput.value = "";
   };
 
+  const removeImage = (indexToRemove) => {
+    const fileToRemove = files[indexToRemove];
+    const updatedFiles = files.filter((_, index) => index !== indexToRemove);
+    
+    // Track deleted images (only if it's an existing image URL, not a new upload)
+    if (fileToRemove?.url && typeof fileToRemove.url === 'string' && fileToRemove.url.startsWith('http')) {
+      const newDeletedImages = [...deletedImages, fileToRemove.url];
+      setDeletedImages(newDeletedImages);
+      setValue('deletedImages', newDeletedImages);
+    }
+    
+    setFiles(updatedFiles);
+    
+    if (updatedFiles.length === 0) {
+      setFileName("");
+      setValue(registerName, multiple ? [] : "");
+    } else {
+      setFileName(multiple ? `${updatedFiles.length} files selected` : updatedFiles[0].name);
+      setValue(registerName, multiple ? updatedFiles.map(f => f.value) : updatedFiles[0].value);
+    }
+  };
+
   return (
     <>
       <div
@@ -332,6 +358,38 @@ const ImageCropUpload = ({
             .replace(/\b(enter|your)\b/gi, "")
             .trim()} is required`}
         />
+      )}
+
+      {/* Display existing images */}
+      {files.length > 0 && (
+        <div className="mt-4">
+          <h5 className="text-sm font-medium text-gray-700 mb-2">Current Images:</h5>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {files.map((file, index) => (
+              <div key={index} className="relative group">
+                <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                  <img
+                    src={file.url}
+                    alt={file.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {showRemoveOption && (
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    ×
+                  </button>
+                )}
+                <p className="text-xs text-gray-500 mt-1 truncate" title={file.name}>
+                  {file.name}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       <Transition appear show={showCropModal} as={Fragment}>
