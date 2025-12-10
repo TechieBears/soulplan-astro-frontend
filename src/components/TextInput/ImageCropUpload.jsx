@@ -21,6 +21,7 @@ const ImageCropUpload = ({
   cropAspectRatio = 5 / 3,
   cropWidth = 500,
   cropHeight = 300,
+  shouldUploadToCloudinary = true,
 }) => {
   const [fileName, setFileName] = useState("");
   const [files, setFiles] = useState([]);
@@ -46,6 +47,7 @@ const ImageCropUpload = ({
         const dummyFiles = defaultValue.map((url) => ({
           name: url.split("/").pop(),
           url,
+          value: url
         }));
         setFiles(dummyFiles);
         setFileName(
@@ -58,6 +60,7 @@ const ImageCropUpload = ({
         const dummyFile = {
           name: defaultValue.split("/").pop(),
           url: defaultValue,
+          value: defaultValue
         };
         setFiles([dummyFile]);
         setFileName(dummyFile.name);
@@ -184,21 +187,37 @@ const ImageCropUpload = ({
         type: "image/jpeg",
       });
 
-      const url = await uploadToCloudinary(croppedFile);
+      let formValue;
+      let displayUrl;
+
+      if (shouldUploadToCloudinary) {
+        const uploadedUrl = await uploadToCloudinary(croppedFile);
+        formValue = uploadedUrl;
+        displayUrl = uploadedUrl;
+      } else {
+        // Return binary File object if cloud upload is disabled
+        formValue = croppedFile;
+        // Create a blob URL for preview
+        displayUrl = URL.createObjectURL(croppedFile);
+      }
 
       const previewFile = {
         file: croppedFile,
         name: selectedImage.name,
-        url: url,
+        url: displayUrl,
+        value: formValue
       };
 
       if (multiple) {
         const newFiles = [...files, previewFile];
         setFiles(newFiles);
         setFileName(`${newFiles.length} files selected`);
+        
+        // If uploading to cloud, we map to URLs (f.value is url)
+        // If binary mode (shouldUploadToCloudinary=false), we map to File objects (f.value is File)
         setValue(
           registerName,
-          newFiles.map((f) => f.url)
+          newFiles.map((f) => f.value)
         );
 
         if (
@@ -214,7 +233,7 @@ const ImageCropUpload = ({
       } else {
         setFiles([previewFile]);
         setFileName(selectedImage.name);
-        setValue(registerName, url);
+        setValue(registerName, formValue);
         setShowCropModal(false);
         setSelectedImage(null);
       }
@@ -222,7 +241,7 @@ const ImageCropUpload = ({
       const fileInput = document.getElementById(registerName);
       if (fileInput) fileInput.value = "";
     } catch (error) {
-      console.error("Upload failed:", error);
+      console.error("Upload/Processing failed:", error);
     } finally {
       setIsUploading(false);
     }
@@ -369,7 +388,7 @@ const ImageCropUpload = ({
                           onChange={(newCrop) => setCrop(newCrop)}
                           onComplete={(c) => setCompletedCrop(c)}
                           aspect={cropAspectRatio}
-                          locked={true}
+                          locked={false}
                           className="max-w-full"
                           ruleOfThirds={true}
                         >

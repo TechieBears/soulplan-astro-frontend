@@ -33,11 +33,19 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
   const formSubmit = async (data) => {
     try {
       setLoader(true);
-      if (data.type !== "app") {
-        delete data.bannerFor;
-      }
+      const updatedData = {
+        title: data?.title,
+        description: data?.description,
+        type: data?.type,
+        bannerFor: data?.type === "app" ? data?.bannerFor : undefined,
+        position: data?.position,
+        startDate: data?.startDate,
+        endDate: data?.endDate,
+        image: data?.image
+      };
+
       if (edit) {
-        await editBanner(userData?._id, data).then((res) => {
+        await editBanner(userData?._id, updatedData).then((res) => {
           if (res?.success) {
             toast.success(res?.message);
             setLoader(false);
@@ -50,7 +58,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
           }
         });
       } else {
-        await addBanner(data).then((res) => {
+        await addBanner(updatedData).then((res) => {
           if (res?.success) {
             setLoader(false);
             reset();
@@ -71,23 +79,24 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
   };
 
   useEffect(() => {
-    if (edit && userData && open) {
-      setValue("title", userData?.title);
-      setValue("description", userData?.description);
-      setValue("type", userData?.type);
-      setValue("bannerFor", userData?.bannerFor);
-      setValue("position", userData?.position);
-      setValue("startDate", userData?.startDate?.split("T")[0]);
-      setValue("endDate", userData?.endDate?.split("T")[0]);
-      setValue("isActive", userData?.isActive);
-      setValue("image", userData?.image);
+    if (edit && userData) {
+      reset({
+        title: userData?.title,
+        description: userData?.description,
+        type: userData?.type,
+        bannerFor: userData?.bannerFor,
+        position: userData?.position,
+        startDate: userData?.startDate?.split("T")[0],
+        endDate: userData?.endDate?.split("T")[0],
+        image: userData?.image
+      });
     } else {
-      reset();
-      // Clear date fields for new banner
-      setValue("startDate", "");
-      setValue("endDate", "");
+      reset({
+        startDate: "",
+        endDate: ""
+      });
     }
-  }, [edit, userData, reset, setValue, open]);
+  }, [edit, userData, reset, open]);
 
   useEffect(() => {
     if (watch("type") !== "app") {
@@ -167,6 +176,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                               cropAspectRatio={600 / 250}
                               cropHeight={250}
                               cropWidth={600}
+                              shouldUploadToCloudinary={false}
                             />
                           </div>
 

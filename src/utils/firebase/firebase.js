@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    apiKey: "AIzaSyAKSkHF1P7qWtWWKWp4v63opC_Tvk6tiAM",
     authDomain: "soulplan-1.firebaseapp.com",
     projectId: "soulplan-1",
     storageBucket: "soulplan-1.firebasestorage.app",
