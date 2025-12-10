@@ -275,6 +275,7 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                             setValue={setValue}
                                                             defaultValue={edit ? userData?.images : []}
                                                             shouldUploadToCloudinary={false}
+                                                            showRemoveOption={true}
                                                         />
                                                         {errors.images && <Error message="Product images are required" />}
                                                     </div>
