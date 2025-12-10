@@ -479,7 +479,7 @@ export const addService = async (data) => {
     const url = `${environment.baseUrl}service/create`;
     const formData = new FormData();
     for (const key in data) {
-        if (key === 'videoUrl' && Array.isArray(data[key])) {
+        if ((key === 'videoUrl' || key === 'serviceType') && Array.isArray(data[key])) {
             formData.append(key, JSON.stringify(data[key]));
         } else {
             formData.append(key, data[key]);
@@ -499,7 +499,7 @@ export const editService = async (id, data) => {
     const url = `${environment.baseUrl}service/update?id=${id}`;
     const formData = new FormData();
     for (const key in data) {
-        if (key === 'videoUrl' && Array.isArray(data[key])) {
+        if ((key === 'videoUrl' || key === 'serviceType') && Array.isArray(data[key])) {
             formData.append(key, JSON.stringify(data[key]));
         } else {
             formData.append(key, data[key]);

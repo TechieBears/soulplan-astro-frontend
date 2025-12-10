@@ -17,7 +17,7 @@ import Error from '../../Errors/Error';
 import CustomTextArea from '../../TextInput/CustomTextArea';
 import { setServiceCategories } from '../../../redux/Slices/rootSlice';
 import ImageCropUpload from '../../TextInput/ImageCropUpload';
-// import MultiSelectTextInput from '../../TextInput/MultiSelectTextInput';
+import MultiSelectTextInput from '../../TextInput/MultiSelectTextInput';
 
 function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
@@ -34,13 +34,23 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
 
     const formSubmit = async (data) => {
         if (loader) return;
-        
+
         try {
             setLoader(true);
-            
+
+            // Ensure serviceType is sent as array
+            const formData = {
+                ...data,
+                serviceType: Array.isArray(data.serviceType) 
+                    ? data.serviceType 
+                    : typeof data.serviceType === 'string' 
+                        ? data.serviceType.split(',').map(s => s.trim()) 
+                        : [data.serviceType].filter(Boolean)
+            };
+
             if (edit) {
-                const res = await editService(userData?._id, data);
-                
+                const res = await editService(userData?._id, formData);
+
                 if (res?.success) {
                     toast.success(res?.message)
                     setLoader(false);
@@ -52,8 +62,8 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                     setLoader(false);
                 }
             } else {
-                const res = await addService(data);
-                
+                const res = await addService(formData);
+
                 if (res?.success) {
                     setLoader(false);
                     reset();
@@ -77,7 +87,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
             reset({
                 name: userData?.name,
                 image: userData?.image,
-                serviceType: userData?.serviceType?.[0] || userData?.serviceType,
+                serviceType: Array.isArray(userData?.serviceType) ? userData?.serviceType : [userData?.serviceType].filter(Boolean),
                 title: userData?.title,
                 subTitle: userData?.subTitle,
                 price: userData?.price,
@@ -90,7 +100,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
         } else {
             reset({
                 category: '',
-                serviceType: '',
+                serviceType: [],
                 name: '',
                 title: '',
                 subTitle: '',
@@ -194,19 +204,26 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         Service Mode <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <div className="">
-                                                        <SelectTextInput
-                                                            label="Select Service Mode"
-                                                            registerName="serviceType"
-                                                            options={[
-                                                                { value: 'online', label: 'Online' },
-                                                                { value: 'pandit_center', label: `Pandit's Center` },
-                                                                { value: 'pooja_at_home', label: 'Pooja at Home' },
-                                                            ]}
-                                                            placeholder="Select Service Mode"
-                                                            props={{
-                                                                ...register('serviceType', { required: 'Service mode is required' })
+                                                        <Controller
+                                                            name="serviceType"
+                                                            control={control}
+                                                            rules={{
+                                                                required: 'At least one service mode is required',
+                                                                validate: (value) => value?.length > 0 || 'At least one service mode is required'
                                                             }}
-                                                            errors={errors.serviceType}
+                                                            render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                                                <MultiSelectTextInput
+                                                                    label="Select Service Mode"
+                                                                    options={[
+                                                                        { value: 'online', label: 'Online' },
+                                                                        { value: 'pandit_center', label: 'Face to Face' },
+                                                                        { value: 'pooja_at_home', label: 'Pooja at Home' }
+                                                                    ]}
+                                                                    value={value || []}
+                                                                    onChange={onChange}
+                                                                    errors={error}
+                                                                />
+                                                            )}
                                                         />
                                                     </div>
                                                 </div>
@@ -347,8 +364,8 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
                                                         Service Image <span className="text-red-500 text-xs font-tbLex">*</span>  <span className="text-[11px] text-orange-500">
-            (Recommended size: 500px × 300px)
-        </span>
+                                                            (Recommended size: 500px × 300px)
+                                                        </span>
                                                     </h4>
                                                     <ImageCropUpload
                                                         label="Upload Service Image"
