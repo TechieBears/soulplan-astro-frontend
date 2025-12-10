@@ -11,7 +11,7 @@ const handleLogout = () => {
     toast.error('Your session has expired. Please login again.');
     window.location.href = '/login';
 };
- 
+
 axios.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -479,7 +479,7 @@ export const addService = async (data) => {
     const url = `${environment.baseUrl}service/create`;
     const formData = new FormData();
     for (const key in data) {
-        if (key === 'videoUrl' && Array.isArray(data[key])) {
+        if ((key === 'videoUrl' || key === 'serviceType') && Array.isArray(data[key])) {
             formData.append(key, JSON.stringify(data[key]));
         } else {
             formData.append(key, data[key]);
@@ -499,7 +499,7 @@ export const editService = async (id, data) => {
     const url = `${environment.baseUrl}service/update?id=${id}`;
     const formData = new FormData();
     for (const key in data) {
-        if (key === 'videoUrl' && Array.isArray(data[key])) {
+        if ((key === 'videoUrl' || key === 'serviceType') && Array.isArray(data[key])) {
             formData.append(key, JSON.stringify(data[key]));
         } else {
             formData.append(key, data[key]);
@@ -1694,5 +1694,45 @@ export const getDashboardInsights = async () => {
     } catch (err) {
         console.log("==========error in getDashboardData api file", err);
         return err?.response?.data;
+    }
+}
+
+export const getZoomSignature = async (meetingNumber, role = 0) => {
+    try {
+        const response = await axios.get(
+            `${environment.baseUrl}zoom/get-meeting-sdk-jwt`,
+            {
+                params: {
+                    meetingNumber: meetingNumber.toString(),
+                    role
+                }
+            }
+        );
+
+        if (response.data.success) {
+            return {
+                signature: response.data.data.jwt,
+                sdkKey: response.data.data.sdkKey
+            };
+        } else {
+            throw new Error(response.data.message || 'Failed to get JWT');
+        }
+    } catch (error) {
+        console.error('Error getting Zoom signature:', error);
+        return {
+            success: false,
+            message: error.response?.data?.message || 'Failed to get Zoom signature'
+        };
+    }
+};
+
+export const getSingleCoupon = async (id) => {
+    try {
+        const url = `${environment.baseUrl}coupon/get-single?id=${id}`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.error('Error fetching single coupon:', err);
+        return err?.response?.data || { success: false, message: 'Failed to fetch coupon' };
     }
 }

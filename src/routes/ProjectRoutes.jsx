@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -55,12 +55,15 @@ import BuyNowPage from "../pages/Home/BuyNowPage";
 import Reviews from "../pages/Admin/Master/Reviews";
 import ReferAndEarn from "../pages/Home/Profile/ReferAndEarn";
 import ReferralPromptModal from "../components/Modals/ReferralPromptModal";
+import ZoomMeeting from '../pages/Meeting/ZoomMeeting';
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
     const [showProfileModal, setShowProfileModal] = useState(false);
     const user = useSelector((state) => state.user.userDetails);
     const isLogged = useSelector((state) => state.user.isLogged);
+    const location = useLocation();
+    const isMeetingPage = location.pathname === '/meeting';
     // ============ Page Loader ============
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 2800);
@@ -125,6 +128,7 @@ const ProjectRoutes = () => {
                         <Route path="/reviews" element={<Reviews />} />
                         <Route path="/testimonials" element={<Testimonials />} />
                         <Route path="/admin-profile" element={<AdminProfile />} />
+                        <Route path="/meeting" element={<ZoomMeeting />} />
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
                 </Sidebar>
@@ -225,6 +229,7 @@ const ProjectRoutes = () => {
                                 </ProtectedRoute>
                             }
                         />
+                        <Route path="/meeting" element={<ZoomMeeting />} />
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
                     <HomeFooter />
@@ -240,7 +245,7 @@ const ProjectRoutes = () => {
             )}
 
             {/* Profile Completion Modal */}
-            <ReferralPromptModal 
+            <ReferralPromptModal
                 open={showProfileModal}
                 toggle={() => setShowProfileModal(false)}
                 forceProfileScreen={true}
