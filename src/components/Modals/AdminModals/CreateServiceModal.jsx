@@ -41,10 +41,10 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
             // Ensure serviceType is sent as array
             const formData = {
                 ...data,
-                serviceType: Array.isArray(data.serviceType) 
-                    ? data.serviceType 
-                    : typeof data.serviceType === 'string' 
-                        ? data.serviceType.split(',').map(s => s.trim()) 
+                serviceType: Array.isArray(data.serviceType)
+                    ? data.serviceType
+                    : typeof data.serviceType === 'string'
+                        ? data.serviceType.split(',').map(s => s.trim())
                         : [data.serviceType].filter(Boolean)
             };
 
@@ -216,8 +216,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                                     label="Select Service Mode"
                                                                     options={[
                                                                         { value: 'online', label: 'Online' },
-                                                                        { value: 'pandit_center', label: 'Face to Face' },
-                                                                        { value: 'pooja_at_home', label: 'Pooja at Home' }
+                                                                        { value: 'pandit_center', label: 'Face to Face' }
                                                                     ]}
                                                                     value={value || []}
                                                                     onChange={onChange}
