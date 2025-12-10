@@ -98,7 +98,6 @@ const AllServices = () => {
         const labels = {
             'online': 'Online',
             'pandit_center': 'Face to Face',
-            'pooja_at_home': 'Pooja at Home'
         };
         return labels[type] || type;
     };
