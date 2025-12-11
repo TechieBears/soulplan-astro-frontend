@@ -20,6 +20,7 @@ import RegisterPage from "../pages/Home/RegisterPage";
 import LoginPage from "../pages/Home/LoginPage";
 import TermsConditions from "../components/HomeComponents/TermsConditions";
 import PrivacyPolicy from "../pages/Home/PrivacyPolicy";
+import RefundCancellationPolicy from "../pages/Home/RefundCancellationPolicy";
 import ErrorPage from "./ErrorPage";
 import BookingCalender from "../pages/Admin/Bookings/BookingCalender";
 import AllProducts from "../pages/Admin/AllProducts/AllProducts";
@@ -146,6 +147,7 @@ const ProjectRoutes = () => {
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/terms-conditions" element={<TermsConditions />} />
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/refund-cancellation-policy" element={<RefundCancellationPolicy />} />
                         <Route
                             path="/profile/customer-support"
                             element={
