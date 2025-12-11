@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import playstore from "../../src/assets/google-play-black.png";
@@ -49,7 +49,6 @@ const Testimonials = () => {
                     <img src={handImage} alt="" className="w-full h-full object-fill" />
                 </div>
                 <div className="container mx-auto px-8 md:px-6 xl:px-0 text-center space-y-6 xl:space-y-10">
-                    {/* Title */}
                     <>
                         <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold  text-center leading-snug">
                             <span className="text-p">
@@ -62,8 +61,7 @@ const Testimonials = () => {
                             className="w-40 md:w-56 h-auto  mx-auto object-contain"
                         />
                     </>
-                    {/* Swiper */}
-                    <div className="pl-[2px]">
+                    <div className="pl-[2px] relative">
                         {loading ? (
                             <div className="flex justify-center items-center space-x-6 pb-12 ">
                                 {[1, 2, 3]?.map((item) => (
@@ -89,27 +87,20 @@ const Testimonials = () => {
                                 ))}
                             </div>
                         ) : testimonials?.length > 0 ? (
+                            <>
                             <Swiper
                                 spaceBetween={20}
-                                centeredSlides={false} // Keeps no white space
+                                centeredSlides={false}
                                 slidesPerView={1}
-                                modules={[Autoplay]}
-                                autoplay={{
-                                    delay: 1500,
-                                    disableOnInteraction: false,
+                                modules={[Navigation]}
+                                navigation={{
+                                    nextEl: '.swiper-button-next-custom',
+                                    prevEl: '.swiper-button-prev-custom',
                                 }}
                                 loop={true}
                                 breakpoints={{
                                     768: { slidesPerView: 2 },
                                     1024: { slidesPerView: 3 },
-                                }}
-                                onSlideChange={(swiper) => {
-                                    // Calculate middle slide index based on slidesPerView
-                                    const slidesPerView = swiper.params.slidesPerView;
-                                    const middleIndex =
-                                        Math.floor(slidesPerView / 2) +
-                                        (swiper.activeIndex % testimonials.length);
-                                    setActiveIndex(middleIndex);
                                 }}
                             >
                                 {testimonials?.map((t, index) => (
@@ -155,7 +146,6 @@ const Testimonials = () => {
                                                 </div>
                                             </div>
 
-                                            {/* Card Content */}
                                             <div className="p-4 flex-1">
                                                 {(t?.service || t?.product) && (
                                                     <div className="inline-block bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-medium mb-3">
@@ -165,9 +155,11 @@ const Testimonials = () => {
                                                     </div>
                                                 )}
 
-                                                <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-3">
-                                                    {t?.message || t?.text}
-                                                </p>
+                                                <div className="text-gray-700 text-sm leading-relaxed mb-4 max-h-24 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                                                    <p>
+                                                        {t?.message || t?.text}
+                                                    </p>
+                                                </div>
                                             </div>
 
                                             {t?.media && t?.media?.length > 0 && (
@@ -186,6 +178,17 @@ const Testimonials = () => {
                                     </SwiperSlide>
                                 ))}
                             </Swiper>
+                            <div className="swiper-button-prev-custom absolute -left-8 top-1/2 transform -translate-y-1/2 z-10 bg-black rounded-full shadow-lg p-2 cursor-pointer  transition-colors">
+                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </div>
+                            <div className="swiper-button-next-custom absolute -right-8 top-1/2 transform -translate-y-1/2 z-10 bg-black rounded-full shadow-lg p-2 cursor-pointer transition-colors">
+                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                            </>
                         ) : (
                             <div className="text-center py-12">
                                 <p className="text-gray-500 text-lg">

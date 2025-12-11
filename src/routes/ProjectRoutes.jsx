@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -19,7 +19,7 @@ import ContactPage from "../pages/Home/ContactPage";
 import RegisterPage from "../pages/Home/RegisterPage";
 import LoginPage from "../pages/Home/LoginPage";
 import TermsConditions from "../components/HomeComponents/TermsConditions";
-import PrivacyPolicy from "../pages/Home/PrivacyPolicy";
+// import PrivacyPolicy from "../pages/Home/PrivacyPolicy";
 import ErrorPage from "./ErrorPage";
 import BookingCalender from "../pages/Admin/Bookings/BookingCalender";
 import AllProducts from "../pages/Admin/AllProducts/AllProducts";
@@ -54,15 +54,31 @@ import { Whatsapp } from "iconsax-reactjs";
 import BuyNowPage from "../pages/Home/BuyNowPage";
 import Reviews from "../pages/Admin/Master/Reviews";
 import ReferAndEarn from "../pages/Home/Profile/ReferAndEarn";
+import ReferralPromptModal from "../components/Modals/ReferralPromptModal";
+import ZoomMeeting from '../pages/Meeting/ZoomMeeting';
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
+    const [showProfileModal, setShowProfileModal] = useState(false);
     const user = useSelector((state) => state.user.userDetails);
+    const isLogged = useSelector((state) => state.user.isLogged);
+    const location = useLocation();
+    const isMeetingPage = location.pathname === '/meeting';
     // ============ Page Loader ============
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 2800);
         return () => clearTimeout(timer);
     }, []);
+
+    // ============ Profile Completion Check ============
+    useEffect(() => {
+        if (isLogged && user && user.role === 'customer') {
+            const isProfileComplete = user?.firstName && user?.lastName && user?.mobileNo && user?.gender;
+            if (!isProfileComplete) {
+                setShowProfileModal(true);
+            }
+        }
+    }, [isLogged, user]);
 
     // ============ Online/Offline Toast ============
     useEffect(() => {
@@ -112,12 +128,13 @@ const ProjectRoutes = () => {
                         <Route path="/reviews" element={<Reviews />} />
                         <Route path="/testimonials" element={<Testimonials />} />
                         <Route path="/admin-profile" element={<AdminProfile />} />
+                        <Route path="/meeting" element={<ZoomMeeting />} />
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
                 </Sidebar>
             ) : (
                 // ============ Guest / Before Login ============
-                <main className="min-h-screen w-full overflow-x-hidden max-lg:px-5">
+                <main className="min-h-screen w-full overflow-x-hidden ">
                     <HomeNavbar />
                     <Routes>
                         <Route path="/" element={<HomePage />} />
@@ -128,7 +145,7 @@ const ProjectRoutes = () => {
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/terms-conditions" element={<TermsConditions />} />
-                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                         {/* <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
                         <Route
                             path="/profile/customer-support"
                             element={
@@ -212,6 +229,7 @@ const ProjectRoutes = () => {
                                 </ProtectedRoute>
                             }
                         />
+                        <Route path="/meeting" element={<ZoomMeeting />} />
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
                     <HomeFooter />
@@ -225,6 +243,14 @@ const ProjectRoutes = () => {
                     </a>
                 </main>
             )}
+
+            {/* Profile Completion Modal */}
+            <ReferralPromptModal
+                open={showProfileModal}
+                toggle={() => setShowProfileModal(false)}
+                forceProfileScreen={true}
+                onModalClose={() => setShowProfileModal(false)}
+            />
 
             {/* Toaster Notifications */}
             <Toaster position="top-right" reverseOrder={false} />

@@ -4,8 +4,10 @@ import { Calendar } from 'iconsax-reactjs'
 import { Icon } from '@iconify/react'
 import { Zoom } from 'iconsax-reactjs'
 import { FaRegTrashAlt } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
 
 const ServicesCartCard = ({ service, removeItem, isUpdating }) => {
+    const navigate = useNavigate();
     const formatTime = (time) => {
         if (!time) return '';
         const [hours, minutes] = time.split(':');
@@ -29,7 +31,8 @@ const ServicesCartCard = ({ service, removeItem, isUpdating }) => {
     return (
         <div
             key={service._id}
-            className="bg-[#9E52D8] rounded-lg p-4 flex flex-col md:flex-row md:items-start md:justify-between gap-4 w-full"
+            className="bg-[#9E52D8] rounded-lg p-4 flex flex-col md:flex-row md:items-start md:justify-between gap-4 w-full cursor-pointer transition-colors"
+            onClick={() => navigate(`/services/${service.name}`)}
         >
             {/* Service Details */}
             <div className="flex-1 bg-[#9E52D8] rounded-lg text-white">
@@ -92,7 +95,10 @@ const ServicesCartCard = ({ service, removeItem, isUpdating }) => {
             <div className="flex md:flex-col items-center md:items-end gap-2 w-full md:w-auto">
                 {/* Delete Button */}
                 <button
-                    onClick={() => removeItem(service._id)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        removeItem(service._id);
+                    }}
                     disabled={isUpdating}
                     className={`p-2 text-white rounded-md transition-colors ${isUpdating ? 'opacity-50 cursor-not-allowed'
                         : 'hover:bg-[#8B3FC1]'

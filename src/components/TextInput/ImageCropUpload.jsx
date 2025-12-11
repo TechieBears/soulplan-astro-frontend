@@ -9,380 +9,529 @@ import "react-image-crop/dist/ReactCrop.css";
 import ImageView from "../Modals/ImageView/ImageView";
 
 const ImageCropUpload = ({
-    label,
-    errors,
-    multiple,
-    register,
-    registerName,
-    setValue,
-    defaultValue,
-    style,
-    disabled,
-    cropAspectRatio = 5 / 3,
-    cropWidth = 500,
-    cropHeight = 300,
+  label,
+  errors,
+  multiple,
+  register,
+  registerName,
+  setValue,
+  defaultValue,
+  style,
+  disabled,
+  cropAspectRatio = 5 / 3,
+  cropWidth = 500,
+  cropHeight = 300,
+  shouldUploadToCloudinary = true,
+  showRemoveOption = false,
 }) => {
-    const [fileName, setFileName] = useState("");
-    const [files, setFiles] = useState([]);
-    const [isUploading, setIsUploading] = useState(false);
-    const [showCropModal, setShowCropModal] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [showImageModal, setShowImageModal] = useState(false);
-    const [crop, setCrop] = useState({
+  const [fileName, setFileName] = useState("");
+  const [files, setFiles] = useState([]);
+  const [deletedImages, setDeletedImages] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [crop, setCrop] = useState({
+    unit: "px",
+    width: cropWidth,
+    height: cropHeight,
+    x: 50,
+    y: 50,
+  });
+  const [completedCrop, setCompletedCrop] = useState(null);
+  const [zoom, setZoom] = useState(1);
+  const imgRef = useRef(null);
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (defaultValue) {
+      if (multiple && Array.isArray(defaultValue)) {
+        const dummyFiles = defaultValue.map((url) => ({
+          name: url.split("/").pop(),
+          url,
+          value: url
+        }));
+        setFiles(dummyFiles);
+        setFileName(
+          dummyFiles.length === 1
+            ? dummyFiles[0].name
+            : `${dummyFiles.length} files selected`
+        );
+        setValue(registerName, defaultValue);
+      } else if (!multiple && typeof defaultValue === "string") {
+        const dummyFile = {
+          name: defaultValue.split("/").pop(),
+          url: defaultValue,
+          value: defaultValue
+        };
+        setFiles([dummyFile]);
+        setFileName(dummyFile.name);
+        setValue(registerName, defaultValue);
+      }
+    }
+    // Initialize deletedImages as empty array
+    setValue('deletedImages', []);
+  }, [defaultValue, registerName, setValue, multiple]);
+
+  const handleFileChange = (e) => {
+    if (e?.target?.files?.length > 0) {
+      if (multiple) {
+        const fileArray = Array.from(e.target.files);
+        processFilesSequentially(fileArray, 0);
+      } else {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          setSelectedImage({
+            file,
+            src: reader.result,
+            name: file.name,
+          });
+          setShowCropModal(true);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
+  const processFilesSequentially = (fileArray, index) => {
+    if (index >= fileArray.length) return;
+
+    const file = fileArray[index];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSelectedImage({
+        file,
+        src: reader.result,
+        name: file.name,
+        isMultiple: true,
+        currentIndex: index,
+        totalFiles: fileArray.length,
+        remainingFiles: fileArray.slice(index + 1),
+      });
+      setShowCropModal(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const onImageLoad = useCallback(
+    (e) => {
+      const { width, height } = e.currentTarget;
+      const centerX = Math.max(0, (width - cropWidth) / 2);
+      const centerY = Math.max(0, (height - cropHeight) / 2);
+      const initialCrop = {
         unit: "px",
         width: cropWidth,
         height: cropHeight,
-        x: 50,
-        y: 50,
-    });
-    const [completedCrop, setCompletedCrop] = useState(null);
-    const imgRef = useRef(null);
-    const canvasRef = useRef(null);
+        x: centerX,
+        y: centerY,
+      };
+      setCrop(initialCrop);
+      setCompletedCrop(initialCrop);
+      setZoom(1);
+    },
+    [cropWidth, cropHeight]
+  );
 
-    useEffect(() => {
-        if (defaultValue) {
-            if (multiple && Array.isArray(defaultValue)) {
-                const dummyFiles = defaultValue.map(url => ({
-                    name: url.split("/").pop(),
-                    url
-                }));
-                setFiles(dummyFiles);
-                setFileName(dummyFiles.length === 1 ? dummyFiles[0].name : `${dummyFiles.length} files selected`);
-                setValue(registerName, defaultValue);
-            } else if (!multiple && typeof defaultValue === 'string') {
-                const dummyFile = {
-                    name: defaultValue.split("/").pop(),
-                    url: defaultValue,
-                };
-                setFiles([dummyFile]);
-                setFileName(dummyFile.name);
-                setValue(registerName, defaultValue);
-            }
-        }
-    }, [defaultValue, registerName, setValue, multiple]);
+  const getCroppedImg = useCallback(
+    (image, crop) => {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
 
-    const handleFileChange = (e) => {
-        if (e?.target?.files?.length > 0) {
-            if (multiple) {
-                const fileArray = Array.from(e.target.files);
-                processFilesSequentially(fileArray, 0);
-            } else {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = () => {
-                    setSelectedImage({
-                        file,
-                        src: reader.result,
-                        name: file.name,
-                    });
-                    setShowCropModal(true);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-    };
+      if (!crop || !canvas || !ctx) return;
 
-    const processFilesSequentially = (fileArray, index) => {
-        if (index >= fileArray.length) return;
+      const pixelRatio = window.devicePixelRatio;
+      canvas.width = crop.width * pixelRatio;
+      canvas.height = crop.height * pixelRatio;
 
-        const file = fileArray[index];
-        const reader = new FileReader();
-        reader.onload = () => {
-            setSelectedImage({
-                file,
-                src: reader.result,
-                name: file.name,
-                isMultiple: true,
-                currentIndex: index,
-                totalFiles: fileArray.length,
-                remainingFiles: fileArray.slice(index + 1)
-            });
-            setShowCropModal(true);
-        };
-        reader.readAsDataURL(file);
-    };
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      ctx.imageSmoothingQuality = "high";
 
-    const onImageLoad = useCallback(
-        (e) => {
-            const { width, height } = e.currentTarget;
-            const centerX = Math.max(0, (width - cropWidth) / 2);
-            const centerY = Math.max(0, (height - cropHeight) / 2);
-            setCrop({
-                unit: "px",
-                width: cropWidth,
-                height: cropHeight,
-                x: centerX,
-                y: centerY,
-            });
-        },
-        [cropWidth, cropHeight]
-    );
+      const imgDisplayWidth = image.width * zoom;
+      const imgDisplayHeight = image.height * zoom;
 
-    const getCroppedImg = useCallback((image, crop) => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
+      const offsetX = (imgDisplayWidth - image.width) / 2;
+      const offsetY = (imgDisplayHeight - image.height) / 2;
 
-        if (!crop || !canvas || !ctx) return;
+      const adjustedCropX = (crop.x + offsetX) / zoom;
+      const adjustedCropY = (crop.y + offsetY) / zoom;
+      const adjustedCropWidth = crop.width / zoom;
+      const adjustedCropHeight = crop.height / zoom;
 
-        const scaleX = image.naturalWidth / image.width;
-        const scaleY = image.naturalHeight / image.height;
-        const pixelRatio = window.devicePixelRatio;
+      const scaleX = image.naturalWidth / image.width;
+      const scaleY = image.naturalHeight / image.height;
 
-        canvas.width = crop.width * pixelRatio;
-        canvas.height = crop.height * pixelRatio;
+      ctx.drawImage(
+        image,
+        adjustedCropX * scaleX,
+        adjustedCropY * scaleY,
+        adjustedCropWidth * scaleX,
+        adjustedCropHeight * scaleY,
+        0,
+        0,
+        crop.width,
+        crop.height
+      );
 
-        ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-        ctx.imageSmoothingQuality = "high";
+      return new Promise((resolve) => {
+        canvas.toBlob(resolve, "image/jpeg", 0.9);
+      });
+    },
+    [zoom]
+  );
 
-        ctx.drawImage(
-            image,
-            crop.x * scaleX,
-            crop.y * scaleY,
-            crop.width * scaleX,
-            crop.height * scaleY,
-            0,
-            0,
-            crop.width,
-            crop.height
+  const handleCropComplete = async () => {
+    const cropToUse = completedCrop || crop;
+    if (!cropToUse || !imgRef.current) return;
+
+    setIsUploading(true);
+    try {
+      const croppedBlob = await getCroppedImg(imgRef.current, cropToUse);
+      const croppedFile = new File([croppedBlob], selectedImage.name, {
+        type: "image/jpeg",
+      });
+
+      let formValue;
+      let displayUrl;
+
+      if (shouldUploadToCloudinary) {
+        const uploadedUrl = await uploadToCloudinary(croppedFile);
+        formValue = uploadedUrl;
+        displayUrl = uploadedUrl;
+      } else {
+        // Return binary File object if cloud upload is disabled
+        formValue = croppedFile;
+        // Create a blob URL for preview
+        displayUrl = URL.createObjectURL(croppedFile);
+      }
+
+      const previewFile = {
+        file: croppedFile,
+        name: selectedImage.name,
+        url: displayUrl,
+        value: formValue
+      };
+
+      if (multiple) {
+        const newFiles = [...files, previewFile];
+        setFiles(newFiles);
+        setFileName(`${newFiles.length} files selected`);
+        
+        // If uploading to cloud, we map to URLs (f.value is url)
+        // If binary mode (shouldUploadToCloudinary=false), we map to File objects (f.value is File)
+        setValue(
+          registerName,
+          newFiles.map((f) => f.value)
         );
 
-        return new Promise((resolve) => {
-            canvas.toBlob(resolve, "image/jpeg", 0.9);
-        });
-    }, []);
-
-    const handleCropComplete = async () => {
-        if (!completedCrop || !imgRef.current) return;
-
-        setIsUploading(true);
-        try {
-            const croppedBlob = await getCroppedImg(imgRef.current, completedCrop);
-            const croppedFile = new File([croppedBlob], selectedImage.name, {
-                type: "image/jpeg",
-            });
-
-            const url = await uploadToCloudinary(croppedFile);
-
-            const previewFile = {
-                file: croppedFile,
-                name: selectedImage.name,
-                url: url,
-            };
-
-            if (multiple) {
-                const newFiles = [...files, previewFile];
-                setFiles(newFiles);
-                setFileName(`${newFiles.length} files selected`);
-                setValue(registerName, newFiles.map(f => f.url));
-
-                if (selectedImage.remainingFiles && selectedImage.remainingFiles.length > 0) {
-                    setShowCropModal(false);
-                    processFilesSequentially(selectedImage.remainingFiles, 0);
-                } else {
-                    setShowCropModal(false);
-                    setSelectedImage(null);
-                }
-            } else {
-                setFiles([previewFile]);
-                setFileName(selectedImage.name);
-                setValue(registerName, url);
-                setShowCropModal(false);
-                setSelectedImage(null);
-            }
-
-            const fileInput = document.getElementById(registerName);
-            if (fileInput) fileInput.value = '';
-        } catch (error) {
-            console.error("Upload failed:", error);
-        } finally {
-            setIsUploading(false);
+        if (
+          selectedImage.remainingFiles &&
+          selectedImage.remainingFiles.length > 0
+        ) {
+          setShowCropModal(false);
+          processFilesSequentially(selectedImage.remainingFiles, 0);
+        } else {
+          setShowCropModal(false);
+          setSelectedImage(null);
         }
-    };
-
-    const handleCropCancel = () => {
+      } else {
+        setFiles([previewFile]);
+        setFileName(selectedImage.name);
+        setValue(registerName, formValue);
         setShowCropModal(false);
         setSelectedImage(null);
-        setCrop({ x: 0, y: 0, width: cropWidth, height: cropHeight });
-        setCompletedCrop(null);
+      }
 
-        const fileInput = document.getElementById(registerName);
-        if (fileInput) fileInput.value = '';
-    };
+      const fileInput = document.getElementById(registerName);
+      if (fileInput) fileInput.value = "";
+    } catch (error) {
+      console.error("Upload/Processing failed:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
-    return (
-        <>
-            <div
-                className={`h-[53px] relative flex rounded-lg w-full cursor-pointer bg-slate1 ${style}`}
-            >
-                <input
-                    type="file"
-                    id={registerName}
-                    accept="image/*"
-                    multiple={multiple}
-                    className={`peer w-full bg-transparent outline-none px-4 text-base font-tbLex text-black rounded-lg bg-slate1 ${style}
+  const handleCropCancel = () => {
+    setShowCropModal(false);
+    setSelectedImage(null);
+    setCrop({ x: 0, y: 0, width: cropWidth, height: cropHeight });
+    setCompletedCrop(null);
+    setZoom(1);
+
+    const fileInput = document.getElementById(registerName);
+    if (fileInput) fileInput.value = "";
+  };
+
+  const removeImage = (indexToRemove) => {
+    const fileToRemove = files[indexToRemove];
+    const updatedFiles = files.filter((_, index) => index !== indexToRemove);
+    
+    // Track deleted images (only if it's an existing image URL, not a new upload)
+    if (fileToRemove?.url && typeof fileToRemove.url === 'string' && fileToRemove.url.startsWith('http')) {
+      const newDeletedImages = [...deletedImages, fileToRemove.url];
+      setDeletedImages(newDeletedImages);
+      setValue('deletedImages', newDeletedImages);
+    }
+    
+    setFiles(updatedFiles);
+    
+    if (updatedFiles.length === 0) {
+      setFileName("");
+      setValue(registerName, multiple ? [] : "");
+    } else {
+      setFileName(multiple ? `${updatedFiles.length} files selected` : updatedFiles[0].name);
+      setValue(registerName, multiple ? updatedFiles.map(f => f.value) : updatedFiles[0].value);
+    }
+  };
+
+  return (
+    <>
+      <div
+        className={`h-[53px] relative flex rounded-lg w-full cursor-pointer bg-slate1 ${style}`}
+      >
+        <input
+          type="file"
+          id={registerName}
+          accept="image/*"
+          multiple={multiple}
+          className={`peer w-full bg-transparent outline-none px-4 text-base font-tbLex text-black rounded-lg bg-slate1 ${style}
             ${!errors?.ref?.value && errors?.type === "required"
-                            ? "border-red-500"
-                            : "border-slate-300 focus:border-primary"
-                        }
+              ? "border-red-500"
+              : "border-slate-300 focus:border-primary"
+            }
             opacity-0 absolute z-10 cursor-pointer ${style}`}
-                    onChange={handleFileChange}
-                    disabled={isUploading || disabled}
-                />
-                <div
-                    className={`w-full h-full flex items-center px-4 rounded-lg cursor-pointer
+          onChange={handleFileChange}
+          disabled={isUploading || disabled}
+        />
+        <div
+          className={`w-full h-full flex items-center px-4 rounded-lg cursor-pointer
           ${!errors?.ref?.value && errors?.type === "required"
-                            ? "border-red-500"
-                            : "border-slate-300 peer-focus:border-primary"
-                        } ${style}`}
-                >
-                    <label
-                        htmlFor={registerName}
-                        className={`px-2 bg-slate1 text-base font-tbLex ${style}
+              ? "border-red-500"
+              : "border-slate-300 peer-focus:border-primary"
+            } ${style}`}
+        >
+          <label
+            htmlFor={registerName}
+            className={`px-2 bg-slate1 text-base font-tbLex ${style}
               ${!errors?.ref?.value && errors?.type === "required"
-                                ? "text-red-500"
-                                : fileName
-                                    ? "text-primary"
-                                    : "text-slate-400"
-                            }
-              ${fileName ? "top-0 left-3 text-sm" : ""} transition-all duration-150 flex items-center gap-2 cursor-pointer overflow-hidden`}
-                    >
-                        {!fileName && <span><DocumentUpload size="22" /></span>}
-                        <span className="truncate w-full overflow-hidden">
-                            {isUploading ? "Uploading..." : fileName || label}
-                        </span>
-                    </label>
-                    <div
-                        className={`ml-auto flex items-center gap-2 z-50 absolute right-2 bg-slate1 pl-3 cursor-pointer ${style}`}
-                    >
-                        {fileName && !isUploading && (
-                            <span className="text-sm text-green-500 text-nowrap flex items-center">
-                                <TickCircle size="22" variant="Bold" />
-                            </span>
-                        )}
-                        {files.length > 0 && !isUploading && (
-                            <button
-                                type="button"
-                                onClick={() => setShowImageModal(true)}
-                                className="text-slate-500 cursor-pointer hover:text-primary transition-colors"
-                            >
-                                <Eye size="22" />
-                            </button>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            {!errors?.ref?.value && errors?.type === "required" && (
-                <Error
-                    message={`${label.replace(/\b(enter|your)\b/gi, "").trim()} is required`}
-                />
+                ? "text-red-500"
+                : fileName
+                  ? "text-primary"
+                  : "text-slate-400"
+              }
+              ${fileName ? "top-0 left-3 text-sm" : ""
+              } transition-all duration-150 flex items-center gap-2 cursor-pointer overflow-hidden`}
+          >
+            {!fileName && (
+              <span>
+                <DocumentUpload size="22" />
+              </span>
             )}
+            <span className="truncate w-full overflow-hidden">
+              {isUploading ? "Uploading..." : fileName || label}
+            </span>
+          </label>
+          <div
+            className={`ml-auto flex items-center gap-2 z-50 absolute right-2 bg-slate1 pl-3 cursor-pointer ${style}`}
+          >
+            {fileName && !isUploading && (
+              <span className="text-sm text-green-500 text-nowrap flex items-center">
+                <TickCircle size="22" variant="Bold" />
+              </span>
+            )}
+            {files.length > 0 && !isUploading && (
+              <button
+                type="button"
+                onClick={() => setShowImageModal(true)}
+                className="text-slate-500 cursor-pointer hover:text-primary transition-colors"
+              >
+                <Eye size="22" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
 
-            <Transition appear show={showCropModal} as={Fragment}>
-                <Dialog as="div" className="relative z-[1000]" onClose={handleCropCancel}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
+      {!errors?.ref?.value && errors?.type === "required" && (
+        <Error
+          message={`${label
+            .replace(/\b(enter|your)\b/gi, "")
+            .trim()} is required`}
+        />
+      )}
+
+      {/* Display existing images */}
+      {files.length > 0 && (
+        <div className="mt-4">
+          <h5 className="text-sm font-medium text-gray-700 mb-2">Current Images:</h5>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {files.map((file, index) => (
+              <div key={index} className="relative group">
+                <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                  <img
+                    src={file.url}
+                    alt={file.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {showRemoveOption && (
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    ×
+                  </button>
+                )}
+                <p className="text-xs text-gray-500 mt-1 truncate" title={file.name}>
+                  {file.name}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <Transition appear show={showCropModal} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-[1000]"
+          onClose={handleCropCancel}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 " />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-2xl  rounded-lg bg-white text-left align-middle ">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-white bg-linear-gradient py-4 px-6 relative"
+                  >
+                    {selectedImage?.isMultiple
+                      ? `Crop Image ${(selectedImage.currentIndex || 0) + 1
+                      } of ${selectedImage.totalFiles || 1}`
+                      : "Crop Your Image"}
+                    <button
+                      onClick={handleCropCancel}
+                      className="absolute right-4 top-4 text-white hover:text-gray-200"
                     >
-                        <div className="fixed inset-0 " />
-                    </Transition.Child>
+                      <X size={24} />
+                    </button>
+                  </Dialog.Title>
 
-                    <div className="fixed inset-0 overflow-y-auto">
-                        <div className="flex min-h-full items-center justify-center p-4">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
-                            >
-                                <Dialog.Panel className="w-full max-w-2xl  rounded-lg bg-white text-left align-middle ">
-                                    <Dialog.Title
-                                        as="h3"
-                                        className="text-lg font-medium leading-6 text-white bg-linear-gradient py-4 px-6 relative"
-                                    >
-                                        {selectedImage?.isMultiple
-                                            ? `Crop Image ${(selectedImage.currentIndex || 0) + 1} of ${selectedImage.totalFiles || 1}`
-                                            : "Crop Your Image"
-                                        }
-                                        <button
-                                            onClick={handleCropCancel}
-                                            className="absolute right-4 top-4 text-white hover:text-gray-200"
-                                        >
-                                            <X size={24} />
-                                        </button>
-                                    </Dialog.Title>
-
-                                    <div className="p-6">
-                                        <div className="flex justify-center">
-                                            {selectedImage && (
-                                                <ReactCrop
-                                                    crop={crop}
-                                                    onChange={(newCrop) => setCrop(newCrop)}
-                                                    onComplete={(c) => setCompletedCrop(c)}
-                                                    aspect={cropAspectRatio}
-                                                    locked={true}
-                                                    className="max-w-full"
-                                                    ruleOfThirds={false}
-                                                >
-                                                    <img
-                                                        ref={imgRef}
-                                                        src={selectedImage.src}
-                                                        alt="Crop preview"
-                                                        className="max-w-full max-h-96 object-contain"
-                                                        onLoad={onImageLoad}
-                                                    />
-                                                </ReactCrop>
-                                            )}
-                                        </div>
-
-                                        <div className="mt-4 text-sm text-gray-600 text-center">
-                                            <p>Move the crop area to adjust position.</p>
-                                            <p>Fixed rectangular ratio: {cropWidth}×{cropHeight}px (4:3)</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
-                                        <button
-                                            type="button"
-                                            onClick={handleCropCancel}
-                                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white  rounded-md hover:bg-gray-50"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={handleCropComplete}
-                                            disabled={isUploading}
-                                            className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md "
-                                        >
-                                            {isUploading ? "Uploading..." : "Crop & Upload"}
-                                        </button>
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
-                        </div>
+                  <div className="p-6">
+                    <div className="flex justify-center">
+                      {selectedImage && (
+                        <ReactCrop
+                          crop={crop}
+                          onChange={(newCrop) => setCrop(newCrop)}
+                          onComplete={(c) => setCompletedCrop(c)}
+                          aspect={cropAspectRatio}
+                          locked={false}
+                          className="max-w-full"
+                          ruleOfThirds={true}
+                        >
+                          <img
+                            ref={imgRef}
+                            src={selectedImage.src}
+                            alt="Crop preview"
+                            className="max-w-full max-h-96 object-contain"
+                            style={{
+                              transform: `scale(${zoom})`,
+                              transformOrigin: "center",
+                              transition: "transform 0.2s ease",
+                            }}
+                            onLoad={onImageLoad}
+                          />
+                        </ReactCrop>
+                      )}
                     </div>
-                </Dialog>
-            </Transition>
+                  </div>
 
-            <ImageView
-                isOpen={showImageModal}
-                toggle={() => setShowImageModal(false)}
-                files={files}
-            />
+                  <div className="mb-4 px-6">
+                    <label className="text-sm font-medium text-gray-700 min-w-[60px]">
+                      Zoom:
+                    </label>
 
+                    <input
+                      type="range"
+                      min="0.5"
+                      max="3"
+                      step="0.1"
+                      value={zoom}
+                      onChange={(e) => setZoom(parseFloat(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+                  <div className="bg-gray-50 px-6 py-4 flex justify-center items-center">
+                    {/* <button
+                      type="button"
+                      onClick={() => {
+                        setZoom(1);
+                        setCrop({
+                          unit: "px",
+                          width: cropWidth,
+                          height: cropHeight,
+                          x: 50,
+                          y: 50,
+                        });
+                      }}
+                      className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
+                    >
+                      Reset
+                    </button> */}
+                    <div className="flex space-x-3">
+                      <button
+                        type="button"
+                        onClick={handleCropCancel}
+                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleCropComplete}
+                        disabled={isUploading}
+                        className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md"
+                      >
+                        {isUploading ? "Uploading..." : "Crop & Upload"}
+                      </button>
+                    </div>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
 
-            <canvas ref={canvasRef} style={{ display: "none" }} />
-        </>
-    );
+      <ImageView
+        isOpen={showImageModal}
+        toggle={() => setShowImageModal(false)}
+        files={files}
+      />
+      <canvas ref={canvasRef} style={{ display: "none" }} />
+    </>
+  );
 };
 
 export default ImageCropUpload;

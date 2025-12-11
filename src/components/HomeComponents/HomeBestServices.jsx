@@ -13,6 +13,8 @@ export default function HomeBestServices() {
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
     const recordsPerPage = 8;
 
     useEffect(() => {
@@ -20,11 +22,23 @@ export default function HomeBestServices() {
             const response = await getPublicServices({ p: 1, records: recordsPerPage, search: '', category: '' });
             setLoading(true);
             setServices(response?.data || []);
+            setHasMore((response?.data || []).length === recordsPerPage);
             setLoading(false);
             setInitialLoading(false);
         }
         fetchServices();
     }, []);
+
+    const loadMoreServices = async () => {
+        setLoading(true);
+        const nextPage = currentPage + 1;
+        const response = await getPublicServices({ p: nextPage, records: recordsPerPage, search: '', category: '' });
+        const newServices = response?.data || [];
+        setServices(prev => [...prev, ...newServices]);
+        setCurrentPage(nextPage);
+        setHasMore(newServices.length === recordsPerPage);
+        setLoading(false);
+    };
 
     return (
         <section className="py-16 !bg-[#FFF9EF] relative">
@@ -77,6 +91,25 @@ export default function HomeBestServices() {
                 {loading && services?.length === 0 && !initialLoading && (
                     <div className="flex justify-center py-12">
                         <PulseLoader color="#000" size={4} />
+                    </div>
+                )}
+
+                {!initialLoading && services?.length > 0 && hasMore && (
+                    <div className="flex justify-self-center mt-8">
+                        <button 
+                            onClick={loadMoreServices}
+                            disabled={loading}
+                            className={`${formBtn3} ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            {loading ? (
+                                <div className="flex items-center gap-2">
+                                    <PulseLoader color="#fff" size={4} />
+                                    <span>Loading...</span>
+                                </div>
+                            ) : (
+                                'Load More Services'
+                            )}
+                        </button>
                     </div>
                 )}
             </section>

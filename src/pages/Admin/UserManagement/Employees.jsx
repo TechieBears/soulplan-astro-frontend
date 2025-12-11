@@ -9,7 +9,7 @@ import Table from '../../../components/Table/Table'
 import TextInput from '../../../components/TextInput/TextInput'
 import usePagination from '../../../utils/customHooks/usePagination'
 import { formBtn1, tableBtn } from '../../../utils/CustomClass'
-import { validateAlphabets } from '../../../utils/validateFunction';
+import { validateAlphabetic } from '../../../utils/validateFunction';
 import CreateEmployeeModal from '../../../components/Modals/AdminModals/CreateEmployeeModal';
 import TableHeader from '../../../components/Table/TableHeader';
 
@@ -85,14 +85,14 @@ const Employees = () => {
     );
 
     const profileImageBody = (row) => (
-        <div className='w-16 h-16 rounded-full overflow-hidden'>
+        // <div className='w-16 h-16 rounded-full overflow-hidden'>
             <img
                 loading="lazy"
                 src={row?.profileImage || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                 alt="profile"
                 className='w-full h-full object-cover bg-slate-100'
             />
-        </div>
+        // </div>
     );
 
     const employeeDetailsBody = (row) => (
@@ -196,15 +196,17 @@ const Employees = () => {
         const startTime = row?.profile?.startTime;
         const endTime = row?.profile?.endTime;
 
-        if (days.length === 0 || !startTime || !endTime) {
+        if (days.length === 0) {
             return <span className="text-xs text-gray-400">Not configured</span>;
         }
 
         return (
             <div className="space-y-1">
-                <div className="text-xs font-medium">
-                    {startTime} - {endTime}
-                </div>
+                {(startTime && endTime) && (
+                    <div className="text-xs font-medium">
+                        {startTime} - {endTime}
+                    </div>
+                )}
                 <div className="text-xs text-gray-500">
                     {days.length} day{days.length > 1 ? 's' : ''} available
                 </div>
@@ -355,7 +357,7 @@ const Employees = () => {
                             placeholder="Enter Full Name"
                             type="text"
                             registerName="name"
-                            props={{ ...register('name', { validate: validateAlphabets }) }}
+                            props={{ ...register('name', { validate: validateAlphabetic }) }}
                         />
                     </div>
                     <div className="flex space-x-2">

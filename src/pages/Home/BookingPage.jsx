@@ -200,7 +200,7 @@ const BookingPage = () => {
             <div className="hidden md:absolute md:bottom-40 md:right-0 md:rotate-45 md:scale-75 md:block">
                 <img src={star} alt="" className="w-full h-full object-fill" />
             </div>
-            <div className="container mx-auto xl:px-0 py-5">
+            <div className="container mx-auto xl:px-0 px-4 py-5">
                 {/* Header */}
                 <div className="relative flex items-center justify-center mb-6 sm:mb-8 px-4 sm:px-0">
                     <div className="absolute left-0 sm:left-4">
@@ -287,8 +287,8 @@ const BookingPage = () => {
                                             }
                                             prev2Label="«"
                                             next2Label="»"
-                                            prevLabel={null}
-                                            nextLabel={null}
+                                            // prevLabel="‹"
+                                            // nextLabel="›"
                                         />
                                     )}
                                 />

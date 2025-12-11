@@ -80,7 +80,6 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
             setValue('days', userData?.profile?.days);
             setValue('startTime', userData?.profile?.startTime);
             setValue('endTime', userData?.profile?.endTime);
-            setValue('profileImage', userData?.profile?.profileImage);
         } else {
             reset({
                 employeeType: '',
@@ -94,7 +93,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                 days: [],
                 startTime: '',
                 endTime: '',
-                profileImage: '',
+                image: '',
             });
         }
     }, [edit, userData, reset, setValue, open]);
@@ -212,21 +211,24 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Employee Image <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                        Employee Image <span className="text-red-500 text-xs font-tbLex">*</span> <span className="text-[11px] text-orange-500">
+            (Recommended size: 400px × 400px)
+        </span>
                                                     </h4>
                                                     <ImageCropUpload
                                                         label="Upload Employee Image"
                                                         multiple={false}
-                                                        registerName="profileImage"
-                                                        errors={errors.profileImage}
-                                                        {...register("profileImage", { required: "Employee Image is required" })}
+                                                        registerName="image"
+                                                        errors={errors.image}
+                                                        {...register("image", { required: "Employee Image is required" })}
                                                         register={register}
                                                         setValue={setValue}
                                                         control={control}
-                                                        defaultValue={userData?.profileImage}
+                                                        defaultValue={userData?.profileImage || userData?.profile?.profileImage}
                                                         cropAspectRatio={1}
                                                         cropHeight={400}
                                                         cropWidth={400}
+                                                        shouldUploadToCloudinary={false}
                                                     />
                                                 </div>
                                                 <div className="">
@@ -343,7 +345,7 @@ function CreateEmployeeModal({ edit, userData, setRefreshTrigger }) {
                                                         errors={errors.experience}
                                                     />
                                                 </div>}
-                                                {employeeType === 'astrologer' && <div>
+                                                {(employeeType === 'astrologer' || employeeType === 'employee') && <div>
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >

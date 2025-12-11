@@ -94,13 +94,21 @@ const AllServices = () => {
         </div>
     );
 
+    const getServiceTypeLabel = (type) => {
+        const labels = {
+            'online': 'Online',
+            'pandit_center': 'Face to Face',
+        };
+        return labels[type] || type;
+    };
+
     const serviceTypeBody = (row) => {
         return (
             <div className="space-y-1">
                 <div className="flex flex-wrap gap-1">
                     {row?.serviceType?.map((skill, index) => (
-                        <span key={index} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full capitalize">
-                            {skill}
+                        <span key={index} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                            {getServiceTypeLabel(skill)}
                         </span>
                     ))}
                 </div>

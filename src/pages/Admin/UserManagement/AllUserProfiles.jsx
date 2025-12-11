@@ -10,7 +10,7 @@ import TextInput from '../../../components/TextInput/TextInput';
 import TableHeader from '../../../components/Table/TableHeader';
 import { formBtn1 } from '../../../utils/CustomClass';
 import usePagination from '../../../utils/customHooks/usePagination';
-import { validateAlphabets } from '../../../utils/validateFunction';
+import { validateAlphabetic } from '../../../utils/validateFunction';
 
 const initialFilterState = {
     name: ''
@@ -85,7 +85,7 @@ function AllUserProfiles() {
         <div className='w-16 h-16 rounded-full overflow-hidden'>
             <img
                 loading="lazy"
-                src={row?.profileImage || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                src={row?.profileImage || row?.profile?.profileImage || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                 alt="profile"
                 className='w-full h-full object-cover bg-slate-100'
             />
@@ -266,7 +266,7 @@ function AllUserProfiles() {
                             placeholder="Enter Full Name"
                             type="text"
                             registerName="name"
-                            props={{ ...register('name', { validate: validateAlphabets }) }}
+                            props={{ ...register('name', { validate: validateAlphabetic }) }}
                         />
                     </div>
                     <div className="flex space-x-2">

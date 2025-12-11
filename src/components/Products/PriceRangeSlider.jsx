@@ -1,19 +1,23 @@
-// PriceRangeSlider.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 const clamp = (v, a, b) => Math.min(Math.max(Number(v), a), b);
 
-const PriceRangeSlider = ({ min, max, value = [min, max], onChange, disabled = false }) => {
-  // normalize values to numbers
+const PriceRangeSlider = ({
+  min,
+  max,
+  value = [min, max],
+  onChange,
+  disabled = false,
+}) => {
   const curMinVal = Number(value?.[0] ?? min);
   const curMaxVal = Number(value?.[1] ?? max);
-
-  // prevent division by zero
+  const MIN_GAP = 100; 
   const rangeSpan = max - min || 1;
   const minPercent = ((curMinVal - min) / rangeSpan) * 100;
   const maxPercent = ((curMaxVal - min) / rangeSpan) * 100;
 
-  // ensure there is a single style block for thumbs (runs once on client)
+  const lastActiveSlider = useRef('max'); // 'min' or 'max'
+
   useEffect(() => {
     if (typeof document === "undefined") return;
     if (document.getElementById("prs-styles")) return;
@@ -24,82 +28,100 @@ const PriceRangeSlider = ({ min, max, value = [min, max], onChange, disabled = f
       .range-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
-        height: 16px;
-        width: 16px;
+        height: 18px;
+        width: 18px;
         border-radius: 50%;
         background: #62748E;
         cursor: pointer;
         border: 2px solid #fff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        transition: all 0.15s ease;
+        position: relative;
+        z-index: 30;
+      }
+      .range-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+        background: #4B5D78;
+      }
+      .range-slider::-webkit-slider-thumb:active {
+        transform: scale(1.2);
+        background: #3A4A61;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
       }
       .range-slider::-moz-range-thumb {
-        height: 16px;
-        width: 16px;
+        height: 18px;
+        width: 18px;
         border-radius: 50%;
         background: #62748E;
         cursor: pointer;
         border: 2px solid #fff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        transition: all 0.15s ease;
       }
-      /* Make the track itself invisible so our custom track is visible */
-      .range-slider::-webkit-slider-runnable-track { background: transparent; height: 2px; }
-      .range-slider::-moz-range-track { background: transparent; height: 2px; }
+      .range-slider::-moz-range-thumb:hover {
+        transform: scale(1.1);
+        background: #4B5D78;
+      }
+      .range-slider::-moz-range-thumb:active {
+        transform: scale(1.2);
+        background: #3A4A61;
+      }
+      .range-slider::-webkit-slider-runnable-track {
+        background: transparent;
+        height: 4px;
+      }
+      .range-slider::-moz-range-track {
+        background: transparent;
+        height: 4px;
+      }
+      .range-slider:focus {
+        outline: none;
+      }
+      .range-slider:focus::-webkit-slider-thumb {
+        box-shadow: 0 0 0 3px rgba(98, 116, 142, 0.3);
+      }
     `;
     document.head.appendChild(style);
   }, []);
 
-  // When min or max (or current values) change, clamp the values and tell parent if changed.
-  useEffect(() => {
-    if (typeof onChange !== "function") return;
-
-    const new0 = clamp(curMinVal, min, max);
-    const new1 = clamp(curMaxVal, min, max);
-    // ensure ordering
-    const n0 = Math.min(new0, new1);
-    const n1 = Math.max(new0, new1);
-
-    if (n0 !== curMinVal || n1 !== curMaxVal) {
-      onChange([n0, n1]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [min, max, curMinVal, curMaxVal, onChange]);
-
   const handleMinChange = (e) => {
+    lastActiveSlider.current = 'min';
     const raw = Number(e.target.value);
-    const nextMin = clamp(raw, min, curMaxVal); // not exceed current max
+    const nextMin = clamp(raw, min, curMaxVal - MIN_GAP);
+    
     if (nextMin !== curMinVal && typeof onChange === "function") {
       onChange([nextMin, curMaxVal]);
     }
   };
 
   const handleMaxChange = (e) => {
+    lastActiveSlider.current = 'max';
     const raw = Number(e.target.value);
-    const nextMax = clamp(raw, curMinVal, max); // not go below current min
+    const nextMax = clamp(raw, curMinVal + MIN_GAP, max);
+    
     if (nextMax !== curMaxVal && typeof onChange === "function") {
       onChange([curMinVal, nextMax]);
     }
   };
 
-  // keep the filled bar width and left offset
+  const isClose = Math.abs(curMaxVal - curMinVal) <= MIN_GAP;
+  
+  const minZIndex = lastActiveSlider.current === 'min' || (isClose && curMinVal > min) ? 40 : 30;
+  const maxZIndex = lastActiveSlider.current === 'max' || (isClose && curMaxVal < max) ? 40 : 30;
+
   const left = `${minPercent}%`;
   const width = `${Math.max(0, maxPercent - minPercent)}%`;
 
-  // when thumbs overlap, make min thumb above so user can grab it
-  const minThumbZ = minPercent > maxPercent - 5 ? 30 : 20; // 5% threshold
-
   return (
-    <div className="relative w-full">
-      <div className="relative h-6">
-        {/* full track */}
-        <div className="absolute w-full h-2 bg-gray-200 rounded top-2"></div>
+    <div className="relative w-full py-2">
+      <div className="relative h-8">
+        <div className="absolute w-full h-1 bg-gray-300 rounded top-3.5"></div>
 
-        {/* selected range */}
         <div
-          className="absolute h-2 bg-slate-600 rounded top-2"
+          className="absolute h-1 bg-slate-600 rounded top-3.5"
           style={{ left, width }}
         />
 
-        {/* left (min) input */}
         <input
           aria-label="Minimum price"
           type="range"
@@ -107,12 +129,13 @@ const PriceRangeSlider = ({ min, max, value = [min, max], onChange, disabled = f
           max={max}
           value={curMinVal}
           onChange={handleMinChange}
-          className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer range-slider"
+          className="absolute w-full h-4 bg-transparent appearance-none cursor-pointer range-slider"
           disabled={disabled}
-          style={{ zIndex: minThumbZ }}
+          style={{ zIndex: minZIndex }}
+          onMouseDown={() => lastActiveSlider.current = 'min'}
+          onTouchStart={() => lastActiveSlider.current = 'min'}
         />
 
-        {/* right (max) input */}
         <input
           aria-label="Maximum price"
           type="range"
@@ -120,11 +143,19 @@ const PriceRangeSlider = ({ min, max, value = [min, max], onChange, disabled = f
           max={max}
           value={curMaxVal}
           onChange={handleMaxChange}
-          className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer range-slider"
+          className="absolute w-full h-4 bg-transparent appearance-none cursor-pointer range-slider"
           disabled={disabled}
-          style={{ zIndex: 20 }}
+          style={{ zIndex: maxZIndex }}
+          onMouseDown={() => lastActiveSlider.current = 'max'}
+          onTouchStart={() => lastActiveSlider.current = 'max'}
         />
+
+        <div className="absolute flex justify-between w-full text-xs text-gray-500 mt-6">
+          <span>₹{min}</span>
+          <span>₹{max}</span>
+        </div>
       </div>
+
     </div>
   );
 };

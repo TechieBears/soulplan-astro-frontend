@@ -40,6 +40,7 @@ export default function MyOrders() {
     };
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         const fetchProductOrders = async () => {
             try {
                 setIsLoadingProducts(true);
@@ -213,15 +214,15 @@ export default function MyOrders() {
                                                                             <Zoom className="w-5 h-5 text-blue-300" />
                                                                             <div className="flex-1">
                                                                                 <div className="text-blue-200 text-xs mb-1">Meeting Link</div>
-                                                                                <a
-                                                                                    href={service?.zoomLink}
-                                                                                    target="_blank"
-                                                                                    rel="noopener noreferrer"
-                                                                                    className="text-blue-300 hover:text-blue-200 text-sm font-medium underline break-all"
-                                                                                    onClick={(e) => e.stopPropagation()}
+                                                                                <button
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        window.open(`/meeting?zoomUrl=${encodeURIComponent(service.zoomLink)}`, '_blank');
+                                                                                    }}
+                                                                                    className="text-blue-600 hover:text-blue-800 underline font-medium text-xs sm:text-sm transition-colors bg-transparent border-none cursor-pointer"
                                                                                 >
                                                                                     Join Meeting
-                                                                                </a>
+                                                                                </button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
