@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
   }, []);
 
   const styles = {
-    wrapper: "flex justify-center w-full bg-white pt-28 md:pt-32 pb-10 px-4 sm:px-6",
+    wrapper: "flex justify-center w-full bg-white pt-20 md:pt-32 pb-10 px-4 sm:px-6",
     container:
       "max-w-4xl w-full bg-white rounded-lg shadow-md p-4 sm:p-6 md:p-10 overflow-y-auto",
     mainHeading: "font-semibold text-xl sm:text-2xl md:text-3xl mb-4 sm:mb-6 text-p text-center",
@@ -32,7 +32,6 @@ const PrivacyPolicy = () => {
           </svg>
           PRIVACY POLICY
         </h2>
-        <p className="text-center text-gray-600 mb-6">Last Updated: January 2025</p>
 
         <p className={styles.paragraph}>
           SoulPlan values your privacy. This policy explains how we collect, use, store, and protect your data.
