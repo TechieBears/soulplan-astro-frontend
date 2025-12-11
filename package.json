@@ -30,7 +30,7 @@
         "axios": "^1.8.4",
         "core-js": "^3.41.0",
         "dayjs": "^1.11.13",
-        "firebase": "^12.2.1",
+        "firebase": "^12.6.0",
         "greeting-time": "^1.0.0",
         "gsap": "^3.13.0",
         "iconsax-reactjs": "^0.0.8",
