@@ -12,15 +12,13 @@ const firebaseConfig = {
     measurementId: "G-2KEYCCKWN9"
 };
 
-
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-
 let messaging = null;
+
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
     messaging = getMessaging(app);
 }
 
-export { app, auth, messaging, getToken, onMessage };
+export { messaging, getToken, onMessage, auth, app };
