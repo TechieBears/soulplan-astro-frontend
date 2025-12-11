@@ -28,25 +28,25 @@ const HomeFooter = () => {
                         <h3 className="text-lg font-medium font-tbLex mb-4">
                             Office Location
                         </h3>
-                        <p className="text-sm">Germany —</p>
-                        <p className="text-sm">785 15th Street, Office 478</p>
-                        <p className="text-sm mb-4">Berlin, DE 81566</p>
+                        <p className="text-sm">YUJAINFO CONNECTING TO EXPLORE PRIVATE LIMITED</p>
+                        <p className="text-sm">A/3004, ROSA, MONTANA, VASANT OSCAR,</p>
+                        <p className="text-sm mb-4">MULUND-WEST, Mumbai - 400080</p>
                         <p className="flex items-center gap-2 text-sm mb-2">
                             <MdEmail size={18} />
                             <a
-                                href="mailto:mohanmamidala2004@gmail.com?subject=Contact%20From%20Website"
+                                href="mailto:support@soulplan.net"
                                 className="hover:underline transition-colors duration-200"
                             >
-                                support@soulplan.com
+                                support@soulplan.net
                             </a>
                         </p>
                         <p className="flex items-center gap-2 text-sm">
                             <MdPhone size={18} />
                             <a
-                                href="tel:+919321806791"
+                                href="tel:+919326511639"
                                 className="hover:underline transition-colors duration-200"
                             >
-                                +91 9321806791
+                                +91 9326511639
                             </a>
                         </p>
                     </div>
@@ -93,7 +93,10 @@ const HomeFooter = () => {
 
                 {/* ===== Bottom Bar ===== */}
                 <div className="flex flex-col md:flex-row justify-between items-center mt-6 text-sm border-t border-slate-600 pt-4">
-                    <p>Copyright © {new Date().getFullYear()}. All rights reserved.</p>
+                    <p className="text-center md:text-left">
+                        {/* Copyright © {new Date().getFullYear()}. All rights reserved. <br className="md:hidden" /> */}
+                        YUJAINFO CONNECTING TO EXPLORE PRIVATE LIMITED
+                    </p>
                 </div>
             </div>
         </footer>
