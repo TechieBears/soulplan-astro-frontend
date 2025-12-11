@@ -17,7 +17,7 @@ const HomeNavbar = () => {
         { name: "Home", path: "/" },
         { name: "About", path: "/about" },
         { name: "Services", dropdown: true, path: "/services" },
-        { name: "Shop", path: "/products" },
+        // { name: "Shop", path: "/products" },
         { name: "Contact Us", path: "/contact" },
     ];
 
