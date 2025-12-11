@@ -1,95 +1,83 @@
-importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
+
+importScripts('https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/12.6.0/firebase-messaging-compat.js');
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD75yuin8lFEkJ74D-L_I6zUlWy3jjWCzY",
-    authDomain: "astroguid-1.firebaseapp.com",
-    projectId: "astroguid-1",
-    storageBucket: "astroguid-1.firebasestorage.app",
-    messagingSenderId: "765854749850",
-    appId: "1:765854749850:web:7533627e7c0530246dfb23",
-    measurementId: "G-CR95Q3HXZR"
+    apiKey: "AIzaSyAKSkHF1P7qWtWWKWp4v63opC_Tvk6tiAM",
+    authDomain: "soulplan-1.firebaseapp.com",
+    projectId: "soulplan-1",
+    storageBucket: "soulplan-1.firebasestorage.app",
+    messagingSenderId: "788140167949",
+    appId: "1:788140167949:web:172d2b95afb9ca5bbc5644",
+    measurementId: "G-2KEYCCKWN9"
 };
 
 firebase.initializeApp(firebaseConfig);
 
 const messaging = firebase.messaging();
 
-// Handle background messages
-messaging.onBackgroundMessage((payload) => {
-    console.log('[firebase-messaging-sw.js] Received background message ', payload);
+const processedMessages = new Set();
 
-    const notificationTitle = payload.notification?.title || payload.data?.title || 'New Notification';
-    const notificationBody = payload.notification?.body || payload.data?.body || 'You have a new message';
+let backgroundMessageHandlerRegistered = false;
 
-    const notificationOptions = {
-        body: notificationBody,
-        icon: payload.notification?.icon || payload.data?.icon || '/favicon.ico',
-        badge: '/favicon.ico',
-        image: payload.notification?.image || payload.data?.image,
-        data: payload.data || {},
-        tag: payload.data?.tag || 'default',
-        requireInteraction: false, // Changed to false for better UX
-        actions: [
-            {
-                action: 'open',
-                title: 'Open App',
-                icon: '/favicon.ico'
-            },
-            {
-                action: 'close',
-                title: 'Close',
-                icon: '/favicon.ico'
-            }
-        ],
-        // Add more notification options for better visibility
-        vibrate: [200, 100, 200],
-        timestamp: Date.now(),
-        silent: false
-    };
+if (!backgroundMessageHandlerRegistered) {
+    backgroundMessageHandlerRegistered = true;
 
-    // Show the notification
-    return self.registration.showNotification(notificationTitle, notificationOptions);
-});
+    messaging.onBackgroundMessage((payload) => {
+        console.log('[firebase-messaging-sw.js] Received background message ', payload);
+        console.log('[firebase-messaging-sw.js] Message data:', payload.data);
 
-// Handle notification click
+        const messageId = payload.messageId || payload.fcmMessageId || `msg-${Date.now()}`;
+
+        if (processedMessages.has(messageId)) {
+            console.log('[firebase-messaging-sw.js] Duplicate message detected, skipping:', messageId);
+            return Promise.resolve();
+        }
+
+        processedMessages.add(messageId);
+
+        if (processedMessages.size > 50) {
+            const firstId = Array.from(processedMessages)[0];
+            processedMessages.delete(firstId);
+        }
+
+        console.log('[firebase-messaging-sw.js] Background mode - notification suppressed (only showing in foreground)');
+
+        return Promise.resolve();
+    });
+}
+
 self.addEventListener('notificationclick', (event) => {
     console.log('[firebase-messaging-sw.js] Notification click received.');
+    console.log('[firebase-messaging-sw.js] Notification data:', event.notification.data);
 
     event.notification.close();
 
-    if (event.action === 'close') {
-        return;
+    const urlToOpen = event.notification.data?.click_action ||
+        event.notification.data?.url ||
+        '/';
+
+    if (event.action) {
+        console.log('[firebase-messaging-sw.js] Action clicked:', event.action);
     }
 
-    // Handle the notification click
     event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-            // Check if there's already a window/tab open with the target URL
-            const urlToOpen = event.notification.data?.url || '/';
-
-            for (const client of clientList) {
-                if (client.url.includes(urlToOpen) && 'focus' in client) {
+        clients.matchAll({
+            type: 'window',
+            includeUncontrolled: true
+        }).then((clientList) => {
+            for (let i = 0; i < clientList.length; i++) {
+                const client = clientList[i];
+                if (client.url.includes(self.location.origin) && 'focus' in client) {
+                    if (client.url !== urlToOpen) {
+                        return client.navigate(urlToOpen).then(() => client.focus());
+                    }
                     return client.focus();
                 }
             }
-
-            // If no existing window, open a new one
             if (clients.openWindow) {
                 return clients.openWindow(urlToOpen);
             }
         })
     );
-});
-
-// Handle service worker activation
-self.addEventListener('activate', (event) => {
-    console.log('[firebase-messaging-sw.js] Service worker activated.');
-    event.waitUntil(self.clients.claim());
-});
-
-// Handle service worker installation
-self.addEventListener('install', (event) => {
-    console.log('[firebase-messaging-sw.js] Service worker installed.');
-    self.skipWaiting();
 });
