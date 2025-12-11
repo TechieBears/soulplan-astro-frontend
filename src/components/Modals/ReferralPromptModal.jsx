@@ -42,6 +42,7 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
             };
 
             reset(formData);
+            // If profile is incomplete, force profile screen
             if (forceProfileScreen) {
                 setShowOnlyReferral(false);
             } else {
@@ -76,7 +77,7 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
                 ...data
             };
 
-            const res = await updateCustomerProfile(payload);
+            const res = await editUserCustomer(payload);
             console.log('API response:', res);
 
             if (res?.success) {
@@ -99,13 +100,10 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
                         }, 100);
                     }
                 } else {
-                    // Profile completion - close modal
-                    console.log('Closing modal after profile completion');
-                    dispatch(setIsRegistered(false));
-                    onModalClose?.();
-                    toggle();
                     toast.success('Profile completed successfully!');
-                    reset();
+                    setTimeout(() => {
+                        setShowOnlyReferral(true);
+                    }, 100);
                 }
             } else {
                 console.log('API call failed:', res?.message);
@@ -132,8 +130,8 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
         return phoneRegex.test(value) || 'Phone number must be 10 digits';
     };
 
-    // Don't show modal if isRegistered is false
-    if (!isRegistered) {
+    // Show modal if isRegistered is true OR if forceProfileScreen is true (for incomplete profiles)
+    if (!isRegistered && !forceProfileScreen) {
         return null;
     }
 
@@ -166,7 +164,7 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
                             >
                                 <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all">
                                     {/* Header */}
-                                    <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-8">
+                                    <div className="relative bg-primary-gradient px-6 py-8">
                                         <button
                                             onClick={() => {
                                                 dispatch(setIsRegistered(false));
@@ -181,17 +179,17 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
                                         <div className="flex items-center gap-3 mb-2">
                                             {showOnlyReferral ? (
                                                 <>
-                                                    <Gift size={28} className="text-yellow-300" />
+                                                    <Gift size={28} className="text-white" />
                                                     <h2 className="text-2xl md:text-3xl font-bold text-white">Enter Referral Code</h2>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <User size={28} className="text-yellow-300" />
+                                                    <User size={28} className="text-white" />
                                                     <h2 className="text-2xl md:text-3xl font-bold text-white">Complete Your Profile</h2>
                                                 </>
                                             )}
                                         </div>
-                                        <p className="text-primary-light text-sm">
+                                        <p className="text-white/90 text-sm">
                                             {showOnlyReferral
                                                 ? 'Got a referral code? Enter it here to unlock rewards!'
                                                 : 'Please fill in your details to continue'}
@@ -386,11 +384,11 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
                                                         type='submit'
                                                         disabled={showOnlyReferral && !watch('referralCode')?.trim() && !isProfileComplete}
                                                         className={`flex-1 px-4 py-3 text-sm font-semibold rounded-lg transition-all shadow-md ${showOnlyReferral && !watch('referralCode')?.trim()
-                                                            ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white cursor-not-allowed'
+                                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                                             : 'text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 hover:shadow-lg active:scale-95 cursor-pointer'
                                                             }`}
                                                     >
-                                                        {showOnlyReferral ? 'Submit' : 'Complete Profile'}
+                                                        {showOnlyReferral ? 'Continue' : 'Complete Profile'}
                                                     </button>
                                                 )}
                                             </div>

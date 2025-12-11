@@ -11,23 +11,31 @@ import { useSelector } from "react-redux";
 const HomePage = () => {
     const [slidesData, setSlidesData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const login = useSelector((state) => state.user.isLogged);
+    const { isLogged, isRegistered } = useSelector((state) => state.user);
     const user = useSelector((state) => state.user.userDetails);
-
     const [open, setOpen] = useState(false);
+
+    const toggle = () => setOpen(!open);
+
+    // Check if profile is complete - check for empty strings and missing values
+    const isProfileComplete = !!(user?.firstName?.trim() && user?.lastName?.trim() && user?.mobileNo?.trim() && user?.gender?.trim());
+
     useEffect(() => {
         window.scrollTo(0, 0);
-        if (login && user?._id) {
-            const dontShowAgain = localStorage.getItem(`dontShowReferralModal_${user._id}`);
-            setOpen(!dontShowAgain);
-        } else {
-            setOpen(false);
-        }
-    }, [login, user?._id]);
+    }, []);
 
-    const toggle = () => {
-        setOpen(!open);
-    }
+    useEffect(() => {
+        if (isLogged && user) {
+            const dontShow = localStorage.getItem(`dontShowReferralModal_${user._id}`);
+
+            // Show modal if profile is incomplete OR if profile is complete but user hasn't opted out of referral modal
+            if (!isProfileComplete || (!dontShow && isProfileComplete)) {
+                setOpen(true);
+            } else {
+                console.log('❌ Not opening modal - conditions not met');
+            }
+        }
+    }, [isLogged, user, isProfileComplete, isRegistered]);
 
 
     useEffect(() => {
@@ -99,7 +107,13 @@ const HomePage = () => {
             <HomeCertifications />
             <HomeBestServices />
             <Testimonials />
-            {login && <ReferralPromptModal open={open} toggle={toggle} />}
+            {isLogged && (
+                <ReferralPromptModal
+                    open={open}
+                    toggle={toggle}
+                    forceProfileScreen={!isProfileComplete}
+                />
+            )}
         </>
     );
 };

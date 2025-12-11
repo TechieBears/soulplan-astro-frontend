@@ -17,7 +17,7 @@ const HomeNavbar = () => {
         { name: "Home", path: "/" },
         { name: "About", path: "/about" },
         { name: "Services", dropdown: true, path: "/services" },
-        { name: "Shop", path: "/products" },
+        // { name: "Shop", path: "/products" },
         { name: "Contact Us", path: "/contact" },
     ];
 
@@ -165,7 +165,7 @@ const HomeNavbar = () => {
                     <div className="hidden lg:flex items-center gap-8">
                         {navLinks.map((link, i) =>
                             link.dropdown ? (
-                                <div className="relative inline-block">
+                                <div key={i} className="relative inline-block">
                                     <NavLink
                                         key={i}
                                         to={link.path}
@@ -639,7 +639,7 @@ const NotificationSection = () => {
                                     >
                                         <div className="simplebar-content" style={{ padding: '0px' }}>
                                             {notificationsDropdown?.map((item, i) => (
-                                                <li role="menuitem" className="focus:outline-none">
+                                                <li key={i} role="menuitem" className="focus:outline-none">
                                                     <a
                                                         // href={item?.url}
                                                         type="button"
