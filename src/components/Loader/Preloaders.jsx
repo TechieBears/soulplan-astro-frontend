@@ -1,6 +1,3 @@
-import React from "react";
-import Lottie from "lottie-react";
-import loader from "../../assets/loader.json";
 import logo from "../../assets/logo.png";
 
 const Preloaders = ({ className }) => {

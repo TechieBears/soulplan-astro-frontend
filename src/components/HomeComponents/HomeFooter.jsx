@@ -60,8 +60,8 @@ const HomeFooter = () => {
                             />
                         </a>
                         <h2 className="text-xl font-medium font-tbLex">SOUL PLAN</h2>
-                        <p className="text-sm mt-2 max-w-xs font-tbPop font-normal text-slate-300">
-                            Stars aren’t just shining dots each star has a story to tell.
+                        <p className="text-sm mt-2 max-w-lg font-tbPop font-normal text-slate-300">
+                            SOUL PLAN is a brand of <br /> YUJAINFO CONNECTING TO EXPLORE PRIVATE LIMITED.
                         </p>
                     </div>
                     <div className="flex flex-col sm:items-center md:items-end">
@@ -87,16 +87,17 @@ const HomeFooter = () => {
                             >
                                 Terms & conditions
                             </button>
+                            <button
+                                onClick={() => {
+                                    navigate("/refund-cancellation-policy"),
+                                        window.scrollTo(0, 0, { behavior: "smooth" });
+                                }}
+                                className="hover:underline text-left md:text-right"
+                            >
+                                Refund & Cancellation Policy
+                            </button>
                         </div>
                     </div>
-                </div>
-
-                {/* ===== Bottom Bar ===== */}
-                <div className="flex flex-col md:flex-row justify-between items-center mt-6 text-sm border-t border-slate-600 pt-4">
-                    <p className="text-center md:text-left">
-                        {/* Copyright © {new Date().getFullYear()}. All rights reserved. <br className="md:hidden" /> */}
-                        YUJAINFO CONNECTING TO EXPLORE PRIVATE LIMITED
-                    </p>
                 </div>
             </div>
         </footer>
