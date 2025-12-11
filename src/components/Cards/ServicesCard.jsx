@@ -25,12 +25,14 @@ const ServicesCard = ({ service, idx }) => {
             onClick={handleServiceClick}
             style={{ minHeight: '350px' }}
         >
-            <img
-                src={service.image || ""}
-                alt={service.name}
-                loading="eager"
-                className="w-full h-44 object-cover rounded-lg bg-slate1"
-            />
+            {service.image && (
+                <img
+                    src={service.image}
+                    alt={service.name}
+                    loading="eager"
+                    className="w-full h-44 object-cover rounded-lg bg-slate1"
+                />
+            )}
             <h3 className="mt-4 text-xl font-semibold font-tbLex line-clamp-1">{service.name || ""}</h3>
             <img
                 className="justify-self-center w-30 h-10 object-fit rounded-md"

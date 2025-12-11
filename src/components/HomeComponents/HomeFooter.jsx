@@ -64,37 +64,29 @@ const HomeFooter = () => {
                             Stars aren’t just shining dots each star has a story to tell.
                         </p>
                     </div>
-
-                    {/* ===== Right: Social Links ===== */}
                     <div className="flex flex-col sm:items-center md:items-end">
                         <h3 className="text-lg mb-4 font-tbLex font-medium">
-                            Social Links
+                            Quick Links
                         </h3>
-                        <div className="flex gap-4">
-                            <a
-                                href="#"
-                                className="p-2 bg-white text-black rounded-full hover:bg-gray-200"
+                        <div className="flex flex-col gap-2 text-sm">
+                            <button
+                                onClick={() => {
+                                    navigate("/privacy-policy"),
+                                        window.scrollTo(0, 0, { behavior: "smooth" });
+                                }}
+                                className="hover:underline text-left md:text-right"
                             >
-                                <FaFacebookF size={18} />
-                            </a>
-                            <a
-                                href="#"
-                                className="p-2 bg-white text-black rounded-full hover:bg-gray-200"
+                                Privacy Policy
+                            </button>
+                            <button
+                                onClick={() => {
+                                    navigate("/terms-conditions"),
+                                        window.scrollTo(0, 0, { behavior: "smooth" });
+                                }}
+                                className="hover:underline text-left md:text-right"
                             >
-                                <FaInstagram size={18} />
-                            </a>
-                            <a
-                                href="#"
-                                className="p-2 bg-white text-black rounded-full hover:bg-gray-200"
-                            >
-                                <FaXTwitter size={18} />
-                            </a>
-                            <a
-                                href="#"
-                                className="p-2 bg-white text-black rounded-full hover:bg-gray-200"
-                            >
-                                <FaYoutube size={18} />
-                            </a>
+                                Terms & conditions
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -102,35 +94,6 @@ const HomeFooter = () => {
                 {/* ===== Bottom Bar ===== */}
                 <div className="flex flex-col md:flex-row justify-between items-center mt-6 text-sm border-t border-slate-600 pt-4">
                     <p>Copyright © {new Date().getFullYear()}. All rights reserved.</p>
-                    <div className="flex gap-6 mt-2 md:mt-0">
-                        <button
-                            onClick={() => {
-                                navigate("/privacy-policy"),
-                                    window.scrollTo(0, 0, { behavior: "smooth" });
-                            }}
-                            className="hover:underline"
-                        >
-                            Privacy Policy
-                        </button>
-                        <button
-                            onClick={() => {
-                                navigate("/contact"),
-                                    window.scrollTo(0, 0, { behavior: "smooth" });
-                            }}
-                            className="hover:underline"
-                        >
-                            Customer Support
-                        </button>
-                        <button
-                            onClick={() => {
-                                navigate("/terms-conditions"),
-                                    window.scrollTo(0, 0, { behavior: "smooth" });
-                            }}
-                            className="hover:underline"
-                        >
-                            Terms & conditions
-                        </button>
-                    </div>
                 </div>
             </div>
         </footer>
