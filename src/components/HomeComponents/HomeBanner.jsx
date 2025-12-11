@@ -25,7 +25,7 @@ const HomeBanner = ({ slidesData, isLoading }) => {
     }
 
     return (
-        <section className='w-full h-screen'>
+        <section className='w-full h-[85vh] md:h-screen'>
             <Swiper
                 slidesPerView={1}
                 freeMode={true}
@@ -37,20 +37,30 @@ const HomeBanner = ({ slidesData, isLoading }) => {
                 {slidesData?.map((slide, index) => {
                     return (
                         <SwiperSlide key={index} className='relative '>
-                            <div className="relative h-screen w-full">
+                            <div className="relative h-[85vh] md:h-screen w-full">
                                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-black/70"></div>
                                 <img
                                     loading="lazy"
                                     src={slide.image}
-                                    className="w-full flex-shrink-0 h-screen object-cover cursor-pointer object-center"
+                                    className="w-full flex-shrink-0 h-[85vh] md:h-screen object-cover cursor-pointer object-center"
                                     alt={slide.title || 'Slide Image'}
                                 />
-                                <div className="absolute inset-0 container mx-auto flex  items-center justify-between z-30 px-5 xl:pl-0 pr-10 xl:pr-0">
-                                    <div className="w-full md:w-2/3 lg:w-1/2 space-y-3 lg:space-y-5 text-center md:text-left">
+                                <div className="absolute inset-0 container mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between z-30 px-5 xl:px-0 gap-6 md:gap-0">
+                                    {index == 0 && (
+                                        <div className="w-2/3 md:w-1/3 md:order-2 flex justify-center items-center overflow-hidden scale-100 md:scale-[1.15] imageback">
+                                            <img
+                                                src={roundimage}
+                                                alt={slide.title}
+                                                className="w-full h-full object-contain spin-slow"
+                                            />
+                                        </div>
+                                    )}
+                                    
+                                    <div className="w-full md:w-2/3 lg:w-1/2 space-y-3 lg:space-y-5 text-center md:text-left md:order-1">
                                         <h1 className="text-3xl lg:text-4xl xl:text-6xl pb-2 font-tbLex font-bold text-p tracking-tighter banner-title">
                                             {slide.title}
                                         </h1>
-                                        <p className="text-md md:text-md     font-tbPop w-full md:w-2/3  text-slate-200 pb-1 text-center md:text-left banner-description">
+                                        <p className="text-md md:text-md font-tbPop w-full md:w-2/3 text-slate-200 pb-1 text-center md:text-left banner-description">
                                             {slide.description}
                                         </p>
                                         {slide.button && (
@@ -64,18 +74,6 @@ const HomeBanner = ({ slidesData, isLoading }) => {
                                             </div>
                                         )}
                                     </div>
-
-                                    {index == 0 && (
-                                        <div className="w-1/3  justify-center items-center overflow-hidden scale-[1.15] imageback hidden md:block">
-                                            <img
-                                                src={roundimage}
-                                                alt={slide.title}
-                                                className="w-full h-full object-contain  spin-slow"
-                                            />
-                                        </div>
-                                    )}
-
-
                                 </div>
                             </div>
                         </SwiperSlide>
