@@ -19,7 +19,7 @@ import ContactPage from "../pages/Home/ContactPage";
 import RegisterPage from "../pages/Home/RegisterPage";
 import LoginPage from "../pages/Home/LoginPage";
 import TermsConditions from "../components/HomeComponents/TermsConditions";
-// import PrivacyPolicy from "../pages/Home/PrivacyPolicy";
+import PrivacyPolicy from "../pages/Home/PrivacyPolicy";
 import ErrorPage from "./ErrorPage";
 import BookingCalender from "../pages/Admin/Bookings/BookingCalender";
 import AllProducts from "../pages/Admin/AllProducts/AllProducts";
@@ -145,7 +145,7 @@ const ProjectRoutes = () => {
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/terms-conditions" element={<TermsConditions />} />
-                         {/* <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                         <Route
                             path="/profile/customer-support"
                             element={
@@ -234,7 +234,7 @@ const ProjectRoutes = () => {
                     </Routes>
                     <HomeFooter />
                     <a
-                        href={`https://wa.me/${8693000900}`}
+                        href="https://wa.me/919326511639"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 cursor-pointer"

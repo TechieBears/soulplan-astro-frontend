@@ -12,9 +12,9 @@ import SelectTextInput from "../../components/TextInput/SelectTextInput";
 
 const ContactPage = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
-      useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
 
     const [loader, setLoader] = useState()
@@ -60,22 +60,23 @@ const ContactPage = () => {
                             <div className="bg-white rounded-lg p-6 lg:p-10 ">
                                 <h4 className="text-base font-medium font-tbLex text-black">Phone</h4>
                                 <p className="mt-1 font-medium text-sm break-words font-tbPop tracking-tight text-slate-500">
-                                    +97 147654321
+                                    +91 9326511639
                                 </p>
                             </div>
 
                             <div className="bg-white rounded-lg p-6 lg:p-10 ">
                                 <h4 className="text-base font-medium font-tbLex text-black">Email</h4>
                                 <p className="mt-1 font-medium text-sm break-words font-tbPop tracking-tight text-slate-500">
-                                    booking@Astro.com
+                                    support@soulplan.net
                                 </p>
                             </div>
 
                             <div className="bg-white rounded-lg p-6 lg:p-10 ">
                                 <h4 className="text-base font-medium font-tbLex text-black">Address</h4>
                                 <p className="mt-1 font-medium text-sm break-words font-tbPop tracking-tight text-slate-500">
-                                    Germany — 785 15th Street, Office 478 <br />
-                                    Berlin, De 81566
+                                    YUJAINFO CONNECTING TO EXPLORE PRIVATE LIMITED <br />
+                                    A/3004, ROSA, MONTANA, VASANT OSCAR, <br />
+                                    MULUND-WEST, Mumbai - 400080
                                 </p>
                             </div>
                         </div>
@@ -83,131 +84,137 @@ const ContactPage = () => {
                         {/* Right Side - Form */}
                         <form onSubmit={handleSubmit(onSubmit)} >
                             <div className="bg-white p-3 ">
-                            <div className='md:p-5 xl:p-8 rounded-lg
+                                <div className='md:p-5 xl:p-8 rounded-lg
                             grid  md:grid-cols-2 gap-5 items-center' >
-                                <div className="">
-                                    <h4
-                                        className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
-                                    >
-                                        Full Name*
-                                    </h4>
-                                    <TextInput
-                                        label="Enter Full Name*"
-                                        placeholder="Enter Full Name"
-                                        type="text"
-                                        registerName="fullName"
-                                        props={{ ...register('fullName', { 
-                                            required: "Full name is required",
-                                            minLength: {
-                                                value: 3,
-                                                message: "Full name must be at least 3 characters"
-                                            },
-                                            pattern: {
-                                                value: /^[A-Za-z\s]+$/,
-                                                message: "Full name should only contain letters and spaces"
-                                            }
-                                        }) }}
-                                        errors={errors.fullName}
-                                    />
-                                </div>
-                                <div className="">
-                                    <h4
-                                        className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
-                                    >
-                                        Subject*
-                                    </h4>
                                     <div className="">
-                                        <SelectTextInput
-                                            label="Select Subject"
-                                            registerName="subject"
-                                            options={[
-                                                { value: 'Feedback', label: 'Feedback' },
-                                                { value: 'Complaint', label: 'Complaint' },
-                                                { value: 'Other', label: 'Other' },
-                                            ]}
-                                            placeholder="Select Subject"
+                                        <h4
+                                            className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
+                                        >
+                                            Full Name*
+                                        </h4>
+                                        <TextInput
+                                            label="Enter Full Name*"
+                                            placeholder="Enter Full Name"
+                                            type="text"
+                                            registerName="fullName"
                                             props={{
-                                                ...register('subject', { required: "Subject is required" })
+                                                ...register('fullName', {
+                                                    required: "Full name is required",
+                                                    minLength: {
+                                                        value: 3,
+                                                        message: "Full name must be at least 3 characters"
+                                                    },
+                                                    pattern: {
+                                                        value: /^[A-Za-z\s]+$/,
+                                                        message: "Full name should only contain letters and spaces"
+                                                    }
+                                                })
                                             }}
-                                            errors={errors.subject}
+                                            errors={errors.fullName}
+                                        />
+                                    </div>
+                                    <div className="">
+                                        <h4
+                                            className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
+                                        >
+                                            Subject*
+                                        </h4>
+                                        <div className="">
+                                            <SelectTextInput
+                                                label="Select Subject"
+                                                registerName="subject"
+                                                options={[
+                                                    { value: 'Feedback', label: 'Feedback' },
+                                                    { value: 'Complaint', label: 'Complaint' },
+                                                    { value: 'Other', label: 'Other' },
+                                                ]}
+                                                placeholder="Select Subject"
+                                                props={{
+                                                    ...register('subject', { required: "Subject is required" })
+                                                }}
+                                                errors={errors.subject}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="">
+                                        <h4
+                                            className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
+                                        >
+                                            Email*
+                                        </h4>
+                                        <TextInput
+                                            label="Enter Your Email"
+                                            placeholder="Enter Your Email"
+                                            type="email"
+                                            registerName="email"
+                                            props={{
+                                                ...register('email', {
+                                                    required: "Email is required",
+                                                    validate: validateEmail
+                                                })
+                                            }}
+                                            errors={errors.email}
+                                        />
+                                    </div>
+                                    <div>
+                                        <h4
+                                            className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
+                                        >
+                                            Phone Number*
+                                        </h4>
+                                        <TextInput
+                                            label="Enter Your Phone Number"
+                                            placeholder="Enter Your Phone Number"
+                                            type="tel"
+                                            registerName="mobileNumber"
+                                            props={{
+                                                ...register('mobileNumber', {
+                                                    required: "Phone number is required",
+                                                    validate: validatePhoneNumber,
+                                                    pattern: {
+                                                        value: /^[0-9]+$/,
+                                                        message: "Phone number should only contain numbers"
+                                                    },
+                                                    minLength: {
+                                                        value: 10,
+                                                        message: "Phone number must be at least 10 digits"
+                                                    },
+                                                    maxLength: {
+                                                        value: 10,
+                                                        message: "Phone number must not exceed 10 digits"
+                                                    }
+                                                })
+                                            }}
+                                            errors={errors.mobileNumber}
+                                        />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <h4
+                                            className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
+                                        >
+                                            Message
+                                        </h4>
+                                        <CustomTextArea
+                                            label="Enter Message"
+                                            placeholder="Enter Message"
+                                            registerName="message"
+                                            props={{
+                                                ...register('message', {
+                                                    required: "Message is required",
+                                                    minLength: {
+                                                        value: 10,
+                                                        message: "Message must be at least 10 characters"
+                                                    }
+                                                })
+                                            }}
+                                            errors={errors.message}
                                         />
                                     </div>
                                 </div>
-                                <div className="">
-                                    <h4
-                                        className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
-                                    >
-                                        Email*
-                                    </h4>
-                                    <TextInput
-                                        label="Enter Your Email"
-                                        placeholder="Enter Your Email"
-                                        type="email"
-                                        registerName="email"
-                                        props={{ ...register('email', { 
-                                            required: "Email is required",
-                                            validate: validateEmail
-                                        }) }}
-                                        errors={errors.email}
-                                    />
-                                </div>
-                                <div>
-                                    <h4
-                                        className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
-                                    >
-                                        Phone Number*
-                                    </h4>
-                                    <TextInput
-                                        label="Enter Your Phone Number"
-                                        placeholder="Enter Your Phone Number"
-                                        type="tel"
-                                        registerName="mobileNumber"
-                                        props={{ ...register('mobileNumber', { 
-                                            required: "Phone number is required",
-                                            validate: validatePhoneNumber,
-                                            pattern: {
-                                                value: /^[0-9]+$/,
-                                                message: "Phone number should only contain numbers"
-                                            },
-                                            minLength: {
-                                                value: 10,
-                                                message: "Phone number must be at least 10 digits"
-                                            },
-                                            maxLength: {
-                                                value: 10,
-                                                message: "Phone number must not exceed 10 digits"
-                                            }
-                                        }) }}
-                                        errors={errors.mobileNumber}
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <h4
-                                        className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
-                                    >
-                                        Message
-                                    </h4>
-                                    <CustomTextArea
-                                        label="Enter Message"
-                                        placeholder="Enter Message"
-                                        registerName="message"
-                                        props={{
-                                            ...register('message', {
-                                                required: "Message is required",
-                                                minLength: {
-                                                    value: 10,
-                                                    message: "Message must be at least 10 characters"
-                                                }
-                                            })
-                                        }}
-                                        errors={errors.message}
-                                    />  
-                                </div>
-                            </div>
                                 <div className="flex justify-self-center p-4">
                                     {loader ? <LoadBox className={`${formBtn3} !w-auto`} /> : <button type='submit' className={`${formBtn3} !w-auto`}>submit</button>}
                                 </div>
-</div>
+                            </div>
 
                         </form>
                     </div>
@@ -220,10 +227,11 @@ const ContactPage = () => {
                         <div className="w-full h-[500px] rounded-xl overflow-hidden shadow-md">
                             <iframe
                                 title="Google Maps"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3608.990798153229!2d55.27078241501025!3d25.204849983898388!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f434f1e0e4e0f%3A0xa7b5b89cfba3e7e0!2sDubai!5e0!3m2!1sen!2sae!4v1674834000000!5m2!1sen!2sae"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d964.6243902271722!2d72.93547782912476!3d19.17012743237409!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b9c1f981efd7%3A0xbdb1286efba5210a!2sRosa%20A%20%26%20B%20Wing%2C%20Sheth%20Montana!5e0!3m2!1sen!2sin!4v1765445104018!5m2!1sen!2sin"
                                 className="w-full h-full border-0"
                                 allowFullScreen=""
                                 loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
                             ></iframe>
                         </div>
                     </div>
