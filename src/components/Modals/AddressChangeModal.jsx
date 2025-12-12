@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { TableTitle } from '../../helper/Helper';
 import SelectTextInput from '../TextInput/SelectTextInput';
 import CustomTextArea from '../TextInput/CustomTextArea';
-import { getAllAddress, editAddress, addAddress } from '../../api';
+import { getAllAddress, editAddress, addAddress, deleteAddress } from '../../api';
 import { useDispatch } from 'react-redux';
 import { setAddresses } from '../../redux/Slices/cartSlice';
 import Switch from 'react-js-switch';
@@ -112,19 +112,20 @@ function AddressChangeModal({ edit }) {
         try {
             setFetchLoading(true);
             const res = await getAllAddress();
-            if (res?.data?.length > 0) {
-                const defaultAddress = res?.data?.filter(item => item?.isDefault)
-                dispatch(setAddresses(defaultAddress[0]))
+            if (res?.success) {
+                setAddress(res?.data || []);
+                const defaultAddress = res?.data?.filter(item => item?.isDefault);
+                dispatch(setAddresses(defaultAddress[0]));
             } else {
+                setAddress([]);
                 dispatch(setAddresses([]));
+                toast.error(res?.message || 'Failed to fetch addresses');
             }
-            setAddress(res?.data);
         } catch (err) {
             setAddress([]);
             toast.error(err.message || 'Failed to fetch addresses');
             console.error('Error fetching addresses', err);
         } finally {
-            setAddress([]);
             setFetchLoading(false);
         }
     };
@@ -169,11 +170,33 @@ function AddressChangeModal({ edit }) {
         setShowEditForm(true);
     };
 
+    const handleDeleteAddress = async (addressId) => {
+        if (!window.confirm('Are you sure you want to delete this address?')) return;
+        
+        try {
+            const response = await deleteAddress(addressId);
+            if (response?.success) {
+                toast.success('Address deleted successfully');
+                fetchAddresses();
+            } else {
+                toast.error(response?.message || 'Failed to delete address');
+            }
+        } catch (error) {
+            console.error('Error deleting address:', error);
+            toast.error('Failed to delete address');
+        }
+    };
+
     return <>
         {
             edit ? (
                 <button
-                    onClick={() => toggle()}
+                    type="button"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggle();
+                    }}
                     className="flex items-center gap-1 border border-gray-900 rounded px-4 py-2 text-sm font-tbLex text-slate-600 hover:bg-gray-50 transition-colors mt-2 sm:mt-0"
                 >
                     <Edit className="w-4 h-4" />
@@ -263,8 +286,18 @@ function AddressChangeModal({ edit }) {
                                                                     <button
                                                                         onClick={() => handleEditAddress(address)}
                                                                         className="px-4 py-2 text-sm font-tbLex border border-gray-900 rounded hover:bg-gray-50"
+                                                                        title="Edit Address"
                                                                     >
                                                                         <Edit className="w-4 h-4" />
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => handleDeleteAddress(address._id)}
+                                                                        className="px-4 py-2 text-sm font-tbLex border border-red-500 text-red-500 rounded hover:bg-red-50"
+                                                                        title="Delete Address"
+                                                                    >
+                                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                        </svg>
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -278,6 +311,9 @@ function AddressChangeModal({ edit }) {
                                                     </p>
                                                 </div>
                                             )}
+                                            <div className="px-6 pb-6">
+                                                <AddButton onClick={() => setShowEditForm(true)} />
+                                            </div>
                                         </div>
                                     ) : (
                                         // Edit Address Form
