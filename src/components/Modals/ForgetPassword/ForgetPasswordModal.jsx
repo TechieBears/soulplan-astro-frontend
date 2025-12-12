@@ -1,6 +1,6 @@
 import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react'
-import { ArrowPathIcon, EnvelopeIcon, ShieldCheckIcon, KeyIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { ArrowPathIcon, EnvelopeIcon, ShieldCheckIcon, KeyIcon, EyeIcon, EyeSlashIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { validateEmail, validatePassword } from '../../../utils/validateFunction';
@@ -66,18 +66,18 @@ export default function ForgetPasswordModal({ open, setOpen }) {
         try {
             await forgetUser(data).then((res) => {
                 console.log("⚡️🤯 ~ ForgetPasswordModal.jsx:64 ~ awaitforgetUser ~ res:", res)
-                if (res?.message === "OTP sent to your email") {
-                    toast.success("OTP sent successfully ✅");
+                if (res?.success && res?.message === "Password reset email sent successfully") {
+                    toast.success("Password reset email sent successfully.");
                     setEmail(data.email);
-                    setServerOtp(res.otp); // Store the OTP from server response
-                    setStep(2);
+                    setOpen(false);
+                    reset();
                 } else {
-                    toast.error(res?.message || "Failed to send OTP");
+                    toast.error(res?.message || "Failed to send password reset email");
                 }
             });
         } catch (error) {
             console.error(error);
-            toast.error("An error occurred while sending OTP");
+            toast.error("An error occurred while sending password reset email");
         } finally {
             setIsLoading(false);
         }
@@ -216,7 +216,7 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                 <div className="bg-white p-8">
                                     <div className="text-center mb-6">
                                         <h2 className="text-3xl font-extrabold text-center text-p">
-                                            {step === 1 ? 'Reset Password' :
+                                            {step === 1 ? 'Forget Password?' :
                                                 step === 2 ? 'Verify Code' :
                                                     'New Password'}
                                         </h2>
@@ -228,15 +228,15 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                     </div>
 
                                     {/* Progress Steps */}
-                                    <div className="flex justify-center items-center mb-8 px-4">
-                                        <div className="flex flex-col items-center">
+                                    <div className="flex justify-center items-center px-4">
+                                        {/* <div className="flex flex-col items-center">
                                             <StepIcon
                                                 active={step === 1}
                                                 completed={step > 1}
                                                 icon={<EnvelopeIcon className="h-5 w-5" />}
                                             />
                                             <span className={`text-xs mt-2 ${step >= 1 ? 'text-primary font-medium' : 'text-gray-400'}`}>Email</span>
-                                        </div>
+                                        </div> */}
                                         {/* <div className="flex-1 h-0.5 mx-2 bg-gray-200">
                                             <div className={`h-0.5 ${step >= 2 ? 'bg-primary' : 'bg-gray-200'}`}></div>
                                         </div>
@@ -274,7 +274,7 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                                     </label>
                                                     <TextInput
                                                         label="Enter email*"
-                                                        placeholder="Enter email"
+                                                        placeholder="Enter email address"
                                                         type="email"
                                                         registerName="email"
                                                         props={{ ...register('email'), validate: validateEmail, required: "Email is required" }}
@@ -508,28 +508,11 @@ export default function ForgetPasswordModal({ open, setOpen }) {
 
                                         </div>
 
-                                        <div className="mt-6 flex justify-between gap-3">
-                                            {step > 1 ? (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setStep(step - 1)}
-                                                    className="flex-1 rounded border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                >
-                                                    Back
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    type="button"
-                                                    onClick={handleClose}
-                                                    className="flex-1 rounded border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                >
-                                                    Cancel
-                                                </button>
-                                            )}
+                                        <div className="mt-6">
                                             <button
                                                 type="submit"
                                                 disabled={isLoading}
-                                                className={`${formBtn3} !rounded ${isLoading ? 'bg-blue-400' :
+                                                className={`w-full ${formBtn3} !rounded ${isLoading ? 'bg-blue-400' :
                                                     step === 3 ? 'bg-green-600 hover:bg-green-700' : ''
                                                     }`}
                                             >
@@ -539,8 +522,18 @@ export default function ForgetPasswordModal({ open, setOpen }) {
                                                         {step === 1 ? 'Sending...' : step === 2 ? 'Verifying...' : 'Resetting...'}
                                                     </span>
                                                 ) : (
-                                                    step === 1 ? 'Send Code' : step === 2 ? 'Verify Code' : 'Reset Password'
+                                                    step === 1 ? 'Continue' : step === 2 ? 'Verify Code' : 'Reset Password'
                                                 )}
+                                            </button>
+                                        </div>
+                                        <div className="text-center mt-4">
+                                            <button
+                                                type="button"
+                                                onClick={handleClose}
+                                                className="text-sm text-gray-600 hover:text-primary transition-colors duration-200 inline-flex items-center gap-1 font-semibold"
+                                            >
+                                                <ArrowLeftIcon className="h-4 w-4" />
+                                                Back to Login
                                             </button>
                                         </div>
                                     </form>

@@ -36,30 +36,29 @@ const AddressSelector = () => {
 
     return (
         <div>
-            {addresses?.length === 0 ? <AddressChangeModal edit={false} /> : <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full pb-4 bg-slate-50 p-4 rounded-xl  border border-slate-100 mb-4">
-                <div className="flex-1 flex flex-col">
-                    <h3 className="text-sm font-semibold font-tbLex text-gray-800">
-                        Deliver to: <span className="font-medium">
-                            {addresses?.firstName || "------"}
-                            {addresses?.lastName || "------"}
-                        </span>
-                    </h3>
-                    <h3 className="text-sm font-semibold font-tbLex text-gray-800 capitalize">
-                        {addresses?.phoneNumber || "----- ------"} (
-                        {addresses?.addressType || "----- ------"})
-                    </h3>
-                    <p className="text-gray-500 text-sm font-tbPop mt-1">
-                        {addresses?.address || "------"} {addresses?.city || "------"}
-                        {addresses?.state || "------"} {addresses?.country || "------"}-{" "}
-                        {addresses?.postalCode || "------"}
-                    </p>
+            {!addresses || addresses?.length === 0 || !addresses?._id ? (
+                <AddressChangeModal edit={false} />
+            ) : (
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full pb-4 bg-slate-50 p-4 rounded-xl border border-slate-100 mb-4">
+                    <div className="flex-1 flex flex-col">
+                        <h3 className="text-sm font-semibold font-tbLex text-gray-800">
+                            Deliver to: <span className="font-medium">
+                                {addresses?.firstName || "------"} {addresses?.lastName || "------"}
+                            </span>
+                        </h3>
+                        <h3 className="text-sm font-semibold font-tbLex text-gray-800 capitalize">
+                            {addresses?.phoneNumber || "----- ------"} (
+                            {addresses?.addressType || "----- ------"})
+                        </h3>
+                        <p className="text-gray-500 text-sm font-tbPop mt-1">
+                            {addresses?.address || "------"} {addresses?.city || "------"} {addresses?.state || "------"} {addresses?.country || "------"} - {addresses?.postalCode || "------"}
+                        </p>
+                    </div>
+
+                    <AddressChangeModal edit={true} />
                 </div>
-
-                <AddressChangeModal edit={true} />
-            </div>}
-
+            )}
         </div>
-
     )
 }
 

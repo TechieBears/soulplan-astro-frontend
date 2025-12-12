@@ -28,25 +28,20 @@ const HomeFooter = () => {
                         <h3 className="text-lg font-medium font-tbLex mb-4">
                             Office Location
                         </h3>
-                        <p className="text-sm">Germany —</p>
-                        <p className="text-sm">785 15th Street, Office 478</p>
-                        <p className="text-sm mb-4">Berlin, DE 81566</p>
-                        <p className="flex items-center gap-2 text-sm mb-2">
+                        <p className="text-sm">YUJAINFO CONNECTING TO EXPLORE PRIVATE LIMITED</p>
+                        <p className="text-sm">A/3004, ROSA, MONTANA, VASANT OSCAR,</p>
+                        <p className="text-sm mb-4">MULUND-WEST, Mumbai - 400080</p>
+                        <a href="mailto:support@soulplan.net" className="flex items-center gap-2 text-sm mb-2 hover:underline transition-colors duration-200">
                             <MdEmail size={18} />
-                            <a
-                                href="mailto:mohanmamidala2004@gmail.com?subject=Contact%20From%20Website"
-                                className="hover:underline transition-colors duration-200"
-                            >
-                                support@soulplan.com
-                            </a>
-                        </p>
+                            support@soulplan.net
+                        </a>
                         <p className="flex items-center gap-2 text-sm">
                             <MdPhone size={18} />
                             <a
-                                href="tel:+919321806791"
+                                href="tel:+919326511639"
                                 className="hover:underline transition-colors duration-200"
                             >
-                                +91 9321806791
+                                +91 9326511639
                             </a>
                         </p>
                     </div>
@@ -60,8 +55,8 @@ const HomeFooter = () => {
                             />
                         </a>
                         <h2 className="text-xl font-medium font-tbLex">SOUL PLAN</h2>
-                        <p className="text-sm mt-2 max-w-xs font-tbPop font-normal text-slate-300">
-                            Stars aren’t just shining dots each star has a story to tell.
+                        <p className="text-sm mt-2 max-w-lg font-tbPop font-normal text-slate-300">
+                            SOUL PLAN is a brand of <br /> YUJAINFO CONNECTING TO EXPLORE PRIVATE LIMITED.
                         </p>
                     </div>
                     <div className="flex flex-col sm:items-center md:items-end">
@@ -87,13 +82,17 @@ const HomeFooter = () => {
                             >
                                 Terms & conditions
                             </button>
+                            <button
+                                onClick={() => {
+                                    navigate("/refund-cancellation-policy"),
+                                        window.scrollTo(0, 0, { behavior: "smooth" });
+                                }}
+                                className="hover:underline text-left md:text-right"
+                            >
+                                Refund & Cancellation Policy
+                            </button>
                         </div>
                     </div>
-                </div>
-
-                {/* ===== Bottom Bar ===== */}
-                <div className="flex flex-col md:flex-row justify-between items-center mt-6 text-sm border-t border-slate-600 pt-4">
-                    <p>Copyright © {new Date().getFullYear()}. All rights reserved.</p>
                 </div>
             </div>
         </footer>

@@ -780,27 +780,31 @@ const ServiceTab = () => {
       }
 
       const payload = {
-        serviceItems: cartItems?.map((item) => ({
-          serviceId: item?.serviceId || "",
-          astrologerId: item?.astrologer?._id || "",
-          bookingDate: moment(item?.date).format("YYYY-MM-DD"),
-          startTime: item?.startTime || "",
-          firstName: item?.cust?.firstName || "",
-          lastName: item?.cust?.lastName || "",
-          email: item?.cust?.email || "",
-          phone: item?.cust?.phone || "",
-          address: item?.cust?.address || "",
-          serviceType: item?.serviceMode || "",
-        })),
-        paymentType: "COD",
-        currencyType: "INR",
-        paymentId: "COD-20250923123045",
-        couponId: coupon?._id || "",
-        address: "",
-        paymentDetails: {
-          note: "Cash will be collected at time of service",
-          currency: "INR",
-        },
+        serviceItems: cartItems?.map((item) => {
+          const serviceItem = {
+            serviceId: item?.serviceId || "",
+            serviceType: item?.serviceMode || "",
+            astrologerId: item?.astrologer?._id || "",
+            bookingDate: moment(item?.date).format("YYYY-MM-DD"),
+            startTime: item?.startTime || "",
+            firstName: item?.cust?.firstName || "",
+            lastName: item?.cust?.lastName || "",
+            email: item?.cust?.email || "",
+            phone: item?.cust?.phone || "",
+          };
+          
+          // Add address or addressData based on what's available
+          if (item?.address) {
+            serviceItem.address = item.address;
+          } else if (item?.cust?.addressData) {
+            serviceItem.addressData = item.cust.addressData;
+          }
+          
+          return serviceItem;
+        }),
+        paymentType: "UPI",
+        paymentId: `UPI-${moment().format("YYYYMMDDHHmmss")}`,
+        useCredits: isWalletChecked,
       };
       console.log("⚡️🤯 ~ Cart.jsx:602 ~ handleBooking ~ payload:", payload);
       
