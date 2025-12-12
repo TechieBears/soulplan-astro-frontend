@@ -48,43 +48,73 @@ const CartPage = () => {
       </div>
       <div className="container mx-auto px-4 xl:px-0 py-8">
         {/* Header */}
-        <div className="relative flex items-center justify-center mb-8">
-          <div className="absolute left-0">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center text-black hover:text-gray-800 transition-colors text-sm md:text-base font-tbLex"
-            >
-              <ArrowLeft
-                className="mr-2"
-                color="#000"
-                size={20}
-                weight="bold"
-              />
-              Go Back
-            </button>
+        <div className="mb-8">
+          {/* Mobile Layout */}
+          <div className="sm:hidden space-y-4">
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center text-black hover:text-gray-800 transition-colors text-sm font-tbLex"
+              >
+                <ArrowLeft className="mr-2" color="#000" size={20} weight="bold" />
+                Go Back
+              </button>
+              <h1 className="text-xl font-tbLex font-normal text-slate-800">Cart</h1>
+            </div>
+            <div className="flex bg-white rounded-full p-1.5 space-x-1.5">
+              <button
+                className={`flex-1 px-4 py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm font-tbLex ${
+                  activeTab === "services" ? "bg-linear-gradient text-white" : ""
+                }`}
+                onClick={() => setActiveTab("services")}
+              >
+                Services
+              </button>
+              <button
+                className={`flex-1 px-4 py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm font-tbLex ${
+                  activeTab === "products" ? "bg-linear-gradient text-white" : ""
+                }`}
+                onClick={() => setActiveTab("products")}
+              >
+                Products
+              </button>
+            </div>
           </div>
 
-          <h1 className="text-xl md:text-2xl hidden sm:block font-tbLex font-normal text-slate-800">
-            Cart
-          </h1>
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex relative items-center justify-center">
+            <div className="absolute left-0">
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center text-black hover:text-gray-800 transition-colors text-sm md:text-base font-tbLex"
+              >
+                <ArrowLeft className="mr-2" color="#000" size={20} weight="bold" />
+                Go Back
+              </button>
+            </div>
 
-          <div className="absolute right-0 sm:flex bg-white rounded-full p-1.5 space-x-1.5">
-            <button
-              className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${
-                activeTab === "services" ? "bg-linear-gradient text-white" : ""
-              }`}
-              onClick={() => setActiveTab("services")}
-            >
-              Services
-            </button>
-            <button
-              className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${
-                activeTab === "products" ? "bg-linear-gradient text-white" : ""
-              }`}
-              onClick={() => setActiveTab("products")}
-            >
-              Products
-            </button>
+            <h1 className="text-xl md:text-2xl font-tbLex font-normal text-slate-800">
+              Cart
+            </h1>
+
+            <div className="absolute right-0 flex bg-white rounded-full p-1.5 space-x-1.5">
+              <button
+                className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${
+                  activeTab === "services" ? "bg-linear-gradient text-white" : ""
+                }`}
+                onClick={() => setActiveTab("services")}
+              >
+                Services
+              </button>
+              <button
+                className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${
+                  activeTab === "products" ? "bg-linear-gradient text-white" : ""
+                }`}
+                onClick={() => setActiveTab("products")}
+              >
+                Products
+              </button>
+            </div>
           </div>
         </div>
 

@@ -88,106 +88,112 @@ const Testimonials = () => {
                             </div>
                         ) : testimonials?.length > 0 ? (
                             <>
-                            <Swiper
-                                spaceBetween={20}
-                                centeredSlides={false}
-                                slidesPerView={1}
-                                modules={[Navigation]}
-                                navigation={{
-                                    nextEl: '.swiper-button-next-custom',
-                                    prevEl: '.swiper-button-prev-custom',
-                                }}
-                                loop={true}
-                                breakpoints={{
-                                    768: { slidesPerView: 2 },
-                                    1024: { slidesPerView: 3 },
-                                }}
-                            >
-                                {testimonials?.map((t, index) => (
-                                    <SwiperSlide
-                                        key={t._id || index}
-                                        className="!flex !justify-center"
-                                    >
-                                        <div
-                                            className={`w-full h-[400px] border-3 border-orange-500 bg-white rounded-xl shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between border hover:shadow-xl`}
+                                <Swiper
+                                    spaceBetween={20}
+                                    centeredSlides={false}
+                                    slidesPerView={1}
+                                    modules={[Navigation]}
+                                    navigation={{
+                                        nextEl: '.swiper-button-next-custom',
+                                        prevEl: '.swiper-button-prev-custom',
+                                    }}
+                                    loop={true}
+                                    breakpoints={{
+                                        768: { slidesPerView: 2 },
+                                        1024: { slidesPerView: 3 },
+                                    }}
+                                >
+                                    {testimonials?.map((t, index) => (
+                                        <SwiperSlide
+                                            key={t._id || index}
+                                            className="!flex !justify-center"
                                         >
-                                            {/* Card Header */}
-                                            <div className="p-4 border-b border-gray-100">
-                                                <div className="flex items-center space-x-3 my-2">
-                                                    <img
-                                                        src={
-                                                            t?.user?.profileImage ||
-                                                            t?.user_id?.profileImage ||
-                                                            t?.user_id?.image ||
-                                                            t?.image ||
-                                                            userImage
-                                                        }
-                                                        alt={`${t?.user?.firstName || t?.user_id?.name || "User"
-                                                            }'s testimonial`}
-                                                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
-                                                        onError={(e) => {
-                                                            e.target.src = userImage;
-                                                        }}
-                                                    />
-                                                    <div>
-                                                        <h4 className="font-semibold text-gray-800 text-sm capitalize text-left">
-                                                            {t?.user?.firstName && t?.user?.lastName
-                                                                ? `${t.user.firstName} ${t.user.lastName}`
-                                                                : t?.user_id?.name ||
-                                                                t?.name ||
-                                                                "Anonymous User"}
-                                                        </h4>
-                                                        <p className="text-xs text-gray-500 text-left">
-                                                            {[t?.city, t?.state, t?.country]
-                                                                .filter(Boolean)
-                                                                .join(", ")}
+                                            <div
+                                                className="w-full bg-white rounded-xl shadow-lg transition-all duration-300 overflow-hidden flex flex-col hover:shadow-xl relative"
+                                                style={{
+                                                    border: '2px solid transparent',
+                                                    backgroundImage: 'linear-gradient(white, white), linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%)',
+                                                    backgroundOrigin: 'border-box',
+                                                    backgroundClip: 'padding-box, border-box'
+                                                }}
+                                            >
+                                                {/* Card Header */}
+                                                <div className="p-4 border-b border-gray-100">
+                                                    <div className="flex items-center space-x-3 my-2">
+                                                        <img
+                                                            src={
+                                                                t?.user?.profileImage ||
+                                                                t?.user_id?.profileImage ||
+                                                                t?.user_id?.image ||
+                                                                t?.image ||
+                                                                userImage
+                                                            }
+                                                            alt={`${t?.user?.firstName || t?.user_id?.name || "User"
+                                                                }'s testimonial`}
+                                                            className="w-12 h-12 rounded-full object-cover border-2 border-primary-light"
+                                                            onError={(e) => {
+                                                                e.target.src = userImage;
+                                                            }}
+                                                        />
+                                                        <div>
+                                                            <h4 className="font-semibold text-gray-800 text-sm capitalize text-left">
+                                                                {t?.user?.firstName && t?.user?.lastName
+                                                                    ? `${t.user.firstName} ${t.user.lastName}`
+                                                                    : t?.user_id?.name ||
+                                                                    t?.name ||
+                                                                    "Anonymous User"}
+                                                            </h4>
+                                                            <p className="text-xs text-gray-500 text-left">
+                                                                {[t?.city, t?.state, t?.country]
+                                                                    .filter(Boolean)
+                                                                    .join(", ")}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="p-4 flex-1">
+                                                    {(t?.service || t?.product) && (
+                                                        <div className="bg-primary text-white px-3 py-1 rounded-full text-xs font-medium mb-3 w-fit">
+                                                            {t?.service?.name ||
+                                                                t?.service?.title ||
+                                                                t?.product?.name}
+                                                        </div>
+                                                    )}
+
+                                                    <div className="text-gray-700 text-sm leading-relaxed h-36 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                                                        <p className="text-left">
+                                                            {t?.message || t?.text}
                                                         </p>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <div className="p-4 flex-1">
-                                                {(t?.service || t?.product) && (
-                                                    <div className="inline-block bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-medium mb-3">
-                                                        {t?.service?.name ||
-                                                            t?.service?.title ||
-                                                            t?.product?.name}
+                                                {t?.media && t?.media?.length > 0 && (
+                                                    <div className="px-4 pb-4">
+                                                        <img
+                                                            src={t.media[0]}
+                                                            alt="Testimonial media"
+                                                            className="w-full h-48 object-cover rounded-lg"
+                                                            onError={(e) => {
+                                                                e.target.style.display = "none";
+                                                            }}
+                                                        />
                                                     </div>
                                                 )}
-
-                                                <div className="text-gray-700 text-sm leading-relaxed mb-4 max-h-24 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                                                    <p>
-                                                        {t?.message || t?.text}
-                                                    </p>
-                                                </div>
                                             </div>
-
-                                            {t?.media && t?.media?.length > 0 && (
-                                                <div className="px-4 pb-4">
-                                                    <img
-                                                        src={t.media[0]}
-                                                        alt="Testimonial media"
-                                                        className="w-full h-32 object-cover rounded-lg"
-                                                        onError={(e) => {
-                                                            e.target.style.display = "none";
-                                                        }}
-                                                    />
-                                                </div>
-                                            )}
-                                        </div>
-                                    </SwiperSlide>
-                                ))}
-                            </Swiper>
-                            <div className="swiper-button-prev-custom absolute -left-8 top-1/2 transform -translate-y-1/2 z-10 bg-black rounded-full shadow-lg p-2 cursor-pointer  transition-colors">
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                </svg>
-                            </div>
-                            <div className="swiper-button-next-custom absolute -right-8 top-1/2 transform -translate-y-1/2 z-10 bg-black rounded-full shadow-lg p-2 cursor-pointer transition-colors">
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </div>
+                                        </SwiperSlide>
+                                    ))}
+                                </Swiper>
+                                <div className="swiper-button-prev-custom absolute -left-8 top-1/2 transform -translate-y-1/2 z-10 bg-black rounded-full shadow-lg p-2 cursor-pointer  transition-colors">
+                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </div>
+                                <div className="swiper-button-next-custom absolute -right-8 top-1/2 transform -translate-y-1/2 z-10 bg-black rounded-full shadow-lg p-2 cursor-pointer transition-colors">
+                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
                             </>
                         ) : (
                             <div className="text-center py-12">
