@@ -106,7 +106,7 @@ const BookingPage = () => {
             // Add address or addressData based on booking type
             if (data?.bookingType === "self") {
                 if (!selectedAddress || !selectedAddress._id) {
-                    toast.error("Please select a delivery address");
+                    toast.error("Please select a default delivery address");
                     setIsLoadingService(false);
                     return;
                 }
@@ -277,6 +277,14 @@ const BookingPage = () => {
             setValue("astrologer", AstrologerOptions[0].value);
         }
     }, [AstrologerOptions, astrologerWatch, setValue]);
+
+    const serviceModeWatch = watch("serviceMode");
+    useEffect(() => {
+        const availableServiceTypes = service?.service?.serviceType || [];
+        if (availableServiceTypes.length === 1 && !serviceModeWatch) {
+            setValue("serviceMode", availableServiceTypes[0]);
+        }
+    }, [service?.service?.serviceType, serviceModeWatch, setValue]);
 
     return (
         <div className="min-h-screen bg-[#FFF9EF]  pt-16 lg:pt-24 relative">
