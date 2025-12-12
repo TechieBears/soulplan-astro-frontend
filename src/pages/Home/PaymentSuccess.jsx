@@ -102,15 +102,13 @@ const PaymentSuccess = () => {
                         key={`${index}`}
                         className="bg-[#9E52D8] rounded-lg p-2 px-4 cursor-pointer hover:bg-[#8A47C4] transition-all duration-300
                                                              flex flex-col sm:flex-row items-left sm:items-start gap-4 cart-slide-up"
-                        onClick={() => {
-                          navigate(`/product/${item.product}`);
-                        }}
                       >
                         <div
-                          className="sm:w-24 sm:h-24 w-full rounded-lg overflow-hidden flex-shrink-0 mx-auto sm:mx-0"
+                          className="sm:w-24 sm:h-24 w-full rounded-lg overflow-hidden flex-shrink-0 mx-auto sm:mx-0 cursor-pointer"
                           style={{
                             background: `linear-gradient(90deg, rgba(0, 121, 208, 0.2) -12.5%, rgba(158, 82, 216, 0.2) 30.84%, rgba(218, 54, 92, 0.2) 70.03%, rgba(208, 73, 1, 0.2) 111%)`,
                           }}
+                          onClick={() => navigate(`/product/${item.product}`)}
                         >
                           <img
                             src={item?.snapshot?.images || product1}
@@ -121,7 +119,10 @@ const PaymentSuccess = () => {
                         </div>
 
                         <div className="flex-1 min-w-0 text-left justify-self-start">
-                          <h3 className="font-bold text-white font-dm text-lg mb-1">
+                          <h3 
+                            className="font-bold text-white font-dm text-lg mb-1 cursor-pointer hover:underline"
+                            onClick={() => navigate(`/product/${item.product}`)}
+                          >
                             {item.snapshot?.name}
                           </h3>
                           <div className="font-medium text-lg text-white mb-1">

@@ -31,15 +31,10 @@ const HomeFooter = () => {
                         <p className="text-sm">YUJAINFO CONNECTING TO EXPLORE PRIVATE LIMITED</p>
                         <p className="text-sm">A/3004, ROSA, MONTANA, VASANT OSCAR,</p>
                         <p className="text-sm mb-4">MULUND-WEST, Mumbai - 400080</p>
-                        <p className="flex items-center gap-2 text-sm mb-2">
+                        <a href="mailto:support@soulplan.net" className="flex items-center gap-2 text-sm mb-2 hover:underline transition-colors duration-200">
                             <MdEmail size={18} />
-                            <a
-                                href="mailto:support@soulplan.net"
-                                className="hover:underline transition-colors duration-200"
-                            >
-                                support@soulplan.net
-                            </a>
-                        </p>
+                            support@soulplan.net
+                        </a>
                         <p className="flex items-center gap-2 text-sm">
                             <MdPhone size={18} />
                             <a
