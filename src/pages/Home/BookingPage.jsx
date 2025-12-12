@@ -86,6 +86,8 @@ const BookingPage = () => {
             setIsLoadingService(true);
             
             const timeSlotParts = data.timeSlot.split(" - ");
+            
+            
             const payload = {
                 serviceId: serviceTypeWatch,
                 astrologer: astrologerWatch,
@@ -123,10 +125,7 @@ const BookingPage = () => {
             if (res?.success) {
                 toast.dismiss();
                 toast.success(res?.message || "Service added to cart successfully!");
-                reset();
-                setTimeout(() => {
-                    navigate("/cart", { state: { type: "services" } });
-                }, 100);
+                navigate("/cart", { state: { type: "services", fromBooking: true } });
             } else {
                 toast.dismiss();
                 toast.error(res?.message || "Failed to add service to cart");
@@ -134,7 +133,8 @@ const BookingPage = () => {
         } catch (error) {
             console.error("Booking error:", error);
             toast.dismiss();
-            toast.error(error?.message || "Failed to book service. Please try again.");
+            const errorMessage = error?.response?.data?.message || error?.message || "Failed to book service. Please try again.";
+            toast.error(errorMessage);
         } finally {
             setIsLoadingService(false);
         }
