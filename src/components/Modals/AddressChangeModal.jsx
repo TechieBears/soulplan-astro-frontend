@@ -21,7 +21,11 @@ const AddButton = memo(({ onClick }) => {
     return (
         <button
             type="button"
-            onClick={() => onClick()}
+            onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onClick();
+            }}
             className="mt-4 w-full bg-orange-100 text-orange-500 hover:bg-orange-100 font-medium mb-4 py-2 sm:py-3 rounded-lg flex items-center justify-center gap-2 transition-all border border-orange-500 border-dashed"
         >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,7 +207,11 @@ function AddressChangeModal({ edit }) {
                     Change
                 </button>
             ) : (
-                <AddButton onClick={() => toggle()} />
+                <AddButton onClick={(e) => {
+                    e?.preventDefault?.();
+                    e?.stopPropagation?.();
+                    toggle();
+                }} />
             )
         }
 
