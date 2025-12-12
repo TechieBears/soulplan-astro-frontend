@@ -25,7 +25,7 @@ const HomeBanner = ({ slidesData, isLoading }) => {
     }
 
     return (
-        <section className='w-full h-[85vh] md:h-screen'>
+        <section className='w-full pt-16 md:pt-18'>
             <Swiper
                 slidesPerView={1}
                 freeMode={true}
@@ -36,18 +36,18 @@ const HomeBanner = ({ slidesData, isLoading }) => {
             >
                 {slidesData?.map((slide, index) => {
                     return (
-                        <SwiperSlide key={index} className='relative '>
-                            <div className="relative h-[85vh] md:h-screen w-full">
-                                <div className="absolute inset-0 z-20 flex justify-center items-center bg-black/70"></div>
+                        <SwiperSlide key={index} className='relative'>
+                            <div className="relative min-h-[500px] md:min-h-[600px] w-full">
+                                <div className="absolute inset-0 z-10 bg-black/70"></div>
                                 <img
                                     loading="lazy"
                                     src={slide.image}
-                                    className="w-full flex-shrink-0 h-[85vh] md:h-screen object-cover cursor-pointer object-center"
+                                    className="absolute inset-0 w-full h-full object-cover cursor-pointer object-center"
                                     alt={slide.title || 'Slide Image'}
                                 />
-                                <div className="absolute inset-0 container mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between z-30 px-5 xl:px-0 gap-6 md:gap-0">
+                                <div className="relative container mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between z-20 px-5 xl:px-0 gap-6 md:gap-0 py-12 md:py-16 lg:py-20">
                                     {index == 0 && (
-                                        <div className="w-2/3 md:w-1/3 md:order-2 flex justify-center items-center overflow-hidden scale-100 md:scale-[1.15] imageback">
+                                        <div className="w-2/3 md:w-1/3 md:order-2 flex justify-center items-center imageback aspect-square">
                                             <img
                                                 src={roundimage}
                                                 alt={slide.title}
@@ -55,7 +55,7 @@ const HomeBanner = ({ slidesData, isLoading }) => {
                                             />
                                         </div>
                                     )}
-                                    
+
                                     <div className="w-full md:w-2/3 lg:w-1/2 space-y-3 lg:space-y-5 text-center md:text-left md:order-1">
                                         <h1 className="text-3xl lg:text-4xl xl:text-6xl pb-2 font-tbLex font-bold text-p tracking-tighter banner-title">
                                             {slide.title}

@@ -165,7 +165,7 @@ const HomeNavbar = () => {
                     <div className="hidden lg:flex items-center gap-8">
                         {navLinks.map((link, i) =>
                             link.dropdown ? (
-                                <div key={i} className="relative inline-block">
+                                <div key={i} className="relative inline-block" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)}>
                                     <NavLink
                                         key={i}
                                         to={link.path}
@@ -503,9 +503,7 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
     return (
         <div
             ref={dropdown}
-            onFocus={() => setDropdownOpen(true)}
-            onBlur={() => setDropdownOpen(false)}
-            className={`absolute left-0 top-14 w-[240px] pb-3 h-[200px] overflow-y-scroll scrollbars rounded-lg z-50 bg-white shadow-lg border border-slate-100 transition-all ease-in-out duration-500 ${dropdownOpen ? "block opacity-100 transition-all ease-in-out duration-500" : "hidden opacity-0 transition-all ease-in-out duration-500"}`}
+            className={`absolute left-0 top-full pt-2 w-[240px] pb-3 h-[200px] overflow-y-scroll scrollbars rounded-lg z-50 bg-white shadow-lg border border-slate-100 transition-all ease-in-out duration-300 ${dropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"}`}
         >
             <div>
                 {Searvice?.map((item, i) => (
