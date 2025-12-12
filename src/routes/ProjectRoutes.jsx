@@ -57,6 +57,7 @@ import Reviews from "../pages/Admin/Master/Reviews";
 import ReferAndEarn from "../pages/Home/Profile/ReferAndEarn";
 import ReferralPromptModal from "../components/Modals/ReferralPromptModal";
 import ZoomMeeting from '../pages/Meeting/ZoomMeeting';
+import DeepLinkRedirect from "../pages/DeepLinkRedirect";
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
@@ -139,8 +140,7 @@ const ProjectRoutes = () => {
                     <HomeNavbar />
                     <Routes>
                         <Route path="/" element={<HomePage />} />
-                        {/* <Route path="/actor/:id" element={<DeepLinkRedirect />} />
-            <Route path="/casting/:id" element={<DeepLinkRedirect />} /> */}
+                        <Route path="/referral/:id" element={<DeepLinkRedirect />} />
                         <Route path="/about" element={<AboutPage />} />
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/register" element={<RegisterPage />} />
@@ -255,11 +255,11 @@ const ProjectRoutes = () => {
             />
 
             {/* Toaster Notifications */}
-            <Toaster 
-                position="top-right" 
-                reverseOrder={false} 
+            <Toaster
+                position="top-right"
+                reverseOrder={false}
                 containerStyle={{ zIndex: 9999999 }}
-                toastOptions={{ style: { zIndex: 9999999 } }} 
+                toastOptions={{ style: { zIndex: 9999999 } }}
             />
         </div>
     );
