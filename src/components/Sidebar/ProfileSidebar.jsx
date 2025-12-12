@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,6 +9,8 @@ import {
 import toast from "react-hot-toast";
 import { formBtn1 } from "../../utils/CustomClass";
 import { CaretRight, Power, Trash } from "@phosphor-icons/react";
+import { deleteUser } from "../../api";
+import DeleteModal from "../Modals/DeleteModal/DeleteModal";
 
 
 const ProfileSidebar = ({ children }) => {
@@ -17,6 +19,8 @@ const ProfileSidebar = ({ children }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     // Utility to check if a link is active
     const isActive = (path) => location.pathname === path;
@@ -67,6 +71,28 @@ const ProfileSidebar = ({ children }) => {
         }
     };
 
+    const confirmDeleteAccount = async () => {
+        setIsDeleting(true);
+        try {
+            const response = await deleteUser();
+            if (response?.success || response?.message === "User deleted successfully") {
+                toast.success(response?.message || "Account deleted successfully");
+                setShowDeleteModal(false);
+                localStorage.removeItem("token");
+                dispatch(setLoggedUser(false));
+                dispatch(setLoggedUserDetails({}));
+                navigate("/");
+            } else {
+                toast.error(response?.message || "Failed to delete account");
+            }
+        } catch (err) {
+            console.error("Delete account failed:", err);
+            toast.error("Failed to delete account");
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
     return (
         <div className="bg-[#FFF9EF]  pt-20 lg:pt-24 pb-10">
             <section className="w-full lg:py-2 xl:py-4 sm:px-5 xl:px-0">
@@ -86,8 +112,8 @@ const ProfileSidebar = ({ children }) => {
                                                 <Link
                                                     to={item.path}
                                                     className={`flex items-center justify-between font-normal font-tbPop transition-all duration-300 ${isActive(item.path)
-                                                            ? "bg-linear-gradient text-white px-3 py-[18px]"
-                                                            : "px-3 py-[18px] text-slate-900"
+                                                        ? "bg-linear-gradient text-white px-3 py-[18px]"
+                                                        : "px-3 py-[18px] text-slate-900"
                                                         }`}
                                                 >
                                                     <span className="flex items-center gap-2 text-base font-tbPop">
@@ -106,8 +132,8 @@ const ProfileSidebar = ({ children }) => {
                                             ) : (
                                                 <button
                                                     className={`flex items-center justify-between px-3 py-[18px] rounded-lg font-medium transition ${isActive(item.path)
-                                                            ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white"
-                                                            : "hover:bg-gray-100 text-[#1d2e36]"
+                                                        ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white"
+                                                        : "hover:bg-gray-100 text-[#1d2e36]"
                                                         }`}
                                                 >
                                                     <span className="flex items-center gap-2">
@@ -137,8 +163,8 @@ const ProfileSidebar = ({ children }) => {
                                 </button>
 
                                 <button
-                                    disabled
-                                    className={`${formBtn1} w-full flex !items-center justify-center  bg-red-500 !racking-tight !text-white`}
+                                    onClick={() => setShowDeleteModal(true)}
+                                    className={`${formBtn1} w-full flex !items-center justify-center bg-red-500 hover:bg-red-600 !racking-tight !text-white`}
                                 >
                                     Delete Account
                                     <Trash size={22} className="ml-1 text-white" />
@@ -149,10 +175,37 @@ const ProfileSidebar = ({ children }) => {
                         {/* Main Content */}
                         <main className="flex-1 bg-white rounded-2xl p-2 md:p-4 border border-slate-200 px-4">
                             {children}
+                            
+                            {/* Mobile Action Buttons */}
+                            <div className="lg:hidden mt-8 space-y-3">
+                                <button
+                                    onClick={handleLogout}
+                                    className={`${formBtn1} w-full flex !items-center justify-center border border-black bg-transparent !racking-tight !text-black`}
+                                >
+                                    Logout
+                                    <Power size={22} className="ml-1 text-slate-500" />
+                                </button>
+
+                                <button
+                                    onClick={() => setShowDeleteModal(true)}
+                                    className={`${formBtn1} w-full flex !items-center justify-center bg-red-500 hover:bg-red-600 !racking-tight !text-white`}
+                                >
+                                    Delete Account
+                                    <Trash size={22} className="ml-1 text-white" />
+                                </button>
+                            </div>
                         </main>
                     </div>
                 </div>
             </section>
+
+            <DeleteModal
+                open={showDeleteModal}
+                toggleModalBtn={() => setShowDeleteModal(false)}
+                deleteBtn={confirmDeleteAccount}
+                title="Delete Account"
+                description="Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed."
+            />
         </div>
     );
 };
