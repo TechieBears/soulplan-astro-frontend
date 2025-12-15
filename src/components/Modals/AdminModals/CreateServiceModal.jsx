@@ -41,8 +41,8 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
             // Ensure serviceType is sent as array
             const formData = {
                 ...data,
-                serviceType: Array.isArray(data.serviceType) 
-                    ? data.serviceType 
+                serviceType: Array.isArray(data.serviceType)
+                    ? data.serviceType
                     : typeof data.serviceType === 'string'
                         ? data.serviceType.split(',').map(s => s.trim())
                         : [data.serviceType].filter(Boolean)
@@ -91,6 +91,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                 title: userData?.title,
                 subTitle: userData?.subTitle,
                 price: userData?.price,
+                usdPrice: userData?.usdPrice,
                 description: userData?.description,
                 durationInMinutes: userData?.durationInMinutes,
                 htmlContent: userData?.htmlContent,
@@ -105,6 +106,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                 title: '',
                 subTitle: '',
                 price: '',
+                usdPrice: '',
                 description: '',
                 durationInMinutes: 30,
                 htmlContent: '',
@@ -308,8 +310,29 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         type="number"
                                                         registerName="price"
                                                         maxLength={10}
-                                                        props={{ ...register('price', { required: "Service is required", min: 0 }) }}
+                                                        props={{ ...register('price', { required: "Service Price is required", min: 0 }) }}
                                                         errors={errors.price}
+                                                    />
+                                                </div>
+                                                <div className=''>
+                                                    <h4
+                                                        className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                    >
+                                                        Service Price(USD) <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                    </h4>
+                                                    <TextInput
+                                                        label="Enter Service Price(USD)"
+                                                        placeholder="Enter Service Price(USD)"
+                                                        type="number"
+                                                        registerName="usdPrice"
+                                                        maxLength={10}
+                                                        props={{
+                                                            ...register('usdPrice', {
+                                                                required: "USD Price is required",
+                                                                min: { value: 0, message: "USD Price must be at least 0" }
+                                                            })
+                                                        }}
+                                                        errors={errors.usdPrice}
                                                     />
                                                 </div>
                                                 <div className=''>
