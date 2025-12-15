@@ -25,7 +25,7 @@ const HomeBanner = ({ slidesData, isLoading }) => {
     }
 
     return (
-        <section className='w-full pt-16 md:pt-18'>
+        <section className='w-full pt-14 md:pt-18'>
             <Swiper
                 slidesPerView={1}
                 freeMode={true}
@@ -66,7 +66,7 @@ const HomeBanner = ({ slidesData, isLoading }) => {
                                         {slide.button && (
                                             <div className="flex justify-center md:justify-start banner-button">
                                                 <button
-                                                    className={`btn ${formBtn3} !w-fit`}
+                                                    className={`btn ${formBtn3} !w-64 !rounded-sm`}
                                                     onClick={slide.onClick}
                                                 >
                                                     <span className="text-white">Book an Appointment</span>

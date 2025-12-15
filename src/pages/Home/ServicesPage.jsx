@@ -1,5 +1,6 @@
 import Breadcrumbs from "../../components/breadcrum";
 import Testimonials from "../../components/testimonial";
+import AppDownloadBooking from "../../components/AppDownloadBooking";
 import leftImage from "../../assets/helperImages/leftDesign.png"
 import rightImage from "../../assets/helperImages/rightDesign.png"
 import { useState, useEffect } from "react";
@@ -117,6 +118,7 @@ const ServicesPage = () => {
                 )}
             </section>
             <Testimonials />
+            <AppDownloadBooking />
         </div>
     );
 };
