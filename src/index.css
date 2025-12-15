@@ -82,7 +82,7 @@ body::-webkit-scrollbar-thumb {
 
 /* global.css */
 .text-p {
-    background: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+    background-image: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -104,19 +104,34 @@ body::-webkit-scrollbar-thumb {
 }
 
 .animated-container div {
-    background: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+    background-image: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     transition: all 0.4s ease-in-out;
 }
 
-.text-hover-p:hover {
-    background: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+.text-hover-p {
+    position: relative;
+    display: inline-block;
+}
+
+.text-hover-p::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-image: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    transition: all 0.4s ease-in-out;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    pointer-events: none;
+}
+
+.text-hover-p:hover::after {
+    opacity: 1;
 }
 
 
@@ -526,7 +541,7 @@ div[style*="position: absolute"][style*="z-index: 100000"][style*="pointer-event
 }
 
 .bg-primary-gradient {
-    background: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+    background-image: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
 }
 
 .bg-blue-red-gradient {
@@ -1150,4 +1165,56 @@ video {
 
 .animation-delay-1000 {
     animation-delay: 1s;
+}
+
+
+/* Button fade animation - gradient disappears from top to bottom */
+.btn-fade-down {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-fade-down::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: white;
+    transition: height 0.6s ease;
+    z-index: 0;
+}
+
+.btn-fade-down:hover::after {
+    height: 100%;
+}
+
+.btn-fade-down span {
+    position: relative;
+    z-index: 1;
+}
+
+
+
+
+.btn-fade-down:hover span {
+    background-image: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.btn-fade-down:hover::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    padding: 2px;
+    background-image: linear-gradient(90deg, #0079D0 0%, #9E52D8 35%, #DA365C 70%, #D04901 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
 }
