@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { formBtn3 } from "../../utils/CustomClass";
+import GradientButton from "../Buttons/GradientButton";
 import { Mobile } from "iconsax-reactjs";
 import Breadcrumbs from "../../components/breadcrum";
 import { CaretRight, ClockCountdown, Star } from "@phosphor-icons/react";
@@ -221,15 +221,15 @@ const MainSection = ({ content }) => {
                                     ))}
                                 </h4>
                             </div>
-                            <button
-                                className={`${formBtn3} w-full btn-fade-down`}
+                            <GradientButton
+                                className="w-full"
                                 onClick={() => {
                                     navigate("/booking", { state: { service: content } }),
                                         window.scrollTo(0, 0, { behavior: "smooth" });
                                 }}
                             >
-                                <span>Check Availability</span>
-                            </button>
+                                Check Availability
+                            </GradientButton>
                         </div>
                     </div>
                 </div>

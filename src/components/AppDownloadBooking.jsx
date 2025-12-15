@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import playstore from "../assets/google-play-black.png";
 import phoneMockup from "../assets/phone-mockup.png";
-import { formBtn3 } from "../utils/CustomClass";
+import GradientButton from "./Buttons/GradientButton";
 
 const AppDownloadBooking = () => {
     const navigate = useNavigate();
@@ -34,9 +34,9 @@ const AppDownloadBooking = () => {
                     <h2 className="text-base sm:text-lg md:text-[20px] uppercase bg-primary-gradient bg-clip-text text-transparent mb-3 md:mb-4">Discover Your Self</h2>
                     <p className="text-xl sm:text-2xl md:text-[32px] font-bold text-black mb-4 md:mb-6 leading-tight">Explore a complete range of spiritual <br className="hidden sm:block" /> and healing services.</p>
                     <div className="flex justify-center">
-                        <button className={`btn ${formBtn3} !w-full sm:!w-64 !rounded-xs`} onClick={() => navigate("/services")}>
-                            <span className="text-white">Book Your Session</span>
-                        </button>
+                        <GradientButton className="btn !w-full sm:!w-64 !rounded-xs" onClick={() => navigate("/services")}>
+                            Book Your Session
+                        </GradientButton>
                     </div>
                 </div>
             </section>
