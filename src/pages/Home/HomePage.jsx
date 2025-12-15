@@ -2,6 +2,7 @@ import HomeBanner from "../../components/HomeComponents/HomeBanner";
 import HomeBestServices from "../../components/HomeComponents/HomeBestServices";
 import HomeCertifications from "../../components/HomeComponents/HomeCertifications";
 import Testimonials from "../../components/testimonial";
+import AppDownloadBooking from "../../components/AppDownloadBooking";
 import { useEffect, useState } from "react";
 import { getActiveBanners } from "../../api";
 import { environment } from "../../env";
@@ -102,11 +103,12 @@ const HomePage = () => {
     }, []);
 
     return (
-        <>
+        <div className="bg-slate1">
             <HomeBanner slidesData={slidesData} isLoading={isLoading} />
             <HomeCertifications />
             <HomeBestServices />
             <Testimonials />
+            <AppDownloadBooking />
             {isLogged && (
                 <ReferralPromptModal
                     open={open}
@@ -114,7 +116,7 @@ const HomePage = () => {
                     forceProfileScreen={!isProfileComplete}
                 />
             )}
-        </>
+        </div>
     );
 };
 

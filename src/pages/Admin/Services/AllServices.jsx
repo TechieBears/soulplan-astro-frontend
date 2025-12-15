@@ -132,6 +132,12 @@ const AllServices = () => {
         </div>
     );
 
+    const usdPriceBody = (row) => (
+        <div className="font-bold text-blue-600">
+            ${row?.usdPrice ? row.usdPrice.toLocaleString('en-US') : "----"}
+        </div>
+    );
+
     const contentBody = (row) => {
         const content = row?.htmlContent?.replace(/<[^>]*>/g, '') || "No description available";
         const videoCount = row?.videoUrl?.length || 0;
@@ -227,6 +233,13 @@ const AllServices = () => {
             field: 'priceDetails',
             header: 'Price & Duration',
             body: priceDetailsBody,
+            style: true,
+            sortable: true
+        },
+        {
+            field: 'usdPrice',
+            header: 'USD Price',
+            body: usdPriceBody,
             style: true,
             sortable: true
         },

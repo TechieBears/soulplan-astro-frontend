@@ -38,7 +38,7 @@ const SidebarLayout = () => {
         const fetchServiceCategories = async () => {
             const response = await getPublicServicesDropdown();
             setServices(response?.data);
-            
+
             // If navigating with service name, find and set the activeId
             if (serviceName && response?.data) {
                 const foundService = response.data.find(service => service.name === decodeURIComponent(serviceName));
@@ -51,7 +51,7 @@ const SidebarLayout = () => {
     }, [serviceName]);
 
     return (
-        <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
+        <div className="bg-[#EFF2FA]  pt-10 lg:pt-16">
             <Breadcrumbs currentService={singleService?.name || params?.state?.serviceData?.name} />
             <div className="container mx-auto px-5 xl:px-0 flex flex-col-reverse lg:flex-row xl:py-10 space-y-5 lg:space-x-10">
                 {/* Sidebar */}
@@ -77,8 +77,8 @@ const SideBar = ({ services, active, setActive }) => {
                         <button
                             onClick={() => { setActive(service?._id); window.scrollTo(0, 0, { behavior: "smooth" }) }}
                             className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${active === service?._id
-                                ? "text-p bg-[#ffecd2]"
-                                : "hover:bg-[#ffecd2]/50 text-slate-700"
+                                ? "text-p"
+                                : "text-slate-700"
                                 }`}
                         >
                             <div className="flex items-center justify-between overflow-hidden text-nowrap">
@@ -188,21 +188,23 @@ const MainSection = ({ content }) => {
     return (
         <main className="flex-1 !my-0 ">
             <div className="space-y-8">
-                <img
-                    src={content.image}
-                    alt={content.title}
-                    className="w-full h-auto max-h-[40vh] sm:max-h-[60vh] object-cover rounded-md"
-                />
+                <div className="flex flex-col md:flex-row gap-4 mb-6 md:items-stretch">
+                    <div className="w-full md:w-[230px] lg:w-[280px] xl:w-[320px] flex-shrink-0">
+                        <img
+                            src={content.image}
+                            alt={content.title}
+                            className="w-full h-full min-h-full object-cover rounded-lg shadow-lg"
+                        />
+                    </div>
 
-                <div className="bg-[#FFF2DB] p-6 rounded-md space-y-3 ">
-                    <h3 className="text-xl font-medium text-p font-tbLex">
-                        {content.title}
-                    </h3>
-                    <p className="text-gray-600 font-tbPop font-normal text-md">
-                        {content.subTitle}
-                    </p>
-                    <div className="flex justify-start  lg:justify-between  flex-col lg:flex-row items-start lg:items-center space-y-5 lg:space-y-0 py-3">
-                        <div className="space-y-3">
+                    <div className="bg-[#FFF2DB] rounded-lg shadow-lg p-6 flex-1 space-y-3">
+                        <h3 className="text-xl font-medium text-p font-tbLex">
+                            {content.title}
+                        </h3>
+                        <p className="text-gray-600 font-tbPop font-normal text-md">
+                            {content.subTitle}
+                        </p>
+                        <div className="space-y-3 py-3">
                             <div className="space-x-1.5 flex items-center">
                                 <ClockCountdown size={20} />
                                 <h4 className="text-slate-700 text-sm font-tbPop font-normal">
@@ -219,16 +221,14 @@ const MainSection = ({ content }) => {
                                     ))}
                                 </h4>
                             </div>
-                        </div>
-                        <div className="flex flex-col items-start lg:items-end space-y-2">
                             <button
-                                className={`${formBtn3} lg:!w-auto`}
+                                className={`${formBtn3} w-full btn-fade-down`}
                                 onClick={() => {
                                     navigate("/booking", { state: { service: content } }),
                                         window.scrollTo(0, 0, { behavior: "smooth" });
                                 }}
                             >
-                                Check Availability
+                                <span>Check Availability</span>
                             </button>
                         </div>
                     </div>
