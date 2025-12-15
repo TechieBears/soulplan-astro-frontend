@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Autoplay, Navigation } from 'swiper/modules';
-import { formBtn3 } from '../../utils/CustomClass';
+import GradientButton from '../Buttons/GradientButton';
 import roundimage from '../../assets/roundimage.png';
 import Preloaders from '../Loader/Preloaders';
 
@@ -65,12 +65,12 @@ const HomeBanner = ({ slidesData, isLoading }) => {
                                         </p>
                                         {slide.button && (
                                             <div className="flex justify-center md:justify-start banner-button">
-                                                <button
-                                                    className={`btn ${formBtn3} !w-64 !rounded-sm`}
+                                                <GradientButton
+                                                    className="btn !w-64 !rounded-sm"
                                                     onClick={slide.onClick}
                                                 >
-                                                    <span className="text-white">Book an Appointment</span>
-                                                </button>
+                                                    Book an Appointment
+                                                </GradientButton>
                                             </div>
                                         )}
                                     </div>

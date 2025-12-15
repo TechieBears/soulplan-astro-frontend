@@ -5,7 +5,8 @@ import toast from 'react-hot-toast';
 import LoadBox from '../Loader/LoadBox';
 import ImageCropUpload from '../TextInput/ImageCropUpload';
 import TextInput from '../TextInput/TextInput';
-import { formBtn1, formBtn3 } from '../../utils/CustomClass';
+import { formBtn1 } from '../../utils/CustomClass';
+import GradientButton from '../Buttons/GradientButton';
 import SelectTextInput from '../TextInput/SelectTextInput';
 import { X } from "@phosphor-icons/react";
 import CustomTextArea from '../TextInput/CustomTextArea';
@@ -150,7 +151,7 @@ function TestimonialModal() {
         }
     };
     return <>
-        <button className={`btn justify-self-center ${formBtn3} !w-fit`} onClick={toggle}>Share Your Experience</button>
+        <GradientButton className="btn justify-self-center !w-fit" onClick={toggle}>Share Your Experience</GradientButton>
 
         <Transition appear show={open} as={Fragment}>
             <Dialog as="div" className="relative z-[1000]" onClose={() => toggle()}>
