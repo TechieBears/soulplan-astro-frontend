@@ -35,7 +35,8 @@ const ProductBookings = () => {
         pageChangeHandler,
         recordChangeHandler,
         records,
-        error
+        error,
+        loading
     } = usePagination(1, 10, getAllProductOrders, combinedFilters);
     useEffect(() => {
         if (error) toast.error('Failed to fetch product bookings');
@@ -293,7 +294,13 @@ const ProductBookings = () => {
 
                 <TableHeader title={"Product Booking"} subtitle={"Recently added product bookings will appear here"} />
 
-                <Table data={filterData} columns={columns} paginator={false} />
+                {loading ? (
+                    <div className="flex justify-center items-center h-40">
+                        <span className="font-tbPop text-gray-600">Loading...</span>
+                    </div>
+                ) : (
+                    <Table data={filterData} columns={columns} paginator={false} />
+                )}
 
                 {/* Pagination */}
                 <div className="flex justify-end items-center gap-4 mt-4">
