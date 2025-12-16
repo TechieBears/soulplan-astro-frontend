@@ -185,16 +185,16 @@ const PaymentSuccess = () => {
                                                              bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100
                                                              border border-gray-200 hover:border-purple-300 cart-slide-up overflow-hidden"
                       onClick={() => {
-                        console.log('Service data:', service);
-                        const serviceName = service.serviceName || service.name || service.service?.name;
-                        console.log('Navigating to service:', serviceName);
-                        navigate(`/services/${encodeURIComponent(serviceName)}`);
+                        const serviceName = service?.service?.name;
+                        if (serviceName) {
+                          navigate(`/services/${encodeURIComponent(serviceName)}`);
+                        }
                       }}
                     >
                       <h3 className="font-medium font-dm text-lg mb-4">
                         Service Type:
                         <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 bg-clip-text text-transparent font-semibold">
-                          {service?.serviceName}
+                          {service?.service?.name}
                         </span>
                       </h3>
 
@@ -202,7 +202,7 @@ const PaymentSuccess = () => {
                         <p className="flex items-center gap-3">
                           <Timer1 className="w-5 h-5 text-purple-600" />
                           <span className="text-sm">
-                            Duration: {service?.durationInMinutes} minutes
+                            Duration: {service?.service?.durationInMinutes} minutes
                           </span>
                         </p>
                         <p className="flex items-center gap-3">
