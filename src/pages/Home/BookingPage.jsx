@@ -19,6 +19,7 @@ import {
     checkAvailability,
     getAllAstrologer,
     getPublicServicesDropdown,
+    getSingleService,
 } from "../../api";
 import star from "../../assets/helperImages/star.png";
 import "../../css/CustomCalendar.css";
@@ -55,6 +56,7 @@ const BookingPage = () => {
     const [services, setServices] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingService, setIsLoadingService] = useState(false);
+    const [selectedServiceData, setSelectedServiceData] = useState(service?.service || null);
     const dateWatch = watch("date");
     const astrologerWatch = watch("astrologer");
     const serviceTypeWatch = watch("serviceType");
@@ -140,7 +142,7 @@ const BookingPage = () => {
             date: moment(dateWatch).format("YYYY-MM-DD"),
             astrologer_id: astrologerWatch || "",
             service_type: "online",
-            service_duration: service?.service?.durationInMinutes || 30,
+            service_duration: selectedServiceData?.durationInMinutes || 30,
         };
         
         setIsLoading(true);
@@ -190,7 +192,7 @@ const BookingPage = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [dateWatch, astrologerWatch, serviceTypeWatch, service?.service?.durationInMinutes, setValue]);
+    }, [dateWatch, astrologerWatch, serviceTypeWatch, selectedServiceData?.durationInMinutes, setValue]);
 
     useEffect(() => {
         if (!dateWatch || !astrologerWatch || !serviceTypeWatch) {
@@ -213,6 +215,29 @@ const BookingPage = () => {
         };
         fetchServiceCategories();
     }, []);
+
+    useEffect(() => {
+        const fetchSingleService = async () => {
+            if (!serviceTypeWatch || service?.service?._id === serviceTypeWatch) return;
+            
+            try {
+                const response = await getSingleService(serviceTypeWatch);
+                if (response?.success) {
+                    setSelectedServiceData(response.data);
+                    if (response.data?.serviceType?.length === 1) {
+                        setValue("serviceMode", response.data.serviceType[0]);
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching service details:", error);
+                toast.error("Failed to load service details");
+            }
+        };
+        
+        if (serviceTypeWatch) {
+            fetchSingleService();
+        }
+    }, [serviceTypeWatch, service?.service?._id, setValue]);
 
     const bookingType = watch("bookingType");
 
@@ -274,11 +299,11 @@ const BookingPage = () => {
 
     const serviceModeWatch = watch("serviceMode");
     useEffect(() => {
-        const availableServiceTypes = service?.service?.serviceType || [];
+        const availableServiceTypes = selectedServiceData?.serviceType || [];
         if (availableServiceTypes.length === 1 && !serviceModeWatch) {
             setValue("serviceMode", availableServiceTypes[0]);
         }
-    }, [service?.service?.serviceType, serviceModeWatch, setValue]);
+    }, [selectedServiceData?.serviceType, serviceModeWatch, setValue]);
 
     return (
         <div className="min-h-screen bg-[#FFF9EF]  pt-16 lg:pt-24 relative">
@@ -409,7 +434,7 @@ const BookingPage = () => {
                                     control={control}
                                     rules={{ required: "Service Mode is required" }}
                                     render={({ field }) => {
-                                        const availableServiceTypes = service?.service?.serviceType || [];
+                                        const availableServiceTypes = selectedServiceData?.serviceType || [];
                                         const serviceModeOptions = [
                                             { value: "online", label: "Online" },
                                             { value: "pandit_center", label: "Face to Face" },
@@ -643,13 +668,13 @@ const BookingPage = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="gradientBtn w-full">
+                            <div className="w-full">
                                 <button
-                                    className={`!w-full`}
+                                    className="w-full gradient-border btn-fade-up py-3 px-6 rounded-md"
                                     type="submit"
                                     disabled={isLoadingService}
                                 >
-                                    <span className="text-base xl:text-lg font-tbPop text-p">
+                                    <span className="text-base xl:text-lg font-tbPop font-medium">
                                         {isLoadingService ? "Processing..." : "Book Service"}
                                     </span>
                                 </button>
