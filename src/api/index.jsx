@@ -475,6 +475,18 @@ export const getPublicServicesSingle = async (data) => {
     }
 }
 
+export const getSingleService = async (id) => {
+    try {
+        const url = `${environment.baseUrl}service/public/get-single?id=${id}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getSingleService api file", err);
+        return err?.response?.data
+    }
+}
+
 export const addService = async (data) => {
     const url = `${environment.baseUrl}service/create`;
     const formData = new FormData();
