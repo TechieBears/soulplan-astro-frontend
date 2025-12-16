@@ -274,26 +274,6 @@ export default function AccountPage() {
                 </div>
               )}
             </form>
-
-            {/* Bottom Action Buttons */}
-            <div className="mt-8 gap-2 space-y-3 p-4  border-slate-200 lg:hidden">
-              <button
-                onClick={handleLogout}
-                className={`${formBtn1} w-full flex !items-center justify-center border border-black bg-transparent !racking-tight !text-black`}
-              >
-                Logout
-                <Power size={22} className="ml-1 text-slate-500" />
-              </button>
-
-              <button
-                disabled
-                className={`${formBtn1} w-full flex !items-center justify-center  bg-red-500 !racking-tight !text-white`}
-              >
-                Delete Account
-                <Trash size={22} className="ml-1 text-white" />
-              </button>
-            </div>
-
           </ProfileSidebar>
         </UserDashboard>
       </Private>

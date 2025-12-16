@@ -54,12 +54,6 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
     // Additional effect to ensure form values are set when user data changes
     useEffect(() => {
         if (user && open) {
-            console.log('Setting individual form values:', {
-                firstName: user?.firstName || '',
-                lastName: user?.lastName || '',
-                mobileNo: user?.mobileNo || '',
-                gender: user?.gender || ''
-            });
             setValue('firstName', user?.firstName || '');
             setValue('lastName', user?.lastName || '');
             setValue('mobileNo', user?.mobileNo || '');
@@ -70,6 +64,15 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
     const formSubmit = async (data) => {
         console.log('Form submitted with data:', data);
         console.log('Current showOnlyReferral state:', showOnlyReferral);
+
+        // If checkbox is selected and on referral screen, just close modal
+        if (showOnlyReferral && dontShowAgain) {
+            localStorage.setItem(`dontShowReferralModal_${user?._id}`, 'true');
+            dispatch(setIsRegistered(false));
+            onModalClose?.();
+            toggle();
+            return;
+        }
 
         try {
             setLoader(true);
@@ -101,9 +104,9 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
                     }
                 } else {
                     toast.success('Profile completed successfully!');
-                    setTimeout(() => {
-                        setShowOnlyReferral(true);
-                    }, 100);
+                    dispatch(setIsRegistered(false));
+                    onModalClose?.();
+                    toggle();
                 }
             } else {
                 console.log('API call failed:', res?.message);
@@ -382,8 +385,10 @@ function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModal
                                                 ) : (
                                                     <button
                                                         type='submit'
-                                                        disabled={showOnlyReferral && !watch('referralCode')?.trim() && !isProfileComplete}
-                                                        className={`flex-1 px-4 py-3 text-sm font-semibold rounded-lg transition-all shadow-md ${showOnlyReferral && !watch('referralCode')?.trim()
+                                                        disabled={
+                                                            !showOnlyReferral && (!watch('firstName')?.trim() || !watch('lastName')?.trim() || !watch('mobileNo')?.trim() || !watch('gender')?.trim())
+                                                        }
+                                                        className={`flex-1 px-4 py-3 text-sm font-semibold rounded-lg transition-all shadow-md ${!showOnlyReferral && (!watch('firstName')?.trim() || !watch('lastName')?.trim() || !watch('mobileNo')?.trim() || !watch('gender')?.trim())
                                                             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                                             : 'text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 hover:shadow-lg active:scale-95 cursor-pointer'
                                                             }`}

@@ -49,7 +49,7 @@ const PaymentSuccess = () => {
   ]);
 
   return (
-    <div className="min-h-screen bg-[#FFF9EF] flex items-center mt-20 sm:mt-0 justify-center px-4">
+    <div className="min-h-screen bg-[#FFF9EF] flex items-center pt-20 lg:pt-24 justify-center px-4">
       <div className="relative bg-white rounded-xl">
         <div className="absolute -top-12 -right-12 w-28 h-28 z-0 ">
           <img

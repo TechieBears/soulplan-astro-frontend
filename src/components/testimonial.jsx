@@ -8,7 +8,7 @@ import vectorImg from "../assets/Vector.png";
 import TestimonialModal from "./Modals/TestimonialModal";
 
 const NavButton = ({ onClick, direction, className = "" }) => (
-    <button onClick={onClick} className={`bg-[#CAD5E2] hover:bg-[#b8c4d1] rounded-full flex items-center justify-center transition-colors duration-200 shadow-md ${className}`}>
+    <button type="button" onClick={onClick} className={`bg-[#CAD5E2] hover:bg-[#b8c4d1] rounded-full flex items-center justify-center transition-colors duration-200 shadow-md ${className}`}>
         {direction === 'left' ? <CaretLeft size={className.includes('w-10') ? 20 : 24} className="text-black" weight="bold" /> : <CaretRight size={className.includes('w-10') ? 20 : 24} className="text-black" weight="bold" />}
     </button>
 );
@@ -63,7 +63,7 @@ const Testimonials = () => {
     useEffect(() => {
         const fetchTestimonials = async () => {
             try {
-                const response = await getAllPublicTestimonials(1, 10);
+                const response = await getAllPublicTestimonials({ p: 1, records: 10 });
                 setTestimonials(response?.success && response?.data ? response.data : []);
             } catch (error) {
                 console.error("Error fetching testimonials:", error);
@@ -110,8 +110,8 @@ const Testimonials = () => {
                             {loading ? (
                                 <div className="w-80 sm:w-96 md:w-[28rem] h-auto min-h-[18rem] sm:min-h-[20rem] md:min-h-[24rem] rounded-xl bg-gray-200 animate-pulse" />
                             ) : testimonials.length > 0 ? (
-                                visibleTestimonials.map(({ index, isCenter }) => (
-                                    <TestimonialCard key={index} testimonial={testimonials[index]} isCenter={isCenter} />
+                                visibleTestimonials.map(({ index, isCenter }, i) => (
+                                    <TestimonialCard key={`${index}-${currentIndex}-${i}`} testimonial={testimonials[index]} isCenter={isCenter} />
                                 ))
                             ) : (
                                 <div className="text-center py-8 md:py-12">

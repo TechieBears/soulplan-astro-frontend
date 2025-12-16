@@ -201,7 +201,7 @@ const MainSection = ({ content }) => {
                         />
                     </div>
 
-                    <div className="bg-[#FFF2DB] service-detail-bg rounded-lg shadow-lg p-6 flex-1 space-y-3 relative overflow-hidden">
+                    <div className="bg-[#FFF2DB] service-detail-bg rounded-lg shadow-lg p-6 flex-1 max-w-lg space-y-3 relative overflow-hidden">
                         <h3 className="text-xl font-medium text-p font-tbLex relative z-10">
                             {content.title}
                         </h3>

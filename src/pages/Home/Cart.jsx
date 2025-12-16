@@ -36,7 +36,7 @@ const CartPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const type = location.state?.type;
-  const [activeTab, setActiveTab] = useState(type || "products");
+  const [activeTab, setActiveTab] = useState(type || "services");
 
   return (
     <div className="min-h-screen bg-[#FFF9EF]  pt-16 lg:pt-24 relative">
@@ -61,7 +61,7 @@ const CartPage = () => {
               </button>
               <h1 className="text-xl font-tbLex font-normal text-slate-800">Cart</h1>
             </div>
-            <div className="flex bg-white rounded-full p-1.5 space-x-1.5">
+            {/* <div className="flex bg-white rounded-full p-1.5 space-x-1.5">
               <button
                 className={`flex-1 px-4 py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm font-tbLex ${
                   activeTab === "services" ? "bg-linear-gradient text-white" : ""
@@ -78,7 +78,7 @@ const CartPage = () => {
               >
                 Products
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* Desktop Layout */}
@@ -97,7 +97,7 @@ const CartPage = () => {
               Cart
             </h1>
 
-            <div className="absolute right-0 flex bg-white rounded-full p-1.5 space-x-1.5">
+            {/* <div className="absolute right-0 flex bg-white rounded-full p-1.5 space-x-1.5">
               <button
                 className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${
                   activeTab === "services" ? "bg-linear-gradient text-white" : ""
@@ -114,11 +114,11 @@ const CartPage = () => {
               >
                 Products
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
-        {activeTab === "products" && <ProductTab />}
+        {/* {activeTab === "products" && <ProductTab />} */}
         {activeTab === "services" && <ServiceTab />}
       </div>
     </div>
