@@ -546,10 +546,6 @@ div[style*="position: absolute"][style*="z-index: 100000"][style*="pointer-event
 
 .gradient-border {
     position: relative;
-    border: 2px solid transparent;
-    background: linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%) border-box;
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
 }
 
 .bg-blue-red-gradient {
@@ -1203,7 +1199,20 @@ video {
     left: 2px;
     right: 2px;
     width: calc(100% - 4px);
-    background: #FFF2DB;
+    background: white;
+}
+
+.default-bg .btn-fade-down.gradient-border::after {
+    background: #EFF2FA !important;
+}
+
+.default-bg .service-detail-bg .btn-fade-down.gradient-border::after,
+.service-detail-bg .btn-fade-down.gradient-border::after {
+    background: #FFF2DB !important;
+}
+
+.bg-white .btn-fade-down.gradient-border::after {
+    background: white !important;
 }
 
 .homeBannerSwiper .btn-fade-down.gradient-border::after {

@@ -39,7 +39,8 @@ const ServiceBookings = () => {
         pageChangeHandler,
         recordChangeHandler,
         records,
-        error
+        error,
+        loading
     } = usePagination(1, 10, getAllServiceOrdersAdmin, combinedFilters);
 
     useEffect(() => {
@@ -249,7 +250,13 @@ const ServiceBookings = () => {
             {/* Service Booking Table */}
             <div className="bg-white rounded-xl m-4 sm:m-5 shadow-sm  p-5 sm:p-7 ">
                 <TableHeader title={"Service Bookings"} subtitle={"Recently added service bookings will appear here"} />
-                <Table data={filterData} columns={columns} paginator={false} />
+                {loading ? (
+                    <div className="flex justify-center items-center h-40">
+                        <span className="font-tbPop text-gray-600">Loading...</span>
+                    </div>
+                ) : (
+                    <Table data={filterData} columns={columns} paginator={false} />
+                )}
 
                 {/* Pagination */}
                 <div className="flex justify-end items-center gap-4 mt-4">

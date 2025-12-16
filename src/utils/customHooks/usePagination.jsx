@@ -8,12 +8,14 @@ const usePagination = (initialPage, initialRecords, fetchFunction, filters) => {
         total: 0,
         hasNext: false,
         hasPrev: false,
-        error: null
+        error: null,
+        loading: true
     });
 
     const memoizedFilters = useMemo(() => filters, [JSON.stringify(filters)]);
 
     const fetchData = useCallback(async () => {
+        setState(prev => ({ ...prev, loading: true }));
         try {
             const params = {
                 p: state.page,
@@ -35,10 +37,11 @@ const usePagination = (initialPage, initialRecords, fetchFunction, filters) => {
                 total: total,
                 hasNext: hasNext,
                 hasPrev: currentPage > 1,
-                error: null
+                error: null,
+                loading: false
             }));
         } catch (error) {
-            setState(prev => ({ ...prev, error }));
+            setState(prev => ({ ...prev, error, loading: false }));
         }
     }, [state.page, state.records, memoizedFilters, fetchFunction]);
 
@@ -69,7 +72,8 @@ const usePagination = (initialPage, initialRecords, fetchFunction, filters) => {
         prevIsValid: state.hasPrev,
         pageChangeHandler: handlePageChange,
         recordChangeHandler: handleRecordsChange,
-        error: state.error
+        error: state.error,
+        loading: state.loading
     };
 };
 

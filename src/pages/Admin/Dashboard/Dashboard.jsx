@@ -525,7 +525,7 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {
+            {/* {
                 user?.role == "admin" &&
                 <div className="px-1 mx-4 m-2 rounded-xl  pt-4 space-y-2.5">
                     <h6 className='text-black font-tbPop text-base tracking-normal font-medium px-2'>Order Statistics</h6>
@@ -558,7 +558,6 @@ const Dashboard = () => {
                             </div>
                         </div>
 
-                        {/* Pending Orders Card */}
                         <div className="bg-white p-5 rounded-3xl space-y-1.5 relative overflow-hidden" >
                             <div className='absolute -top-8 -right-8 w-[7.7rem] h-[7.7rem] bg-orange-300  rounded-[40px] flex items-center justify-center' />
                             <div className='flex items-center justify-between'>
@@ -586,7 +585,6 @@ const Dashboard = () => {
                             </div>
                         </div>
 
-                        {/* Shipped Orders Card */}
                         <div className="bg-white p-5 rounded-3xl space-y-1.5 relative overflow-hidden" >
                             <div className='absolute -top-8 -right-8 w-[7.7rem] h-[7.7rem] bg-red-300  rounded-[40px] flex items-center justify-center' />
                             <div className='flex items-center justify-between'>
@@ -614,7 +612,6 @@ const Dashboard = () => {
                             </div>
                         </div>
 
-                        {/* Delivered Orders Card */}
                         <div className="bg-white p-5 rounded-3xl space-y-1.5 relative overflow-hidden" >
                             <div className='absolute -top-8 -right-8 w-[7.7rem] h-[7.7rem] bg-emerald-300  rounded-[40px] flex items-center justify-center' />
                             <div className='flex items-center justify-between'>
@@ -643,7 +640,7 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-            }
+            } */}
 
 
             {/* Today's Appointments */}

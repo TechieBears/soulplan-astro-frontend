@@ -43,7 +43,6 @@ const BookingPage = () => {
             astrologer: "",
             timeSlot: "",
             date: new Date(),
-            currency: "",
             serviceMode: "",
             bookingType: "self",
             firstName: user?.firstName || "",
@@ -62,11 +61,6 @@ const BookingPage = () => {
     const [astrologers, setAstrologers] = useState([]);
     const [isAstrologersLoading, setIsAstrologersLoading] = useState(false);
     const selectedAddress = useSelector((state) => state.cart?.addresses);
-
-    const currencyOptions = [
-        { value: "INR", label: "Indian (INR)" },
-        { value: "USD", label: "USD" },
-    ];
 
     const handleBooking = async (data) => {
         try {
@@ -96,7 +90,7 @@ const BookingPage = () => {
                 serviceMode: data?.serviceMode,
                 startTime: timeSlotParts[0],
                 endTime: timeSlotParts[1],
-                currency: data?.currency,
+                currency: "USD",
                 firstName: data?.firstName,
                 lastName: data?.lastName,
                 email: data?.email,
@@ -486,22 +480,6 @@ const BookingPage = () => {
                                             </div>
                                         );
                                     }}
-                                />
-                            </div>
-                            <div className="">
-                                <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
-                                    Currency*
-                                </h4>
-                                <SelectTextInput
-                                    props={{
-                                        ...register("currency", { required: true }),
-                                        value: watch("currency") || "",
-                                    }}
-                                    errors={errors.currency}
-                                    label="Select Currency"
-                                    registerName="currency"
-                                    options={currencyOptions}
-                                    placeholder="Select Currency"
                                 />
                             </div>
                             <div className="">
