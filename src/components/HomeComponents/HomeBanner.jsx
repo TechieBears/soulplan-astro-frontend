@@ -57,7 +57,7 @@ const HomeBanner = ({ slidesData, isLoading }) => {
                                     )}
 
                                     <div className="w-full md:w-2/3 lg:w-1/2 space-y-3 lg:space-y-5 text-center md:text-left md:order-1">
-                                        <h1 className="text-3xl lg:text-4xl xl:text-6xl pb-2 font-tbLex font-bold text-p tracking-tighter banner-title">
+                                        <h1 className="text-3xl lg:text-4xl xl:text-6xl pb-2 font-tbLex font-bold tracking-tighter banner-title" style={{ color: '#FFF2DB' }}>
                                             {slide.title}
                                         </h1>
                                         <p className="text-md md:text-md font-tbPop w-full md:w-2/3 text-slate-200 pb-1 text-center md:text-left banner-description">
