@@ -493,6 +493,8 @@ const ProfileSection = () => {
 
 const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) => {
     const [Searvice, setSearvice] = useState([]);
+    const [needsScroll, setNeedsScroll] = useState(false);
+    const contentRef = useRef(null);
 
     useEffect(() => {
         const fetchServiceCategories = async () => {
@@ -502,12 +504,27 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
         fetchServiceCategories();
     }, []);
 
+    useEffect(() => {
+        if (dropdownOpen && contentRef.current) {
+            const checkHeight = () => {
+                const viewportHeight = window.innerHeight;
+                const dropdownTop = contentRef.current.getBoundingClientRect().top;
+                const availableHeight = viewportHeight - dropdownTop - 5;
+                const contentHeight = contentRef.current.scrollHeight;
+                setNeedsScroll(contentHeight > availableHeight);
+            };
+            checkHeight();
+            window.addEventListener('resize', checkHeight);
+            return () => window.removeEventListener('resize', checkHeight);
+        }
+    }, [dropdownOpen, Searvice]);
+
     return (
         <div
             ref={dropdown}
-            className={`absolute left-1/2 -translate-x-1/2 top-full pt-2 w-[600px] pb-3 max-h-[400px] overflow-y-auto scrollbars rounded-lg z-50 bg-white shadow-lg border border-slate-100 transition-all ease-in-out duration-300 ${dropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"}`}
+            className={`absolute left-1/2 -translate-x-1/2 top-full pt-2 w-[600px] pb-3 ${needsScroll ? 'max-h-[calc(100vh-5px)] overflow-y-auto scrollbars' : ''} rounded-lg z-50 bg-white shadow-lg border border-slate-100 transition-all ease-in-out duration-300 ${dropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"}`}
         >
-            <div className="grid grid-cols-2 gap-x-4 p-2 auto-rows-fr">
+            <div ref={contentRef} className="grid grid-cols-2 gap-x-4 p-2 auto-rows-fr">
                 {Searvice?.map((item, i) => (
                     <NavLink
                         to={`/services/${item.name?.toLowerCase()}`}
@@ -523,7 +540,7 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
                         }
                         onClick={() => { setDropdownOpen(false), window.scrollTo(0, 0, { behavior: "smooth" }) }}
                     >
-                        <h4 className="font-medium font-tbPop text-base px-4 py-2 relative overflow-hidden z-10 border-b border-slate-200 flex items-center justify-between gap-3 w-full h-full">
+                        <h4 className="font-medium font-tbPop text-base px-4 relative overflow-hidden z-10 border-b border-slate-200 flex items-center justify-between gap-3 w-full h-full">
                             <span className="relative z-10 transition-colors duration-500 group-hover:text-white flex-1">{item.name}</span>
                             <ArrowRight className="h-5 w-5 relative z-10 text-white opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 flex-shrink-0" />
                             <span className="absolute inset-0 bg-purple-red-gradient transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out -z-10"></span>
