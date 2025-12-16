@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { formBtn1, formBtn3 } from "../../utils/CustomClass";
+import { formBtn1 } from "../../utils/CustomClass";
+import GradientButton from "../Buttons/GradientButton";
 import { CaretDown, List, Share, X, ArrowRight } from "@phosphor-icons/react";
 import { useDispatch, useSelector } from "react-redux";
 import { LoginCurve, User, Box, Building4, CallCalling, Information, Wallet, NotificationBing, SmsNotification, ShoppingCart } from "iconsax-reactjs";
@@ -147,7 +148,7 @@ const HomeNavbar = () => {
 
     return (
         <>
-            <nav className={`navbar fixed top-0 left-0 z-[900] bg-white w-full right-0 transition-colors duration-500 ${isScrolled ? "bg-white/20  shadow-md text-black backdrop-blur-lg " : ""}`}>
+            <nav className={`navbar fixed top-0 left-0 z-[900] bg-white w-full right-0 transition-colors duration-500 ${isScrolled ? "shadow-md" : ""}`}>
                 <div className="flex items-center justify-between container mx-auto px-5 xl:px-0 py-3">
                     {/* ===== Left: Logo and Brand ===== */}
                     <button
@@ -239,12 +240,9 @@ const HomeNavbar = () => {
                                 <ProfileSection card={card} setCard={setCard} logout={logout} />
                             </div>
                         ) : (
-                            <button
-                                onClick={() => navigate("/login")}
-                                className={`${formBtn3}`}
-                            >
+                            <GradientButton onClick={() => navigate("/login")}>
                                 Login / Register
-                            </button>
+                            </GradientButton>
                         )}
                     </div>
 
@@ -316,12 +314,9 @@ const HomeNavbar = () => {
                                     </button>
                                 </>
                             ) : (
-                                <button
-                                    onClick={() => navigate("/login")}
-                                    className={`${formBtn3}`}
-                                >
+                                <GradientButton onClick={() => navigate("/login")} className="w-full">
                                     Login / Register
-                                </button>
+                                </GradientButton>
                             )}
                         </div>
                     </div>

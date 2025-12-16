@@ -1,12 +1,12 @@
 import React from 'react';
 import { formBtn3 } from '../../utils/CustomClass';
 
-const GradientButton = ({ 
-    children, 
-    onClick, 
-    className = '', 
+const GradientButton = ({
+    children,
+    onClick,
+    className = '',
     type = 'button',
-    disabled = false 
+    disabled = false
 }) => {
     return (
         <button

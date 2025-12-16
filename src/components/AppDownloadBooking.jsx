@@ -8,7 +8,7 @@ const AppDownloadBooking = () => {
 
     return (
         <>
-            <section className="bg-[#EFF2FA]">
+            <section className="bg-[#EFF2FA] default-bg">
                 <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center justify-between pt-16 md:pt-20 gap-10 xl:gap-10 px-5 xl:px-0">
                     <div className="text-left flex flex-col justify-center items-center md:items-start">
                         <h2 className="text-xl md:text-2xl xl:text-5xl w-full font-bold font-tbPop text-black text-center md:text-left pb-3">
