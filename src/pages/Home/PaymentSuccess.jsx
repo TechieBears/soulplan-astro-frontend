@@ -70,9 +70,8 @@ const PaymentSuccess = () => {
             className={activeTab === "services" ? "text-left" : "text-center"}
           >
             <div
-              className={`flex flex-col ${
-                activeTab === "services" ? "items-start" : "items-center"
-              } justify-center mb-3 space-y-6 xl:space-y-4`}
+              className={`flex flex-col ${activeTab === "services" ? "items-start" : "items-center"
+                } justify-center mb-3 space-y-6 xl:space-y-4`}
             >
               <div className="flex items-center gap-2">
                 <Lottie
@@ -119,7 +118,7 @@ const PaymentSuccess = () => {
                         </div>
 
                         <div className="flex-1 min-w-0 text-left justify-self-start">
-                          <h3 
+                          <h3
                             className="font-bold text-white font-dm text-lg mb-1 cursor-pointer hover:underline"
                             onClick={() => navigate(`/product/${item.product}`)}
                           >
@@ -192,7 +191,7 @@ const PaymentSuccess = () => {
                       }}
                     >
                       <h3 className="font-medium font-dm text-lg mb-4">
-                        Service Type:
+                        Service Type:{" "}
                         <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 bg-clip-text text-transparent font-semibold">
                           {service?.service?.name}
                         </span>
@@ -242,11 +241,10 @@ const PaymentSuccess = () => {
                             {service?.service?.serviceType}
                           </span>
                           <span
-                            className={`px-2 py-1 rounded-full capitalize ${
-                              service.paymentStatus === "paid"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
+                            className={`px-2 py-1 rounded-full capitalize ${service.paymentStatus === "paid"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                              }`}
                           >
                             {service.paymentStatus}
                           </span>
