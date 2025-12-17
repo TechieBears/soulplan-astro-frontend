@@ -39,7 +39,7 @@ const CartPage = () => {
   const [activeTab, setActiveTab] = useState(type || "services");
 
   return (
-    <div className="min-h-screen bg-[#FFF9EF]  pt-16 lg:pt-24 relative">
+    <div className="min-h-screen bg-[#EFF2FA]  pt-16 lg:pt-24 relative">
       <div className="absolute top-24 left-1/4 scale-50 ">
         <img src={star} alt="" className="w-full h-full object-fill" />
       </div>
@@ -446,11 +446,10 @@ const ProductTab = () => {
                       removeItem(item?._id || item?.id);
                     }}
                     disabled={isUpdating}
-                    className={`p-2 text-white rounded-md transition-colors flex-shrink-0 ${
-                      isUpdating
+                    className={`p-2 text-white rounded-md transition-colors flex-shrink-0 ${isUpdating
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-[#8B3FC1]"
-                    }`}
+                      }`}
                   >
                     <FaRegTrashAlt className="w-4 h-4" />
                   </button>
@@ -467,11 +466,10 @@ const ProductTab = () => {
                           );
                         }}
                         disabled={isUpdating || item?.quantity <= 1}
-                        className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${
-                          isUpdating || item?.quantity <= 1
+                        className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${isUpdating || item?.quantity <= 1
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:bg-gray-100"
-                        }`}
+                          }`}
                       >
                         -
                       </button>
@@ -489,11 +487,10 @@ const ProductTab = () => {
                           );
                         }}
                         disabled={isUpdating}
-                        className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${
-                          isUpdating
+                        className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${isUpdating
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:bg-gray-100"
-                        }`}
+                          }`}
                       >
                         +
                       </button>
@@ -668,9 +665,8 @@ const ProductTab = () => {
             <button
               onClick={() => handleBooking()}
               disabled={bookingLoading}
-              className={`${formBtn3} w-full py-3 text-white rounded-md ${
-                bookingLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`${formBtn3} w-full py-3 text-white rounded-md ${bookingLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
             >
               {bookingLoading ? (
                 <div className="flex items-center justify-center space-x-2">
@@ -802,7 +798,7 @@ const ServiceTab = () => {
   const handleBooking = async () => {
     try {
       setBookingLoading(true);
-      
+
       // Validate cart items
       if (!cartItems || cartItems.length === 0) {
         toast.error("Cart is empty");
@@ -822,14 +818,14 @@ const ServiceTab = () => {
             email: item?.cust?.email || "",
             phone: item?.cust?.phone || "",
           };
-          
+
           // Add address or addressData based on what's available
           if (item?.address) {
             serviceItem.address = item.address;
           } else if (item?.cust?.addressData) {
             serviceItem.addressData = item.cust.addressData;
           }
-          
+
           return serviceItem;
         }),
         paymentType: "UPI",
@@ -837,7 +833,7 @@ const ServiceTab = () => {
         useCredits: isWalletChecked,
       };
       console.log("⚡️🤯 ~ Cart.jsx:602 ~ handleBooking ~ payload:", payload);
-      
+
       const res = await createServiceOrder(payload);
       if (res?.success) {
         navigate("/payment-success", {
@@ -993,9 +989,8 @@ const ServiceTab = () => {
           <button
             onClick={handleBooking}
             disabled={bookingLoading || cartItems?.length === 0}
-            className={`${formBtn3} w-full py-3 text-white rounded-md ${
-              bookingLoading || cartItems?.length === 0 ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`${formBtn3} w-full py-3 text-white rounded-md ${bookingLoading || cartItems?.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
           >
             {bookingLoading ? (
               <div className="flex items-center justify-center space-x-2">
