@@ -16,10 +16,10 @@ import moment from "moment";
 const HomeNavbar = () => {
     const navLinks = [
         { name: "Home", path: "/" },
-        { name: "About", path: "/about" },
+        { name: "About Us", path: "/about-us" },
         { name: "Services", dropdown: true, path: "/services" },
         // { name: "Shop", path: "/products" },
-        { name: "Contact Us", path: "/contact" },
+        { name: "Contact Us", path: "/contact-us" },
     ];
 
     const profileNavLinks = [
