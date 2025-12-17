@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { X } from "@phosphor-icons/react";
+import { useSearchParams } from 'react-router-dom';
 import LoadBox from '../Loader/LoadBox';
 import ImageCropUpload from '../TextInput/ImageCropUpload';
 import TextInput from '../TextInput/TextInput';
@@ -16,6 +17,7 @@ import { getPublicServicesDropdown, createTestimonial } from '../../api';
 
 function TestimonialModal() {
     const [open, setOpen] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const { register, handleSubmit, watch, reset, formState: { errors }, setValue } = useForm({
         defaultValues: { service_id: '', message: '', city: '', state: '', country: '' }
@@ -30,6 +32,14 @@ function TestimonialModal() {
         setOpen(!open);
         reset();
     };
+
+    useEffect(() => {
+        if (searchParams.get('openTestimonial') === 'true') {
+            setOpen(true);
+            searchParams.delete('openTestimonial');
+            setSearchParams(searchParams, { replace: true });
+        }
+    }, [searchParams, setSearchParams]);
 
     useEffect(() => {
         if (!city?.trim() || city.trim().length < 3) return;
