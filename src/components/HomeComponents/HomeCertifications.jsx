@@ -46,7 +46,6 @@ export default function Certifications({ showTopImage = true }) {
                     Professional Qualifications & Certifications
                 </h2>
 
-                {/* Underline */}
                 <img
                     src={underline}
                     alt="Underline"
@@ -59,19 +58,16 @@ export default function Certifications({ showTopImage = true }) {
                             key={index}
                             className="relative flex items-center justify-center text-center w-64 h-64 p-8"
                         >
-                            {/* Laurel wreath image (background decoration) */}
                             <img
-                                src={star} // 👈 use your laurel wreath asset here
+                                src={star}
                                 alt="Wreath"
                                 className="absolute inset-0 w-72 h-full object-cover pointer-events-none select-none"
                             />
 
-                            {/* Star on top */}
                             <div className="absolute -top-0 left-1/2 transform -translate-x-1/2 text-yellow-500 text-5xl">
                                 ★
                             </div>
 
-                            {/* Text inside */}
                             <p className="relative z-10 text-sm font-tbPop font-normal leading-tight px-4">
                                 {cert.title}
                             </p>

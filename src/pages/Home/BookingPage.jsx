@@ -297,7 +297,7 @@ const BookingPage = () => {
                         <div className="space-y-5 ">
                             <div className="">
                                 <h4 className="text-sm font-tbLex font-normal text-slate-800 py-2.5">
-                                    Service Mode*
+                                    Service Time Slots*
                                 </h4>
                                 <SelectTextInput
                                     label="Select Time Slots"
