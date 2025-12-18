@@ -6,7 +6,7 @@ import TextInput from "../../components/TextInput/TextInput";
 import { FcGoogle } from "react-icons/fc";
 import ForgetPasswordModal from "../../components/Modals/ForgetPassword/ForgetPasswordModal";
 import { loginUser, registerUser } from "../../api";
-import { setLoggedUser, setRoleIs, setUserDetails } from "../../redux/Slices/loginSlice";
+import { setLoggedUser, setRoleIs, setUserDetails, setIsRegistered } from "../../redux/Slices/loginSlice";
 import { validateEmail, validatePassword } from "../../utils/validateFunction";
 import { useForm } from "react-hook-form";
 import LoadBox from "../../components/Loader/LoadBox";
@@ -72,6 +72,18 @@ const LoginPage = () => {
                 setLoading(false)
                 dispatch(setLoggedUser(true))
                 dispatch(setRoleIs(response?.data?.user?.role))
+                
+                // Check if profile is incomplete for customers
+                if (response?.data?.user?.role === 'customer') {
+                    const isProfileComplete = response?.data?.user?.firstName && 
+                                            response?.data?.user?.lastName && 
+                                            response?.data?.user?.mobileNo && 
+                                            response?.data?.user?.gender;
+                    if (!isProfileComplete) {
+                        dispatch(setIsRegistered(true));
+                    }
+                }
+                
                 if (!rememberMe) {
                     reset()
                     setRememberMe(false);
@@ -132,6 +144,18 @@ const LoginPage = () => {
                     dispatch(setUserDetails(response?.data?.user))
                     dispatch(setLoggedUser(true))
                     dispatch(setRoleIs(response?.data?.user?.role))
+                    
+                    // Check if profile is incomplete for customers
+                    if (response?.data?.user?.role === 'customer') {
+                        const isProfileComplete = response?.data?.user?.firstName && 
+                                                response?.data?.user?.lastName && 
+                                                response?.data?.user?.mobileNo && 
+                                                response?.data?.user?.gender;
+                        if (!isProfileComplete) {
+                            dispatch(setIsRegistered(true));
+                        }
+                    }
+                    
                     localStorage.setItem('token', response?.data?.token);
                     toast.success("Login Successfully 🥳");
 

@@ -11,8 +11,17 @@ const UserDashboard = ({ children }) => children;
 const ReferAndEarn = () => {
     const [copied, setCopied] = useState(false);
     const user = useSelector((state) => state.user.userDetails);
-    const referralCode = user?.referralCode || "----- -----";
     const [walletBalance, setWalletBalance] = useState(0);
+
+    // Debug user data
+    console.log('User data:', user);
+    console.log('User referral code:', user?.referralCode);
+    console.log('Full user object keys:', user ? Object.keys(user) : 'No user');
+    
+    // Try different possible referral code field names
+    const referralCode = user?.referralCode || user?.referral_code || user?.refCode || user?.code || "----- -----";
+    
+    console.log('Final referral code:', referralCode);
 
     useEffect(() => {
         window.scrollTo(0, 0);

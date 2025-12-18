@@ -9,53 +9,107 @@ import { validateAlphabets } from '../../utils/validateFunction';
 import { X, CheckCircle, Gift, User, Phone, Users, CheckSquare, Square } from 'lucide-react';
 import LoadBox from '../Loader/LoadBox';
 import SelectTextInput from '../TextInput/SelectTextInput';
-import { setUserDetails } from '../../redux/Slices/loginSlice';
+import { setUserDetails, setIsRegistered } from '../../redux/Slices/loginSlice';
 
 
-function ReferralPromptModal({ open, toggle }) {
-    const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm();
+function ReferralPromptModal({ open, toggle, forceProfileScreen = false, onModalClose }) {
+    const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm({
+        defaultValues: {
+            firstName: '',
+            lastName: '',
+            mobileNo: '',
+            gender: '',
+            referralCode: ''
+        }
+    });
     const user = useSelector(state => state.user.userDetails);
+    const isRegistered = useSelector(state => state.user.isRegistered);
     const dispatch = useDispatch();
     const [loader, setLoader] = useState(false);
-    const [showOnlyReferral, setShowOnlyReferral] = useState(false);
+    const [showOnlyReferral, setShowOnlyReferral] = useState(true);
     const [dontShowAgain, setDontShowAgain] = useState(false);
 
     const isProfileComplete = user?.firstName && user?.lastName && user?.mobileNo && user?.gender;
 
     useEffect(() => {
         if (open && user) {
+            const formData = {
+                firstName: user?.firstName || '',
+                lastName: user?.lastName || '',
+                mobileNo: user?.mobileNo || '',
+                gender: user?.gender || '',
+                referralCode: ''
+            };
+
+            reset(formData);
+            // If profile is incomplete, force profile screen
+            if (forceProfileScreen) {
+                setShowOnlyReferral(false);
+            } else {
+                setShowOnlyReferral(true);
+            }
+        }
+    }, [open, user, reset, forceProfileScreen]);
+
+    // Additional effect to ensure form values are set when user data changes
+    useEffect(() => {
+        if (user && open) {
             setValue('firstName', user?.firstName || '');
             setValue('lastName', user?.lastName || '');
             setValue('mobileNo', user?.mobileNo || '');
             setValue('gender', user?.gender || '');
-            setShowOnlyReferral(isProfileComplete);
         }
-    }, [open, user, setValue, isProfileComplete]);
+    }, [user, setValue, open]);
 
     const formSubmit = async (data) => {
+        console.log('Form submitted with data:', data);
+        console.log('Current showOnlyReferral state:', showOnlyReferral);
+
+        // If checkbox is selected and on referral screen, just close modal
+        if (showOnlyReferral && dontShowAgain) {
+            localStorage.setItem(`dontShowReferralModal_${user?._id}`, 'true');
+            dispatch(setIsRegistered(false));
+            onModalClose?.();
+            toggle();
+            return;
+        }
+
         try {
             setLoader(true);
             const payload = {
-                ...data,
-                id: user?._id
+                ...data
             };
 
             const res = await editUserCustomer(payload);
-            if (res?.success) {
-                dispatch(setUserDetails(res?.data?.user));
+            console.log('API response:', res);
 
-                if (!showOnlyReferral) {
-                    setShowOnlyReferral(true);
-                    toast.success('Profile updated successfully! Now enter your referral code.');
-                } else {
-                    if (dontShowAgain) {
-                        localStorage.setItem(`dontShowReferralModal_${user?._id}`, 'true');
+            if (res?.success) {
+                dispatch(setUserDetails(res?.data?.user || res?.data));
+
+                if (showOnlyReferral) {
+                    // Check if profile is complete, if yes, close modal directly
+                    if (isProfileComplete) {
+                        console.log('Profile already complete, closing modal');
+                        dispatch(setIsRegistered(false));
+                        onModalClose?.();
+                        toggle();
+                        toast.success('Referral code added successfully!');
+                        reset();
+                    } else {
+                        console.log('Moving to profile screen');
+                        toast.success('Referral code added! Now complete your profile.');
+                        setTimeout(() => {
+                            setShowOnlyReferral(false);
+                        }, 100);
                     }
+                } else {
+                    toast.success('Profile completed successfully!');
+                    dispatch(setIsRegistered(false));
+                    onModalClose?.();
                     toggle();
-                    toast.success(res?.message || 'Referral code added successfully!');
-                    reset();
                 }
             } else {
+                console.log('API call failed:', res?.message);
                 toast.error(res?.message || "Something went wrong");
             }
         } catch (error) {
@@ -68,23 +122,21 @@ function ReferralPromptModal({ open, toggle }) {
 
     useEffect(() => {
         if (!open) {
-            reset({
-                firstName: '',
-                lastName: '',
-                mobileNo: '',
-                gender: '',
-                referralCode: '',
-            });
-            setShowOnlyReferral(false);
+            setShowOnlyReferral(true);
             setDontShowAgain(false);
         }
-    }, [open, reset]);
+    }, [open]);
 
     const validatePhoneNumber = (value) => {
         if (!value) return true;
         const phoneRegex = /^[0-9]{10}$/;
         return phoneRegex.test(value) || 'Phone number must be 10 digits';
     };
+
+    // Show modal if isRegistered is true OR if forceProfileScreen is true (for incomplete profiles)
+    if (!isRegistered && !forceProfileScreen) {
+        return null;
+    }
 
     return (
         <>
@@ -115,9 +167,13 @@ function ReferralPromptModal({ open, toggle }) {
                             >
                                 <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all">
                                     {/* Header */}
-                                    <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-8">
+                                    <div className="relative bg-primary-gradient px-6 py-8">
                                         <button
-                                            onClick={toggle}
+                                            onClick={() => {
+                                                dispatch(setIsRegistered(false));
+                                                onModalClose?.();
+                                                toggle();
+                                            }}
                                             className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-all"
                                         >
                                             <X size={24} className="text-white" />
@@ -126,17 +182,17 @@ function ReferralPromptModal({ open, toggle }) {
                                         <div className="flex items-center gap-3 mb-2">
                                             {showOnlyReferral ? (
                                                 <>
-                                                    <Gift size={28} className="text-yellow-300" />
+                                                    <Gift size={28} className="text-white" />
                                                     <h2 className="text-2xl md:text-3xl font-bold text-white">Enter Referral Code</h2>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <User size={28} className="text-yellow-300" />
+                                                    <User size={28} className="text-white" />
                                                     <h2 className="text-2xl md:text-3xl font-bold text-white">Complete Your Profile</h2>
                                                 </>
                                             )}
                                         </div>
-                                        <p className="text-blue-100 text-sm">
+                                        <p className="text-white/90 text-sm">
                                             {showOnlyReferral
                                                 ? 'Got a referral code? Enter it here to unlock rewards!'
                                                 : 'Please fill in your details to continue'}
@@ -150,13 +206,13 @@ function ReferralPromptModal({ open, toggle }) {
                                             <div className="mb-8">
                                                 <div className="flex items-center justify-between mb-3">
                                                     <span className="text-sm font-semibold text-gray-700">Profile Completion</span>
-                                                    <span className="text-xs font-semibold text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
+                                                    <span className="text-xs font-semibold text-primary bg-primary-light px-3 py-1 rounded-full">
                                                         {isProfileComplete ? '100%' : '0%'}
                                                     </span>
                                                 </div>
                                                 <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
                                                     <div
-                                                        className="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all duration-500"
+                                                        className="bg-button-gradient-orange h-full rounded-full transition-all duration-500"
                                                         style={{ width: isProfileComplete ? '100%' : '0%' }}
                                                     ></div>
                                                 </div>
@@ -164,7 +220,44 @@ function ReferralPromptModal({ open, toggle }) {
                                         )}
 
                                         <form onSubmit={handleSubmit(formSubmit)}>
-                                            {!showOnlyReferral ? (
+                                            {showOnlyReferral ? (
+                                                // Referral Code First Screen
+                                                <div className="space-y-6">
+                                                    <div>
+                                                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                            <Gift size={16} className="inline mr-2 text-yellow-500" />
+                                                            Referral Code <span className="text-gray-400">(Optional)</span>
+                                                        </label>
+                                                        <TextInput
+                                                            placeholder="Enter a referral code to earn rewards"
+                                                            type="text"
+                                                            registerName="referralCode"
+                                                            props={{
+                                                                ...register('referralCode'),
+                                                                className: "w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary-light transition-all uppercase"
+                                                            }}
+                                                            errors={errors.referralCode}
+                                                        />
+                                                    </div>
+
+                                                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-2">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setDontShowAgain(!dontShowAgain)}
+                                                            className="flex items-center gap-3 w-full text-left hover:bg-amber-100/50 p-2 rounded transition-colors"
+                                                        >
+                                                            {dontShowAgain ? (
+                                                                <CheckSquare size={20} className="text-primary flex-shrink-0" />
+                                                            ) : (
+                                                                <Square size={20} className="text-gray-400 flex-shrink-0" />
+                                                            )}
+                                                            <span className="text-sm font-medium text-gray-700">
+                                                                Don't show this again
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
                                                 // Profile Completion Form
                                                 <div className="space-y-6">
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -183,7 +276,7 @@ function ReferralPromptModal({ open, toggle }) {
                                                                         validate: validateAlphabets,
                                                                         minLength: { value: 2, message: "Minimum 2 characters" }
                                                                     }),
-                                                                    className: "w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                                                    className: "w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary-light transition-all"
                                                                 }}
                                                                 errors={errors.firstName}
                                                             />
@@ -204,7 +297,7 @@ function ReferralPromptModal({ open, toggle }) {
                                                                         validate: validateAlphabets,
                                                                         minLength: { value: 2, message: "Minimum 2 characters" }
                                                                     }),
-                                                                    className: "w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                                                    className: "w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary-light transition-all"
                                                                 }}
                                                                 errors={errors.lastName}
                                                             />
@@ -229,7 +322,7 @@ function ReferralPromptModal({ open, toggle }) {
                                                                     }),
                                                                     maxLength: 10,
                                                                     minLength: 10,
-                                                                    className: "w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                                                    className: "w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary-light transition-all"
                                                                 }}
                                                                 errors={errors.mobileNo}
                                                             />
@@ -261,55 +354,11 @@ function ReferralPromptModal({ open, toggle }) {
                                                     </div>
 
                                                     {/* Info Box */}
-                                                    <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                                                        <p className="text-sm text-blue-900">
-                                                            <CheckCircle size={16} className="inline mr-2 text-blue-500" />
+                                                    <div className="bg-primary-light border-l-4 border-primary p-4 rounded">
+                                                        <p className="text-sm text-primary">
+                                                            <CheckCircle size={16} className="inline mr-2 text-primary" />
                                                             Complete your profile to unlock exclusive referral rewards!
                                                         </p>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                // Referral Code Only Form
-                                                <div className="space-y-6">
-                                                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-4 rounded">
-                                                        <p className="text-sm text-green-900 font-semibold">
-                                                            <CheckCircle size={16} className="inline mr-2 text-green-500" />
-                                                            Your profile is complete!
-                                                        </p>
-                                                    </div>
-
-                                                    <div>
-                                                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                                            <Gift size={16} className="inline mr-2 text-yellow-500" />
-                                                            Referral Code <span className="text-gray-400">(Optional)</span>
-                                                        </label>
-                                                        <TextInput
-                                                            placeholder="Enter a referral code to earn rewards"
-                                                            type="text"
-                                                            registerName="referralCode"
-                                                            props={{
-                                                                ...register('referralCode'),
-                                                                className: "w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all uppercase"
-                                                            }}
-                                                            errors={errors.referralCode}
-                                                        />
-                                                    </div>
-
-                                                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-2">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setDontShowAgain(!dontShowAgain)}
-                                                            className="flex items-center gap-3 w-full text-left hover:bg-amber-100/50 p-2 rounded transition-colors"
-                                                        >
-                                                            {dontShowAgain ? (
-                                                                <CheckSquare size={20} className="text-purple-600 flex-shrink-0" />
-                                                            ) : (
-                                                                <Square size={20} className="text-gray-400 flex-shrink-0" />
-                                                            )}
-                                                            <span className="text-sm font-medium text-gray-700">
-                                                                Don't show this again
-                                                            </span>
-                                                        </button>
                                                     </div>
                                                 </div>
                                             )}
@@ -317,21 +366,34 @@ function ReferralPromptModal({ open, toggle }) {
                                             <div className="flex gap-3 pt-10">
                                                 <button
                                                     type="button"
-                                                    onClick={toggle}
+                                                    onClick={() => {
+                                                        if (showOnlyReferral && dontShowAgain) {
+                                                            localStorage.setItem(`dontShowReferralModal_${user?._id}`, 'true');
+                                                        }
+                                                        dispatch(setIsRegistered(false));
+                                                        onModalClose?.();
+                                                        toggle();
+                                                    }}
                                                     className="flex-1 px-4 py-3 text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                                                 >
                                                     {showOnlyReferral ? 'Skip' : 'Cancel'}
                                                 </button>
                                                 {loader ? (
                                                     <div className="flex-1">
-                                                        <LoadBox className="flex-1 w-full px-4 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg active:scale-95 cursor-pointer " />
+                                                        <LoadBox className="flex-1 w-full px-4 py-3 text-sm font-semibold text-white bg-button-gradient-orange rounded-lg hover:opacity-90 transition-all shadow-md hover:shadow-lg active:scale-95 cursor-pointer " />
                                                     </div>
                                                 ) : (
                                                     <button
                                                         type='submit'
-                                                        className="flex-1 px-4 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg active:scale-95 cursor-pointer"
+                                                        disabled={
+                                                            !showOnlyReferral && (!watch('firstName')?.trim() || !watch('lastName')?.trim() || !watch('mobileNo')?.trim() || !watch('gender')?.trim())
+                                                        }
+                                                        className={`flex-1 px-4 py-3 text-sm font-semibold rounded-lg transition-all shadow-md ${!showOnlyReferral && (!watch('firstName')?.trim() || !watch('lastName')?.trim() || !watch('mobileNo')?.trim() || !watch('gender')?.trim())
+                                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                                            : 'text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 hover:shadow-lg active:scale-95 cursor-pointer'
+                                                            }`}
                                                     >
-                                                        {showOnlyReferral ? 'Submit' : 'Complete Profile'}
+                                                        {showOnlyReferral ? 'Continue' : 'Complete Profile'}
                                                     </button>
                                                 )}
                                             </div>

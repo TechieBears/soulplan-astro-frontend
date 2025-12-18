@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { formBtn1, formBtn3 } from "../../utils/CustomClass";
-import { CaretDown, List, Share, X } from "@phosphor-icons/react";
+import { formBtn1 } from "../../utils/CustomClass";
+import GradientButton from "../Buttons/GradientButton";
+import { CaretDown, List, Share, X, ArrowRight } from "@phosphor-icons/react";
 import { useDispatch, useSelector } from "react-redux";
 import { LoginCurve, User, Box, Building4, CallCalling, Information, Wallet, NotificationBing, SmsNotification, ShoppingCart } from "iconsax-reactjs";
 import { useGSAP } from "@gsap/react";
@@ -15,10 +16,10 @@ import moment from "moment";
 const HomeNavbar = () => {
     const navLinks = [
         { name: "Home", path: "/" },
-        { name: "About", path: "/about" },
+        { name: "About Us", path: "/about-us" },
         { name: "Services", dropdown: true, path: "/services" },
-        { name: "Shop", path: "/products" },
-        { name: "Contact Us", path: "/contact" },
+        // { name: "Shop", path: "/products" },
+        { name: "Contact Us", path: "/contact-us" },
     ];
 
     const profileNavLinks = [
@@ -147,7 +148,7 @@ const HomeNavbar = () => {
 
     return (
         <>
-            <nav className={`navbar fixed top-0 left-0 z-[900] bg-white w-full right-0 transition-colors duration-500 ${isScrolled ? "bg-white/20  shadow-md text-black backdrop-blur-lg " : ""}`}>
+            <nav className={`navbar fixed top-0 left-0 z-[900] bg-white w-full right-0 transition-colors duration-500 ${isScrolled ? "shadow-md" : ""}`}>
                 <div className="flex items-center justify-between container mx-auto px-5 xl:px-0 py-3">
                     {/* ===== Left: Logo and Brand ===== */}
                     <button
@@ -165,20 +166,21 @@ const HomeNavbar = () => {
                     <div className="hidden lg:flex items-center gap-8">
                         {navLinks.map((link, i) =>
                             link.dropdown ? (
-                                <div className="relative inline-block">
+                                <div key={i} className="relative inline-block" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)}>
                                     <NavLink
                                         key={i}
                                         to={link.path}
                                         ref={trigger}
                                         onClick={() => { setDropdownOpen(!dropdownOpen), window.scrollTo(0, 0, { behavior: "smooth" }) }}
                                         className={({ isActive }) =>
-                                            `font-medium font-tbPop flex items-center space-x-1 cursor-pointer text-base !transition-all !duration-500 ${isActive
+                                            `font-medium font-tbPop flex items-center space-x-1 cursor-pointer text-base ${isActive
                                                 ? "text-p font-bold"
-                                                : "text-gray-800 text-hover-p"
+                                                : "text-gray-800 text-hover-p font-bold"
                                             }`
                                         }
+                                        data-text={link.name}
                                     >
-                                        <span >{link.name}</span>
+                                        <span>{link.name}</span>
                                         <span className={dropdownOpen ? "-rotate-180 duration-300 transition-all" : "rotate-0 duration-300 transition-all"}>
                                             <CaretDown size="20" className={`transition-all duration-300 ${dropdownOpen
                                                 ? 'text-p'
@@ -196,11 +198,12 @@ const HomeNavbar = () => {
                                     to={link.path}
                                     onClick={() => { setIsMenuOpen(false), window.scrollTo(0, 0, { behavior: "smooth" }) }}
                                     className={({ isActive }) =>
-                                        `font-medium font-tbPop text-base !transition-all !duration-500 ${isActive
+                                        `font-medium font-tbPop text-base ${isActive
                                             ? "text-p font-bold"
-                                            : "text-gray-800 text-hover-p"
+                                            : "text-gray-800 text-hover-p font-bold"
                                         }`
                                     }
+                                    data-text={link.name}
                                 >
                                     {link.name}
                                 </NavLink>
@@ -237,12 +240,9 @@ const HomeNavbar = () => {
                                 <ProfileSection card={card} setCard={setCard} logout={logout} />
                             </div>
                         ) : (
-                            <button
-                                onClick={() => navigate("/login")}
-                                className={`${formBtn3}`}
-                            >
+                            <GradientButton onClick={() => navigate("/login")}>
                                 Login / Register
-                            </button>
+                            </GradientButton>
                         )}
                     </div>
 
@@ -314,12 +314,9 @@ const HomeNavbar = () => {
                                     </button>
                                 </>
                             ) : (
-                                <button
-                                    onClick={() => navigate("/login")}
-                                    className={`${formBtn3}`}
-                                >
+                                <GradientButton onClick={() => navigate("/login")} className="w-full">
                                     Login / Register
-                                </button>
+                                </GradientButton>
                             )}
                         </div>
                     </div>
@@ -491,6 +488,8 @@ const ProfileSection = () => {
 
 const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) => {
     const [Searvice, setSearvice] = useState([]);
+    const [needsScroll, setNeedsScroll] = useState(false);
+    const contentRef = useRef(null);
 
     useEffect(() => {
         const fetchServiceCategories = async () => {
@@ -500,14 +499,27 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
         fetchServiceCategories();
     }, []);
 
+    useEffect(() => {
+        if (dropdownOpen && contentRef.current) {
+            const checkHeight = () => {
+                const viewportHeight = window.innerHeight;
+                const dropdownTop = contentRef.current.getBoundingClientRect().top;
+                const availableHeight = viewportHeight - dropdownTop - 5;
+                const contentHeight = contentRef.current.scrollHeight;
+                setNeedsScroll(contentHeight > availableHeight);
+            };
+            checkHeight();
+            window.addEventListener('resize', checkHeight);
+            return () => window.removeEventListener('resize', checkHeight);
+        }
+    }, [dropdownOpen, Searvice]);
+
     return (
         <div
             ref={dropdown}
-            onFocus={() => setDropdownOpen(true)}
-            onBlur={() => setDropdownOpen(false)}
-            className={`absolute left-0 top-14 w-[240px] pb-3 h-[200px] overflow-y-scroll scrollbars rounded-lg z-50 bg-white shadow-lg border border-slate-100 transition-all ease-in-out duration-500 ${dropdownOpen ? "block opacity-100 transition-all ease-in-out duration-500" : "hidden opacity-0 transition-all ease-in-out duration-500"}`}
+            className={`absolute left-1/2 -translate-x-1/2 top-full pt-2 w-[600px] pb-3 ${needsScroll ? 'max-h-[calc(100vh-5px)] overflow-y-auto scrollbars' : ''} rounded-lg z-50 bg-white shadow-lg border border-slate-100 transition-all ease-in-out duration-300 ${dropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"}`}
         >
-            <div>
+            <div ref={contentRef} className="grid grid-cols-2 gap-x-4 p-2 auto-rows-fr">
                 {Searvice?.map((item, i) => (
                     <NavLink
                         to={`/services/${item.name?.toLowerCase()}`}
@@ -518,13 +530,15 @@ const ServiceDropdown = ({ dropdownOpen, setDropdownOpen, dropdown, trigger }) =
                             }
                         }}
                         className={({ isActive }) =>
-                            `flex items-center gap-2 px-4 py-2 hover:bg-gray-100 !transition-all !duration-500 !ease-in-out ${isActive ? "text-p font-bold" : "text-gray-800 hover:text-p"
+                            `flex items-center gap-2 rounded group h-full ${isActive ? "text-p font-bold" : "text-gray-800"
                             }`
                         }
                         onClick={() => { setDropdownOpen(false), window.scrollTo(0, 0, { behavior: "smooth" }) }}
                     >
-                        <h4 className="font-medium font-tbPop text-base">
-                            {item.name}
+                        <h4 className="font-medium font-tbPop text-base px-4 relative overflow-hidden z-10 border-b border-slate-200 flex items-center justify-between gap-3 w-full h-full">
+                            <span className="relative z-10 transition-colors duration-500 group-hover:text-white flex-1">{item.name}</span>
+                            <ArrowRight className="h-5 w-5 relative z-10 text-white opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 flex-shrink-0" />
+                            <span className="absolute inset-0 bg-purple-red-gradient transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out -z-10"></span>
                         </h4>
                     </NavLink>
                 ))}
@@ -639,7 +653,7 @@ const NotificationSection = () => {
                                     >
                                         <div className="simplebar-content" style={{ padding: '0px' }}>
                                             {notificationsDropdown?.map((item, i) => (
-                                                <li role="menuitem" className="focus:outline-none">
+                                                <li key={i} role="menuitem" className="focus:outline-none">
                                                     <a
                                                         // href={item?.url}
                                                         type="button"

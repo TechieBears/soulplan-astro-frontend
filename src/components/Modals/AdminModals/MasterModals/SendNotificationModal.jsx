@@ -31,7 +31,10 @@ function SendNotificationModal({ setRefreshTrigger }) {
                 redirectionUrl: data?.redirectionUrl,
                 redirectId: data?.redirectId,
                 userType: data?.userType,
-                userIds: data?.userType === 'specific-customer' ? customerUsersDropdown?.map(item => item?.value) : [],
+                userIds:
+                    data.userType === 'specific-customer'
+                        ? (data.userIds || [])
+                        : [],
                 scheduledAt: data?.scheduledAt,
                 expiryDate: data?.expiryDate
             }
@@ -54,7 +57,12 @@ function SendNotificationModal({ setRefreshTrigger }) {
             toast.error("Failed to add Notification");
         }
     }
-
+    //Clear selected users when switching user type
+    useEffect(() => {
+        if (userType !== 'specific-customer') {
+            setValue('userIds', []);
+        }
+    }, [userType]);
 
     useEffect(() => {
         if (open && userType === 'specific-customer') {

@@ -45,7 +45,15 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
 
             setLoader(true);
             if (edit) {
-                await editProduct(userData?._id, data).then(res => {
+                // For edit mode, we may need to handle deleted images if the backend expects it
+                // Since the error says "deletedImages is not defined", we'll add it to the data
+                // We'll send an empty array or the actual deleted images if you implement that logic
+                const submitData = { ...data };
+                if (!submitData.deletedImages) {
+                    submitData.deletedImages = [];
+                }
+
+                await editProduct(userData?._id, submitData).then(res => {
                     if (res?.success) {
                         toast.success(res?.message)
                         setLoader(false);
@@ -251,6 +259,9 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
                                                             Product Images (multiple) <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                            <span className="text-[11px] text-orange-500 ml-2">
+                                                                (Recommended size: 400px × 400px)
+                                                            </span>
                                                         </h4>
                                                         <ImageCropUpload
                                                             label="Upload Product Images"
@@ -263,6 +274,8 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                             register={register}
                                                             setValue={setValue}
                                                             defaultValue={edit ? userData?.images : []}
+                                                            shouldUploadToCloudinary={false}
+                                                            showRemoveOption={true}
                                                         />
                                                         {errors.images && <Error message="Product images are required" />}
                                                     </div>

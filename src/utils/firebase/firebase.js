@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    apiKey: "AIzaSyAKSkHF1P7qWtWWKWp4v63opC_Tvk6tiAM",
     authDomain: "soulplan-1.firebaseapp.com",
     projectId: "soulplan-1",
     storageBucket: "soulplan-1.firebasestorage.app",
@@ -12,15 +12,13 @@ const firebaseConfig = {
     measurementId: "G-2KEYCCKWN9"
 };
 
-
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-
 let messaging = null;
+
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
     messaging = getMessaging(app);
 }
 
-export { app, auth, messaging, getToken, onMessage };
+export { messaging, getToken, onMessage, auth, app };

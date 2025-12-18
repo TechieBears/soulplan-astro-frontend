@@ -1,0 +1,14 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "NCH39WRVSN.com.soulplan",
+                "paths": [
+                    "/referral/*",
+                    "/*"
+                ]
+            }
+        ]
+    }
+}

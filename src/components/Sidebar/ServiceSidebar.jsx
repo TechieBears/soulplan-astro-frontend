@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { formBtn3 } from "../../utils/CustomClass";
+import GradientButton from "../Buttons/GradientButton";
 import { Mobile } from "iconsax-reactjs";
 import Breadcrumbs from "../../components/breadcrum";
 import { CaretRight, ClockCountdown, Star } from "@phosphor-icons/react";
@@ -16,6 +16,9 @@ import { Controller, useForm } from "react-hook-form";
 import CustomTextArea from "../TextInput/CustomTextArea";
 import { PulseLoader } from "react-spinners";
 import moment from "moment";
+import { formBtn3 } from "../../utils/CustomClass";
+import maskHand from "../../assets/services/maskHand.png";
+import moon from "../../assets/moon.png";
 
 const SidebarLayout = () => {
     const params = useLocation();
@@ -24,6 +27,7 @@ const SidebarLayout = () => {
     const [activeId, setActiveId] = useState(
         params?.state?.serviceData?._id || null
     );
+    const serviceName = params.pathname.split('/services/')[1];
 
     useEffect(() => {
         const fetchService = async () => {
@@ -37,13 +41,21 @@ const SidebarLayout = () => {
         const fetchServiceCategories = async () => {
             const response = await getPublicServicesDropdown();
             setServices(response?.data);
+
+            // If navigating with service name, find and set the activeId
+            if (serviceName && response?.data) {
+                const foundService = response.data.find(service => service.name === decodeURIComponent(serviceName));
+                if (foundService) {
+                    setActiveId(foundService._id);
+                }
+            }
         };
         fetchServiceCategories();
-    }, []);
+    }, [serviceName]);
 
     return (
-        <div className="bg-[#FFF9EF]  pt-10 lg:pt-16">
-            <Breadcrumbs currentService={params?.state?.serviceData?.name} />
+        <div className="bg-[#EFF2FA] default-bg pt-10 lg:pt-16">
+            <Breadcrumbs currentService={singleService?.name || params?.state?.serviceData?.name} />
             <div className="container mx-auto px-5 xl:px-0 flex flex-col-reverse lg:flex-row xl:py-10 space-y-5 lg:space-x-10">
                 {/* Sidebar */}
                 <SideBar
@@ -68,8 +80,8 @@ const SideBar = ({ services, active, setActive }) => {
                         <button
                             onClick={() => { setActive(service?._id); window.scrollTo(0, 0, { behavior: "smooth" }) }}
                             className={`w-full text-left px-4 py-4 transition-all duration-300 relative font-medium font-tbPop text-md ${active === service?._id
-                                ? "text-p bg-[#ffecd2]"
-                                : "hover:bg-[#ffecd2]/50 text-slate-700"
+                                ? "text-p"
+                                : "text-slate-700"
                                 }`}
                         >
                             <div className="flex items-center justify-between overflow-hidden text-nowrap">
@@ -177,23 +189,26 @@ const MainSection = ({ content }) => {
 
 
     return (
-        <main className="flex-1 !my-0 ">
-            <div className="space-y-8">
-                <img
-                    src={content.image}
-                    alt={content.title}
-                    className="w-full h-auto max-h-[40vh] sm:max-h-[60vh] object-cover rounded-md"
-                />
+        <main className="flex-1 !my-0 relative">
+            <img src={maskHand} alt="decoration" className="absolute -right-5 md:-right-10 lg:-right-16 xl:-right-20 top-[300px] w-20 sm:w-24 md:w-26 lg:w-28 h-auto object-contain pointer-events-none scale-x-[-1] z-0" />
+            <div className="space-y-8 relative z-10">
+                <div className="flex flex-col md:flex-row gap-4 mb-6 md:items-stretch">
+                    <div className="w-full md:w-[230px] lg:w-[280px] xl:w-[320px] flex-shrink-0">
+                        <img
+                            src={content.image}
+                            alt={content.title}
+                            className="w-full h-full min-h-full object-cover rounded-lg shadow-lg"
+                        />
+                    </div>
 
-                <div className="bg-[#FFF2DB] p-6 rounded-md space-y-3 ">
-                    <h3 className="text-xl font-medium text-p font-tbLex">
-                        {content.title}
-                    </h3>
-                    <p className="text-gray-600 font-tbPop font-normal text-md">
-                        {content.subTitle}
-                    </p>
-                    <div className="flex justify-start  lg:justify-between  flex-col lg:flex-row items-start lg:items-center space-y-5 lg:space-y-0 py-3">
-                        <div className="space-y-3">
+                    <div className="bg-[#FFF2DB] service-detail-bg rounded-lg shadow-lg p-6 flex-1 max-w-lg space-y-3 relative overflow-hidden">
+                        <h3 className="text-xl font-medium text-p font-tbLex relative z-10">
+                            {content.title}
+                        </h3>
+                        <p className="text-gray-600 font-tbPop font-normal text-md relative z-10">
+                            {content.subTitle}
+                        </p>
+                        <div className="space-y-3 py-3">
                             <div className="space-x-1.5 flex items-center">
                                 <ClockCountdown size={20} />
                                 <h4 className="text-slate-700 text-sm font-tbPop font-normal">
@@ -210,17 +225,15 @@ const MainSection = ({ content }) => {
                                     ))}
                                 </h4>
                             </div>
-                        </div>
-                        <div className="flex flex-col items-start lg:items-end space-y-2">
-                            <button
-                                className={`${formBtn3} lg:!w-auto`}
+                            <GradientButton
+                                className="w-full"
                                 onClick={() => {
                                     navigate("/booking", { state: { service: content } }),
                                         window.scrollTo(0, 0, { behavior: "smooth" });
                                 }}
                             >
                                 Check Availability
-                            </button>
+                            </GradientButton>
                         </div>
                     </div>
                 </div>
@@ -319,10 +332,11 @@ const MainSection = ({ content }) => {
                     {
                         login ? (
                             <form onSubmit={handleSubmit(handleAddRating)}>
-                                <div className="mt-3 flex flex-col gap-3  rounded-lg">
-                                    <h4 className="font-semibold text-gray-800 font-tbPop">Write a Review</h4>
+                                <div className="mt-3 flex flex-col gap-4 bg-[#FFFF] bg-white p-6 rounded-lg border">
+                                    <h4 className="text-xl font-bold text-gray-900 font-tbLex">Write a Review</h4>
 
                                     <div className="flex flex-col gap-2">
+                                        <label className="text-sm font-medium text-gray-700 font-tbPop">Rating</label>
                                         <Controller
                                             name="rating"
                                             control={control}
@@ -333,10 +347,10 @@ const MainSection = ({ content }) => {
                                                             key={star}
                                                             type="button"
                                                             onClick={() => field.onChange(star)}
-                                                            className="focus:outline-none"
+                                                            className="focus:outline-none transition-transform hover:scale-110"
                                                         >
                                                             <Star
-                                                                className={`w-6 h-6 ${star <= field.value
+                                                                className={`w-7 h-7 ${star <= field.value
                                                                     ? "text-yellow-400 fill-current"
                                                                     : "text-gray-300"
                                                                     } hover:text-yellow-400 transition-colors`}
@@ -359,10 +373,10 @@ const MainSection = ({ content }) => {
                                             render={({ field, fieldState }) => (
                                                 <div>
                                                     <CustomTextArea
-                                                        placeholder="Write your review here..."
+                                                        placeholder="Share your experience..."
                                                         props={{
                                                             ...field,
-                                                            rows: 3,
+                                                            rows: 4,
                                                         }}
                                                         style="font-tbPop"
                                                     />
@@ -376,34 +390,29 @@ const MainSection = ({ content }) => {
                                         />
                                     </div>
 
-                                    <div className="flex justify-end gap-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                reset();
-                                            }}
-                                            className="px-3 py-2 text-sm rounded-lg border hover:bg-gray-100 transition font-tbPop"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
+                                    <div className="flex justify-end">
+                                        <GradientButton
                                             type="submit"
-                                            className="px-3 py-2 text-sm rounded-lg bg-black text-white hover:bg-gray-800 transition font-tbPop"
+                                            className="!w-auto px-6"
                                         >
                                             Submit Review
-                                        </button>
+                                        </GradientButton>
                                     </div>
                                 </div>
                             </form>
                         ) : (
-                            <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-                                <div className="flex items-center justify-between gap-4">
-                                    <h3 className="text-lg font-bold text-gray-900">
-                                        Add review
-                                    </h3>
+                            <div className="bg-[#FFF2DB] rounded-lg p-6 border border-orange-200 mb-4 relative">
+                                <img src={moon} alt="decoration" className="absolute right-10 md:right-16 lg:right-20 xl:right-24 -top-20 md:-top-24 lg:-top-28 xl:-top-32 w-28 sm:w-32 md:w-36 lg:w-40 xl:w-44 h-auto object-contain pointer-events-none opacity-30 -z-10" />
+                                <div className="flex items-center justify-between gap-4 relative z-10">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-900 font-tbLex mb-1">
+                                            Add Review
+                                        </h3>
+                                        <p className="text-sm text-gray-600 font-tbPop">Login to share your experience</p>
+                                    </div>
                                     <button
                                         onClick={() => navigate("/login")}
-                                        className={`${formBtn3} !w-auto py-1 `}
+                                        className={`${formBtn3} !w-auto px-6`}
                                     >
                                         Login to Review
                                     </button>
@@ -412,44 +421,47 @@ const MainSection = ({ content }) => {
                         )
                     }
 
-
-                    <div className="space-y-6 mt-3">
-                        <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-semibold font-tbPop text-black">
+                    <div className="space-y-4 mt-6">
+                        <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                            <h3 className="text-xl font-bold font-tbLex text-gray-900">
                                 Customer Reviews
                             </h3>
                         </div>
 
                         {/* Sample Reviews */}
-                        {ratingsLoading ? <div className="flex justify-center items-center h-40"> Loading<PulseLoader color="#000" size={4} /></div> :
+                        {ratingsLoading ? <div className="flex justify-center items-center h-40 gap-2"><span className="font-tbPop text-gray-600">Loading</span><PulseLoader color="#000" size={4} /></div> :
                             ratings?.length > 0 ?
-                                <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
                                     {ratings?.map((review) => (
                                         <div
                                             key={review?._id}
-                                            className="border-b border-gray-100 pb-4"
+                                            className="bg-white p-4 rounded-lg border border-gray-100 hover:border-purple-200 transition-colors"
                                         >
-                                            <div className="flex items-center space-x-2 mb-2">
+                                            <div className="flex items-center gap-3 mb-3">
                                                 <div className="flex">
                                                     {[1, 2, 3, 4, 5].map((star) => (
                                                         <Star
-                                                            size={16}
+                                                            key={star}
+                                                            size={18}
                                                             className={`${star <= review?.rating
                                                                 ? "text-yellow-400 fill-current"
                                                                 : "text-gray-300"
-                                                                } hover:text-yellow-400 transition-colors`}
+                                                                }`}
                                                             weight={star <= review?.rating ? "fill" : "regular"}
                                                         />
                                                     ))}
                                                 </div>
-                                                <span className="font-medium font-tbPop capitalize text-sm ">
-                                                    {review?.user?.firstName || "----- ----- "} {review?.user?.lastName || "----- ----- "}
-                                                </span>
-                                                <span className="text-sm text-gray-500 capitalize">
-                                                    • {moment(review?.createdAt).format("DD MMM YYYY")}
-                                                </span>
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <span className="font-semibold font-tbPop capitalize text-gray-900">
+                                                        {review?.user?.firstName || "Anonymous"} {review?.user?.lastName || "User"}
+                                                    </span>
+                                                    <span className="text-gray-400">•</span>
+                                                    <span className="text-gray-500 font-tbPop">
+                                                        {moment(review?.createdAt).format("DD MMM YYYY")}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <p className="text-gray-600 font-tbPop text-sm">
+                                            <p className="text-gray-700 font-tbPop text-sm leading-relaxed">
                                                 {review?.message}
                                             </p>
                                         </div>

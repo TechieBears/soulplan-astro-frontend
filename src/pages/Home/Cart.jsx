@@ -36,10 +36,10 @@ const CartPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const type = location.state?.type;
-  const [activeTab, setActiveTab] = useState(type || "products");
+  const [activeTab, setActiveTab] = useState(type || "services");
 
   return (
-    <div className="min-h-screen bg-[#FFF9EF]  pt-16 lg:pt-24 relative">
+    <div className="min-h-screen bg-[#EFF2FA]  pt-16 lg:pt-24 relative">
       <div className="absolute top-24 left-1/4 scale-50 ">
         <img src={star} alt="" className="w-full h-full object-fill" />
       </div>
@@ -48,47 +48,77 @@ const CartPage = () => {
       </div>
       <div className="container mx-auto px-4 xl:px-0 py-8">
         {/* Header */}
-        <div className="relative flex items-center justify-center mb-8">
-          <div className="absolute left-0">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center text-black hover:text-gray-800 transition-colors text-sm md:text-base font-tbLex"
-            >
-              <ArrowLeft
-                className="mr-2"
-                color="#000"
-                size={20}
-                weight="bold"
-              />
-              Go Back
-            </button>
+        <div className="mb-8">
+          {/* Mobile Layout */}
+          <div className="sm:hidden space-y-4">
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center text-black hover:text-gray-800 transition-colors text-sm font-tbLex"
+              >
+                <ArrowLeft className="mr-2" color="#000" size={20} weight="bold" />
+                Go Back
+              </button>
+              <h1 className="text-xl font-tbLex font-normal text-slate-800">Cart</h1>
+            </div>
+            {/* <div className="flex bg-white rounded-full p-1.5 space-x-1.5">
+              <button
+                className={`flex-1 px-4 py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm font-tbLex ${
+                  activeTab === "services" ? "bg-linear-gradient text-white" : ""
+                }`}
+                onClick={() => setActiveTab("services")}
+              >
+                Services
+              </button>
+              <button
+                className={`flex-1 px-4 py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm font-tbLex ${
+                  activeTab === "products" ? "bg-linear-gradient text-white" : ""
+                }`}
+                onClick={() => setActiveTab("products")}
+              >
+                Products
+              </button>
+            </div> */}
           </div>
 
-          <h1 className="text-xl md:text-2xl hidden sm:block font-tbLex font-normal text-slate-800">
-            Cart
-          </h1>
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex relative items-center justify-center">
+            <div className="absolute left-0">
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center text-black hover:text-gray-800 transition-colors text-sm md:text-base font-tbLex"
+              >
+                <ArrowLeft className="mr-2" color="#000" size={20} weight="bold" />
+                Go Back
+              </button>
+            </div>
 
-          <div className="absolute right-0 sm:flex bg-white rounded-full p-1.5 space-x-1.5">
-            <button
-              className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${
-                activeTab === "services" ? "bg-linear-gradient text-white" : ""
-              }`}
-              onClick={() => setActiveTab("services")}
-            >
-              Services
-            </button>
-            <button
-              className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${
-                activeTab === "products" ? "bg-linear-gradient text-white" : ""
-              }`}
-              onClick={() => setActiveTab("products")}
-            >
-              Products
-            </button>
+            <h1 className="text-xl md:text-2xl font-tbLex font-normal text-slate-800">
+              Cart
+            </h1>
+
+            {/* <div className="absolute right-0 flex bg-white rounded-full p-1.5 space-x-1.5">
+              <button
+                className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${
+                  activeTab === "services" ? "bg-linear-gradient text-white" : ""
+                }`}
+                onClick={() => setActiveTab("services")}
+              >
+                Services
+              </button>
+              <button
+                className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${
+                  activeTab === "products" ? "bg-linear-gradient text-white" : ""
+                }`}
+                onClick={() => setActiveTab("products")}
+              >
+                Products
+              </button>
+            </div> */}
           </div>
         </div>
 
-        {activeTab === "products" && <ProductTab />}
+        {/* {activeTab === "products" && <ProductTab />} */}
         {activeTab === "services" && <ServiceTab />}
       </div>
     </div>
@@ -367,9 +397,9 @@ const ProductTab = () => {
             {cartItems?.map((item, index) => (
               <div
                 key={item._id}
-                className="bg-[#9E52D8] rounded-lg p-4 flex flex-col md:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 cart-item-enter"
+                className="bg-[#8B3FC1] rounded-lg p-4 flex flex-col md:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 cart-item-enter cursor-pointer hover:bg-[#9E52D8] transition-colors"
                 style={{ animationDelay: `${index * 0.1}s` }}
-                // onClick={() => navigate(`/product-detail/${item.id}`)}
+                onClick={() => navigate(`/product/${item.productId || item._id}`)}
               >
                 <div
                   className="relative w-full md:w-32 h-44 md:h-32  mx-auto aspect-square rounded-lg overflow-hidden"
@@ -411,13 +441,15 @@ const ProductTab = () => {
 
                 <div className="flex w-full md:w-auto flex-row-reverse justify-between  md:flex-col md:items-end space-y-2 md:mt-2 ">
                   <button
-                    onClick={() => removeItem(item?._id || item?.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeItem(item?._id || item?.id);
+                    }}
                     disabled={isUpdating}
-                    className={`p-2 text-white rounded-md transition-colors flex-shrink-0 ${
-                      isUpdating
+                    className={`p-2 text-white rounded-md transition-colors flex-shrink-0 ${isUpdating
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-[#8B3FC1]"
-                    }`}
+                      }`}
                   >
                     <FaRegTrashAlt className="w-4 h-4" />
                   </button>
@@ -426,18 +458,18 @@ const ProductTab = () => {
                     <span className="text-white text-sm font-medium">QTY:</span>
                     <div className="flex items-center rounded-md bg-white overflow-hidden w-28 h-9 border border-gray-300">
                       <button
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           updateQuantity(
                             item?._id || item?.id,
                             item?.quantity - 1
-                          )
-                        }
+                          );
+                        }}
                         disabled={isUpdating || item?.quantity <= 1}
-                        className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${
-                          isUpdating || item?.quantity <= 1
+                        className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${isUpdating || item?.quantity <= 1
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:bg-gray-100"
-                        }`}
+                          }`}
                       >
                         -
                       </button>
@@ -447,18 +479,18 @@ const ProductTab = () => {
                       </div>
 
                       <button
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           updateQuantity(
                             item?._id || item?.id,
                             item?.quantity + 1
-                          )
-                        }
+                          );
+                        }}
                         disabled={isUpdating}
-                        className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${
-                          isUpdating
+                        className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${isUpdating
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:bg-gray-100"
-                        }`}
+                          }`}
                       >
                         +
                       </button>
@@ -474,7 +506,7 @@ const ProductTab = () => {
       <div className="lg:col-span-5">
         <div className="rounded-lg lg:sticky lg:top-8">
           {addresses?._id && (
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full pb-4 bg-white rounded-md  border-b border-slate-200 mb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full p-4 bg-white rounded-md  border border-slate-900 mb-4">
               <div className="flex-1 flex flex-col">
                 <h3 className="text-sm font-semibold font-tbLex text-gray-800">
                   Deliver to:
@@ -615,7 +647,7 @@ const ProductTab = () => {
 
             <div className="border-t border-gray-300 my-2"></div>
 
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
+            <div className="flex sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
               <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-left">
                 Total
               </span>
@@ -633,9 +665,8 @@ const ProductTab = () => {
             <button
               onClick={() => handleBooking()}
               disabled={bookingLoading}
-              className={`${formBtn3} w-full py-3 text-white rounded-md ${
-                bookingLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`${formBtn3} w-full py-3 text-white rounded-md ${bookingLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
             >
               {bookingLoading ? (
                 <div className="flex items-center justify-center space-x-2">
@@ -766,43 +797,57 @@ const ServiceTab = () => {
 
   const handleBooking = async () => {
     try {
+      setBookingLoading(true);
+
+      // Validate cart items
+      if (!cartItems || cartItems.length === 0) {
+        toast.error("Cart is empty");
+        return;
+      }
+
       const payload = {
-        serviceItems: cartItems?.map((item) => ({
-          serviceId: item?.serviceId || "",
-          astrologerId: item?.astrologer?._id || "",
-          bookingDate: moment(item?.date).format("YYYY-MM-DD"),
-          startTime: item?.startTime || "",
-          firstName: item?.cust?.firstName || "",
-          lastName: item?.cust?.lastName || "",
-          email: item?.cust?.email || "",
-          phone: item?.cust?.phone || "",
-          address: item?.cust?.address || "",
-          serviceType: item?.serviceMode || "",
-        })),
-        paymentType: "COD",
-        currencyType: "INR",
-        paymentId: "COD-20250923123045",
-        couponId: coupon?._id || "",
-        address: "",
-        paymentDetails: {
-          note: "Cash will be collected at time of service",
-          currency: "INR",
-        },
+        serviceItems: cartItems?.map((item) => {
+          const serviceItem = {
+            serviceId: item?.serviceId || "",
+            serviceType: item?.serviceMode || "",
+            astrologerId: item?.astrologer?._id || "",
+            bookingDate: moment(item?.date).format("YYYY-MM-DD"),
+            startTime: item?.startTime || "",
+            firstName: item?.cust?.firstName || "",
+            lastName: item?.cust?.lastName || "",
+            email: item?.cust?.email || "",
+            phone: item?.cust?.phone || "",
+          };
+
+          // Add address or addressData based on what's available
+          if (item?.address) {
+            serviceItem.address = item.address;
+          } else if (item?.cust?.addressData) {
+            serviceItem.addressData = item.cust.addressData;
+          }
+
+          return serviceItem;
+        }),
+        paymentType: "UPI",
+        paymentId: `UPI-${moment().format("YYYYMMDDHHmmss")}`,
+        useCredits: isWalletChecked,
       };
       console.log("⚡️🤯 ~ Cart.jsx:602 ~ handleBooking ~ payload:", payload);
-      await createServiceOrder(payload).then((res) => {
-        if (res?.success) {
-          navigate("/payment-success", {
-            state: { type: "services", orderDetails: res?.order },
-          });
-          toast.success(res?.message || "Booking Successfully");
-        } else {
-          toast.error(res?.message || "Something went wrong");
-        }
-      });
+
+      const res = await createServiceOrder(payload);
+      if (res?.success) {
+        navigate("/payment-success", {
+          state: { type: "services", orderDetails: res?.order },
+        });
+        toast.success(res?.message || "Booking Successfully");
+      } else {
+        toast.error(res?.message || "Something went wrong");
+      }
     } catch (error) {
       console.log("Error submitting form:", error);
-      toast.error(error?.message || "Failed to book Service");
+      toast.error(error?.response?.data?.message || error?.message || "Failed to book Service");
+    } finally {
+      setBookingLoading(false);
     }
   };
   return (
@@ -927,7 +972,7 @@ const ServiceTab = () => {
 
             <div className="border-t border-gray-300 my-2"></div>
 
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
+            <div className="flex sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
               <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-left">
                 Total
               </span>
@@ -942,11 +987,10 @@ const ServiceTab = () => {
           </div>
 
           <button
-            onClick={() => handleBooking()}
-            disabled={bookingLoading}
-            className={`${formBtn3} w-full py-3 text-white rounded-md ${
-              bookingLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            onClick={handleBooking}
+            disabled={bookingLoading || cartItems?.length === 0}
+            className={`${formBtn3} w-full py-3 text-white rounded-md ${bookingLoading || cartItems?.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
           >
             {bookingLoading ? (
               <div className="flex items-center justify-center space-x-2">

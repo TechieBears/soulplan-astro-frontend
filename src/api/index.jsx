@@ -11,7 +11,7 @@ const handleLogout = () => {
     toast.error('Your session has expired. Please login again.');
     window.location.href = '/login';
 };
- 
+
 axios.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -127,6 +127,20 @@ export const resetPassword = async (data) => {
     }
 };
 
+export const deleteUser = async () => {
+    const url = `${environment.baseUrl}customer-users/delete`;
+    try {
+        const response = await axios.delete(url);
+        return response.data;
+    } catch (err) {
+        console.log("==========error in deleteUser api file", err);
+        return {
+            success: false,
+            message: err.response?.data?.message || err.response?.data?.error || "Account deletion failed. Please try again."
+        };
+    }
+};
+
 // ==================== Upload to Cloudinary Api===================
 
 
@@ -211,8 +225,12 @@ export const getProductCategoriesDropdown = async () => {
 
 export const addProductCategory = async (data) => {
     const url = `${environment.baseUrl}product-categories/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -223,8 +241,12 @@ export const addProductCategory = async (data) => {
 
 export const editProductCategory = async (id, data) => {
     const url = `${environment.baseUrl}product-categories/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -273,8 +295,12 @@ export const getProductSubCategoriesDropdown = async () => {
 
 export const addProductSubCategory = async (data) => {
     const url = `${environment.baseUrl}product-subcategories/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -285,8 +311,12 @@ export const addProductSubCategory = async (data) => {
 
 export const editProductSubCategory = async (id, data) => {
     const url = `${environment.baseUrl}product-subcategories/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -344,8 +374,12 @@ export const getActiveServiceCategories = async () => {
 
 export const addServiceCategory = async (data) => {
     const url = `${environment.baseUrl}service-categories/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -356,8 +390,12 @@ export const addServiceCategory = async (data) => {
 
 export const editServiceCategory = async (id, data) => {
     const url = `${environment.baseUrl}service-categories/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -437,10 +475,30 @@ export const getPublicServicesSingle = async (data) => {
     }
 }
 
+export const getSingleService = async (id) => {
+    try {
+        const url = `${environment.baseUrl}service/public/get-single?id=${id}`;
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in getSingleService api file", err);
+        return err?.response?.data
+    }
+}
+
 export const addService = async (data) => {
     const url = `${environment.baseUrl}service/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        if ((key === 'videoUrl' || key === 'serviceType') && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -451,8 +509,16 @@ export const addService = async (data) => {
 
 export const editService = async (id, data) => {
     const url = `${environment.baseUrl}service/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        if ((key === 'videoUrl' || key === 'serviceType') && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -536,8 +602,19 @@ export const getProductsDropdown = async () => {
 
 export const addProduct = async (data) => {
     const url = `${environment.baseUrl}product/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (key === 'images' && Array.isArray(data[key])) {
+            data[key].forEach((file) => formData.append('images', file));
+        } else if (key === 'specification' && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
+
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -548,8 +625,20 @@ export const addProduct = async (data) => {
 
 export const editProduct = async (id, data) => {
     const url = `${environment.baseUrl}product/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (key === 'images' && Array.isArray(data[key])) {
+            data[key].forEach((file) => formData.append('images', file));
+        } else if (key === 'specification' && Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+        } else if (key === 'deletedImages' && Array.isArray(data[key])) {
+            data[key].forEach((img) => formData.append('deletedImages', img));
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -586,8 +675,23 @@ export const getAllEmployees = async (data) => {
 
 export const addEmployee = async (data) => {
     const url = `${environment.baseUrl}employee-users/register`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            // Handle arrays - stringify arrays of objects, append arrays of primitives individually
+            if (data[key].length > 0 && typeof data[key][0] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                data[key].forEach((item) => {
+                    formData.append(key, item);
+                });
+            }
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -598,8 +702,23 @@ export const addEmployee = async (data) => {
 
 export const editEmployee = async (id, data) => {
     const url = `${environment.baseUrl}employee-users/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            // Handle arrays - stringify arrays of objects, append arrays of primitives individually
+            if (data[key].length > 0 && typeof data[key][0] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                data[key].forEach((item) => {
+                    formData.append(key, item);
+                });
+            }
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -624,8 +743,23 @@ export const getAllCustomers = async (data) => {
 
 export const editUserCustomer = async (data) => {
     const url = `${environment.baseUrl}customer-users/update`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            // Handle arrays - stringify arrays of objects, append arrays of primitives individually
+            if (data[key].length > 0 && typeof data[key][0] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                data[key].forEach((item) => {
+                    formData.append(key, item);
+                });
+            }
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -664,8 +798,23 @@ export const getAllBanners = async (data) => {
 
 export const addBanner = async (data) => {
     const url = `${environment.baseUrl}banners/create`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            // Handle arrays - stringify arrays of objects, append arrays of primitives individually
+            if (data[key].length > 0 && typeof data[key][0] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                data[key].forEach((item) => {
+                    formData.append(key, item);
+                });
+            }
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.post(url, data)
+        const response = await axios.post(url, formData)
         return response.data
     }
     catch (err) {
@@ -676,8 +825,23 @@ export const addBanner = async (data) => {
 
 export const editBanner = async (id, data) => {
     const url = `${environment.baseUrl}banners/update?id=${id}`;
+    const formData = new FormData();
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            // Handle arrays - stringify arrays of objects, append arrays of primitives individually
+            if (data[key].length > 0 && typeof data[key][0] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                data[key].forEach((item) => {
+                    formData.append(key, item);
+                });
+            }
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
     try {
-        const response = await axios.put(url, data)
+        const response = await axios.put(url, formData)
         return response.data
     }
     catch (err) {
@@ -1130,6 +1294,7 @@ export const getAllServiceOrdersAdmin = async (data) => {
     try {
         const url = `${environment.baseUrl}service-order/get-all?orderId=${data?.orderId || ""}&date=${data?.date || ""}&status=${data?.status || ""}&page=${data?.p}&limit=${data?.records}&astrologerId=${data?.astrologerId || ""}`;
         const response = await axios.get(url)
+        console.log("⚡️🤯 ~ index.jsx:1407 ~ getAllServiceOrdersAdmin ~ response:", response)
         return response.data
     }
     catch (err) {
@@ -1541,5 +1706,45 @@ export const getDashboardInsights = async () => {
     } catch (err) {
         console.log("==========error in getDashboardData api file", err);
         return err?.response?.data;
+    }
+}
+
+export const getZoomSignature = async (meetingNumber, role = 0) => {
+    try {
+        const response = await axios.get(
+            `${environment.baseUrl}zoom/get-meeting-sdk-jwt`,
+            {
+                params: {
+                    meetingNumber: meetingNumber.toString(),
+                    role
+                }
+            }
+        );
+
+        if (response.data.success) {
+            return {
+                signature: response.data.data.jwt,
+                sdkKey: response.data.data.sdkKey
+            };
+        } else {
+            throw new Error(response.data.message || 'Failed to get JWT');
+        }
+    } catch (error) {
+        console.error('Error getting Zoom signature:', error);
+        return {
+            success: false,
+            message: error.response?.data?.message || 'Failed to get Zoom signature'
+        };
+    }
+};
+
+export const getSingleCoupon = async (id) => {
+    try {
+        const url = `${environment.baseUrl}coupon/get-single?id=${id}`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.error('Error fetching single coupon:', err);
+        return err?.response?.data || { success: false, message: 'Failed to fetch coupon' };
     }
 }

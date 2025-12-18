@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { validatePassword } from '../../utils/validateFunction';
 import { resetPassword } from '../../api';
+import TextInput from '../../components/TextInput/TextInput';
 
 const ResetPasswordPage = () => {
   const { token } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -61,10 +60,10 @@ const ResetPasswordPage = () => {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
         {/* Title */}
         <h2 className="text-3xl font-extrabold text-center bg-gradient-to-r from-purple-600 to-red-500 text-transparent bg-clip-text mb-2">
-          Reset Password
+          Reset Your Password!
         </h2>
         <p className="text-center text-gray-600 mb-6">
-          Enter your new password below
+          Enter your new password to reset your account.
         </p>
 
         {/* Form */}
@@ -72,69 +71,41 @@ const ResetPasswordPage = () => {
           {/* New Password */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
-              New Password *
+              New password *
             </label>
-            <div className="relative">
-              <input
-                type={showNewPassword ? "text" : "password"}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-                  errors.newPassword ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Enter new password"
-                {...register('newPassword', {
-                  required: 'New password is required',
-                  validate: validatePassword
-                })}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-              >
-                {showNewPassword ? (
-                  <EyeSlashIcon className="h-5 w-5" />
-                ) : (
-                  <EyeIcon className="h-5 w-5" />
-                )}
-              </button>
-            </div>
-            {errors.newPassword && (
-              <p className="text-red-500 text-sm mt-1">{errors.newPassword.message}</p>
-            )}
+            <TextInput
+              label="New password"
+              type="password"
+              registerName="newPassword"
+              placeholder="Enter new password"
+              props={{
+                ...register('newPassword', {
+                  validate: validatePassword,
+                  required: "Password is required"
+                })
+              }}
+              errors={errors.newPassword}
+            />
           </div>
 
           {/* Confirm Password */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
-              Confirm Password *
+              Confirm password *
             </label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-                  errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Confirm new password"
-                {...register('confirmPassword', {
-                  required: 'Please confirm your password',
-                  validate: (value) => value === watch('newPassword') || 'Passwords do not match'
-                })}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? (
-                  <EyeSlashIcon className="h-5 w-5" />
-                ) : (
-                  <EyeIcon className="h-5 w-5" />
-                )}
-              </button>
-            </div>
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
-            )}
+            <TextInput
+              label="Confirm password"
+              type="password"
+              registerName="confirmPassword"
+              placeholder="Confirm new password"
+              props={{
+                ...register('confirmPassword', {
+                  validate: validatePassword,
+                  required: "Please confirm your password"
+                })
+              }}
+              errors={errors.confirmPassword}
+            />
           </div>
 
           {/* Submit Button */}
@@ -147,16 +118,16 @@ const ResetPasswordPage = () => {
           </button>
 
           {/* Back to Login */}
-          <p className="text-center text-sm text-gray-600">
-            Remember your password?{" "}
+          <div className="text-center">
             <button
               type="button"
               onClick={() => navigate('/login')}
-              className="font-medium text-purple-600 hover:text-purple-500"
+              className="text-sm text-gray-600 hover:text-purple-600 transition-colors duration-200 inline-flex items-center gap-1 font-semibold"
             >
+              <ArrowLeftIcon className="h-4 w-4" />
               Back to Login
             </button>
-          </p>
+          </div>
         </form>
       </div>
     </div>

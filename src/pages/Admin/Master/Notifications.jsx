@@ -154,7 +154,13 @@ export default function Notifications() {
             'scheduled': 'bg-blue-100 text-blue-800',
             'expired': 'bg-red-100 text-red-800'
         };
-        const status = row?.status || "---- -----";
+        
+        // Check if notification has expired
+        let status = row?.status || "---- -----";
+        if (row?.expiryDate && moment().isAfter(moment(row.expiryDate))) {
+            status = 'expired';
+        }
+        
         const colorClass = statusColors[status] || 'bg-gray-100 text-gray-800';
 
         return (
@@ -241,13 +247,13 @@ export default function Notifications() {
             style: true,
             sortable: true
         },
-        {
-            field: 'action',
-            header: 'Action',
-            body: actionBodyTemplate,
-            style: true,
-            sortable: true
-        }
+        // {
+        //     field: 'action',
+        //     header: 'Action',
+        //     body: actionBodyTemplate,
+        //     style: true,
+        //     sortable: true
+        // }
     ];
 
     return (

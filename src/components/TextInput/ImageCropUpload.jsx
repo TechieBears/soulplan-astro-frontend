@@ -21,9 +21,12 @@ const ImageCropUpload = ({
   cropAspectRatio = 5 / 3,
   cropWidth = 500,
   cropHeight = 300,
+  shouldUploadToCloudinary = true,
+  showRemoveOption = false,
 }) => {
   const [fileName, setFileName] = useState("");
   const [files, setFiles] = useState([]);
+  const [deletedImages, setDeletedImages] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [showCropModal, setShowCropModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -46,6 +49,7 @@ const ImageCropUpload = ({
         const dummyFiles = defaultValue.map((url) => ({
           name: url.split("/").pop(),
           url,
+          value: url
         }));
         setFiles(dummyFiles);
         setFileName(
@@ -58,12 +62,15 @@ const ImageCropUpload = ({
         const dummyFile = {
           name: defaultValue.split("/").pop(),
           url: defaultValue,
+          value: defaultValue
         };
         setFiles([dummyFile]);
         setFileName(dummyFile.name);
         setValue(registerName, defaultValue);
       }
     }
+    // Initialize deletedImages as empty array
+    setValue('deletedImages', []);
   }, [defaultValue, registerName, setValue, multiple]);
 
   const handleFileChange = (e) => {
@@ -112,13 +119,15 @@ const ImageCropUpload = ({
       const { width, height } = e.currentTarget;
       const centerX = Math.max(0, (width - cropWidth) / 2);
       const centerY = Math.max(0, (height - cropHeight) / 2);
-      setCrop({
+      const initialCrop = {
         unit: "px",
         width: cropWidth,
         height: cropHeight,
         x: centerX,
         y: centerY,
-      });
+      };
+      setCrop(initialCrop);
+      setCompletedCrop(initialCrop);
       setZoom(1);
     },
     [cropWidth, cropHeight]
@@ -172,30 +181,47 @@ const ImageCropUpload = ({
   );
 
   const handleCropComplete = async () => {
-    if (!completedCrop || !imgRef.current) return;
+    const cropToUse = completedCrop || crop;
+    if (!cropToUse || !imgRef.current) return;
 
     setIsUploading(true);
     try {
-      const croppedBlob = await getCroppedImg(imgRef.current, completedCrop);
+      const croppedBlob = await getCroppedImg(imgRef.current, cropToUse);
       const croppedFile = new File([croppedBlob], selectedImage.name, {
         type: "image/jpeg",
       });
 
-      const url = await uploadToCloudinary(croppedFile);
+      let formValue;
+      let displayUrl;
+
+      if (shouldUploadToCloudinary) {
+        const uploadedUrl = await uploadToCloudinary(croppedFile);
+        formValue = uploadedUrl;
+        displayUrl = uploadedUrl;
+      } else {
+        // Return binary File object if cloud upload is disabled
+        formValue = croppedFile;
+        // Create a blob URL for preview
+        displayUrl = URL.createObjectURL(croppedFile);
+      }
 
       const previewFile = {
         file: croppedFile,
         name: selectedImage.name,
-        url: url,
+        url: displayUrl,
+        value: formValue
       };
 
       if (multiple) {
         const newFiles = [...files, previewFile];
         setFiles(newFiles);
         setFileName(`${newFiles.length} files selected`);
+        
+        // If uploading to cloud, we map to URLs (f.value is url)
+        // If binary mode (shouldUploadToCloudinary=false), we map to File objects (f.value is File)
         setValue(
           registerName,
-          newFiles.map((f) => f.url)
+          newFiles.map((f) => f.value)
         );
 
         if (
@@ -211,7 +237,7 @@ const ImageCropUpload = ({
       } else {
         setFiles([previewFile]);
         setFileName(selectedImage.name);
-        setValue(registerName, url);
+        setValue(registerName, formValue);
         setShowCropModal(false);
         setSelectedImage(null);
       }
@@ -219,7 +245,7 @@ const ImageCropUpload = ({
       const fileInput = document.getElementById(registerName);
       if (fileInput) fileInput.value = "";
     } catch (error) {
-      console.error("Upload failed:", error);
+      console.error("Upload/Processing failed:", error);
     } finally {
       setIsUploading(false);
     }
@@ -236,6 +262,28 @@ const ImageCropUpload = ({
     if (fileInput) fileInput.value = "";
   };
 
+  const removeImage = (indexToRemove) => {
+    const fileToRemove = files[indexToRemove];
+    const updatedFiles = files.filter((_, index) => index !== indexToRemove);
+    
+    // Track deleted images (only if it's an existing image URL, not a new upload)
+    if (fileToRemove?.url && typeof fileToRemove.url === 'string' && fileToRemove.url.startsWith('http')) {
+      const newDeletedImages = [...deletedImages, fileToRemove.url];
+      setDeletedImages(newDeletedImages);
+      setValue('deletedImages', newDeletedImages);
+    }
+    
+    setFiles(updatedFiles);
+    
+    if (updatedFiles.length === 0) {
+      setFileName("");
+      setValue(registerName, multiple ? [] : "");
+    } else {
+      setFileName(multiple ? `${updatedFiles.length} files selected` : updatedFiles[0].name);
+      setValue(registerName, multiple ? updatedFiles.map(f => f.value) : updatedFiles[0].value);
+    }
+  };
+
   return (
     <>
       <div
@@ -247,10 +295,9 @@ const ImageCropUpload = ({
           accept="image/*"
           multiple={multiple}
           className={`peer w-full bg-transparent outline-none px-4 text-base font-tbLex text-black rounded-lg bg-slate1 ${style}
-            ${
-              !errors?.ref?.value && errors?.type === "required"
-                ? "border-red-500"
-                : "border-slate-300 focus:border-primary"
+            ${!errors?.ref?.value && errors?.type === "required"
+              ? "border-red-500"
+              : "border-slate-300 focus:border-primary"
             }
             opacity-0 absolute z-10 cursor-pointer ${style}`}
           onChange={handleFileChange}
@@ -258,24 +305,21 @@ const ImageCropUpload = ({
         />
         <div
           className={`w-full h-full flex items-center px-4 rounded-lg cursor-pointer
-          ${
-            !errors?.ref?.value && errors?.type === "required"
+          ${!errors?.ref?.value && errors?.type === "required"
               ? "border-red-500"
               : "border-slate-300 peer-focus:border-primary"
-          } ${style}`}
+            } ${style}`}
         >
           <label
             htmlFor={registerName}
             className={`px-2 bg-slate1 text-base font-tbLex ${style}
-              ${
-                !errors?.ref?.value && errors?.type === "required"
-                  ? "text-red-500"
-                  : fileName
+              ${!errors?.ref?.value && errors?.type === "required"
+                ? "text-red-500"
+                : fileName
                   ? "text-primary"
                   : "text-slate-400"
               }
-              ${
-                fileName ? "top-0 left-3 text-sm" : ""
+              ${fileName ? "top-0 left-3 text-sm" : ""
               } transition-all duration-150 flex items-center gap-2 cursor-pointer overflow-hidden`}
           >
             {!fileName && (
@@ -316,6 +360,38 @@ const ImageCropUpload = ({
         />
       )}
 
+      {/* Display existing images */}
+      {files.length > 0 && (
+        <div className="mt-4">
+          <h5 className="text-sm font-medium text-gray-700 mb-2">Current Images:</h5>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {files.map((file, index) => (
+              <div key={index} className="relative group">
+                <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                  <img
+                    src={file.url}
+                    alt={file.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {showRemoveOption && (
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    ×
+                  </button>
+                )}
+                <p className="text-xs text-gray-500 mt-1 truncate" title={file.name}>
+                  {file.name}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <Transition appear show={showCropModal} as={Fragment}>
         <Dialog
           as="div"
@@ -351,9 +427,8 @@ const ImageCropUpload = ({
                     className="text-lg font-medium leading-6 text-white bg-linear-gradient py-4 px-6 relative"
                   >
                     {selectedImage?.isMultiple
-                      ? `Crop Image ${
-                          (selectedImage.currentIndex || 0) + 1
-                        } of ${selectedImage.totalFiles || 1}`
+                      ? `Crop Image ${(selectedImage.currentIndex || 0) + 1
+                      } of ${selectedImage.totalFiles || 1}`
                       : "Crop Your Image"}
                     <button
                       onClick={handleCropCancel}
@@ -371,7 +446,7 @@ const ImageCropUpload = ({
                           onChange={(newCrop) => setCrop(newCrop)}
                           onComplete={(c) => setCompletedCrop(c)}
                           aspect={cropAspectRatio}
-                          locked={true}
+                          locked={false}
                           className="max-w-full"
                           ruleOfThirds={true}
                         >
@@ -454,7 +529,6 @@ const ImageCropUpload = ({
         toggle={() => setShowImageModal(false)}
         files={files}
       />
-
       <canvas ref={canvasRef} style={{ display: "none" }} />
     </>
   );

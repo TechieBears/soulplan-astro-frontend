@@ -25,20 +25,22 @@ const ServicesCard = ({ service, idx }) => {
             onClick={handleServiceClick}
             style={{ minHeight: '350px' }}
         >
+            {service.image && (
+                <img
+                    src={service.image}
+                    alt={service.name}
+                    loading="eager"
+                    className="w-full h-44 object-cover rounded-lg bg-slate1"
+                />
+            )}
+            <h3 className="mt-4 text-xl font-medium font-tbLex line-clamp-1">{service.name || ""}</h3>
             <img
-                src={service.image || ""}
-                alt={service.name}
-                loading="eager"
-                className="w-full h-44 object-cover rounded-lg bg-slate1"
-            />
-            <h3 className="mt-4 text-xl font-semibold font-tbLex line-clamp-1">{service.name || ""}</h3>
-            <img
-                className="justify-self-center w-30 h-10 object-fit rounded-md"
+                className="mx-auto w-28 h-8 object-fit rounded-md"
                 src={curly}
                 alt="divider"
             />
             <p className="text-slate-500 mt-2 px-4 text-sm font-tbPop font-medium tracking-tight line-clamp-2 flex-grow">{service.subTitle || ""}</p>
-            <span className="mt-3 inline-block text-black text-lg self-center">
+            <span className="mt-3 inline-block text-black text-lg self-center pb-4">
                 <ArrowRight size={20} weight="bold" />
             </span>
         </div>

@@ -1,5 +1,4 @@
-// PriceRangeSlider.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 const clamp = (v, a, b) => Math.min(Math.max(Number(v), a), b);
 
@@ -12,11 +11,12 @@ const PriceRangeSlider = ({
 }) => {
   const curMinVal = Number(value?.[0] ?? min);
   const curMaxVal = Number(value?.[1] ?? max);
-  const MIN_GAP = 100; // Minimum distance between sliders
-
+  const MIN_GAP = 100; 
   const rangeSpan = max - min || 1;
   const minPercent = ((curMinVal - min) / rangeSpan) * 100;
   const maxPercent = ((curMaxVal - min) / rangeSpan) * 100;
+
+  const lastActiveSlider = useRef('max'); // 'min' or 'max'
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -28,96 +28,100 @@ const PriceRangeSlider = ({
       .range-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
-        height: 16px;
-        width: 16px;
+        height: 18px;
+        width: 18px;
         border-radius: 50%;
         background: #62748E;
         cursor: pointer;
         border: 2px solid #fff;
-        box-shadow: 0 0 4px rgba(0,0,0,0.3);
-        transition: transform 0.15s ease, background 0.2s;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        transition: all 0.15s ease;
         position: relative;
+        z-index: 30;
+      }
+      .range-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+        background: #4B5D78;
       }
       .range-slider::-webkit-slider-thumb:active {
-        transform: scale(1.25);
-        background: #4B5D78;
+        transform: scale(1.2);
+        background: #3A4A61;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
       }
       .range-slider::-moz-range-thumb {
-        height: 16px;
-        width: 16px;
+        height: 18px;
+        width: 18px;
         border-radius: 50%;
         background: #62748E;
         cursor: pointer;
         border: 2px solid #fff;
-        box-shadow: 0 0 4px rgba(0,0,0,0.3);
-        transition: transform 0.15s ease, background 0.2s;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        transition: all 0.15s ease;
+      }
+      .range-slider::-moz-range-thumb:hover {
+        transform: scale(1.1);
+        background: #4B5D78;
       }
       .range-slider::-moz-range-thumb:active {
-        transform: scale(1.25);
-        background: #4B5D78;
+        transform: scale(1.2);
+        background: #3A4A61;
       }
       .range-slider::-webkit-slider-runnable-track {
         background: transparent;
-        height: 2px;
+        height: 4px;
       }
       .range-slider::-moz-range-track {
         background: transparent;
-        height: 2px;
+        height: 4px;
+      }
+      .range-slider:focus {
+        outline: none;
+      }
+      .range-slider:focus::-webkit-slider-thumb {
+        box-shadow: 0 0 0 3px rgba(98, 116, 142, 0.3);
       }
     `;
     document.head.appendChild(style);
   }, []);
 
-  useEffect(() => {
-    if (typeof onChange !== "function") return;
-    const new0 = clamp(curMinVal, min, max);
-    const new1 = clamp(curMaxVal, min, max);
-    const n0 = Math.min(new0, new1 - MIN_GAP);
-    const n1 = Math.max(new0 + MIN_GAP, new1);
-
-    if (n0 !== curMinVal || n1 !== curMaxVal) {
-      onChange([n0, n1]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [min, max, curMinVal, curMaxVal, onChange]);
-
   const handleMinChange = (e) => {
+    lastActiveSlider.current = 'min';
     const raw = Number(e.target.value);
-    const nextMin = Math.min(clamp(raw, min, max - MIN_GAP), curMaxVal - MIN_GAP);
+    const nextMin = clamp(raw, min, curMaxVal - MIN_GAP);
+    
     if (nextMin !== curMinVal && typeof onChange === "function") {
       onChange([nextMin, curMaxVal]);
     }
   };
 
   const handleMaxChange = (e) => {
+    lastActiveSlider.current = 'max';
     const raw = Number(e.target.value);
-    const nextMax = Math.max(clamp(raw, min + MIN_GAP, max), curMinVal + MIN_GAP);
+    const nextMax = clamp(raw, curMinVal + MIN_GAP, max);
+    
     if (nextMax !== curMaxVal && typeof onChange === "function") {
       onChange([curMinVal, nextMax]);
     }
   };
 
-  // When overlapping, bring the right (max) thumb above
-  const isOverlapping = maxPercent - minPercent < 3;
-  const minThumbZ = isOverlapping ? 20 : 30;
-  const maxThumbZ = isOverlapping ? 40 : 20;
+  const isClose = Math.abs(curMaxVal - curMinVal) <= MIN_GAP;
+  
+  const minZIndex = lastActiveSlider.current === 'min' || (isClose && curMinVal > min) ? 40 : 30;
+  const maxZIndex = lastActiveSlider.current === 'max' || (isClose && curMaxVal < max) ? 40 : 30;
 
   const left = `${minPercent}%`;
   const width = `${Math.max(0, maxPercent - minPercent)}%`;
 
   return (
-    <div className="relative w-full">
-      <div className="relative h-6">
-        {/* Track base */}
-        <div className="absolute w-full h-2 bg-gray-200 rounded top-2"></div>
+    <div className="relative w-full py-2">
+      <div className="relative h-8">
+        <div className="absolute w-full h-1 bg-gray-300 rounded top-3.5"></div>
 
-        {/* Selected range */}
         <div
-          className="absolute h-2 bg-slate-600 rounded top-2"
+          className="absolute h-1 bg-slate-600 rounded top-3.5"
           style={{ left, width }}
         />
 
-        {/* Left (min) input */}
         <input
           aria-label="Minimum price"
           type="range"
@@ -125,12 +129,13 @@ const PriceRangeSlider = ({
           max={max}
           value={curMinVal}
           onChange={handleMinChange}
-          className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer range-slider"
+          className="absolute w-full h-4 bg-transparent appearance-none cursor-pointer range-slider"
           disabled={disabled}
-          style={{ zIndex: minThumbZ }}
+          style={{ zIndex: minZIndex }}
+          onMouseDown={() => lastActiveSlider.current = 'min'}
+          onTouchStart={() => lastActiveSlider.current = 'min'}
         />
 
-        {/* Right (max) input */}
         <input
           aria-label="Maximum price"
           type="range"
@@ -138,11 +143,19 @@ const PriceRangeSlider = ({
           max={max}
           value={curMaxVal}
           onChange={handleMaxChange}
-          className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer range-slider"
+          className="absolute w-full h-4 bg-transparent appearance-none cursor-pointer range-slider"
           disabled={disabled}
-          style={{ zIndex: maxThumbZ }}
+          style={{ zIndex: maxZIndex }}
+          onMouseDown={() => lastActiveSlider.current = 'max'}
+          onTouchStart={() => lastActiveSlider.current = 'max'}
         />
+
+        <div className="absolute flex justify-between w-full text-xs text-gray-500 mt-6">
+          <span>₹{min}</span>
+          <span>₹{max}</span>
+        </div>
       </div>
+
     </div>
   );
 };

@@ -94,13 +94,21 @@ const AllServices = () => {
         </div>
     );
 
+    const getServiceTypeLabel = (type) => {
+        const labels = {
+            'online': 'Online',
+            'pandit_center': 'Face to Face',
+        };
+        return labels[type] || type;
+    };
+
     const serviceTypeBody = (row) => {
         return (
             <div className="space-y-1">
                 <div className="flex flex-wrap gap-1">
                     {row?.serviceType?.map((skill, index) => (
-                        <span key={index} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full capitalize">
-                            {skill}
+                        <span key={index} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                            {getServiceTypeLabel(skill)}
                         </span>
                     ))}
                 </div>
@@ -121,6 +129,12 @@ const AllServices = () => {
             <div className="text-xs text-gray-500">
                 {row?.durationInMinutes ? `${row.durationInMinutes} minutes` : "Duration not set"}
             </div>
+        </div>
+    );
+
+    const usdPriceBody = (row) => (
+        <div className="font-bold text-blue-600">
+            ${row?.usdPrice ? row.usdPrice.toLocaleString('en-US') : "----"}
         </div>
     );
 
@@ -219,6 +233,13 @@ const AllServices = () => {
             field: 'priceDetails',
             header: 'Price & Duration',
             body: priceDetailsBody,
+            style: true,
+            sortable: true
+        },
+        {
+            field: 'usdPrice',
+            header: 'USD Price',
+            body: usdPriceBody,
             style: true,
             sortable: true
         },

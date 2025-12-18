@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
 import product1 from "../../../assets/shop/product1.png";
 import { Calendar, Timer1, Zoom } from "iconsax-reactjs";
@@ -14,6 +14,7 @@ const UserDashboard = ({ children }) => children;
 
 export default function MyOrders() {
     const { state } = useLocation();
+    const navigate = useNavigate();
     console.log("⚡️🤯 ~ orders.jsx:17 ~ MyOrders ~ state:", state)
     const [activeTab, setActiveTab] = useState(state?.type === "products" ? "products" : "services");
     const [productOrders, setProductOrders] = useState([]);
@@ -160,7 +161,13 @@ export default function MyOrders() {
                                                                         <Icon icon="ph:calendar-star" className="w-6 h-6 text-white" />
                                                                     </div>
                                                                     <div>
-                                                                        <h3 className="font-bold text-white text-xl group-hover:text-purple-100 transition-colors duration-300">
+                                                                        <h3 
+                                                                            className="font-bold text-white text-xl group-hover:text-purple-100 transition-colors duration-300 cursor-pointer hover:underline"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                navigate(`/services/${encodeURIComponent(service?.serviceName)}`);
+                                                                            }}
+                                                                        >
                                                                             {service?.serviceName}
                                                                         </h3>
                                                                         <div className="text-purple-200 text-sm">
@@ -214,15 +221,15 @@ export default function MyOrders() {
                                                                             <Zoom className="w-5 h-5 text-blue-300" />
                                                                             <div className="flex-1">
                                                                                 <div className="text-blue-200 text-xs mb-1">Meeting Link</div>
-                                                                                <a
-                                                                                    href={service?.zoomLink}
-                                                                                    target="_blank"
-                                                                                    rel="noopener noreferrer"
-                                                                                    className="text-blue-300 hover:text-blue-200 text-sm font-medium underline break-all"
-                                                                                    onClick={(e) => e.stopPropagation()}
+                                                                                <button
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        window.open(`/meeting?zoomUrl=${encodeURIComponent(service.zoomLink)}`, '_blank');
+                                                                                    }}
+                                                                                    className="text-blue-600 hover:text-blue-800 underline font-medium text-xs sm:text-sm transition-colors bg-transparent border-none cursor-pointer"
                                                                                 >
                                                                                     Join Meeting
-                                                                                </a>
+                                                                                </button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -315,9 +322,15 @@ export default function MyOrders() {
 
                                                             <div className="flex flex-col sm:flex-row gap-4 relative z-10">
                                                                 {/* Product Image */}
-                                                                <div className="sm:w-24 sm:h-24 w-full h-36 rounded-xl overflow-hidden flex-shrink-0
+                                                                <div 
+                                                                    className="sm:w-24 sm:h-24 w-full h-36 rounded-xl overflow-hidden flex-shrink-0
                                                                               bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm border border-white/20
-                                                                              group-hover:shadow-lg group-hover:shadow-purple-500/20 transition-all duration-300">
+                                                                              group-hover:shadow-lg group-hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        navigate(`/product/${order?.items[0]?.product?._id}`);
+                                                                    }}
+                                                                >
                                                                     <img
                                                                         src={order?.items[0]?.product?.images?.[0] || product1}
                                                                         alt={order?.items[0]?.product?.name || "Product"}
@@ -328,7 +341,13 @@ export default function MyOrders() {
 
                                                                 {/* Product Details */}
                                                                 <div className="flex-1 min-w-0">
-                                                                    <h3 className="font-bold text-white text-xl mb-2 group-hover:text-purple-100 transition-colors duration-300">
+                                                                    <h3 
+                                                                        className="font-bold text-white text-xl mb-2 group-hover:text-purple-100 transition-colors duration-300 cursor-pointer hover:underline"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            navigate(`/product/${order?.items[0]?.product?._id}`);
+                                                                        }}
+                                                                    >
                                                                         {order?.items[0]?.product?.name}
                                                                     </h3>
 

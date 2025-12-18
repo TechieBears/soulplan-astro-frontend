@@ -9,7 +9,7 @@ import TextInput from "../../components/TextInput/TextInput";
 import SelectTextInput from "../../components/TextInput/SelectTextInput";
 import LoadBox from "../../components/Loader/LoadBox";
 import { registerUser } from "../../api";
-import { setLoggedUser, setUserDetails } from "../../redux/Slices/loginSlice";
+import { setLoggedUser, setRoleIs, setUserDetails, setIsRegistered } from "../../redux/Slices/loginSlice";
 import {
     validateEmail,
     validatePassword,
@@ -42,13 +42,23 @@ const RegisterPage = () => {
                 response?.message === "User created successfully" ||
                 response?.success
             ) {
-                document.title = `SoulPlan : Dashboard | ${response?.user?.role || ""}`;
+                document.title = `SoulPlan : Dashboard | ${response?.data?.user?.role || response?.user?.role || ""}`;
+
+                const userData = response?.data?.user || response?.user || response?.data;
+                const token = response?.data?.token || response?.token;
+                const role = response?.data?.user?.role || response?.user?.role;
+
+                dispatch(setUserDetails(userData));
                 dispatch(setLoggedUser(true));
-                dispatch(setUserDetails(response?.user || response?.data));
-                toast.success("Account created successfully!");
+                dispatch(setRoleIs(role));
+                localStorage.setItem('token', token);
+                localStorage.setItem('role', role);
+                dispatch(setIsRegistered(true));
+
+                toast.success("Registration and login successful!");
                 setLoader(false);
                 reset();
-                navigate("/login", { replace: true });
+                navigate("/", { replace: true });
             } else {
                 setLoader(false);
                 toast.error(response?.message || "Registration failed");

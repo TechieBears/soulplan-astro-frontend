@@ -2,51 +2,31 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
+import { X } from "@phosphor-icons/react";
+import { useSearchParams } from 'react-router-dom';
 import LoadBox from '../Loader/LoadBox';
 import ImageCropUpload from '../TextInput/ImageCropUpload';
 import TextInput from '../TextInput/TextInput';
-import { formBtn1, formBtn3 } from '../../utils/CustomClass';
 import SelectTextInput from '../TextInput/SelectTextInput';
-import { X } from "@phosphor-icons/react";
 import CustomTextArea from '../TextInput/CustomTextArea';
-import { useSelector } from 'react-redux';
-import { getPublicServicesDropdown, getProductsDropdown } from '../../api';
-import { createTestimonial } from '../../api';
+import GradientButton from '../Buttons/GradientButton';
+import { formBtn1 } from '../../utils/CustomClass';
+import { getPublicServicesDropdown, createTestimonial } from '../../api';
 
 
 function TestimonialModal() {
     const [open, setOpen] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm({
-        defaultValues: {
-            testimonial_for: '',
-            service_id: '',
-            product_id: '',
-            message: '',
-            city: '',
-            state: '',
-            country: ''
-        }
+    const { register, handleSubmit, watch, reset, formState: { errors }, setValue } = useForm({
+        defaultValues: { service_id: '', message: '', city: '', state: '', country: '' }
     });
 
-    const user = useSelector((state) => state.user.userDetails);
-    const isLogged = useSelector((state) => state.user.isLogged);
-
+    const { userDetails: user, isLogged } = useSelector((state) => state.user);
     const [loader, setLoader] = useState(false);
     const [services, setServices] = useState([]);
-    const [products, setProducts] = useState([]);
-    const [cityLoading, setCityLoading] = useState(false);
-
     const city = watch('city');
-    const testimonialFor = watch('testimonial_for');
-
-    useEffect(() => {
-        if (testimonialFor === 'services') {
-            setValue('product_id', '');
-        } else if (testimonialFor === 'products') {
-            setValue('service_id', '');
-        }
-    }, [testimonialFor, setValue]);
 
     const toggle = () => {
         setOpen(!open);
@@ -54,106 +34,87 @@ function TestimonialModal() {
     };
 
     useEffect(() => {
-        const fetchCityDetails = async () => {
-            if (!city || city.trim().length < 3) {
-                return;
-            }
+        if (searchParams.get('openTestimonial') === 'true') {
+            setOpen(true);
+            searchParams.delete('openTestimonial');
+            setSearchParams(searchParams, { replace: true });
+        }
+    }, [searchParams, setSearchParams]);
 
-            const cityName = city.trim();
-            setCityLoading(true);
+    useEffect(() => {
+        if (!city?.trim() || city.trim().length < 3) return;
 
+        const timeoutId = setTimeout(async () => {
             try {
-                const res = await fetch(`https://api.postalpincode.in/postoffice/${cityName}`);
+                const res = await fetch(`https://api.postalpincode.in/postoffice/${city.trim()}`);
                 const data = await res.json();
-
-                if (data[0]?.Status === "Success") {
-                    const postOffice = data[0].PostOffice?.[0];
-                    if (postOffice) {
-                        setValue("state", postOffice.State, { shouldValidate: true });
-                        setValue("country", "India", { shouldValidate: true });
-                    }
-                } else {
-                    console.log("City not found or invalid.");
+                const postOffice = data[0]?.PostOffice?.[0];
+                if (postOffice) {
+                    setValue("state", postOffice.State, { shouldValidate: true });
+                    setValue("country", "India", { shouldValidate: true });
                 }
             } catch (err) {
                 console.error("City API error:", err);
-            } finally {
-                setCityLoading(false);
             }
-        };
-
-        const timeoutId = setTimeout(() => {
-            fetchCityDetails();
         }, 500);
 
         return () => clearTimeout(timeoutId);
     }, [city, setValue]);
 
     useEffect(() => {
-        const fetchDropdowns = async () => {
-            try {
-                const [servicesRes, productsRes] = await Promise.all([
-                    getPublicServicesDropdown(),
-                    getProductsDropdown()
-                ]);
-
-                if (servicesRes?.success) {
-                    setServices(servicesRes.data || []);
-                }
-                if (productsRes?.success) {
-                    setProducts(productsRes.data || []);
-                }
-            } catch (error) {
-                console.error('Error fetching dropdowns:', error);
-            }
-        };
-
-        if (open) {
-            fetchDropdowns();
-        }
+        if (!open) return;
+        
+        getPublicServicesDropdown()
+            .then(res => res?.success && setServices(res.data || []))
+            .catch(err => console.error('Error fetching services:', err));
     }, [open]);
 
     const formSubmit = async (data) => {
-        if (!isLogged) {
-            toast.error('Please login to share your experience');
-            return;
-        }
+        if (!isLogged) return toast.error('Please login to share your experience');
 
+        setLoader(true);
         try {
-            setLoader(true);
-            const testimonialData = {
+            const res = await createTestimonial({
                 user_id: user?._id,
                 service_id: data.service_id || null,
-                product_id: data.product_id || null,
                 message: data.message,
                 media: data.media,
                 city: data.city,
                 state: data.state,
                 country: data.country
-            };
-
-            const res = await createTestimonial(testimonialData);
+            });
 
             if (res?.success) {
                 toast.success(res?.message || 'Thank you for sharing your experience!');
-                setLoader(false);
                 toggle();
             } else {
                 toast.error(res?.message || 'Something went wrong');
-                setLoader(false);
             }
         } catch (error) {
             console.error('Error submitting testimonial:', error);
-            setLoader(false);
-            toast.dismiss();
             toast.error('Failed to submit testimonial');
+        } finally {
+            setLoader(false);
         }
     };
-    return <>
-        <button className={`btn justify-self-center ${formBtn3} !w-fit`} onClick={toggle}>Share Your Experience</button>
+    const COUNTRY_OPTIONS = [
+        { value: 'India', label: 'India' },
+        { value: 'USA', label: 'USA' },
+        { value: 'Canada', label: 'Canada' },
+        { value: 'other', label: 'Other' }
+    ];
 
-        <Transition appear show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-[1000]" onClose={() => toggle()}>
+    const LABEL_CLASS = "text-sm font-tbLex font-normal text-slate-400 pb-2.5";
+    const REQUIRED_MARK = <span className="text-red-500 text-xs font-tbLex">*</span>;
+
+    return (
+        <>
+            <GradientButton className="btn justify-self-center !w-fit" onClick={toggle}>
+                Share Your Experience
+            </GradientButton>
+
+            <Transition appear show={open} as={Fragment}>
+                <Dialog as="div" className="relative z-[1000]" onClose={toggle}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -177,86 +138,47 @@ function TestimonialModal() {
                             leaveTo="opacity-0 scale-95"
                         >
                             <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-lg bg-white  text-left align-middle shadow-xl transition-all">
-                                <Dialog.Title
-                                    as="h2"
-                                    className="text-lg text-white w-full bg-linear-gradient font-tbLex leading-6  py-5 px-5 relative z-10"
-                                >
-
+                                <Dialog.Title as="h2" className="text-lg text-white w-full bg-linear-gradient font-tbLex leading-6 py-5 px-5 relative z-10">
                                     Share Your Experience
-
-                                    <div className="absolute right-5 top-5">
-                                        <X onClick={() => toggle()} className='text-white   hover:text-slate-200 cursor-pointer' size={30} />
-                                    </div>
+                                    <button onClick={toggle} className="absolute right-5 top-5 text-white hover:text-slate-200">
+                                        <X size={30} />
+                                    </button>
                                 </Dialog.Title>
-                                <div className=" bg-slate1">
+                                <div className="bg-slate1">
                                     <form onSubmit={handleSubmit(formSubmit)} >
                                         <div className="bg-white px-4 pb-5 pt-5 sm:p-6 sm:pb-4">
-                                            <div className='grid grid-cols-1 gap-x-5 gap-y-5' >
-                                                <div className=''>
-                                                    <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Write Testimonials For (Optional) <span className="text-red-500 text-xs font-tbLex">*</span></h4>
-                                                    <SelectTextInput
-                                                        label="Select Your Testimonial For"
-                                                        registerName="testimonial_for"
-                                                        options={[
-                                                            { value: 'products', label: 'Products' },
-                                                            { value: 'services', label: 'Services' },
-                                                        ]}
-                                                        placeholder="Select Your Testimonial For"
-                                                        props={{ ...register('testimonial_for', { required: false }) }}
-                                                        errors={errors.testimonial_for}
-                                                        defaultValue={''}
-                                                    />
-                                                </div>
-                                                {testimonialFor === 'services' && <div className=''>
-                                                    <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Your Service <span className="text-red-500 text-xs font-tbLex">*</span></h4>
+                                            <div className='grid grid-cols-1 gap-5'>
+                                                <div>
+                                                    <h4 className={LABEL_CLASS}>Your Service {REQUIRED_MARK}</h4>
                                                     <SelectTextInput
                                                         label="Select Your Service"
                                                         registerName="service_id"
-                                                        options={services?.map((service) => ({ value: service._id, label: service.name }))}
+                                                        options={services.map(s => ({ value: s._id, label: s.name }))}
                                                         placeholder="Select Your Service"
-                                                        props={{ ...register('service_id', { required: false }) }}
+                                                        props={{ ...register('service_id') }}
                                                         errors={errors.service_id}
-                                                        defaultValue={''}
                                                     />
-                                                </div>}
+                                                </div>
 
-                                                {testimonialFor === 'products' && <div className=''>
-                                                    <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Your Product <span className="text-red-500 text-xs font-tbLex">*</span></h4>
-                                                    <SelectTextInput
-                                                        label="Select Your Product"
-                                                        registerName="product_id"
-                                                        options={products?.map((product) => ({ value: product._id, label: product.name }))}
-                                                        placeholder="Select Your Product"
-                                                        props={{ ...register('product_id', { required: false }) }}
-                                                        errors={errors.product_id}
-                                                        defaultValue={''}
-                                                    />
-                                                </div>}
-
-                                                <div className=''>
-                                                    <h4
-                                                        className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
-                                                    >
-                                                        Your Image <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                <div>
+                                                    <h4 className={LABEL_CLASS}>
+                                                        Your Image {REQUIRED_MARK} <span className="text-[11px] text-orange-500">(Recommended: 315px × 200px)</span>
                                                     </h4>
                                                     <ImageCropUpload
                                                         label="Upload Your Image"
                                                         registerName="media"
                                                         errors={errors.media}
-                                                        {...register("media", { required: "Your Image is required" })}
+                                                        {...register("media", { required: "Image is required" })}
                                                         register={register}
                                                         setValue={setValue}
-                                                        defaultValue={''}
-                                                        cropAspectRatio={1}
-                                                        cropWidth={400}
-                                                        cropHeight={400}
+                                                        cropAspectRatio={1.575}
+                                                        cropWidth={315}
+                                                        cropHeight={200}
                                                     />
                                                 </div>
-                                                <div className="">
-                                                    <h4
-                                                        className="text-sm font-tbLex font-normal text-slate-800 pb-2.5"
-                                                    >
-                                                        Your Experience <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                <div>
+                                                    <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
+                                                        Your Experience {REQUIRED_MARK}
                                                     </h4>
                                                     <CustomTextArea
                                                         label="Enter Your Experience"
@@ -264,23 +186,16 @@ function TestimonialModal() {
                                                         registerName="message"
                                                         props={{
                                                             ...register('message', {
-                                                                required: "Your Experience is required",
-                                                                minLength: {
-                                                                    value: 50,
-                                                                    message: "Your Experience must be at least 50 characters"
-                                                                }
+                                                                required: "Experience is required",
+                                                                minLength: { value: 50, message: "Minimum 50 characters required" }
                                                             })
                                                         }}
                                                         errors={errors.message}
                                                     />
                                                 </div>
-                                                <div className='grid grid-cols-12 gap-x-5 gap-y-5'>
+                                                <div className='grid grid-cols-12 gap-5'>
                                                     <div className='col-span-4'>
-                                                        <h4
-                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
-                                                        >
-                                                            Your City <span className="text-red-500 text-xs font-tbLex">*</span>
-                                                        </h4>
+                                                        <h4 className={LABEL_CLASS}>Your City {REQUIRED_MARK}</h4>
                                                         <TextInput
                                                             label="Enter Your City"
                                                             placeholder="Enter Your City"
@@ -288,23 +203,15 @@ function TestimonialModal() {
                                                             registerName="city"
                                                             props={{
                                                                 ...register('city', {
-                                                                    required: "Your City is required",
-                                                                    pattern: {
-                                                                        value: /^[a-zA-Z\s]*$/,
-                                                                        message: "Your City name can only contain letters"
-                                                                    }
+                                                                    required: "City is required",
+                                                                    pattern: { value: /^[a-zA-Z\s]*$/, message: "Only letters allowed" }
                                                                 })
                                                             }}
                                                             errors={errors.city}
                                                         />
                                                     </div>
                                                     <div className="col-span-4">
-                                                        <h4
-                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
-                                                        >
-                                                            Your State <span className="text-red-500 text-xs font-tbLex">*</span>
-                                                        </h4>
-                                                        <div className="">
+                                                        <h4 className={LABEL_CLASS}>Your State {REQUIRED_MARK}</h4>
                                                             <TextInput
                                                                 label="Enter Your State"
                                                                 placeholder="Enter Your State"
@@ -312,47 +219,32 @@ function TestimonialModal() {
                                                                 registerName="state"
                                                                 props={{
                                                                     ...register('state', {
-                                                                        required: "Your State is required",
-                                                                        pattern: {
-                                                                            value: /^[a-zA-Z\s]*$/,
-                                                                            message: "Your State name can only contain letters"
-                                                                        }
+                                                                        required: "State is required",
+                                                                        pattern: { value: /^[a-zA-Z\s]*$/, message: "Only letters allowed" }
                                                                     })
                                                                 }}
                                                                 errors={errors.state}
                                                             />
-                                                        </div>
                                                     </div>
                                                     <div className="col-span-4">
-                                                        <h4
-                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
-                                                        >
-                                                            Your Country <span className="text-red-500 text-xs font-tbLex">*</span>
-                                                        </h4>
-                                                        <div className="">
+                                                        <h4 className={LABEL_CLASS}>Your Country {REQUIRED_MARK}</h4>
                                                             <SelectTextInput
                                                                 label="Select Your Country"
                                                                 registerName="country"
-                                                                options={[
-                                                                    { value: 'India', label: 'India' },
-                                                                    { value: 'USA', label: 'USA' },
-                                                                    { value: 'Canada', label: 'Canada' },
-                                                                    { value: 'other', label: 'Other' },
-                                                                ]}
+                                                                options={COUNTRY_OPTIONS}
                                                                 placeholder="Select Your Country"
                                                                 props={{
-                                                                    ...register('country', { required: "Your Country is required" }),
+                                                                    ...register('country', { required: "Country is required" }),
                                                                     value: watch('country') || ''
                                                                 }}
                                                                 errors={errors.country}
                                                             />
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <footer className="py-3 flex bg-primary/5 justify-end px-4 space-x-3">
-                                            {loader ? <LoadBox className={formBtn1} /> : <button type='submit' className={formBtn1}>submit</button>}
+                                            {loader ? <LoadBox className={formBtn1} /> : <button type='submit' className={formBtn1}>Submit</button>}
                                         </footer>
                                     </form>
                                 </div>
@@ -361,8 +253,9 @@ function TestimonialModal() {
                     </div>
                 </div>
             </Dialog>
-        </Transition >
-    </>;
+        </Transition>
+    </>
+    );
 }
 
-export default TestimonialModal
+export default TestimonialModal;

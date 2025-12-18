@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -20,6 +20,7 @@ import RegisterPage from "../pages/Home/RegisterPage";
 import LoginPage from "../pages/Home/LoginPage";
 import TermsConditions from "../components/HomeComponents/TermsConditions";
 import PrivacyPolicy from "../pages/Home/PrivacyPolicy";
+import RefundCancellationPolicy from "../pages/Home/RefundCancellationPolicy";
 import ErrorPage from "./ErrorPage";
 import BookingCalender from "../pages/Admin/Bookings/BookingCalender";
 import AllProducts from "../pages/Admin/AllProducts/AllProducts";
@@ -54,15 +55,32 @@ import { Whatsapp } from "iconsax-reactjs";
 import BuyNowPage from "../pages/Home/BuyNowPage";
 import Reviews from "../pages/Admin/Master/Reviews";
 import ReferAndEarn from "../pages/Home/Profile/ReferAndEarn";
+import ReferralPromptModal from "../components/Modals/ReferralPromptModal";
+import ZoomMeeting from '../pages/Meeting/ZoomMeeting';
+import DeepLinkRedirect from "../pages/DeepLinkRedirect";
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
+    const [showProfileModal, setShowProfileModal] = useState(false);
     const user = useSelector((state) => state.user.userDetails);
+    const isLogged = useSelector((state) => state.user.isLogged);
+    const location = useLocation();
+    const isMeetingPage = location.pathname === '/meeting';
     // ============ Page Loader ============
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 2800);
         return () => clearTimeout(timer);
     }, []);
+
+    // ============ Profile Completion Check ============
+    useEffect(() => {
+        if (isLogged && user && user.role === 'customer') {
+            const isProfileComplete = user?.firstName && user?.lastName && user?.mobileNo && user?.gender;
+            if (!isProfileComplete) {
+                setShowProfileModal(true);
+            }
+        }
+    }, [isLogged, user]);
 
     // ============ Online/Offline Toast ============
     useEffect(() => {
@@ -112,6 +130,7 @@ const ProjectRoutes = () => {
                         <Route path="/reviews" element={<Reviews />} />
                         <Route path="/testimonials" element={<Testimonials />} />
                         <Route path="/admin-profile" element={<AdminProfile />} />
+                        <Route path="/meeting" element={<ZoomMeeting />} />
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
                 </Sidebar>
@@ -121,14 +140,14 @@ const ProjectRoutes = () => {
                     <HomeNavbar />
                     <Routes>
                         <Route path="/" element={<HomePage />} />
-                        {/* <Route path="/actor/:id" element={<DeepLinkRedirect />} />
-            <Route path="/casting/:id" element={<DeepLinkRedirect />} /> */}
-                        <Route path="/about" element={<AboutPage />} />
-                        <Route path="/contact" element={<ContactPage />} />
+                        <Route path="/referral/:id" element={<DeepLinkRedirect />} />
+                        <Route path="/about-us" element={<AboutPage />} />
+                        <Route path="/contact-us" element={<ContactPage />} />
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/terms-conditions" element={<TermsConditions />} />
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/refund-cancellation-policy" element={<RefundCancellationPolicy />} />
                         <Route
                             path="/profile/customer-support"
                             element={
@@ -212,11 +231,12 @@ const ProjectRoutes = () => {
                                 </ProtectedRoute>
                             }
                         />
+                        <Route path="/meeting" element={<ZoomMeeting />} />
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
                     <HomeFooter />
                     <a
-                        href={`https://wa.me/${8693000900}`}
+                        href="https://wa.me/919326511639"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 cursor-pointer"
@@ -226,8 +246,21 @@ const ProjectRoutes = () => {
                 </main>
             )}
 
+            {/* Profile Completion Modal */}
+            <ReferralPromptModal
+                open={showProfileModal}
+                toggle={() => setShowProfileModal(false)}
+                forceProfileScreen={true}
+                onModalClose={() => setShowProfileModal(false)}
+            />
+
             {/* Toaster Notifications */}
-            <Toaster position="top-right" reverseOrder={false} />
+            <Toaster
+                position="top-right"
+                reverseOrder={false}
+                containerStyle={{ zIndex: 9999999 }}
+                toastOptions={{ style: { zIndex: 9999999 } }}
+            />
         </div>
     );
 };
