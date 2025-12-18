@@ -1,6 +1,7 @@
 import axios from "axios";
 import { environment } from "../env";
 import toast from "react-hot-toast";
+import { isTokenExpired } from "../utils/tokenUtils";
 
 axios.defaults.withCredentials = environment?.production;
 
@@ -16,6 +17,10 @@ axios.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
         if (token) {
+            if (isTokenExpired(token)) {
+                handleLogout();
+                return Promise.reject(new Error('Token expired'));
+            }
             config.headers['Authorization'] = `Bearer ${token}`;
         }
         return config;
@@ -26,25 +31,11 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use(
-    (response) => {
-        return response;
-    },
+    (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || '';
-
-            if (errorMessage.toLowerCase().includes('token') &&
-                (errorMessage.toLowerCase().includes('expired') ||
-                    errorMessage.toLowerCase().includes('invalid') ||
-                    errorMessage.toLowerCase().includes('unauthorized'))) {
-
-                const token = localStorage.getItem('token');
-                if (token) {
-                    handleLogout();
-                }
-            }
+        if (error.response?.status === 401 && error.message !== 'Token expired') {
+            handleLogout();
         }
-
         return Promise.reject(error);
     }
 );
