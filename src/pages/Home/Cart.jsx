@@ -853,7 +853,7 @@ const ServiceTab = () => {
   };
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 p-3 lg:p-5 xl:p-6 bg-white rounded-lg relative">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 p-3 lg:p-5 xl:p-6 bg-white rounded-lg relative shadow-md">
         <div className="lg:col-span-7 space-y-4 max-h-[500px] overflow-y-scroll scroll-hide">
           {cartItems?.map((service, index) => (
             <ServicesCartCard
