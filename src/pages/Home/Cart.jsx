@@ -5,6 +5,7 @@ import { formBtn3 } from "../../utils/CustomClass";
 import { Edit, TicketDiscount } from "iconsax-reactjs";
 import { ArrowLeft, X } from "@phosphor-icons/react";
 import star from "../../assets/helperImages/star.png";
+import sun from "../../assets/helperImages/sun.png";
 import AvailableCouponsModal from "../../components/Modals/ApplyCoupon";
 import {
   createServiceOrder,
@@ -40,10 +41,10 @@ const CartPage = () => {
 
   return (
     <div className="min-h-screen bg-[#EFF2FA]  pt-16 lg:pt-24 relative">
-      <div className="absolute top-24 left-1/4 scale-50 ">
+      <div className="absolute top-40 left-0 scale-60 z-10">
         <img src={star} alt="" className="w-full h-full object-fill" />
       </div>
-      <div className="absolute bottom-40 right-0 rotate-45 scale-75">
+      <div className="absolute top-1/2 -translate-y-1/2 right-0 rotate-45 scale-75">
         <img src={star} alt="" className="w-full h-full object-fill" />
       </div>
       <div className="container mx-auto px-4 xl:px-0 py-8">
@@ -51,10 +52,10 @@ const CartPage = () => {
         <div className="mb-8">
           {/* Mobile Layout */}
           <div className="sm:hidden space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="relative flex items-center justify-center">
               <button
                 onClick={() => navigate(-1)}
-                className="flex items-center text-black hover:text-gray-800 transition-colors text-sm font-tbLex"
+                className="absolute left-0 flex items-center text-black hover:text-gray-800 transition-colors text-sm font-tbLex"
               >
                 <ArrowLeft className="mr-2" color="#000" size={20} weight="bold" />
                 Go Back
@@ -447,8 +448,8 @@ const ProductTab = () => {
                     }}
                     disabled={isUpdating}
                     className={`p-2 text-white rounded-md transition-colors flex-shrink-0 ${isUpdating
-                        ? "opacity-50 cursor-not-allowed"
-                        : "hover:bg-[#8B3FC1]"
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-[#8B3FC1]"
                       }`}
                   >
                     <FaRegTrashAlt className="w-4 h-4" />
@@ -467,8 +468,8 @@ const ProductTab = () => {
                         }}
                         disabled={isUpdating || item?.quantity <= 1}
                         className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${isUpdating || item?.quantity <= 1
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-gray-100"
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:bg-gray-100"
                           }`}
                       >
                         -
@@ -488,8 +489,8 @@ const ProductTab = () => {
                         }}
                         disabled={isUpdating}
                         className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${isUpdating
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-gray-100"
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:bg-gray-100"
                           }`}
                       >
                         +
@@ -851,159 +852,164 @@ const ServiceTab = () => {
     }
   };
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 p-3 lg:p-5 xl:p-6 bg-white rounded-lg relative">
-      <div className="lg:col-span-7 space-y-4 max-h-[500px] overflow-y-scroll scroll-hide">
-        {cartItems?.map((service, index) => (
-          <ServicesCartCard
-            service={service}
-            key={index}
-            removeItem={removeItem}
-            isUpdating={isUpdating}
-          />
-        ))}
-      </div>
+    <>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 p-3 lg:p-5 xl:p-6 bg-white rounded-lg relative">
+        <div className="lg:col-span-7 space-y-4 max-h-[500px] overflow-y-scroll scroll-hide">
+          {cartItems?.map((service, index) => (
+            <ServicesCartCard
+              service={service}
+              key={index}
+              removeItem={removeItem}
+              isUpdating={isUpdating}
+            />
+          ))}
+        </div>
 
-      <div className="lg:col-span-5 space-y-5">
-        {coupon ? (
-          <div className="w-full bg-green-100 rounded-xl p-3 flex items-center justify-between ">
-            <div className="">
-              <div className="w-full flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <TicketDiscount size={28} className="text-green-500" />
-                  <span className="text-green-500 text-base font-tbLex">
-                    Coupon Applied ({coupon.couponCode})
-                  </span>
+        <div className="lg:col-span-5 space-y-5">
+          {coupon ? (
+            <div className="w-full bg-green-100 rounded-xl p-3 flex items-center justify-between ">
+              <div className="">
+                <div className="w-full flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <TicketDiscount size={28} className="text-green-500" />
+                    <span className="text-green-500 text-base font-tbLex">
+                      Coupon Applied ({coupon.couponCode})
+                    </span>
+                  </div>
                 </div>
+                <p className="text-gray-600 text-xs mt-1 font-tbPop">
+                  You saved an additional{" "}
+                  {coupon.discountIn === "percent"
+                    ? `${coupon.discount}% OFF`
+                    : `₹${coupon.discount} OFF`}
+                </p>
               </div>
-              <p className="text-gray-600 text-xs mt-1 font-tbPop">
-                You saved an additional{" "}
-                {coupon.discountIn === "percent"
-                  ? `${coupon.discount}% OFF`
-                  : `₹${coupon.discount} OFF`}
+              <button
+                onClick={() => dispatch(setCoupon(null))}
+                className="text-red-500 hover:text-red-600 transition-colors text-sm font-tbLex"
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <div className="w-full bg-gray-0 rounded-xl shadow-sm p-4 sm:p-5 border border-gray-100">
+              {/* Title */}
+              <h2 className="text-gray-800 text-base sm:text-lg font-semibold">
+                Coupon
+              </h2>
+
+              {/* Description */}
+              <p className="text-gray-600 text-xs mt-1">
+                Apply a coupon to get additional discount on your order
               </p>
+
+              {/* Button */}
+              <button
+                type="button"
+                onClick={() => setIsCouponModalOpen(true)}
+                className="mt-4 w-full bg-purple-100 text-purple-700 hover:bg-purple-200 font-medium py-2 sm:py-3 rounded-lg flex items-center justify-center gap-2 transition-all"
+              >
+                Check Available Coupons
+                <ExternalLink size={16} />
+              </button>
             </div>
-            <button
-              onClick={() => dispatch(setCoupon(null))}
-              className="text-red-500 hover:text-red-600 transition-colors text-sm font-tbLex"
-            >
-              Remove
-            </button>
-          </div>
-        ) : (
-          <div className="w-full bg-gray-0 rounded-xl shadow-sm p-4 sm:p-5 border border-gray-100">
-            {/* Title */}
-            <h2 className="text-gray-800 text-base sm:text-lg font-semibold">
-              Coupon
-            </h2>
+          )}
 
-            {/* Description */}
-            <p className="text-gray-600 text-xs mt-1">
-              Apply a coupon to get additional discount on your order
-            </p>
+          <AvailableCouponsModal
+            isOpen={isCouponModalOpen}
+            type="services"
+            onClose={() => setIsCouponModalOpen(false)}
+          />
 
-            {/* Button */}
-            <button
-              type="button"
-              onClick={() => setIsCouponModalOpen(true)}
-              className="mt-4 w-full bg-purple-100 text-purple-700 hover:bg-purple-200 font-medium py-2 sm:py-3 rounded-lg flex items-center justify-center gap-2 transition-all"
-            >
-              Check Available Coupons
-              <ExternalLink size={16} />
-            </button>
-          </div>
-        )}
+          <div className="rounded-lg lg:sticky lg:top-8">
+            <h3 className="font-medium font-tbLex text-black text-base mb-2 pt-3 pl-5">
+              Amount Payable
+            </h3>
 
-        <AvailableCouponsModal
-          isOpen={isCouponModalOpen}
-          type="services"
-          onClose={() => setIsCouponModalOpen(false)}
-        />
-
-        <div className="rounded-lg lg:sticky lg:top-8">
-          <h3 className="font-medium font-tbLex text-black text-base mb-2 pt-3 pl-5">
-            Amount Payable
-          </h3>
-
-          <div className="space-y-3 mb-2 bg-gray-100 p-4 rounded-lg">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  checked={isWalletChecked}
-                  onChange={(e) => setIsWalletChecked(e.target.checked)}
-                  className="h-4 w-4 text-primary border-primary outline-none rounded focus:ring-primary"
-                />
-                <label htmlFor="remember-me" className="ml-2 text-slate-800">
-                  You want to pay with wallet credit?
-                </label>
+            <div className="space-y-3 mb-2 bg-gray-100 p-4 rounded-lg">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    checked={isWalletChecked}
+                    onChange={(e) => setIsWalletChecked(e.target.checked)}
+                    className="h-4 w-4 text-primary border-primary outline-none rounded focus:ring-primary"
+                  />
+                  <label htmlFor="remember-me" className="ml-2 text-slate-800">
+                    You want to pay with wallet credit?
+                  </label>
+                </div>
+                <span className="text-slate-800">₹ {walletBalance || 0}</span>
               </div>
-              <span className="text-slate-800">₹ {walletBalance || 0}</span>
             </div>
-          </div>
-          <div className="space-y-3 mb-6 bg-gray-100 p-4 rounded-lg">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">
-                Service {cartItems?.reduce((t, i) => t + (i.quantity || 1), 0)}x
-                (incl. GST)
-              </span>
-              <span className="font-medium">
-                ₹ {subtotal?.toLocaleString()}
-              </span>
-            </div>
+            <div className="space-y-3 mb-6 bg-gray-100 p-4 rounded-lg">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">
+                  Service {cartItems?.reduce((t, i) => t + (i.quantity || 1), 0)}x
+                  (incl. GST)
+                </span>
+                <span className="font-medium">
+                  ₹ {subtotal?.toLocaleString()}
+                </span>
+              </div>
 
-            {/* <div className="flex justify-between items-center">
+              {/* <div className="flex justify-between items-center">
                             <span className="text-gray-600">GST (18%)</span>
                             <span className="font-medium">₹ {gstAmount || 0}</span>
                         </div> */}
 
-            {coupon && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Coupon Discount</span>
-                <span className="font-medium">
-                  ₹{" "}
-                  {coupon?.discountIn === "percent"
-                    ? `${coupon?.discount}% OFF`
-                    : `₹${coupon?.discount} OFF`}
+              {coupon && (
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Coupon Discount</span>
+                  <span className="font-medium">
+                    ₹{" "}
+                    {coupon?.discountIn === "percent"
+                      ? `${coupon?.discount}% OFF`
+                      : `₹${coupon?.discount} OFF`}
+                  </span>
+                </div>
+              )}
+
+              <div className="border-t border-gray-300 my-2"></div>
+
+              <div className="flex sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
+                <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-left">
+                  Total
+                </span>
+
+                <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-right break-words">
+                  ₹ {grandTotal || 0}{" "}
+                  <span className="text-sm sm:text-base font-normal text-gray-700">
+                    (incl. of all taxes)
+                  </span>
                 </span>
               </div>
-            )}
-
-            <div className="border-t border-gray-300 my-2"></div>
-
-            <div className="flex sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 w-full">
-              <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-left">
-                Total
-              </span>
-
-              <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-right break-words">
-                ₹ {grandTotal || 0}{" "}
-                <span className="text-sm sm:text-base font-normal text-gray-700">
-                  (incl. of all taxes)
-                </span>
-              </span>
             </div>
-          </div>
 
-          <button
-            onClick={handleBooking}
-            disabled={bookingLoading || cartItems?.length === 0}
-            className={`${formBtn3} w-full py-3 text-white rounded-md ${bookingLoading || cartItems?.length === 0 ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-          >
-            {bookingLoading ? (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                <span>Processing...</span>
-              </div>
-            ) : (
-              "Continue to Pay"
-            )}
-          </button>
+            <button
+              onClick={handleBooking}
+              disabled={bookingLoading || cartItems?.length === 0}
+              className={`${formBtn3} w-full py-3 text-white rounded-md ${bookingLoading || cartItems?.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+            >
+              {bookingLoading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Processing...</span>
+                </div>
+              ) : (
+                "Continue to Pay"
+              )}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+      <div className="flex justify-center overflow-hidden">
+        <img src={sun} alt="" className="w-32 h-32 object-contain -mt-16" />
+      </div>
+    </>
   );
 };
 export default CartPage;
