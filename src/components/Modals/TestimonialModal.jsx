@@ -74,15 +74,16 @@ function TestimonialModal() {
 
         setLoader(true);
         try {
-            const res = await createTestimonial({
-                user_id: user?._id,
-                service_id: data.service_id || null,
-                message: data.message,
-                media: data.media,
-                city: data.city,
-                state: data.state,
-                country: data.country
-            });
+            const formData = new FormData();
+            formData.append('user_id', user?._id);
+            formData.append('service_id', data.service_id || '');
+            formData.append('message', data.message);
+            formData.append('media', data.media);
+            formData.append('city', data.city);
+            formData.append('state', data.state);
+            formData.append('country', data.country);
+
+            const res = await createTestimonial(formData);
 
             if (res?.success) {
                 toast.success(res?.message || 'Thank you for sharing your experience!');
@@ -174,6 +175,7 @@ function TestimonialModal() {
                                                         cropAspectRatio={1.575}
                                                         cropWidth={315}
                                                         cropHeight={200}
+                                                        shouldUploadToCloudinary={false}
                                                     />
                                                 </div>
                                                 <div>
