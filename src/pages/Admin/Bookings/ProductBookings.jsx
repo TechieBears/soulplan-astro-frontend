@@ -10,6 +10,7 @@ import TextInput from '../../../components/TextInput/TextInput'
 import usePagination from '../../../utils/customHooks/usePagination'
 import { formBtn1 } from '../../../utils/CustomClass'
 import TableHeader from '../../../components/Table/TableHeader'
+import { useCurrency } from '../../../utils/useCurrency';
 
 const initialFilterState = {
     orderId: '',
@@ -21,6 +22,7 @@ const ProductBookings = () => {
     const { register, handleSubmit, reset, watch } = useForm({ defaultValues: initialFilterState });
     const [filterCriteria, setFilterCriteria] = useState(initialFilterState);
     const [refreshTrigger, setRefreshTrigger] = useState(0)
+    const currencySymbol = useCurrency();
 
     const combinedFilters = useMemo(() => ({
         ...filterCriteria,
@@ -184,7 +186,7 @@ const ProductBookings = () => {
                     {row?.items?.map((item, index) => (
                         <div key={index} className='text-sm'>
                             <div className='font-medium'>{item?.product?.name}</div>
-                            <div className='text-xs text-gray-500'>Qty: {item?.quantity} × ₹{item?.sellingPrice}</div>
+                            <div className='text-xs text-gray-500'>Qty: {item?.quantity} × {currencySymbol}{item?.sellingPrice}</div>
                         </div>
                     ))}
                 </div>
@@ -208,9 +210,9 @@ const ProductBookings = () => {
             header: 'Total Amount',
             body: (row) => (
                 <div className='space-y-1'>
-                    <div className='font-bold text-green-600'>₹{row?.finalAmount}</div>
-                    <div className='text-xs text-gray-500'>Base: ₹{row?.amount?.basePrice}</div>
-                    <div className='text-xs text-gray-500'>GST: ₹{row?.amount?.gst}</div>
+                    <div className='font-bold text-green-600'>{currencySymbol}{row?.finalAmount}</div>
+                    <div className='text-xs text-gray-500'>Base: {currencySymbol}{row?.amount?.basePrice}</div>
+                    <div className='text-xs text-gray-500'>GST: {currencySymbol}{row?.amount?.gst}</div>
                 </div>
             ),
             style: true, sortable: true
