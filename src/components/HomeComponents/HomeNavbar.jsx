@@ -158,7 +158,7 @@ const HomeNavbar = () => {
                         }}
                         className="flex items-center gap-2"
                     >
-                        <img src={logo} alt="logo" className="w-8 h-8 md:w-10 md:h-10" />
+                        <img src={logo} alt="logo" className="w-10 h-10 md:w-12 md:h-12" />
                         <h2 className="text-lg md:text-xl lg:text-2xl font-tbLex tracking-tight font-bold text-gray-800 uppercase">Soul Plan</h2>
                     </button>
 

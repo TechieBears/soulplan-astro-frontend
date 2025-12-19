@@ -21,7 +21,7 @@ const ComingSoonModal = ({ isVisible }) => {
                     </div> */}
 
                     <div className="flex justify-center flex-col items-center mb-6">
-                        <img src={logo} alt="Astroguid Logo" className="h-20 md:h-24 animate-spin-slow" />
+                        <img src={logo} alt="Astroguid Logo" className="h-28 w-28 md:h-32 md:w-32 animate-spin-slow" />
                         {/* <img src={logoText} alt="Astroguid" className="h-8 md:h-6" /> */}
                     </div>
 
