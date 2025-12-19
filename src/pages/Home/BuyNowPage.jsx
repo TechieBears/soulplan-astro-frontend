@@ -12,6 +12,7 @@ import { setCoupon } from "../../redux/Slices/cartSlice";
 import emptyCart from "../../assets/emptyCart.svg";
 import { ExternalLink } from "lucide-react";
 import AddressSelector from "../../components/HomeComponents/AddressSelector";
+import { useCurrency } from "../../utils/useCurrency";
 
 
 const BuyNowPage = () => {
@@ -136,6 +137,7 @@ const ProductTab = ({ product, quantityBy }) => {
     const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
     const dispatch = useDispatch();
     const [quantity, setQuantity] = useState(quantityBy);
+    const currencySymbol = useCurrency();
 
     const calculateSubtotal = () => {
         return quantity * product?.sellingPrice;
@@ -239,14 +241,14 @@ const ProductTab = ({ product, quantityBy }) => {
                         </h3>
                         <div className="space-y-1">
                             <div className="font-medium text-lg text-white">
-                                ₹{product?.sellingPrice?.toLocaleString()}
+                                {currencySymbol}{product?.sellingPrice?.toLocaleString()}
                             </div>
                             <div className="text-white text-sm">
                                 {product?.mrpPrice && (
                                     <span>
                                         MRP
                                         <span className="line-through">
-                                            ₹{product?.mrpPrice?.toLocaleString()}
+                                            {currencySymbol}{product?.mrpPrice?.toLocaleString()}
                                         </span>
                                     </span>
                                 )}
@@ -312,7 +314,7 @@ const ProductTab = ({ product, quantityBy }) => {
                                     </div>
                                 </div>
                                 <p className="text-gray-600 text-xs mt-1 font-tbPop">
-                                    You saved an additional {coupon.discountIn === 'percent' ? `${coupon.discount}% OFF` : `₹${coupon.discount} OFF`}
+                                    You saved an additional {coupon.discountIn === 'percent' ? `${coupon.discount}% OFF` : `${currencySymbol}${coupon.discount} OFF`}
                                 </p>
                             </div>
                             <button
@@ -360,20 +362,20 @@ const ProductTab = ({ product, quantityBy }) => {
                                 {hasItemsWithTotalPrice ? "(incl. GST)" : "(excl. GST)"}
                             </span>
                             <span className="font-medium">
-                                ₹ {subtotal?.toLocaleString()}
+                                {currencySymbol} {subtotal?.toLocaleString()}
                             </span>
                         </div>
 
                         {!hasItemsWithTotalPrice && (
                             <div className="flex justify-between items-center">
                                 <span className="text-gray-600">GST (18%)</span>
-                                <span className="font-medium">₹ {gstAmount || 0}</span>
+                                <span className="font-medium">{currencySymbol} {gstAmount || 0}</span>
                             </div>
                         )}
 
                         {coupon && <div className="flex justify-between items-center">
                             <span className="text-gray-600">Coupon Discount</span>
-                            <span className="font-medium">₹ {coupon?.discountIn === 'percent' ? `${coupon?.discount}% OFF` : `₹${coupon?.discount} OFF`}</span>
+                            <span className="font-medium">{currencySymbol} {coupon?.discountIn === 'percent' ? `${coupon?.discount}% OFF` : `${currencySymbol}${coupon?.discount} OFF`}</span>
                         </div>}
 
                         <div className="border-t border-gray-300 my-2"></div>
@@ -381,7 +383,7 @@ const ProductTab = ({ product, quantityBy }) => {
                         <div className="flex justify-between items-center">
                             <span className="font-bold text-gray-900">Total</span>
                             <span className="font-bold text-gray-900">
-                                ₹ {grandTotal || 0} (incl. of all taxes)
+                                {currencySymbol} {grandTotal || 0} (incl. of all taxes)
                             </span>
                         </div>
                     </div>
