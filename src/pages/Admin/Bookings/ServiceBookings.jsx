@@ -12,9 +12,11 @@ import { formBtn1 } from '../../../utils/CustomClass'
 import TableHeader from '../../../components/Table/TableHeader'
 import ServiceBookingViewModal from '../../../components/Modals/AdminModals/ServiceBookingViewModal';
 import { useSelector } from 'react-redux';
+import { useCurrency } from '../../../utils/useCurrency';
 
 const ServiceBookings = () => {
     const user = useSelector((state) => state.user.userDetails);
+    const currencySymbol = useCurrency();
     const initialFilterState = {
         orderId: '',
         date: '',
@@ -136,7 +138,7 @@ const ServiceBookings = () => {
                             <div className="text-xs text-gray-500">
                                 {moment(service?.bookingDate).format('DD-MM-YYYY')} | {service?.startTime} - {service?.endTime}
                             </div>
-                            <div className="text-xs text-gray-500">₹{service?.servicePrice}</div>
+                            <div className="text-xs text-gray-500">{currencySymbol}{service?.servicePrice}</div>
                         </div>
                     ))}
                 </div>
@@ -159,7 +161,7 @@ const ServiceBookings = () => {
             field: 'finalAmount',
             header: 'Total Amount',
             body: (row) => (
-                <div className="font-bold text-green-600">₹{row?.finalAmount}</div>
+                <div className="font-bold text-green-600">{currencySymbol}{row?.finalAmount}</div>
             ),
             style: true, sortable: true
         },

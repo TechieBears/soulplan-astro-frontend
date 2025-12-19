@@ -15,6 +15,7 @@ import CreateProductModal from '../../../components/Modals/AdminModals/CreatePro
 import TableHeader from '../../../components/Table/TableHeader';
 import { useSelector } from 'react-redux';
 import { ProductViewButton } from '../../../components/Modals/AdminModals/ProductViewModal';
+import { useCurrency } from '../../../utils/useCurrency';
 
 const initialFilterState = {
     name: '',
@@ -26,6 +27,7 @@ function AllUserProfiles() {
     const [filterCriteria, setFilterCriteria] = useState(initialFilterState);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     const productCategories = useSelector(state => state.appRoot?.productCategories || []);
+    const currencySymbol = useCurrency();
     const combinedFilters = useMemo(() => ({
         ...filterCriteria,
         refresh: refreshTrigger
@@ -110,7 +112,7 @@ function AllUserProfiles() {
     const priceBodyTemp = (row) => (
         <div className="space-y-1">
             <div className="flex items-center gap-2">
-                <span className="text-lg font-semibold text-green-600">₹{row?.sellingPrice || "0"}</span>
+                <span className="text-lg font-semibold text-green-600">{currencySymbol}{row?.sellingPrice || "0"}</span>
                 {row?.discountPercentage > 0 && (
                     <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs font-medium">
                         -{row?.discountPercentage}%
@@ -118,7 +120,7 @@ function AllUserProfiles() {
                 )}
             </div>
             {row?.mrpPrice !== row?.sellingPrice && (
-                <div className="text-sm text-gray-500 line-through">₹{row?.mrpPrice}</div>
+                <div className="text-sm text-gray-500 line-through">{currencySymbol}{row?.mrpPrice}</div>
             )}
         </div>
     );

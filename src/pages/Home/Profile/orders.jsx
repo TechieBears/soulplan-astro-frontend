@@ -9,12 +9,14 @@ import toast from "react-hot-toast";
 import { getProductBookingsConfirmed, getServiceBookingsConfirmed } from "../../../api";
 import { ShoppingCartIcon } from "lucide-react";
 import Preloaders from "../../../components/Loader/Preloaders";
+import { useCurrency } from "../../../utils/useCurrency";
 const Private = ({ children }) => children;
 const UserDashboard = ({ children }) => children;
 
 export default function MyOrders() {
     const { state } = useLocation();
     const navigate = useNavigate();
+    const currencySymbol = useCurrency();
     console.log("⚡️🤯 ~ orders.jsx:17 ~ MyOrders ~ state:", state)
     const [activeTab, setActiveTab] = useState(state?.type === "products" ? "products" : "services");
     const [productOrders, setProductOrders] = useState([]);
@@ -262,7 +264,7 @@ export default function MyOrders() {
                                                                     Service Price
                                                                 </div>
                                                                 <div className="text-white text-2xl font-bold">
-                                                                    ₹{service?.servicePrice?.toLocaleString()}
+                                                                    {currencySymbol}{service?.servicePrice?.toLocaleString()}
                                                                 </div>
                                                             </div>
 
@@ -353,10 +355,10 @@ export default function MyOrders() {
 
                                                                     <div className="flex items-center gap-3 mb-3">
                                                                         <div className="text-2xl font-bold text-white">
-                                                                            ₹{order?.items[0]?.product?.sellingPrice?.toLocaleString() || 0}
+                                                                            {currencySymbol}{order?.items[0]?.product?.sellingPrice?.toLocaleString() || 0}
                                                                         </div>
                                                                         <div className="text-purple-200 text-sm line-through">
-                                                                            ₹{order?.items[0]?.product?.mrpPrice?.toLocaleString() || 0}
+                                                                            {currencySymbol}{order?.items[0]?.product?.mrpPrice?.toLocaleString() || 0}
                                                                         </div>
                                                                         <div className="bg-green-500/20 text-green-300 px-2 py-1 rounded-full text-xs font-medium">
                                                                             {Math.round(((order?.items[0]?.product?.mrpPrice - order?.items[0]?.product?.sellingPrice) / order?.items[0]?.product?.mrpPrice) * 100)}% OFF
@@ -369,7 +371,7 @@ export default function MyOrders() {
                                                                             <span className="text-purple-200 text-sm">Qty: {order?.items[0]?.product?.quantity || 1}</span>
                                                                         </div>
                                                                         <div className="text-purple-200 text-sm">
-                                                                            Subtotal: ₹{order?.items[0]?.product?.subtotal?.toLocaleString() || 0}
+                                                                            Subtotal: {currencySymbol}{order?.items[0]?.product?.subtotal?.toLocaleString() || 0}
                                                                         </div>
                                                                     </div>
 
@@ -412,7 +414,7 @@ export default function MyOrders() {
                                                                     Total Amount (incl. GST)
                                                                 </div>
                                                                 <div className="text-white text-xl font-bold">
-                                                                    ₹{order.totalAmount?.toLocaleString() || 0}
+                                                                    {currencySymbol}{order.totalAmount?.toLocaleString() || 0}
                                                                 </div>
                                                             </div>
 
