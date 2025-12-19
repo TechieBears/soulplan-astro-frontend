@@ -25,4 +25,23 @@ export const getCashfree = async () => {
     return cashfree;
 };
 
+export const openRazorpay = (razorpayData, onSuccess, onError) => {
+    const options = {
+        key: environment.razorpayKey,
+        amount: razorpayData.razorpay.amount,
+        currency: razorpayData.razorpay.currency,
+        order_id: razorpayData.razorpay.orderId,
+        handler: function (response) {
+            onSuccess(response);
+        },
+        modal: {
+            ondismiss: function () {
+                onError('Payment cancelled');
+            }
+        }
+    };
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+};
+
 export default cashfree;
