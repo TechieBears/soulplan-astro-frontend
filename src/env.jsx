@@ -9,13 +9,13 @@ export const environment = {
     // production: false
 
     // -------------------- Devlopment Server Api URL --------------------
-    baseUrl: 'https://dev-api.soulplan.net/api/',
-    production: false,
+    // baseUrl: 'https://dev-api.soulplan.net/api/',
+    // production: false,
 
 
     // -------------------- Live Server Api URL --------------------
 
-    // baseUrl: 'https://api.soulplan.net/api/',
-    // production: false,
+    baseUrl: 'https://api.soulplan.net/api/',
+    production: true,
 
 }
