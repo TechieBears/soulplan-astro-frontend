@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { formBtn3 } from "../../utils/CustomClass";
 import { Edit, TicketDiscount } from "iconsax-reactjs";
@@ -7,6 +7,7 @@ import { ArrowLeft, X } from "@phosphor-icons/react";
 import star from "../../assets/helperImages/star.png";
 import sun from "../../assets/helperImages/sun.png";
 import AvailableCouponsModal from "../../components/Modals/ApplyCoupon";
+import { environment } from "../../env";
 import {
   createServiceOrder,
   getAllAddress,
@@ -30,14 +31,11 @@ import emptyCart from "../../assets/emptyCart.svg";
 import ServicesCartCard from "../../components/Cards/ServicesCartCard";
 import moment from "moment";
 import { ExternalLink } from "lucide-react";
-import Switch from "react-js-switch";
+
 import AddressChangeModal from "../../components/Modals/AddressChangeModal";
 
 const CartPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const type = location.state?.type;
-  const [activeTab, setActiveTab] = useState(type || "services");
 
   return (
     <div className="min-h-screen bg-[#EFF2FA]  pt-16 lg:pt-24 relative">
@@ -48,10 +46,8 @@ const CartPage = () => {
         <img src={star} alt="" className="w-full h-full object-fill" />
       </div>
       <div className="container mx-auto px-4 xl:px-0 py-8">
-        {/* Header */}
         <div className="mb-8">
-          {/* Mobile Layout */}
-          <div className="sm:hidden space-y-4">
+          <div className="sm:hidden">
             <div className="relative flex items-center justify-center">
               <button
                 onClick={() => navigate(-1)}
@@ -62,27 +58,8 @@ const CartPage = () => {
               </button>
               <h1 className="text-xl font-tbLex font-normal text-slate-800">Cart</h1>
             </div>
-            {/* <div className="flex bg-white rounded-full p-1.5 space-x-1.5">
-              <button
-                className={`flex-1 px-4 py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm font-tbLex ${
-                  activeTab === "services" ? "bg-linear-gradient text-white" : ""
-                }`}
-                onClick={() => setActiveTab("services")}
-              >
-                Services
-              </button>
-              <button
-                className={`flex-1 px-4 py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm font-tbLex ${
-                  activeTab === "products" ? "bg-linear-gradient text-white" : ""
-                }`}
-                onClick={() => setActiveTab("products")}
-              >
-                Products
-              </button>
-            </div> */}
           </div>
 
-          {/* Desktop Layout */}
           <div className="hidden sm:flex relative items-center justify-center">
             <div className="absolute left-0">
               <button
@@ -93,34 +70,13 @@ const CartPage = () => {
                 Go Back
               </button>
             </div>
-
             <h1 className="text-xl md:text-2xl font-tbLex font-normal text-slate-800">
               Cart
             </h1>
-
-            {/* <div className="absolute right-0 flex bg-white rounded-full p-1.5 space-x-1.5">
-              <button
-                className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${
-                  activeTab === "services" ? "bg-linear-gradient text-white" : ""
-                }`}
-                onClick={() => setActiveTab("services")}
-              >
-                Services
-              </button>
-              <button
-                className={`px-4 sm:px-6 py-1 sm:py-2 text-black rounded-full hover:bg-slate-100 transition-all duration-300 text-sm md:text-base font-tbLex ${
-                  activeTab === "products" ? "bg-linear-gradient text-white" : ""
-                }`}
-                onClick={() => setActiveTab("products")}
-              >
-                Products
-              </button>
-            </div> */}
           </div>
         </div>
 
-        {/* {activeTab === "products" && <ProductTab />} */}
-        {activeTab === "services" && <ServiceTab />}
+        <ServiceTab />
       </div>
     </div>
   );
@@ -783,16 +739,21 @@ const ServiceTab = () => {
     return <CartSkeleton />;
   }
 
-  if (cartItems?.length == 0) {
+  if (cartItems?.length === 0) {
     return (
-      <div className="flex items-center flex-col justify-center h-full w-full bg-white rounded-lg space-y-10 py-28">
-        <img
-          src={emptyCart}
-          alt="empty cart"
-          className="w-56 h-56 object-contain"
-        />
-        <h2 className="text-xl font-tbLex font-semibold">Cart is empty!</h2>
-      </div>
+      <>
+        <div className="flex items-center flex-col justify-center w-full bg-white rounded-lg space-y-10 py-28 min-h-[400px]">
+          <img
+            src={emptyCart}
+            alt="empty cart"
+            className="w-56 h-56 object-contain"
+          />
+          <h2 className="text-xl font-tbLex font-semibold">Cart is empty!</h2>
+        </div>
+        <div className="flex justify-center overflow-hidden">
+          <img src={sun} alt="" className="w-32 h-32 object-contain -mt-16" />
+        </div>
+      </>
     );
   }
 
@@ -833,14 +794,40 @@ const ServiceTab = () => {
         paymentId: `UPI-${moment().format("YYYYMMDDHHmmss")}`,
         useCredits: isWalletChecked,
       };
-      console.log("⚡️🤯 ~ Cart.jsx:602 ~ handleBooking ~ payload:", payload);
 
       const res = await createServiceOrder(payload);
-      if (res?.success) {
-        navigate("/payment-success", {
-          state: { type: "services", orderDetails: res?.order },
-        });
-        toast.success(res?.message || "Booking Successfully");
+      if (res?.success && res?.razorpay) {
+        // Initialize Razorpay
+        const options = {
+          key: environment.razorpayKey,
+          amount: res.razorpay.amount,
+          currency: res.razorpay.currency,
+          order_id: res.razorpay.orderId,
+          name: "Soul Plan",
+          description: "Service Booking Payment",
+          handler: function (response) {
+            toast.success("Payment successful!");
+            navigate("/payment-success", {
+              state: { type: "services", orderDetails: res?.order },
+            });
+          },
+          prefill: {
+            email: cartItems[0]?.cust?.email || "",
+            contact: cartItems[0]?.cust?.phone || "",
+          },
+          theme: {
+            color: "#9E52D8",
+          },
+          modal: {
+            ondismiss: function () {
+              toast.error("Payment cancelled");
+              setBookingLoading(false);
+            },
+          },
+        };
+
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
       } else {
         toast.error(res?.message || "Something went wrong");
       }
