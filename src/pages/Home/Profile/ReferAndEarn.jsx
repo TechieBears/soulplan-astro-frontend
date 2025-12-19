@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaWhatsapp, FaLink, FaCopy, FaCheck } from "react-icons/fa";
 import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
 import { Info } from "@phosphor-icons/react";
@@ -10,21 +10,12 @@ const UserDashboard = ({ children }) => children;
 
 const ReferAndEarn = () => {
     const [copied, setCopied] = useState(false);
+    const [linkCopied, setLinkCopied] = useState(false);
     const user = useSelector((state) => state.user.userDetails);
+    const referralCode = user?.referralCode || "----- -----";
     const [walletBalance, setWalletBalance] = useState(0);
 
-    // Debug user data
-    console.log('User data:', user);
-    console.log('User referral code:', user?.referralCode);
-    console.log('Full user object keys:', user ? Object.keys(user) : 'No user');
-    
-    // Try different possible referral code field names
-    const referralCode = user?.referralCode || user?.referral_code || user?.refCode || user?.code || "----- -----";
-    
-    console.log('Final referral code:', referralCode);
-
     useEffect(() => {
-        window.scrollTo(0, 0);
         const fetchWalletBalance = async () => {
             const res = await getWalletBalance();
             if (res?.success) {
@@ -57,8 +48,8 @@ const ReferAndEarn = () => {
     const shareLink = () => {
         const link = `https://soulplan.net/register?referralCode=${referralCode}`;
         navigator.clipboard.writeText(link);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        setLinkCopied(true);
+        setTimeout(() => setLinkCopied(false), 2000);
     };
 
     return (

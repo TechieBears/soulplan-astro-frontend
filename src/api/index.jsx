@@ -1608,7 +1608,7 @@ export const editRating = async (id, data) => {
 // =================== Refer & Earn Api ==================
 
 export const getWalletBalance = async () => {
-    const url = `${environment.baseUrl}customer-users/get-wallet-balance`;
+    const url = `${environment.baseUrl}wallet/get-balance`;
     try {
         const response = await axios.get(url);
         return response.data
@@ -1616,6 +1616,28 @@ export const getWalletBalance = async () => {
     catch (err) {
         console.log("==========error in getWalletBalance api file", err);
         return err?.response?.data
+    }
+}
+
+export const getWalletTransactions = async () => {
+    const url = `${environment.baseUrl}wallet/get-transactions-history`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.error('Error fetching wallet transactions:', err);
+        return err?.response?.data || { success: false, message: 'Failed to fetch transactions' };
+    }
+}
+
+export const addWalletBalance = async (amount, paymentMethod) => {
+    const url = `${environment.baseUrl}wallet/add-balance`;
+    try {
+        const response = await axios.post(url, { amount, paymentMethod });
+        return response.data;
+    } catch (err) {
+        console.error('Error adding wallet balance:', err);
+        return err?.response?.data || { success: false, message: 'Failed to add wallet balance' };
     }
 }
 
