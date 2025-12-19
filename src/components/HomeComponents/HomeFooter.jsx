@@ -51,7 +51,7 @@ const HomeFooter = () => {
                             <img
                                 src={logo}
                                 alt="Soul Plan Logo"
-                                className="h-14 w-14 mb-3 rounded-full cursor-pointer"
+                                className="h-16 w-16 mb-3 rounded-full cursor-pointer"
                             />
                         </a>
                         <h2 className="text-xl font-medium font-tbLex">SOUL PLAN</h2>
