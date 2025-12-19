@@ -33,6 +33,7 @@ export default {
                 'purple-red': 'linear-gradient(90deg, #9333ea 0%, #dc2626 100%)',
                 'blue-purple-red': 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, #ef4444 100%)',
                 'primary-gradient': 'linear-gradient(90deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%)',
+                'button-vertical-gradient-orange': 'linear-gradient(180deg, #0079D0 -12.5%, #9E52D8 30.84%, #DA365C 70.03%, #D04901 111%)',
             }
         },
     },
