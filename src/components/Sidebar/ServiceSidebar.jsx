@@ -215,15 +215,19 @@ const MainSection = ({ content }) => {
                                     Session Duration: {content.durationInMinutes} minutes
                                 </h4>
                             </div>
-                            <div className="space-x-1.5 flex items-center">
-                                <Mobile size={20} />
-                                <h4 className="text-slate-700 text-sm font-tbPop font-normal capitalize">
-                                    Mode: {content?.serviceType?.map((skill, index) => (
-                                        <span key={index} className="px-2 py-1 text-sm font-tbPop capitalize">
-                                            {skill}
+                            <div className="flex items-center gap-2">
+                                <Mobile size={20} className="flex-shrink-0" />
+                                <h4 className="text-slate-700 text-sm font-tbPop font-normal">Mode:</h4>
+                                <div className="flex flex-wrap gap-2">
+                                    {content?.serviceType?.map((mode, index) => (
+                                        <span 
+                                            key={index} 
+                                            className="px-3 py-1 text-xs font-tbPop font-medium capitalize bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 rounded-full"
+                                        >
+                                            {mode === 'online' ? 'Online' : mode === 'pandit_center' ? 'Face to Face' : mode}
                                         </span>
                                     ))}
-                                </h4>
+                                </div>
                             </div>
                             <GradientButton
                                 className="w-full"

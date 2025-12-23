@@ -2,7 +2,6 @@ import { DocumentUpload, TickCircle, Eye } from "iconsax-reactjs";
 import Error from "../Errors/Error";
 import { useState, useEffect } from "react";
 import ImageView from "../Modals/ImageView/ImageView";
-import { uploadToCloudinary } from "../../api";
 
 const ImageUploadInput = ({
     label,
@@ -14,7 +13,6 @@ const ImageUploadInput = ({
     defaultValue,
     style,
     disabled,
-    shouldUploadToCloudinary = true,
 }) => {
     const [fileName, setFileName] = useState("");
     const [files, setFiles] = useState([]);
@@ -35,43 +33,25 @@ const ImageUploadInput = ({
         }
     }, [defaultValue, multiple, registerName, setValue]);
 
-    const handleFileChange = async (e) => {
+    const handleFileChange = (e) => {
         if (e?.target?.files?.length > 0) {
-            setIsUploading(true);
             const newFiles = Array.from(e.target.files);
+            const previewUrls = newFiles.map(file => URL.createObjectURL(file));
 
-            try {
-                let urls;
-                let previewUrls;
-
-                if (shouldUploadToCloudinary) {
-                    const uploadPromises = newFiles.map(file => uploadToCloudinary(file));
-                    urls = await Promise.all(uploadPromises);
-                    previewUrls = urls;
-                } else {
-                    urls = newFiles; // Return the File objects directly
-                    previewUrls = newFiles.map(file => URL.createObjectURL(file));
-                }
-
-                if (multiple) {
-                    setValue(registerName, urls);
-                } else {
-                    setValue(registerName, urls[0]);
-                }
-
-                const previewFiles = newFiles.map((file, idx) => ({
-                    file,
-                    name: file.name,
-                    url: previewUrls[idx]
-                }));
-
-                setFiles(previewFiles);
-                setFileName(previewFiles.length === 1 ? previewFiles[0].name : `${previewFiles.length} files selected`);
-            } catch (error) {
-                console.error("Upload failed:", error);
-            } finally {
-                setIsUploading(false);
+            if (multiple) {
+                setValue(registerName, newFiles);
+            } else {
+                setValue(registerName, newFiles);
             }
+
+            const previewFiles = newFiles.map((file, idx) => ({
+                file,
+                name: file.name,
+                url: previewUrls[idx]
+            }));
+
+            setFiles(previewFiles);
+            setFileName(previewFiles.length === 1 ? previewFiles[0].name : `${previewFiles.length} files selected`);
         } else {
             setFiles([]);
             setFileName("");
@@ -101,7 +81,7 @@ const ImageUploadInput = ({
                             : 'border-slate-300 focus:border-primary'}
                         opacity-0 absolute z-10 cursor-pointer ${style}`}
                     onChange={handleFileChange}
-                    disabled={isUploading || disabled}
+                    disabled={disabled}
                 />
                 <div className={`w-full h-full flex items-center px-4 rounded-lg  cursor-pointer
                     ${!errors?.ref?.value && errors?.type === "required"
@@ -118,15 +98,15 @@ const ImageUploadInput = ({
                             ${fileName ? 'top-0 left-3 text-sm' : ''} transition-all duration-150 flex items-center gap-2 cursor-pointer overflow-hidden`}
                     >
                         {!fileName && <span><DocumentUpload size="22" /></span>}
-                        <span className="truncate w-full overflow-hidden">{isUploading ? "Uploading..." : fileName || label}</span>
+                        <span className="truncate w-full overflow-hidden">{fileName || label}</span>
                     </label>
                     <div className={`ml-auto flex items-center gap-2 z-50 absolute right-2 bg-slate1 pl-3 cursor-pointer ${style}`}>
-                        {fileName && !isUploading && (
+                        {fileName && (
                             <span className="text-sm text-green-500 text-nowrap flex items-center">
                                 <TickCircle size="22" variant="Bold" />
                             </span>
                         )}
-                        {files.length > 0 && !isUploading && (
+                        {files.length > 0 && (
                             <button
                                 type="button"
                                 onClick={openModal}
