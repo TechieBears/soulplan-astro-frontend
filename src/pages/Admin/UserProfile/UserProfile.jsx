@@ -7,13 +7,12 @@ import PathName from '../../../components/PathName/PathName';
 import TextInput from '../../../components/TextInput/TextInput';
 import SelectTextInput from '../../../components/TextInput/SelectTextInput';
 import MultiSelectTextInput from '../../../components/TextInput/MultiSelectTextInput';
-// import ImageUploadInput from '../../../components/TextInput/ImageUploadInput';
+import ImageUploadInput from '../../../components/TextInput/ImageUploadInput';
 import LoadBox from '../../../components/Loader/LoadBox';
 import { editEmployee, getPublicServicesDropdown, updateAdminUserProfile } from '../../../api';
 import { validateAlphabets, validateEmail, validatePhoneNumber, validateCommision } from '../../../utils/validateFunction';
 import { formBtn1 } from '../../../utils/CustomClass';
 import { setUserDetails } from '../../../redux/Slices/loginSlice';
-import ImageCropUpload from '../../../components/TextInput/ImageCropUpload';
 
 const AdminProfile = () => {
     const user = useSelector(state => state.user.userDetails);
@@ -94,49 +93,46 @@ const AdminProfile = () => {
 
     const onSubmit = async (data) => {
         try {
-            if (user.role == "admin") {
-                setLoading(true);
-                const response = await updateAdminUserProfile(user?._id, data);
-                if (response?.success) {
-                    toast.success('Profile updated successfully!');
-                    setIsEditing(false);
-                    const updatedUser = {
-                        ...user,
-                        ...response?.data,
-                        ...response?.data?.profile,
-                        _id: user._id,
-                        role: user.role
-                    };
-                    dispatch(setUserDetails(updatedUser))          
-                    setLoading(false);
-                } else {
-                    toast.error(response?.message || 'Failed to update profile');
-                    setLoading(false);
+            setLoading(true);
+            
+            // Create FormData
+            const formData = new FormData();
+            
+            // Append all fields to FormData
+            Object.entries(data).forEach(([key, value]) => {
+                if (key === 'profileImage' && value?.[0] instanceof File) {
+                    formData.append('image', value[0]);
+                } else if (Array.isArray(value)) {
+                    value.forEach(item => formData.append(key, item?.value || item));
+                } else if (value) {
+                    formData.append(key, value);
                 }
+            });
+
+            const response = user.role === "admin" 
+                ? await updateAdminUserProfile(user?._id, formData)
+                : await editEmployee(user?._id, formData);
+                
+            if (response?.success) {
+                toast.success('Profile updated successfully!');
+                setIsEditing(false);
+                const updatedUser = user.role === "admin" 
+                    ? { 
+                        ...user, 
+                        firstName: response?.data?.user?.firstName,
+                        lastName: response?.data?.user?.lastName,
+                        email: response?.data?.user?.email,
+                        mobileNo: response?.data?.user?.mobileNo,
+                        profileImage: response?.data?.user?.profileImage
+                      }
+                    : { ...user, ...response?.data, ...response?.data?.profile };
+                dispatch(setUserDetails(updatedUser));
             } else {
-                setLoading(true);
-                const response = await editEmployee(user?._id, data);
-                if (response?.success) {
-                    toast.success('Profile updated successfully!');
-                    setIsEditing(false);
-                    const updatedUser = {
-                        ...user,
-                        ...response?.data,
-                        ...response?.data?.profile,
-                        _id: user._id,
-                        role: user.role
-                    };
-                    dispatch(setUserDetails(updatedUser))     
-                    setLoading(false);
-                } else {
-                    toast.error(response?.message || 'Failed to update profile');
-                    setLoading(false);
-                }
+                toast.error(response?.message || 'Failed to update profile');
             }
         } catch (error) {
             console.error('Error updating profile:', error);
             toast.error('Failed to update profile');
-            setLoading(false);
         } finally {
             setLoading(false);
         }
@@ -315,11 +311,8 @@ const AdminProfile = () => {
                             <div className=''>
                                 <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
                                     Profile Image
-                                  <span className="text-[11px] text-orange-500 ml-2">
-                                                                (Recommended size: 300px × 300px)
-                                                            </span>
                                 </h4>
-                                <ImageCropUpload
+                                <ImageUploadInput
                                     label="Upload Profile Image"
                                     multiple={false}
                                     registerName="profileImage"
@@ -329,9 +322,6 @@ const AdminProfile = () => {
                                     setValue={setValue}
                                     control={control}
                                     defaultValue={user?.profileImage}
-                                    cropAspectRatio={1}
-                                    cropWidth={400}
-                                    cropHeight={400}
                                 />
                             </div>
                         )}
@@ -380,7 +370,7 @@ const AdminProfile = () => {
                         </div>
 
                         {/* Astrologer-specific fields */}
-                        {(employeeType?.toLowerCase() === 'astrologer' || user?.employeeType?.toLowerCase() === 'astrologer' || user?.role?.toLowerCase() === 'astrologer') && (
+                        {(employeeType === 'astrologer' || user?.employeeType === 'astrologer') && (
                             <>
                                 {/* Skills */}
                                 <div>
@@ -476,49 +466,43 @@ const AdminProfile = () => {
                                         </div>
                                     )}
                                 </div>
-                            </>
-                        )}
 
-                        {/* Available Days */}
-                        {(['astrologer', 'employee'].includes(employeeType?.toLowerCase()) || ['astrologer', 'employee'].includes(user?.employeeType?.toLowerCase()) || ['astrologer', 'employee'].includes(user?.role?.toLowerCase())) && (
-                            <div>
-                                <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
-                                    Available Days (Multiple)
-                                </h4>
-                                {isEditing ? (
-                                    <Controller
-                                        name="days"
-                                        control={control}
-                                        render={({ field: { onChange, value } }) => (
-                                            <MultiSelectTextInput
-                                                label="Select Days"
-                                                options={dayOptions}
-                                                value={value || []}
-                                                onChange={onChange}
-                                                errors={errors.days}
-                                            />
-                                        )}
-                                    />
-                                ) : (
-                                    <div className="p-3 bg-slate-100 rounded-md">
-                                        {user?.days?.length > 0 ? (
-                                            <div className="flex flex-wrap gap-2">
-                                                {user?.days?.map((day, index) => (
-                                                    <span key={index} className="px-2 py-1 bg-purple-100 text-purple-800 font-tbLex capitalize rounded-full text-sm">
-                                                        {typeof day === 'object' ? day.label : day}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            'Not specified'
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                                {/* Available Days */}
+                                <div>
+                                    <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
+                                        Available Days (Multiple)
+                                    </h4>
+                                    {isEditing ? (
+                                        <Controller
+                                            name="days"
+                                            control={control}
+                                            render={({ field: { onChange, value } }) => (
+                                                <MultiSelectTextInput
+                                                    label="Select Days"
+                                                    options={dayOptions}
+                                                    value={value || []}
+                                                    onChange={onChange}
+                                                    errors={errors.days}
+                                                />
+                                            )}
+                                        />
+                                    ) : (
+                                        <div className="p-3 bg-slate-100 rounded-md">
+                                            {user?.days?.length > 0 ? (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {user?.days?.map((day, index) => (
+                                                        <span key={index} className="px-2 py-1 bg-purple-100 text-purple-800 font-tbLex capitalize rounded-full text-sm">
+                                                            {typeof day === 'object' ? day.label : day}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                'Not specified'
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
 
-                        {(['astrologer', 'employee'].includes(employeeType?.toLowerCase()) || ['astrologer', 'employee'].includes(user?.employeeType?.toLowerCase()) || ['astrologer', 'employee'].includes(user?.role?.toLowerCase())) && (
-                            <>
                                 {/* Start Time */}
                                 <div>
                                     <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">

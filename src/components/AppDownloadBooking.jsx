@@ -17,9 +17,12 @@ const AppDownloadBooking = () => {
                         <p className="text-gray-600 text-sm lg:text-base text-center md:text-left mb-2">
                             For a sameless experience, download our apps on your phone
                         </p>
-                        <div className="flex justify-start pt-4">
+                        <div className="flex gap-3 justify-start pt-4">
                             <a href="#" target="_blank" rel="noopener noreferrer">
                                 <img src={playstore} alt="Google Play" className="h-10 lg:h-14" />
+                            </a>
+                            <a href="#" target="_blank" rel="noopener noreferrer">
+                                <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83" alt="App Store" className="h-10 lg:h-14" />
                             </a>
                         </div>
                     </div>
