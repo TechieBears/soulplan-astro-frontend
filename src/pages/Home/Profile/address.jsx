@@ -132,7 +132,7 @@ const AddressPage = () => {
             )}
 
             {!fetchLoading && addresses?.length > 0 && !showAddForm && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-scroll">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {addresses.map((address) => (
                         <AddressCard
                             key={address?._id}
