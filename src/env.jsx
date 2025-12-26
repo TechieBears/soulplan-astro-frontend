@@ -18,4 +18,6 @@ export const environment = {
     baseUrl: 'https://api.soulplan.net/api/',
     production: true,
 
+    razorpayKey: 'rzp_test_Rrortplwh1QdwU'
+
 }
