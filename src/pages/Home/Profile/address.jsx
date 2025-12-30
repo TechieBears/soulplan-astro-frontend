@@ -317,25 +317,20 @@ const AddressPage = () => {
                                 <TextInput
                                     label="Enter Postal Code"
                                     placeholder="Enter Postal Code"
-                                    type="tel"
+                                    type="text"
                                     registerName="postalCode"
                                     props={{
                                         ...register('postalCode', {
-                                            pattern: {
-                                                value: /^[1-9][0-9]{5}$/,
-                                                message: "Invalid pincode format"
-                                            },
                                             minLength: {
-                                                value: 6,
-                                                message: "Postal Code must be at least 6 characters",
+                                                value: 2,
+                                                message: "Postal Code must be at least 2 characters",
                                             },
                                             maxLength: {
-                                                value: 6,
-                                                message: "Postal Code cannot exceed 6 characters",
+                                                value: 15,
+                                                message: "Postal Code cannot exceed 15 characters",
                                             },
                                         }),
-                                        maxLength: 6,
-                                        minLength: 6
+                                        maxLength: 15
                                     }}
                                     errors={errors.postalCode}
                                 />
