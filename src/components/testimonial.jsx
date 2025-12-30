@@ -127,8 +127,8 @@ const Testimonials = () => {
                                 <div className="relative w-full flex items-center justify-center overflow-hidden">
                                     {visibleTestimonials.map(({ index, isCenter }, i) => {
                                         const position = i === 0 ? 'left' : i === 1 ? 'center' : 'right';
-                                        const slideClass = direction === 'next' 
-                                            ? 'animate-[slideInFromRight_0.5s_ease-out]' 
+                                        const slideClass = direction === 'next'
+                                            ? 'animate-[slideInFromRight_0.5s_ease-out]'
                                             : 'animate-[slideInFromLeft_0.5s_ease-out]';
                                         return (
                                             <div key={`${index}-${currentIndex}-${i}`} className={`${position !== 'center' ? 'absolute' : ''} ${position === 'left' ? '-left-[30%] md:-left-[35%]' : position === 'right' ? '-right-[30%] md:-right-[35%]' : ''} ${slideClass}`}>
