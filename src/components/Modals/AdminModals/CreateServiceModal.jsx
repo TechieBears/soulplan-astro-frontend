@@ -218,7 +218,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                                     label="Select Service Mode"
                                                                     options={[
                                                                         { value: 'online', label: 'Online' },
-                                                                        { value: 'pandit_center', label: 'Face to Face' }
+                                                                        { value: 'face_to_face', label: 'Face to Face' }
                                                                     ]}
                                                                     value={value || []}
                                                                     onChange={onChange}

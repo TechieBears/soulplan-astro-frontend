@@ -441,7 +441,7 @@ const BookingPage = () => {
                                             const availableServiceTypes = selectedServiceData?.serviceType || [];
                                             const serviceModeOptions = [
                                                 { value: "online", label: "Online" },
-                                                { value: "pandit_center", label: "Face to Face" },
+                                                { value: "face_to_face", label: "Face to Face" },
                                             ];
 
                                             return (
