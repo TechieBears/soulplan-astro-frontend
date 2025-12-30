@@ -5,6 +5,7 @@ import { getAllPublicTestimonials } from "../api";
 import userImage from "../assets/user.webp";
 import underline from "../assets/undertext.png";
 import vectorImg from "../assets/Vector.png";
+import hand from "../assets/helperImages/handImage.png";
 import TestimonialModal from "./Modals/TestimonialModal";
 
 const NavButton = ({ onClick, direction, className = "" }) => (
@@ -59,6 +60,7 @@ const Testimonials = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [direction, setDirection] = useState('next');
 
     useEffect(() => {
         const fetchTestimonials = async () => {
@@ -75,8 +77,14 @@ const Testimonials = () => {
         fetchTestimonials();
     }, []);
 
-    const handlePrev = useCallback(() => setCurrentIndex(prev => prev === 0 ? testimonials.length - 1 : prev - 1), [testimonials.length]);
-    const handleNext = useCallback(() => setCurrentIndex(prev => prev >= testimonials.length - 1 ? 0 : prev + 1), [testimonials.length]);
+    const handlePrev = useCallback(() => {
+        setDirection('prev');
+        setCurrentIndex(prev => prev === 0 ? testimonials.length - 1 : prev - 1);
+    }, [testimonials.length]);
+    const handleNext = useCallback(() => {
+        setDirection('next');
+        setCurrentIndex(prev => prev >= testimonials.length - 1 ? 0 : prev + 1);
+    }, [testimonials.length]);
 
     const visibleTestimonials = useMemo(() => {
         if (testimonials.length === 0) return [];
@@ -89,7 +97,13 @@ const Testimonials = () => {
 
     return (
         <>
-            <section className="py-8 md:py-12 lg:py-16 bg-slate1 relative">
+            <section className="py-8 md:py-12 lg:py-16 bg-white relative">
+                <div className="absolute top-24 left-0 scale-60 z-10">
+                    <img src={hand} alt="" className="w-full h-full object-fill" />
+                </div>
+                <div className="absolute bottom-5 right-0 scale-75 scale-x-[-1]">
+                    <img src={hand} alt="" className="w-full h-full object-fill" />
+                </div>
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-4">
                         <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-center leading-snug">
@@ -110,9 +124,19 @@ const Testimonials = () => {
                             {loading ? (
                                 <div className="w-80 sm:w-96 md:w-[28rem] h-auto min-h-[18rem] sm:min-h-[20rem] md:min-h-[24rem] rounded-xl bg-gray-200 animate-pulse" />
                             ) : testimonials.length > 0 ? (
-                                visibleTestimonials.map(({ index, isCenter }, i) => (
-                                    <TestimonialCard key={`${index}-${currentIndex}-${i}`} testimonial={testimonials[index]} isCenter={isCenter} />
-                                ))
+                                <div className="relative w-full flex items-center justify-center overflow-hidden">
+                                    {visibleTestimonials.map(({ index, isCenter }, i) => {
+                                        const position = i === 0 ? 'left' : i === 1 ? 'center' : 'right';
+                                        const slideClass = direction === 'next' 
+                                            ? 'animate-[slideInFromRight_0.5s_ease-out]' 
+                                            : 'animate-[slideInFromLeft_0.5s_ease-out]';
+                                        return (
+                                            <div key={`${index}-${currentIndex}-${i}`} className={`${position !== 'center' ? 'absolute' : ''} ${position === 'left' ? '-left-[30%] md:-left-[35%]' : position === 'right' ? '-right-[30%] md:-right-[35%]' : ''} ${slideClass}`}>
+                                                <TestimonialCard testimonial={testimonials[index]} isCenter={isCenter} />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             ) : (
                                 <div className="text-center py-8 md:py-12">
                                     <p className="text-gray-500 text-sm md:text-base">No testimonials available at the moment.</p>
