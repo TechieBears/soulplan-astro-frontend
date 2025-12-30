@@ -1666,7 +1666,7 @@ export const getNotificationsDropdown = async () => {
 }
 export const getNotificationsDropdownCustomer = async () => {
     try {
-        const url = `${environment.baseUrl}notifications/dropdown-customer`;
+        const url = `${environment.baseUrl}notification/dropdown-customer`;
         const response = await axios.get(url);
         return response.data;
     } catch (err) {
