@@ -97,7 +97,7 @@ const AllServices = () => {
     const getServiceTypeLabel = (type) => {
         const labels = {
             'online': 'Online',
-            'pandit_center': 'Face to Face',
+            'face_to_face': 'Face to Face',
         };
         return labels[type] || type;
     };
