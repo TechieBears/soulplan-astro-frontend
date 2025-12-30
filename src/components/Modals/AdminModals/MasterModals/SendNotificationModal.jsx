@@ -26,7 +26,7 @@ function SendNotificationModal({ setRefreshTrigger }) {
             const updatedData = {
                 title: data?.title,
                 description: data?.description,
-                image: data?.image,
+                image: "",
                 notificationType: data?.notificationType,
                 redirectionUrl: data?.redirectionUrl,
                 redirectId: data?.redirectId,
@@ -164,7 +164,7 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                     </div>
 
                                                     {/* Image Field */}
-                                                    <div className=''>
+                                                    {/* <div className=''>
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
@@ -180,7 +180,7 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                             setValue={setValue}
                                                             control={control}
                                                         />
-                                                    </div>
+                                                    </div> */}
 
                                                     {/* Notification Type Field */}
                                                     <div className="">
