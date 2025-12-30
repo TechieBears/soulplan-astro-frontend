@@ -19,7 +19,4 @@ export const environment = {
     production: true,
 
     razorpayKey: 'rzp_test_Rrortplwh1QdwU'
-
-    razorpayKey: 'rzp_test_Rrortplwh1QdwU'
-
 }
