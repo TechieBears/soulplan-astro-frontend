@@ -58,7 +58,6 @@ import ReferAndEarn from "../pages/Home/Profile/ReferAndEarn";
 import ReferralPromptModal from "../components/Modals/ReferralPromptModal";
 import ZoomMeeting from '../pages/Meeting/ZoomMeeting';
 import DeepLinkRedirect from "../pages/DeepLinkRedirect";
-import Wallet from "../pages/Wallet/Wallet";
 
 const ProjectRoutes = () => {
     const [loading, setLoading] = useState(true);
@@ -229,14 +228,6 @@ const ProjectRoutes = () => {
                             element={
                                 <ProtectedRoute>
                                     <PaymentSuccess />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/wallet"
-                            element={
-                                <ProtectedRoute>
-                                    <Wallet />
                                 </ProtectedRoute>
                             }
                         />

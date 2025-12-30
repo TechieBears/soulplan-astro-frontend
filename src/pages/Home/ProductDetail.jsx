@@ -16,12 +16,14 @@ import moment from "moment";
 import CustomTextArea from "../../components/TextInput/CustomTextArea";
 import { Controller, useForm } from "react-hook-form";
 import { PulseLoader } from "react-spinners";
+import { useCurrency } from "../../utils/useCurrency";
 
 const ProductDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const login = useSelector((state) => state.user.isLogged);
     const user = useSelector((state) => state.user.userDetails);
+    const currencySymbol = useCurrency();
     const [quantity, setQuantity] = useState(1);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [activeTab, setActiveTab] = useState("description");
@@ -274,11 +276,11 @@ const ProductDetail = () => {
                                 <div className="flex items-center space-x-4 mb-3">
                                     <div className="flex items-center space-x-2">
                                         <span className="text-xl lg:text-2xl font-semibold font-tbPop text-p">
-                                            ₹{product?.sellingPrice?.toLocaleString()}
+                                            {currencySymbol}{product?.sellingPrice?.toLocaleString()}
                                         </span>
                                         {product?.mrpPrice > product?.sellingPrice && (
                                             <span className="text-base lg:text-lg text-slate-400 font-tbPop line-through">
-                                                ₹{product?.mrpPrice?.toLocaleString()}
+                                                {currencySymbol}{product?.mrpPrice?.toLocaleString()}
                                             </span>
                                         )}
                                     </div>

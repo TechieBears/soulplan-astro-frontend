@@ -32,6 +32,7 @@ export default function AccountPage() {
   } = useForm();
   const [isEditable, setIsEditable] = useState(false);
   const user = useSelector((state) => state.user.userDetails);
+  // console.log("~ account.jsx ~ user from Redux:", user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formSubmit = async (data) => {
