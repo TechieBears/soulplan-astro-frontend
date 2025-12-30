@@ -579,7 +579,7 @@ const NotificationSection = () => {
 
     const fetchNotificationsDropdown = async () => {
         try {
-            const res = await getNotificationsDropdown();
+            const res = await getNotificationsDropdownCustomer();
             if (res?.success) {
                 setNotificationsDropdown(res?.data);
             } else {

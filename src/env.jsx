@@ -20,4 +20,6 @@ export const environment = {
 
     razorpayKey: 'rzp_test_Rrortplwh1QdwU'
 
+    razorpayKey: 'rzp_test_Rrortplwh1QdwU'
+
 }
