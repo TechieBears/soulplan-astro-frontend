@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
@@ -9,6 +9,7 @@ import Preloaders from "../components/Loader/Preloaders";
 import HomeNavbar from "../components/HomeComponents/HomeNavbar";
 import HomeFooter from "../components/HomeComponents/HomeFooter";
 import ProtectedRoute from "../components/ProtectedRoute";
+import { isWebView } from "../utils/webviewDetector";
 
 // ============ Pages ============
 import Dashboard from "../pages/Admin/Dashboard/Dashboard";
@@ -66,6 +67,17 @@ const ProjectRoutes = () => {
     const isLogged = useSelector((state) => state.user.isLogged);
     const location = useLocation();
     const isMeetingPage = location.pathname === '/meeting';
+
+    // Check if we're in a webview and on About Us or Privacy Policy pages
+    const isInWebView = useMemo(() => isWebView(), []);
+    const isAboutOrPrivacyPage = useMemo(() =>
+        location.pathname === '/about-us' || location.pathname === '/privacy-policy',
+        [location.pathname]
+    );
+    const shouldHideNavbarFooter = useMemo(() =>
+        isInWebView && isAboutOrPrivacyPage,
+        [isInWebView, isAboutOrPrivacyPage]
+    );
     // ============ Page Loader ============
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 2800);
@@ -137,7 +149,7 @@ const ProjectRoutes = () => {
             ) : (
                 // ============ Guest / Before Login ============
                 <main className="min-h-screen w-full overflow-x-hidden ">
-                    <HomeNavbar />
+                    {!shouldHideNavbarFooter && <HomeNavbar />}
                     <Routes>
                         <Route path="/" element={<HomePage />} />
                         <Route path="/referral/:id" element={<DeepLinkRedirect />} />
@@ -234,15 +246,15 @@ const ProjectRoutes = () => {
                         <Route path="/meeting" element={<ZoomMeeting />} />
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
-                    <HomeFooter />
-                    <a
+                    {!shouldHideNavbarFooter && <HomeFooter />}
+                    {!isInWebView && <a
                         href="https://wa.me/919326511639"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 cursor-pointer"
                     >
                         <Whatsapp size={30} className="text-white" />
-                    </a>
+                    </a>}
                 </main>
             )}
 
