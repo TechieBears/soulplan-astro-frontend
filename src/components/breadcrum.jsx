@@ -1,7 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
+import { isWebView } from "../utils/webviewDetector";
+import { useMemo } from "react";
 
-const Breadcrumbs = ({ currentService }) => {
+const Breadcrumbs = ({ currentService, hide = false }) => {
     const location = useLocation();
     const pathnames = location.pathname.split("/").filter((x) => x);
 
@@ -14,6 +16,9 @@ const Breadcrumbs = ({ currentService }) => {
                 .replace(/\b\w/g, (c) => c.toUpperCase())
             : "Home");
 
+    // Check if we're in a webview and on About Us or Privacy Policy pages
+    const isInWebView = useMemo(() => isWebView(), []);
+
     return (
         <div className="pt-10 pb-8 md:pt-10 md:pb-10 container mx-auto px-5 xl:px-0">
             <div className="bg-linear-gradient rounded-lg py-5 md:py-10 lg:py-16 xl:py-20 px-6 text-center text-white">
@@ -23,7 +28,7 @@ const Breadcrumbs = ({ currentService }) => {
                 </h1>
 
                 {/* Breadcrumb Nav */}
-                <nav className="text-sm md:text-base flex justify-center items-center space-x-1 font-tbLex font-medium">
+                {!isInWebView && <nav className="text-sm md:text-base flex justify-center items-center space-x-1 font-tbLex font-medium">
                     <Link to="/" className="hover:underline text-white/90">
                         Home
                     </Link>
@@ -57,7 +62,7 @@ const Breadcrumbs = ({ currentService }) => {
                             </span>
                         );
                     })}
-                </nav>
+                </nav>}
             </div>
         </div>
     );
