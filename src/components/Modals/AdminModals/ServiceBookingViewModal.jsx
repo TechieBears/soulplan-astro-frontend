@@ -51,8 +51,8 @@ function ServiceBookingViewModal({ bookingData }) {
 
     const getServiceTypeLabel = (type) => {
         switch (type) {
-            case 'pandit_center':
-                return 'At Pandit Center';
+            case 'face_to_face':
+                return 'Face to Face';
             case 'online':
                 return 'Online Session';
             case 'home_visit':

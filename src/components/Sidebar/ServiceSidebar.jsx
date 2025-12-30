@@ -224,7 +224,7 @@ const MainSection = ({ content }) => {
                                             key={index} 
                                             className="px-3 py-1 text-xs font-tbPop font-medium capitalize bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 rounded-full"
                                         >
-                                            {mode === 'online' ? 'Online' : mode === 'pandit_center' ? 'Face to Face' : mode}
+                                            {mode === 'online' ? 'Online' : mode === 'face_to_face' ? 'Face to Face' : mode}
                                         </span>
                                     ))}
                                 </div>
