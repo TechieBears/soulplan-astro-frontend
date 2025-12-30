@@ -12,6 +12,7 @@ import { clearAllNotifications, getActiveServiceCategories, getNotificationsDrop
 import toast from "react-hot-toast";
 import { setCartProductCount } from "../../redux/Slices/cartSlice";
 import moment from "moment";
+import { useCurrency } from "../../utils/useCurrency";
 
 const HomeNavbar = () => {
     const navLinks = [
@@ -45,6 +46,7 @@ const HomeNavbar = () => {
     const dispatch = useDispatch();
     const [walletBalance, setWalletBalance] = useState(0);
     const mobileMenuRef = useRef(null);
+    const currencySymbol = useCurrency();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -214,9 +216,9 @@ const HomeNavbar = () => {
                     {/* ===== Right: Cart & Profile ===== */}
                     <div className="hidden lg:flex items-center gap-4">
                         {/* Cart Icon */}
-                        {login && <button onClick={() => navigate("/wallet")} className="bg-gradient-to-r from-[#FBBF24] to-[#FB923C] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-white font-tbLex font-semibold text-center text-xs sm:text-sm flex items-center gap-2 cursor-pointer hover:opacity-90 transition-opacity">
+                        {login && <button onClick={() => navigate("/profile/refer")} className="bg-gradient-to-r from-[#FBBF24] to-[#FB923C] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-white font-tbLex font-semibold text-center text-xs sm:text-sm flex items-center gap-2 cursor-pointer hover:opacity-90 transition-opacity">
                             <Wallet size={24} className="text-white" />
-                            <span className="text-white text-xs sm:text-sm">₹{walletBalance || 0}</span>
+                            <span className="text-white text-xs sm:text-sm">{currencySymbol}{walletBalance || 0}</span>
                         </button>}
                         {login && <NotificationSection />}
                         {login &&
