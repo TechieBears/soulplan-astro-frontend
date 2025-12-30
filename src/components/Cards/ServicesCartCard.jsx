@@ -5,9 +5,12 @@ import { Icon } from '@iconify/react'
 import { Zoom } from 'iconsax-reactjs'
 import { FaRegTrashAlt } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
+import { useCurrency } from '../../utils/useCurrency'
 
 const ServicesCartCard = ({ service, removeItem, isUpdating }) => {
     const navigate = useNavigate();
+    const currencySymbol = useCurrency();
+    const currencyIcon = currencySymbol === "$" ? "ph:currency-dollar" : "ph:currency-inr";
     const formatTime = (time) => {
         if (!time) return '';
         const [hours, minutes] = time.split(':');
@@ -70,10 +73,10 @@ const ServicesCartCard = ({ service, removeItem, isUpdating }) => {
 
                 <p className="flex items-center gap-3 mb-2 text-sm sm:text-base">
                     <Icon
-                        icon="ph:currency-inr"
+                        icon={currencyIcon}
                         className="w-5 h-5 sm:w-6 sm:h-6"
                     />
-                    <span>Price: ₹{service.totalPrice?.toLocaleString()}</span>
+                    <span>Price: {currencySymbol}{service.totalPrice?.toLocaleString()}</span>
                 </p>
 
                 {service.link && (

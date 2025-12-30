@@ -3,6 +3,7 @@ import SearchBar from './SearchBar';
 import PriceRangeSlider from './PriceRangeSlider';
 import CategoryFilter from './CategoryFilter';
 import SubcategoryFilter from './SubcategoryFilter';
+import { useCurrency } from '../../utils/useCurrency';
 
 const FilterSidebar = ({
     search,
@@ -21,6 +22,7 @@ const FilterSidebar = ({
     isLoading = false,
 }) => {
     const [isMobileFiltersOpen, setIsMobileFiltersOpen] = React.useState(false);
+    const currencySymbol = useCurrency();
     return (
         <div className="bg-white rounded-xl shadow-md ring-1 ring-slate-200 overflow-hidden">
             {/* Mobile filter header */}
@@ -56,7 +58,7 @@ const FilterSidebar = ({
                 <div className="mb-6">
                     <h4 className="text-slate-800 font-semibold mb-2">
                         Price <span className="font-bold text-slate-900 ml-2">
-                            {price[0].toLocaleString()}₹ - {price[1].toLocaleString()}₹
+                            {currencySymbol}{price[0].toLocaleString()} - {currencySymbol}{price[1].toLocaleString()}
                         </span>
                     </h4>
                     <div className="mt-3">

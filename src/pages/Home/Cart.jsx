@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { formBtn3 } from "../../utils/CustomClass";
 import { Edit, TicketDiscount } from "iconsax-reactjs";
@@ -29,13 +29,17 @@ import {
 } from "../../redux/Slices/cartSlice";
 import emptyCart from "../../assets/emptyCart.svg";
 import ServicesCartCard from "../../components/Cards/ServicesCartCard";
+import ProductCartCard from "../../components/Cards/ProductCartCard";
 import moment from "moment";
 import { ExternalLink } from "lucide-react";
+import { useCurrency } from "../../utils/useCurrency";
 
 import AddressChangeModal from "../../components/Modals/AddressChangeModal";
 
 const CartPage = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const [activeTab, setActiveTab] = useState("services");
 
   return (
     <div className="min-h-screen bg-[#EFF2FA]  pt-16 lg:pt-24 relative">
@@ -76,7 +80,27 @@ const CartPage = () => {
           </div>
         </div>
 
-        <ServiceTab />
+        {/* Tabs: Products / Services */}
+        {/* <div className="mb-6">
+          <div className="inline-flex rounded-lg overflow-hidden border border-slate-300 bg-white">
+            <button
+              type="button"
+              onClick={() => setActiveTab("products")}
+              className={`px-4 py-2 text-sm font-medium ${activeTab === "products" ? "bg-purple-600 text-white" : "text-slate-700 hover:bg-slate-100"}`}
+            >
+              Products
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("services")}
+              className={`px-4 py-2 text-sm font-medium ${activeTab === "services" ? "bg-purple-600 text-white" : "text-slate-700 hover:bg-slate-100"}`}
+            >
+              Services
+            </button>
+          </div>
+        </div> */}
+
+        {activeTab === "products" ? <ProductTab /> : <ServiceTab />}
       </div>
     </div>
   );
@@ -150,6 +174,7 @@ const CartSkeleton = () => (
 );
 
 const ProductTab = () => {
+  const currencySymbol = useCurrency();
   const [cartItems, setCartItems] = useState([]);
   const addresses = useSelector((state) => state.cart?.addresses);
   const coupon = useSelector((state) => state.cart?.coupon);
@@ -352,109 +377,14 @@ const ProductTab = () => {
         ) : (
           <>
             {cartItems?.map((item, index) => (
-              <div
+              <ProductCartCard
                 key={item._id}
-                className="bg-[#8B3FC1] rounded-lg p-4 flex flex-col md:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 cart-item-enter cursor-pointer hover:bg-[#9E52D8] transition-colors"
-                style={{ animationDelay: `${index * 0.1}s` }}
-                onClick={() => navigate(`/product/${item.productId || item._id}`)}
-              >
-                <div
-                  className="relative w-full md:w-32 h-44 md:h-32  mx-auto aspect-square rounded-lg overflow-hidden"
-                  style={{
-                    background: `linear-gradient(90deg, rgba(0, 121, 208, 0.2) -12.5%, rgba(158, 82, 216, 0.2) 30.84%, rgba(218, 54, 92, 0.2) 70.03%, rgba(208, 73, 1, 0.2) 111%);`,
-                  }}
-                >
-                  <img
-                    src={item?.images?.[0] || item?.image}
-                    alt={item?.name || item?.title}
-                    className="w-full h-full object-contain p-2 bg-slate-50 "
-                    loading="lazy"
-                  />
-                </div>
-
-                <div className="flex-1 w-full">
-                  <h3 className="font-bold text-white text-lg mb-1 sm:pr-6">
-                    {item.name}
-                  </h3>
-                  <div className="space-y-1">
-                    <div className="font-medium text-lg text-white">
-                      ₹{item?.price?.toLocaleString()}
-                    </div>
-                    <div className="text-white text-sm">
-                      {item?.mrp && (
-                        <span>
-                          MRP
-                          <span className="line-through">
-                            ₹{item?.mrp?.toLocaleString()}
-                          </span>
-                        </span>
-                      )}
-                      <span className={item?.mrp ? "ml-1" : ""}>
-                        (incl. of all taxes)
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex w-full md:w-auto flex-row-reverse justify-between  md:flex-col md:items-end space-y-2 md:mt-2 ">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeItem(item?._id || item?.id);
-                    }}
-                    disabled={isUpdating}
-                    className={`p-2 text-white rounded-md transition-colors flex-shrink-0 ${isUpdating
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-[#8B3FC1]"
-                      }`}
-                  >
-                    <FaRegTrashAlt className="w-4 h-4" />
-                  </button>
-
-                  <div className="flex gap-4 items-center">
-                    <span className="text-white text-sm font-medium">QTY:</span>
-                    <div className="flex items-center rounded-md bg-white overflow-hidden w-28 h-9 border border-gray-300">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          updateQuantity(
-                            item?._id || item?.id,
-                            item?.quantity - 1
-                          );
-                        }}
-                        disabled={isUpdating || item?.quantity <= 1}
-                        className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${isUpdating || item?.quantity <= 1
-                          ? "opacity-50 cursor-not-allowed"
-                          : "hover:bg-gray-100"
-                          }`}
-                      >
-                        -
-                      </button>
-
-                      <div className="flex-1 text-center font-medium text-gray-900">
-                        {item?.quantity}
-                      </div>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          updateQuantity(
-                            item?._id || item?.id,
-                            item?.quantity + 1
-                          );
-                        }}
-                        disabled={isUpdating}
-                        className={`w-9 h-full flex items-center justify-center text-gray-600 transition-colors ${isUpdating
-                          ? "opacity-50 cursor-not-allowed"
-                          : "hover:bg-gray-100"
-                          }`}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                item={item}
+                index={index}
+                isUpdating={isUpdating}
+                removeItem={removeItem}
+                updateQuantity={updateQuantity}
+              />
             ))}
           </>
         )}
@@ -509,7 +439,7 @@ const ProductTab = () => {
                   You saved an additional{" "}
                   {coupon.discountIn === "percent"
                     ? `${coupon.discount}% OFF`
-                    : `₹${coupon.discount} OFF`}
+                    : `${currencySymbol}${coupon.discount} OFF`}
                 </p>
               </div>
               <button
@@ -568,7 +498,7 @@ const ProductTab = () => {
                   You want to pay with wallet credit?
                 </label>
               </div>
-              <span className="text-slate-800">₹ {walletBalance || 0}</span>
+              <span className="text-slate-800">{currencySymbol} {walletBalance || 0}</span>
             </div>
           </div>
           <div className="border-t border-gray-300 my-2"></div>
@@ -579,14 +509,14 @@ const ProductTab = () => {
                 {hasItemsWithTotalPrice ? "(incl. GST)" : "(excl. GST)"}
               </span>
               <span className="font-medium">
-                ₹ {subtotal?.toLocaleString()}
+                {currencySymbol} {subtotal?.toLocaleString()}
               </span>
             </div>
 
             {!hasItemsWithTotalPrice && (
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">GST (18%)</span>
-                <span className="font-medium">₹ {gstAmount || 0}</span>
+                <span className="font-medium">{currencySymbol} {gstAmount || 0}</span>
               </div>
             )}
 
@@ -594,10 +524,10 @@ const ProductTab = () => {
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Coupon Discount</span>
                 <span className="font-medium">
-                  ₹{" "}
+                  {currencySymbol}{" "}
                   {coupon?.discountIn === "percent"
                     ? `${coupon?.discount}% OFF`
-                    : `₹${coupon?.discount} OFF`}
+                    : `${currencySymbol}${coupon?.discount} OFF`}
                 </span>
               </div>
             )}
@@ -610,7 +540,7 @@ const ProductTab = () => {
               </span>
 
               <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-right break-words">
-                ₹ {grandTotal || 0}{" "}
+                {currencySymbol} {grandTotal || 0}{" "}
                 <span className="text-sm sm:text-base font-normal text-gray-700">
                   (incl. of all taxes)
                 </span>
@@ -644,6 +574,7 @@ const ProductTab = () => {
 };
 
 const ServiceTab = () => {
+  const currencySymbol = useCurrency();
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -868,7 +799,7 @@ const ServiceTab = () => {
                   You saved an additional{" "}
                   {coupon.discountIn === "percent"
                     ? `${coupon.discount}% OFF`
-                    : `₹${coupon.discount} OFF`}
+                    : `${currencySymbol}${coupon.discount} OFF`}
                 </p>
               </div>
               <button
@@ -928,7 +859,7 @@ const ServiceTab = () => {
                     You want to pay with wallet credit?
                   </label>
                 </div>
-                <span className="text-slate-800">₹ {walletBalance || 0}</span>
+                <span className="text-slate-800">{currencySymbol} {walletBalance || 0}</span>
               </div>
             </div>
             <div className="space-y-3 mb-6 bg-gray-100 p-4 rounded-lg">
@@ -938,7 +869,7 @@ const ServiceTab = () => {
                   (incl. GST)
                 </span>
                 <span className="font-medium">
-                  ₹ {subtotal?.toLocaleString()}
+                  {currencySymbol} {subtotal?.toLocaleString()}
                 </span>
               </div>
 
@@ -951,10 +882,10 @@ const ServiceTab = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Coupon Discount</span>
                   <span className="font-medium">
-                    ₹{" "}
+                    {currencySymbol}{" "}
                     {coupon?.discountIn === "percent"
                       ? `${coupon?.discount}% OFF`
-                      : `₹${coupon?.discount} OFF`}
+                      : `${currencySymbol}${coupon?.discount} OFF`}
                   </span>
                 </div>
               )}
@@ -967,7 +898,7 @@ const ServiceTab = () => {
                 </span>
 
                 <span className="font-bold text-gray-900 text-base sm:text-lg text-center sm:text-right break-words">
-                  ₹ {grandTotal || 0}{" "}
+                  {currencySymbol} {grandTotal || 0}{" "}
                   <span className="text-sm sm:text-base font-normal text-gray-700">
                     (incl. of all taxes)
                   </span>

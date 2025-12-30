@@ -4,6 +4,7 @@ import ProfileSidebar from "../../../components/Sidebar/ProfileSidebar";
 import { Info } from "@phosphor-icons/react";
 import { useSelector } from "react-redux";
 import { getWalletBalance } from "../../../api";
+import { useCurrency } from "../../../utils/useCurrency";
 
 const Private = ({ children }) => children;
 const UserDashboard = ({ children }) => children;
@@ -14,6 +15,7 @@ const ReferAndEarn = () => {
     const user = useSelector((state) => state.user.userDetails);
     const referralCode = user?.referralCode || "----- -----";
     const [walletBalance, setWalletBalance] = useState(0);
+    const currencySymbol = useCurrency();
 
     useEffect(() => {
         const fetchWalletBalance = async () => {
@@ -77,7 +79,7 @@ const ReferAndEarn = () => {
                                             <p className="text-xs sm:text-sm font-tbPop  font-medium text-gray-500 mb-1">Your Total Rewards</p>
                                             <div className="flex items-baseline gap-2">
                                                 <h2 className="text-4xl sm:text-5xl md:text-6xl font-tbLex  font-black text-p bg-clip-text text-transparent">
-                                                    ₹{walletBalance || 0}
+                                                    {currencySymbol}{walletBalance || 0}
                                                 </h2>
                                             </div>
                                         </div>
@@ -139,7 +141,7 @@ const ReferAndEarn = () => {
                                         </li>
                                         <li className="flex gap-2">
                                             <span className="font-tbPop  font-bold text-yellow-600 flex-shrink-0">3.</span>
-                                            <span>Get ₹100 rewards</span>
+                                            <span>Get {currencySymbol}100 rewards</span>
                                         </li>
                                     </ol>
                                 </div>
@@ -171,10 +173,10 @@ const ReferAndEarn = () => {
                                             <FaWhatsapp size={18} className="sm:w-6 sm:h-6" />
                                             Invite on WhatsApp
                                         </button>
-                                        <button onClick={shareLink} className="flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-tbPop  font-bold px-5 sm:px-6 py-3 sm:py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 text-sm sm:text-base active:scale-95">
+                                        {/* <button onClick={shareLink} className="flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-tbPop  font-bold px-5 sm:px-6 py-3 sm:py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 text-sm sm:text-base active:scale-95">
                                             <FaLink size={18} className="sm:w-5 sm:h-5" />
                                             Share Link
-                                        </button>
+                                        </button> */}
                                     </div>
                                 </div>
                             </div>

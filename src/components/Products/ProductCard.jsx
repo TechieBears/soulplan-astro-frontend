@@ -6,6 +6,7 @@ import { setCartProductCount } from "../../redux/Slices/cartSlice";
 import { addProductToCart } from "../../api";
 import { useState } from "react";
 import { MoonLoader } from "react-spinners";
+import { useCurrency } from "../../utils/useCurrency";
 
 const Star = ({ filled }) => (
     <svg
@@ -24,6 +25,7 @@ const ProductCard = ({ product }) => {
     const login = useSelector((state) => state.user.isLogged);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const currencySymbol = useCurrency();
 
     const handleCardClick = () => {
         navigate(`/product/${_id}`);
@@ -90,12 +92,12 @@ const ProductCard = ({ product }) => {
                     <div className="flex flex-col items-end space-y-0.5">
                         {mrpPrice > sellingPrice && (
                             <h4 className="text-base md:text-sm text-slate-400 font-tbPop  line-through">
-                                ₹{mrpPrice?.toLocaleString()}
+                                {currencySymbol}{mrpPrice?.toLocaleString()}
                             </h4>
                         )}
 
                         <div className="text-base md:text-sm lg:text-base font-semibold font-tbPop text-gray-800">
-                            ₹{sellingPrice?.toLocaleString()}
+                            {currencySymbol}{sellingPrice?.toLocaleString()}
                         </div>
                     </div>
                 </div>
