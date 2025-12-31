@@ -32,7 +32,7 @@ export default function AccountPage() {
   } = useForm();
   const [isEditable, setIsEditable] = useState(false);
   const user = useSelector((state) => state.user.userDetails);
-  // console.log("~ account.jsx ~ user from Redux:", user);
+  console.log("~ account.jsx ~ user from Redux:", user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formSubmit = async (data) => {
@@ -258,6 +258,17 @@ export default function AccountPage() {
                   />
                 </div>
               </div>
+
+              {/* Add this wherever you want to show the currency */}
+              <div className="">
+                <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
+                  Currency
+                </h4>
+                <p className="text-base font-tbLex text-gray-800">
+                  {user?.currencyType || 'Not set'}
+                </p>
+              </div>
+
 
               {/* Action Buttons */}
               {isEditable && (
