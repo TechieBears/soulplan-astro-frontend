@@ -138,6 +138,12 @@ const AllServices = () => {
         </div>
     );
 
+    const serviceOrderBody = (row) => (
+        <div className="font-medium text-gray-700">
+            {row?.serviceOrder ?? "----"}
+        </div>
+    );
+
     const contentBody = (row) => {
         const content = row?.htmlContent?.replace(/<[^>]*>/g, '') || "No description available";
         const videoCount = row?.videoUrl?.length || 0;
@@ -240,6 +246,13 @@ const AllServices = () => {
             field: 'usdPrice',
             header: 'USD Price',
             body: usdPriceBody,
+            style: true,
+            sortable: true
+        },
+        {
+            field: 'serviceOrder',
+            header: 'Service Order',
+            body: serviceOrderBody,
             style: true,
             sortable: true
         },

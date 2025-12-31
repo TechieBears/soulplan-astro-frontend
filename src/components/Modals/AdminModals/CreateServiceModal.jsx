@@ -95,6 +95,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                 description: userData?.description,
                 durationInMinutes: userData?.durationInMinutes,
                 htmlContent: userData?.htmlContent,
+                serviceOrder: userData?.serviceOrder,
                 ...userData
             });
             setValue('category', userData?.category?._id);
@@ -111,7 +112,8 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                 durationInMinutes: 30,
                 htmlContent: '',
                 image: '',
-                videoUrl: []
+                videoUrl: [],
+                serviceOrder: ''
             });
         }
     }, [edit, userData, reset, setValue, open]);
@@ -333,6 +335,25 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                             })
                                                         }}
                                                         errors={errors.usdPrice}
+                                                    />
+                                                </div>
+                                                <div className=''>
+                                                    <h4
+                                                        className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                    >
+                                                        Service Order
+                                                    </h4>
+                                                    <TextInput
+                                                        label="Enter Service Order"
+                                                        placeholder="Enter Service Order"
+                                                        type="number"
+                                                        registerName="serviceOrder"
+                                                        props={{
+                                                            ...register('serviceOrder', {
+                                                                valueAsNumber: true
+                                                            })
+                                                        }}
+                                                        errors={errors.serviceOrder}
                                                     />
                                                 </div>
                                                 <div className=''>
