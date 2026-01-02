@@ -229,8 +229,6 @@ const ServiceBookings = () => {
                                 options={[
                                     { value: 'PENDING', label: 'Pending' },
                                     { value: 'CONFIRMED', label: 'Confirmed' },
-                                    { value: 'SHIPPED', label: 'Shipped' },
-                                    { value: 'DELIVERED', label: 'Delivered' },
                                     { value: 'CANCELLED', label: 'Cancelled' },
                                     { value: 'REFUNDED', label: 'Refunded' }
                                 ]}
