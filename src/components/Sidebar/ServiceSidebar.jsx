@@ -19,6 +19,7 @@ import moment from "moment";
 import { formBtn3 } from "../../utils/CustomClass";
 import maskHand from "../../assets/services/maskHand.png";
 import moon from "../../assets/moon.png";
+import { useCurrency } from "../../utils/useCurrency";
 
 const SidebarLayout = () => {
     const params = useLocation();
@@ -107,10 +108,12 @@ const SideBar = ({ services, active, setActive }) => {
 
 const MainSection = ({ content }) => {
     const navigate = useNavigate();
+    const currencySymbol = useCurrency();
     const [ratings, setRatings] = useState(null);
     const [ratingsLoading, setRatingsLoading] = useState(false);
     const login = useSelector((state) => state.user.isLogged);
     const user = useSelector((state) => state.user.userDetails);
+    const currencyType = useSelector((state) => state.user.userDetails?.currencyType);
 
 
 
@@ -209,6 +212,11 @@ const MainSection = ({ content }) => {
                             {content.subTitle}
                         </p>
                         <div className="space-y-3 py-3">
+                            <div className="flex items-center gap-2">
+                                <h4 className="text-slate-700 text-lg font-tbPop font-semibold">
+                                    Price: {currencySymbol} {currencyType === "INR" ? content.price : content.usdPrice}
+                                </h4>
+                            </div>
                             <div className="space-x-1.5 flex items-center">
                                 <ClockCountdown size={20} />
                                 <h4 className="text-slate-700 text-sm font-tbPop font-normal">
