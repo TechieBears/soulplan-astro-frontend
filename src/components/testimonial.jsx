@@ -8,40 +8,59 @@ import vectorImg from "../assets/Vector.png";
 import hand from "../assets/helperImages/handImage.png";
 import TestimonialModal from "./Modals/TestimonialModal";
 
-const NavButton = ({ onClick, direction, className = "" }) => (
-    <button type="button" onClick={onClick} className={`bg-[#CAD5E2] hover:bg-[#b8c4d1] rounded-full flex items-center justify-center transition-colors duration-200 shadow-md ${className}`}>
-        {direction === 'left' ? <CaretLeft size={className.includes('w-10') ? 20 : 24} className="text-black" weight="bold" /> : <CaretRight size={className.includes('w-10') ? 20 : 24} className="text-black" weight="bold" />}
-    </button>
-);
+const CHAR_LIMIT = 170;
+
+const NavButton = ({ onClick, direction, className = "" }) => {
+    const Icon = direction === 'left' ? CaretLeft : CaretRight;
+    const size = className.includes('w-10') ? 20 : 24;
+    return (
+        <button type="button" onClick={onClick} className={`bg-[#CAD5E2] hover:bg-[#b8c4d1] rounded-full flex items-center justify-center transition-colors duration-200 shadow-md ${className}`}>
+            <Icon size={size} className="text-black" weight="bold" />
+        </button>
+    );
+};
 
 const StarRating = ({ rating = 5 }) => (
     <div className="flex justify-center items-center mb-2">
-        <div className="flex">
-            {Array.from({ length: 5 }, (_, i) => (
-                <FaStar key={i} className={`w-4 h-4 ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`} />
-            ))}
-        </div>
+        {Array.from({ length: 5 }, (_, i) => (
+            <FaStar key={i} className={`w-4 h-4 ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`} />
+        ))}
     </div>
 );
 
-const TestimonialCard = ({ testimonial, isCenter }) => {
-    const userName = testimonial?.user?.firstName && testimonial?.user?.lastName
+const getUserName = (testimonial) => 
+    testimonial?.user?.firstName && testimonial?.user?.lastName
         ? `${testimonial.user.firstName} ${testimonial.user.lastName}`
         : testimonial?.user_id?.name || testimonial?.name || "Anonymous User";
-    const userImg = testimonial?.user?.profileImage || testimonial?.user_id?.profileImage || testimonial?.user_id?.image || testimonial?.image || userImage;
+
+const getUserImage = (testimonial) => 
+    testimonial?.user?.profileImage || testimonial?.user_id?.profileImage || 
+    testimonial?.user_id?.image || testimonial?.image || userImage;
+
+const TestimonialCard = ({ testimonial, isCenter, onReadMore }) => {
+    const userName = getUserName(testimonial);
+    const userImg = getUserImage(testimonial);
+    const message = testimonial?.message || testimonial?.text || "";
+    const shouldTruncate = message.length > CHAR_LIMIT;
+    const displayMessage = shouldTruncate ? message.slice(0, CHAR_LIMIT) : message;
 
     return (
-        <div className={`relative transition-all duration-700 ease-out ${isCenter ? 'scale-100 opacity-100 z-20 translate-x-0' : 'scale-90 opacity-40 z-10 hidden md:block'}`}>
-            <img src={vectorImg} alt="quote" className="absolute top-6 left-6 w-[66px] h-[51px] z-10" />
-            <div className={`w-80 sm:w-96 md:w-[28rem] h-auto min-h-[18rem] sm:min-h-[20rem] md:min-h-[24rem] rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center text-center ${isCenter ? 'bg-primary-gradient text-white shadow-lg' : 'bg-white text-gray-800 shadow-md'}`}>
-                <div className="flex items-center justify-center mb-6">
-                    <img src={userImg} alt={userName} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover" onError={(e) => e.target.src = userImage} />
+        <div className={`flex-shrink-0 transition-all duration-500 ease-out ${isCenter ? 'scale-100 opacity-100' : 'scale-90 opacity-40'}`}>
+            <div className="relative">
+                <img src={vectorImg} alt="quote" className="absolute top-6 left-6 w-[66px] h-[51px] z-10" />
+                <div className={`w-80 sm:w-96 md:w-[28rem] h-auto min-h-[18rem] sm:min-h-[20rem] md:min-h-[24rem] rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center text-center overflow-hidden ${isCenter ? 'bg-primary-gradient text-white shadow-lg' : 'bg-white text-gray-800 shadow-md'}`}>
+                    <img src={userImg} alt={userName} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover mb-6" onError={(e) => e.target.src = userImage} />
+                    <p className={`text-sm sm:text-base leading-tight mb-2 break-words w-full ${isCenter ? 'text-white' : 'text-gray-600'}`} style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                        "{displayMessage}{shouldTruncate && '...'}"
+                    </p>
+                    {shouldTruncate && (
+                        <button onClick={() => onReadMore(testimonial)} className={`text-xs sm:text-sm underline mb-4 hover:opacity-80 transition-opacity ${isCenter ? 'text-white' : 'text-blue-600'}`}>
+                            Read more
+                        </button>
+                    )}
+                    <StarRating rating={testimonial?.rating} />
+                    <h4 className={`font-semibold text-sm sm:text-base ${isCenter ? 'text-white' : 'text-gray-800'}`}>{userName}</h4>
                 </div>
-                <p className={`text-sm sm:text-base line-clamp-5 leading-tight mb-6 ${isCenter ? 'text-white' : 'text-gray-600'}`}>
-                    "{testimonial?.message || testimonial?.text}"
-                </p>
-                <StarRating rating={testimonial?.rating} />
-                <h4 className={`font-semibold text-sm sm:text-base ${isCenter ? 'text-white' : 'text-gray-800'}`}>{userName}</h4>
             </div>
         </div>
     );
@@ -60,7 +79,9 @@ const Testimonials = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [direction, setDirection] = useState('next');
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [selectedTestimonial, setSelectedTestimonial] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchTestimonials = async () => {
@@ -77,23 +98,31 @@ const Testimonials = () => {
         fetchTestimonials();
     }, []);
 
-    const handlePrev = useCallback(() => {
-        setDirection('prev');
-        setCurrentIndex(prev => prev === 0 ? testimonials.length - 1 : prev - 1);
-    }, [testimonials.length]);
-    const handleNext = useCallback(() => {
-        setDirection('next');
-        setCurrentIndex(prev => prev >= testimonials.length - 1 ? 0 : prev + 1);
-    }, [testimonials.length]);
+    const handleNavigation = useCallback((direction) => {
+        if (isTransitioning) return;
+        setIsTransitioning(true);
+        setCurrentIndex(prev => {
+            if (direction === 'prev') return prev === 0 ? testimonials.length - 1 : prev - 1;
+            return prev >= testimonials.length - 1 ? 0 : prev + 1;
+        });
+        setTimeout(() => setIsTransitioning(false), 500);
+    }, [testimonials.length, isTransitioning]);
 
-    const visibleTestimonials = useMemo(() => {
-        if (testimonials.length === 0) return [];
-        return [
-            ...(testimonials.length > 1 ? [{ index: (currentIndex - 1 + testimonials.length) % testimonials.length, isCenter: false }] : []),
-            { index: currentIndex, isCenter: true },
-            ...(testimonials.length > 2 ? [{ index: (currentIndex + 1) % testimonials.length, isCenter: false }] : [])
-        ];
-    }, [currentIndex, testimonials.length]);
+    const handlePrev = useCallback(() => handleNavigation('prev'), [handleNavigation]);
+    const handleNext = useCallback(() => handleNavigation('next'), [handleNavigation]);
+
+    const getVisibleCards = useMemo(() => 
+        testimonials.length === 0 ? [] : 
+        [-1, 0, 1].map(i => ({
+            testimonial: testimonials[(currentIndex + i + testimonials.length) % testimonials.length],
+            isCenter: i === 0
+        }))
+    , [currentIndex, testimonials]);
+
+    const handleReadMore = useCallback((testimonial) => {
+        setSelectedTestimonial(testimonial);
+        setIsModalOpen(true);
+    }, []);
 
     return (
         <>
@@ -120,22 +149,24 @@ const Testimonials = () => {
                             </>
                         )}
 
-                        <div className="flex items-center justify-center gap-2 md:gap-4 lg:gap-6 px-2 sm:px-4 md:px-8 lg:px-16">
+                        <div className="overflow-hidden px-2 sm:px-4 md:px-8 lg:px-16">
                             {loading ? (
-                                <div className="w-80 sm:w-96 md:w-[28rem] h-auto min-h-[18rem] sm:min-h-[20rem] md:min-h-[24rem] rounded-xl bg-gray-200 animate-pulse" />
+                                <div className="flex justify-center">
+                                    <div className="w-80 sm:w-96 md:w-[28rem] h-auto min-h-[18rem] sm:min-h-[20rem] md:min-h-[24rem] rounded-xl bg-gray-200 animate-pulse" />
+                                </div>
                             ) : testimonials.length > 0 ? (
-                                <div className="relative w-full flex items-center justify-center overflow-hidden">
-                                    {visibleTestimonials.map(({ index, isCenter }, i) => {
-                                        const position = i === 0 ? 'left' : i === 1 ? 'center' : 'right';
-                                        const slideClass = direction === 'next'
-                                            ? 'animate-[slideInFromRight_0.5s_ease-out]'
-                                            : 'animate-[slideInFromLeft_0.5s_ease-out]';
-                                        return (
-                                            <div key={`${index}-${currentIndex}-${i}`} className={`${position !== 'center' ? 'absolute' : ''} ${position === 'left' ? '-left-[30%] md:-left-[35%]' : position === 'right' ? '-right-[30%] md:-right-[35%]' : ''} ${slideClass}`}>
-                                                <TestimonialCard testimonial={testimonials[index]} isCenter={isCenter} />
+                                <div className="flex items-center justify-center">
+                                    <div className="relative w-full max-w-7xl">
+                                        <div className="flex items-center justify-center">
+                                            <div className="flex transition-transform duration-500 ease-out">
+                                                {getVisibleCards.map(({ testimonial, isCenter }, i) => (
+                                                    <div key={`${testimonial._id}-${i}`} className="px-3" style={{ display: testimonials.length === 1 && !isCenter ? 'none' : 'block' }}>
+                                                        <TestimonialCard testimonial={testimonial} isCenter={isCenter} onReadMore={handleReadMore} />
+                                                    </div>
+                                                ))}
                                             </div>
-                                        );
-                                    })}
+                                        </div>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="text-center py-8 md:py-12">
@@ -162,6 +193,27 @@ const Testimonials = () => {
                     </div>
                 </div>
             </section>
+
+            {isModalOpen && selectedTestimonial && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setIsModalOpen(false)}>
+                    <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex justify-between items-start mb-4">
+                            <h3 className="text-xl sm:text-2xl font-semibold text-gray-800">Full Testimonial</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                        </div>
+                        <div className="flex items-center gap-4 mb-4">
+                            <img src={getUserImage(selectedTestimonial)} alt="User" className="w-16 h-16 rounded-full object-cover" onError={(e) => e.target.src = userImage} />
+                            <div className="text-left">
+                                <h4 className="font-semibold text-gray-800">{getUserName(selectedTestimonial)}</h4>
+                                <StarRating rating={selectedTestimonial?.rating} />
+                            </div>
+                        </div>
+                        <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+                            "{selectedTestimonial?.message || selectedTestimonial?.text}"
+                        </p>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
