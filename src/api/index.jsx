@@ -190,6 +190,19 @@ export const adminTransactionPagination = async (data) => {
         return err?.response?.data
     }
 }
+
+export const getAllTransactions = async (params) => {
+    const page = params?.p || 1;
+    const limit = params?.records || 10;
+    const url = `${environment.baseUrl}transactions/get-all?page=${page}&limit=${limit}`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.error('Error fetching transactions:', err);
+        return err?.response?.data || { success: false, message: 'Failed to fetch transactions' };
+    }
+}
 // ====================== Product Categories Api ======================
 export const getProductCategories = async (data) => {
     try {

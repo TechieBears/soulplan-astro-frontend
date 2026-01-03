@@ -19,6 +19,8 @@ import moment from "moment";
 import { formBtn3 } from "../../utils/CustomClass";
 import maskHand from "../../assets/services/maskHand.png";
 import moon from "../../assets/moon.png";
+import { useCurrency } from "../../utils/useCurrency";
+import { getYouTubeVideoId } from "../../utils/youtubeHelper";
 
 const SidebarLayout = () => {
     const params = useLocation();
@@ -107,10 +109,12 @@ const SideBar = ({ services, active, setActive }) => {
 
 const MainSection = ({ content }) => {
     const navigate = useNavigate();
+    const currencySymbol = useCurrency();
     const [ratings, setRatings] = useState(null);
     const [ratingsLoading, setRatingsLoading] = useState(false);
     const login = useSelector((state) => state.user.isLogged);
     const user = useSelector((state) => state.user.userDetails);
+    const currencyType = useSelector((state) => state.user.userDetails?.currencyType);
 
 
 
@@ -209,6 +213,11 @@ const MainSection = ({ content }) => {
                             {content.subTitle}
                         </p>
                         <div className="space-y-3 py-3">
+                            <div className="flex items-center gap-2">
+                                <h4 className="text-slate-700 text-lg font-tbPop font-semibold">
+                                    Price: {currencySymbol} {currencyType === "INR" ? content.price : content.usdPrice}
+                                </h4>
+                            </div>
                             <div className="space-x-1.5 flex items-center">
                                 <ClockCountdown size={20} />
                                 <h4 className="text-slate-700 text-sm font-tbPop font-normal">
@@ -287,23 +296,16 @@ const MainSection = ({ content }) => {
                             >
                                 {content.videoUrl.map((vid, index) => {
                                     const url = vid.videoUrl;
+                                    const videoId = getYouTubeVideoId(url);
+                                    const isYouTube = url.includes("youtube.com") || url.includes("youtu.be");
 
                                     return (
                                         <SwiperSlide key={vid._id || index}>
                                             <div className="grid grid-cols-1 gap-4">
                                                 <div className="w-full h-48 sm:h-56 md:h-72 lg:h-60 xl:h-64 bg-black mb-8 sm:mb-0 overflow-hidden">
-                                                    {url.includes("youtube.com") ||
-                                                        url.includes("youtu.be") ? (
+                                                    {isYouTube && videoId ? (
                                                         <iframe
-                                                            src={
-                                                                url
-                                                                    .replace("watch?v=", "embed/")
-                                                                    .replace(
-                                                                        "youtu.be/",
-                                                                        "www.youtube.com/embed/"
-                                                                    )
-                                                                    .split("&")[0]
-                                                            }
+                                                            src={`https://www.youtube.com/embed/${videoId}`}
                                                             title={`YouTube video ${index + 1}`}
                                                             className="w-full h-full"
                                                             frameBorder="0"
