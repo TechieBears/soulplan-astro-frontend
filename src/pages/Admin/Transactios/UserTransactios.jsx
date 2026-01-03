@@ -97,7 +97,7 @@ const UserTransactios = () => {
             field: 'status',
             header: 'Status',
             body: (row) => <>
-                <h4 className={`${row?.status === 'success' ? 'text-green-500 bg-green-100' : row?.status === 'failed' ? 'text-red-500 bg-red-100' : 'text-yellow-500 bg-yellow-100'} self-center p-2 px-4 rounded-full capitalize font-tbPop`}>{row?.status}</h4>
+                <h4 className={`${row?.status === 'success' ? 'text-green-500 bg-green-100' : row?.status === 'failed' ? 'text-red-500 bg-red-100' : 'text-yellow-500 bg-yellow-100'} p-2 px-4 rounded-full capitalize font-tbPop text-center`}>{row?.status}</h4>
             </>,
             style: true,
             sortable: true
