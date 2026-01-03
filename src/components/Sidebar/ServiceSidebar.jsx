@@ -20,6 +20,7 @@ import { formBtn3 } from "../../utils/CustomClass";
 import maskHand from "../../assets/services/maskHand.png";
 import moon from "../../assets/moon.png";
 import { useCurrency } from "../../utils/useCurrency";
+import { getYouTubeVideoId } from "../../utils/youtubeHelper";
 
 const SidebarLayout = () => {
     const params = useLocation();
@@ -295,23 +296,16 @@ const MainSection = ({ content }) => {
                             >
                                 {content.videoUrl.map((vid, index) => {
                                     const url = vid.videoUrl;
+                                    const videoId = getYouTubeVideoId(url);
+                                    const isYouTube = url.includes("youtube.com") || url.includes("youtu.be");
 
                                     return (
                                         <SwiperSlide key={vid._id || index}>
                                             <div className="grid grid-cols-1 gap-4">
                                                 <div className="w-full h-48 sm:h-56 md:h-72 lg:h-60 xl:h-64 bg-black mb-8 sm:mb-0 overflow-hidden">
-                                                    {url.includes("youtube.com") ||
-                                                        url.includes("youtu.be") ? (
+                                                    {isYouTube && videoId ? (
                                                         <iframe
-                                                            src={
-                                                                url
-                                                                    .replace("watch?v=", "embed/")
-                                                                    .replace(
-                                                                        "youtu.be/",
-                                                                        "www.youtube.com/embed/"
-                                                                    )
-                                                                    .split("&")[0]
-                                                            }
+                                                            src={`https://www.youtube.com/embed/${videoId}`}
                                                             title={`YouTube video ${index + 1}`}
                                                             className="w-full h-full"
                                                             frameBorder="0"

@@ -169,8 +169,8 @@ export const validateTwitterUrl = (url) => {
 
 export const validateYoutubeUrl = (url) => {
     if (!url) return true;
-    const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/i;
-    return pattern.test(url) || "Please enter a valid YouTube URL (e.g., https://youtube.com/username)";
+    const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|shorts\/|embed\/)|youtu\.be\/)[\w-]+/i;
+    return pattern.test(url) || "Please enter a valid YouTube URL (e.g., https://youtube.com/watch?v=..., https://youtu.be/..., or https://youtube.com/shorts/...)";
 };
 
 export const validateYoutubeWatchUrl = (url) => {
