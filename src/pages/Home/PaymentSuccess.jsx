@@ -12,10 +12,12 @@ import { formBtn1 } from "../../utils/CustomClass";
 import { getSingleProductOrder, getSingleServiceOrder } from "../../api/index";
 import ServiceCardSkeleton from "../../components/Loader/ServiceCardSkeleton";
 import Lottie from "lottie-react";
+import { useCurrency } from "../../utils/useCurrency";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const currencySymbol = useCurrency();
   console.log("⚡️🤯 ~ PaymentSuccess.jsx:19 ~ PaymentSuccess ~ state:", state);
   const [activeTab, setActiveTab] = useState(
     state?.type === "products" ? "products" : "services"
@@ -233,13 +235,13 @@ const PaymentSuccess = () => {
                         <div className="text-sm">
                           <span className="text-gray-600">Price: </span>
                           <span className="font-semibold text-green-600">
-                            ₹{service?.service?.price}
+                            {currencySymbol}{service?.total || service?.service?.price}
                           </span>
                         </div>
                         <div className="flex gap-4 text-xs">
-                          <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                          {/* <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
                             {service?.service?.serviceType}
-                          </span>
+                          </span> */}
                           <span
                             className={`px-2 py-1 rounded-full capitalize ${service.paymentStatus === "paid"
                               ? "bg-green-100 text-green-800"
