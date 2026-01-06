@@ -33,11 +33,11 @@ export const SidebarSuperAdminApi = [
                 icon: <Calendar1 size="21" variant="TwoTone" />,
                 link: '/admin-calender',
             },
-            {
-                title: 'Product Booking',
-                icon: <Box size="21" variant="TwoTone" />,
-                link: '/product-bookings',
-            },
+            // {
+            //     title: 'Product Booking',
+            //     icon: <Box size="21" variant="TwoTone" />,
+            //     link: '/product-bookings',
+            // },
             {
                 title: 'Service Booking',
                 icon: <Clipboard size="21" variant="TwoTone" />,
@@ -45,23 +45,23 @@ export const SidebarSuperAdminApi = [
             },
         ],
     },
-    {
-        title: 'Products',
-        icon: <Box size="24" variant="TwoTone" />,
-        link: '/product-categories',
-        subMenu: [
-            {
-                title: 'Categories',
-                icon: <Trade size="21" variant="TwoTone" />,
-                link: '/product-categories',
-            },
-            {
-                title: 'All Products',
-                icon: <Profile2User size="21" variant="TwoTone" />,
-                link: '/all-products',
-            },
-        ],
-    },
+    // {
+    //     title: 'Products',
+    //     icon: <Box size="24" variant="TwoTone" />,
+    //     link: '/product-categories',
+    //     subMenu: [
+    //         {
+    //             title: 'Categories',
+    //             icon: <Trade size="21" variant="TwoTone" />,
+    //             link: '/product-categories',
+    //         },
+    //         {
+    //             title: 'All Products',
+    //             icon: <Profile2User size="21" variant="TwoTone" />,
+    //             link: '/all-products',
+    //         },
+    //     ],
+    // },
     {
         title: 'Services',
         icon: <Clipboard size="24" variant="TwoTone" />,
