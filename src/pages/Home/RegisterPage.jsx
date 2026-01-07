@@ -80,7 +80,7 @@ const RegisterPage = () => {
     }, []);
 
     return (
-        <div className="h-full bg-[#FFF9EF] py-24 flex items-center justify-center  px-4">
+        <div className="h-full w-full overflow-x-hidden bg-[#FFF9EF] py-24 flex items-center justify-center  px-4">
             <div className="card w-full max-w-2xl bg-white p-8 rounded-xl shadow-md">
                 {/* Title */}
                 <div className="text-center mb-6">
@@ -91,15 +91,15 @@ const RegisterPage = () => {
 
                 {/* Form */}
                 <form
-                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                    className="grid grid-cols-1 gap-6"
                     onSubmit={handleSubmit(onSubmit)}
                 >
                     {/* First Name */}
-                    <div className="col-span-2">
+                    <div className="col-span-1">
                         <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
                             Title <span className="text-red-500">*</span>
                         </h4>
-                        <div className="sm:flex sm:gap-2 space-x-2 space-y-2 sm:space-y-0">
+                        <div className="flex flex-wrap gap-2">
                             {["Mr", "Mrs", "Miss", "Baby", "Master"].map((type) => (
                                 <Controller
                                     key={type}
@@ -188,7 +188,7 @@ const RegisterPage = () => {
                     </div>
 
                     {/* Email */}
-                    <div className="col-span-1 md:col-span-2">
+                    <div className="col-span-1">
                         <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
                             Email <span className="text-red-500">*</span>
                         </h4>
@@ -304,7 +304,7 @@ const RegisterPage = () => {
                     </div>
 
                     {/* Button */}
-                    <div className="md:col-span-2 mt-2">
+                    <div className="mt-2">
                         {loader ? (
                             <LoadBox className={formBtn3} />
                         ) : (
