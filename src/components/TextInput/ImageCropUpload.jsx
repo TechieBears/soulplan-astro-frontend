@@ -3,7 +3,6 @@ import Error from "../Errors/Error";
 import { useState, useEffect, useRef, useCallback, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { X } from "@phosphor-icons/react";
-import { uploadToCloudinary } from "../../api";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import ImageView from "../Modals/ImageView/ImageView";
@@ -12,7 +11,6 @@ const ImageCropUpload = ({
   label,
   errors,
   multiple,
-  register,
   registerName,
   setValue,
   defaultValue,
@@ -21,27 +19,20 @@ const ImageCropUpload = ({
   cropAspectRatio = 5 / 3,
   cropWidth = 500,
   cropHeight = 300,
-  shouldUploadToCloudinary = true,
   showRemoveOption = false,
+  outputWidth,
+  outputHeight,
 }) => {
-  const [fileName, setFileName] = useState("");
   const [files, setFiles] = useState([]);
-  const [deletedImages, setDeletedImages] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [showCropModal, setShowCropModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showImageModal, setShowImageModal] = useState(false);
-  const [crop, setCrop] = useState({
-    unit: "px",
-    width: cropWidth,
-    height: cropHeight,
-    x: 50,
-    y: 50,
-  });
-  const [completedCrop, setCompletedCrop] = useState(null);
-  const [zoom, setZoom] = useState(1);
+  const [crop, setCrop] = useState(undefined);
   const imgRef = useRef(null);
   const canvasRef = useRef(null);
+  const inputRef = useRef(null);
+  const [pendingFiles, setPendingFiles] = useState([]);
 
   useEffect(() => {
     if (defaultValue) {
@@ -52,11 +43,6 @@ const ImageCropUpload = ({
           value: url
         }));
         setFiles(dummyFiles);
-        setFileName(
-          dummyFiles.length === 1
-            ? dummyFiles[0].name
-            : `${dummyFiles.length} files selected`
-        );
         setValue(registerName, defaultValue);
       } else if (!multiple && typeof defaultValue === "string") {
         const dummyFile = {
@@ -65,19 +51,24 @@ const ImageCropUpload = ({
           value: defaultValue
         };
         setFiles([dummyFile]);
-        setFileName(dummyFile.name);
         setValue(registerName, defaultValue);
       }
     }
-    // Initialize deletedImages as empty array
-    setValue('deletedImages', []);
   }, [defaultValue, registerName, setValue, multiple]);
 
   const handleFileChange = (e) => {
     if (e?.target?.files?.length > 0) {
       if (multiple) {
         const fileArray = Array.from(e.target.files);
-        processFilesSequentially(fileArray, 0);
+        setPendingFiles(fileArray);
+        // Open first file for cropping
+        const reader = new FileReader();
+        const first = fileArray[0];
+        reader.onload = () => {
+          setSelectedImage({ file: first, src: reader.result, name: first.name });
+          setShowCropModal(true);
+        };
+        reader.readAsDataURL(first);
       } else {
         const file = e.target.files[0];
         const reader = new FileReader();
@@ -94,43 +85,36 @@ const ImageCropUpload = ({
     }
   };
 
-  const processFilesSequentially = (fileArray, index) => {
-    if (index >= fileArray.length) return;
-
-    const file = fileArray[index];
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedImage({
-        file,
-        src: reader.result,
-        name: file.name,
-        isMultiple: true,
-        currentIndex: index,
-        totalFiles: fileArray.length,
-        remainingFiles: fileArray.slice(index + 1),
-      });
-      setShowCropModal(true);
-    };
-    reader.readAsDataURL(file);
-  };
-
   const onImageLoad = useCallback(
     (e) => {
       const { width, height } = e.currentTarget;
-      const centerX = Math.max(0, (width - cropWidth) / 2);
-      const centerY = Math.max(0, (height - cropHeight) / 2);
+      let desiredW = width;
+      let desiredH = height;
+      if (cropAspectRatio) {
+        const imageAspect = width / height;
+        if (imageAspect >= cropAspectRatio) {
+          desiredH = height;
+          desiredW = height * cropAspectRatio;
+        } else {
+          desiredW = width;
+          desiredH = width / cropAspectRatio;
+        }
+      } else {
+        desiredW = width;
+        desiredH = height;
+      }
+      const centerX = Math.max(0, (width - desiredW) / 2);
+      const centerY = Math.max(0, (height - desiredH) / 2);
       const initialCrop = {
-        unit: "px",
-        width: cropWidth,
-        height: cropHeight,
-        x: centerX,
-        y: centerY,
+        unit: "%",
+        width: (desiredW / width) * 100,
+        height: (desiredH / height) * 100,
+        x: (centerX / width) * 100,
+        y: (centerY / height) * 100,
       };
       setCrop(initialCrop);
-      setCompletedCrop(initialCrop);
-      setZoom(1);
     },
-    [cropWidth, cropHeight]
+    [cropWidth, cropHeight, cropAspectRatio]
   );
 
   const getCroppedImg = useCallback(
@@ -140,48 +124,45 @@ const ImageCropUpload = ({
 
       if (!crop || !canvas || !ctx) return;
 
+      // Convert crop to pixel units if provided in percentage
+      const cropX = crop.unit === "%" ? (crop.x / 100) * image.width : crop.x;
+      const cropY = crop.unit === "%" ? (crop.y / 100) * image.height : crop.y;
+      const cropW = crop.unit === "%" ? (crop.width / 100) * image.width : crop.width;
+      const cropH = crop.unit === "%" ? (crop.height / 100) * image.height : crop.height;
+
+      const targetW = outputWidth || Math.round(cropW);
+      const targetH = outputHeight || Math.round(cropH);
       const pixelRatio = window.devicePixelRatio;
-      canvas.width = crop.width * pixelRatio;
-      canvas.height = crop.height * pixelRatio;
+      canvas.width = targetW * pixelRatio;
+      canvas.height = targetH * pixelRatio;
 
       ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
       ctx.imageSmoothingQuality = "high";
-
-      const imgDisplayWidth = image.width * zoom;
-      const imgDisplayHeight = image.height * zoom;
-
-      const offsetX = (imgDisplayWidth - image.width) / 2;
-      const offsetY = (imgDisplayHeight - image.height) / 2;
-
-      const adjustedCropX = (crop.x + offsetX) / zoom;
-      const adjustedCropY = (crop.y + offsetY) / zoom;
-      const adjustedCropWidth = crop.width / zoom;
-      const adjustedCropHeight = crop.height / zoom;
 
       const scaleX = image.naturalWidth / image.width;
       const scaleY = image.naturalHeight / image.height;
 
       ctx.drawImage(
         image,
-        adjustedCropX * scaleX,
-        adjustedCropY * scaleY,
-        adjustedCropWidth * scaleX,
-        adjustedCropHeight * scaleY,
+        cropX * scaleX,
+        cropY * scaleY,
+        cropW * scaleX,
+        cropH * scaleY,
         0,
         0,
-        crop.width,
-        crop.height
+        targetW,
+        targetH
       );
 
       return new Promise((resolve) => {
         canvas.toBlob(resolve, "image/jpeg", 0.9);
       });
     },
-    [zoom]
+    [outputWidth, outputHeight]
   );
 
   const handleCropComplete = async () => {
-    const cropToUse = completedCrop || crop;
+    const cropToUse = crop;
     if (!cropToUse || !imgRef.current) return;
 
     setIsUploading(true);
@@ -194,16 +175,9 @@ const ImageCropUpload = ({
       let formValue;
       let displayUrl;
 
-      if (shouldUploadToCloudinary) {
-        const uploadedUrl = await uploadToCloudinary(croppedFile);
-        formValue = uploadedUrl;
-        displayUrl = uploadedUrl;
-      } else {
-        // Return binary File object if cloud upload is disabled
-        formValue = croppedFile;
-        // Create a blob URL for preview
-        displayUrl = URL.createObjectURL(croppedFile);
-      }
+      // Always return binary File object and create blob URL for preview
+      formValue = croppedFile;
+      displayUrl = URL.createObjectURL(croppedFile);
 
       const previewFile = {
         file: croppedFile,
@@ -215,35 +189,38 @@ const ImageCropUpload = ({
       if (multiple) {
         const newFiles = [...files, previewFile];
         setFiles(newFiles);
-        setFileName(`${newFiles.length} files selected`);
-        
-        // If uploading to cloud, we map to URLs (f.value is url)
-        // If binary mode (shouldUploadToCloudinary=false), we map to File objects (f.value is File)
         setValue(
           registerName,
           newFiles.map((f) => f.value)
         );
-
-        if (
-          selectedImage.remainingFiles &&
-          selectedImage.remainingFiles.length > 0
-        ) {
-          setShowCropModal(false);
-          processFilesSequentially(selectedImage.remainingFiles, 0);
+        // Proceed to next pending file if any
+        if (pendingFiles.length > 0) {
+          const remaining = pendingFiles.slice(1);
+          setPendingFiles(remaining);
+          if (remaining.length > 0) {
+            const next = remaining[0];
+            const reader = new FileReader();
+            reader.onload = () => {
+              setSelectedImage({ file: next, src: reader.result, name: next.name });
+              // keep modal open for next
+            };
+            reader.readAsDataURL(next);
+          } else {
+            setShowCropModal(false);
+            setSelectedImage(null);
+          }
         } else {
           setShowCropModal(false);
           setSelectedImage(null);
         }
       } else {
         setFiles([previewFile]);
-        setFileName(selectedImage.name);
         setValue(registerName, formValue);
         setShowCropModal(false);
         setSelectedImage(null);
       }
 
-      const fileInput = document.getElementById(registerName);
-      if (fileInput) fileInput.value = "";
+      if (inputRef.current) inputRef.current.value = "";
     } catch (error) {
       console.error("Upload/Processing failed:", error);
     } finally {
@@ -254,35 +231,26 @@ const ImageCropUpload = ({
   const handleCropCancel = () => {
     setShowCropModal(false);
     setSelectedImage(null);
-    setCrop({ x: 0, y: 0, width: cropWidth, height: cropHeight });
-    setCompletedCrop(null);
-    setZoom(1);
-
-    const fileInput = document.getElementById(registerName);
-    if (fileInput) fileInput.value = "";
+    setCrop(null);
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   const removeImage = (indexToRemove) => {
-    const fileToRemove = files[indexToRemove];
     const updatedFiles = files.filter((_, index) => index !== indexToRemove);
-    
-    // Track deleted images (only if it's an existing image URL, not a new upload)
-    if (fileToRemove?.url && typeof fileToRemove.url === 'string' && fileToRemove.url.startsWith('http')) {
-      const newDeletedImages = [...deletedImages, fileToRemove.url];
-      setDeletedImages(newDeletedImages);
-      setValue('deletedImages', newDeletedImages);
-    }
-    
     setFiles(updatedFiles);
-    
     if (updatedFiles.length === 0) {
-      setFileName("");
       setValue(registerName, multiple ? [] : "");
     } else {
-      setFileName(multiple ? `${updatedFiles.length} files selected` : updatedFiles[0].name);
       setValue(registerName, multiple ? updatedFiles.map(f => f.value) : updatedFiles[0].value);
     }
   };
+
+  const isError = !errors?.ref?.value && errors?.type === "required";
+  const fileName = files.length === 0
+    ? ""
+    : multiple
+      ? `${files.length} files selected`
+      : files[0]?.name || "";
 
   return (
     <>
@@ -294,31 +262,21 @@ const ImageCropUpload = ({
           id={registerName}
           accept="image/*"
           multiple={multiple}
+          ref={inputRef}
           className={`peer w-full bg-transparent outline-none px-4 text-base font-tbLex text-black rounded-lg bg-slate1 ${style}
-            ${!errors?.ref?.value && errors?.type === "required"
-              ? "border-red-500"
-              : "border-slate-300 focus:border-primary"
-            }
+            ${isError ? "border-red-500" : "border-slate-300 focus:border-primary"}
             opacity-0 absolute z-10 cursor-pointer ${style}`}
           onChange={handleFileChange}
           disabled={isUploading || disabled}
         />
         <div
           className={`w-full h-full flex items-center px-4 rounded-lg cursor-pointer
-          ${!errors?.ref?.value && errors?.type === "required"
-              ? "border-red-500"
-              : "border-slate-300 peer-focus:border-primary"
-            } ${style}`}
+          ${isError ? "border-red-500" : "border-slate-300 peer-focus:border-primary"} ${style}`}
         >
           <label
             htmlFor={registerName}
             className={`px-2 bg-slate1 text-base font-tbLex ${style}
-              ${!errors?.ref?.value && errors?.type === "required"
-                ? "text-red-500"
-                : fileName
-                  ? "text-primary"
-                  : "text-slate-400"
-              }
+              ${isError ? "text-red-500" : fileName ? "text-primary" : "text-slate-400"}
               ${fileName ? "top-0 left-3 text-sm" : ""
               } transition-all duration-150 flex items-center gap-2 cursor-pointer overflow-hidden`}
           >
@@ -352,7 +310,7 @@ const ImageCropUpload = ({
         </div>
       </div>
 
-      {!errors?.ref?.value && errors?.type === "required" && (
+      {isError && (
         <Error
           message={`${label
             .replace(/\b(enter|your)\b/gi, "")
@@ -426,10 +384,7 @@ const ImageCropUpload = ({
                     as="h3"
                     className="text-lg font-medium leading-6 text-white bg-linear-gradient py-4 px-6 relative"
                   >
-                    {selectedImage?.isMultiple
-                      ? `Crop Image ${(selectedImage.currentIndex || 0) + 1
-                      } of ${selectedImage.totalFiles || 1}`
-                      : "Crop Your Image"}
+                    Crop Your Image
                     <button
                       onClick={handleCropCancel}
                       className="absolute right-4 top-4 text-white hover:text-gray-200"
@@ -443,10 +398,16 @@ const ImageCropUpload = ({
                       {selectedImage && (
                         <ReactCrop
                           crop={crop}
-                          onChange={(newCrop) => setCrop(newCrop)}
-                          onComplete={(c) => setCompletedCrop(c)}
+                          onChange={(newCrop, percentCrop) => setCrop(percentCrop || newCrop)}
+                          onComplete={(c, percentCrop) => {
+                            if (percentCrop) setCrop(percentCrop);
+                          }}
                           aspect={cropAspectRatio}
                           locked={false}
+                          restrictPosition={true}
+                          keepSelection={true}
+                          minWidth={1}
+                          minHeight={1}
                           className="max-w-full"
                           ruleOfThirds={true}
                         >
@@ -454,51 +415,14 @@ const ImageCropUpload = ({
                             ref={imgRef}
                             src={selectedImage.src}
                             alt="Crop preview"
-                            className="max-w-full max-h-96 object-contain"
-                            style={{
-                              transform: `scale(${zoom})`,
-                              transformOrigin: "center",
-                              transition: "transform 0.2s ease",
-                            }}
+                            className="max-w-full max-h-[70vh] object-contain"
                             onLoad={onImageLoad}
                           />
                         </ReactCrop>
                       )}
                     </div>
                   </div>
-
-                  <div className="mb-4 px-6">
-                    <label className="text-sm font-medium text-gray-700 min-w-[60px]">
-                      Zoom:
-                    </label>
-
-                    <input
-                      type="range"
-                      min="0.5"
-                      max="3"
-                      step="0.1"
-                      value={zoom}
-                      onChange={(e) => setZoom(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                    />
-                  </div>
                   <div className="bg-gray-50 px-6 py-4 flex justify-center items-center">
-                    {/* <button
-                      type="button"
-                      onClick={() => {
-                        setZoom(1);
-                        setCrop({
-                          unit: "px",
-                          width: cropWidth,
-                          height: cropHeight,
-                          x: 50,
-                          y: 50,
-                        });
-                      }}
-                      className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
-                    >
-                      Reset
-                    </button> */}
                     <div className="flex space-x-3">
                       <button
                         type="button"
