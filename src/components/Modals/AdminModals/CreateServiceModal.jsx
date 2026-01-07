@@ -341,11 +341,11 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Order
+                                                        Service Position
                                                     </h4>
                                                     <TextInput
-                                                        label="Enter Service Order"
-                                                        placeholder="Enter Service Order"
+                                                        label="Enter Service Position"
+                                                        placeholder="Enter Service Position"
                                                         type="number"
                                                         registerName="serviceOrder"
                                                         props={{
