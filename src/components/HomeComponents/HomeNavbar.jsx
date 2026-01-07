@@ -649,7 +649,6 @@ const NotificationSection = () => {
                                         tabIndex="0"
                                         role="region"
                                         aria-label="scrollable content"
-                                        style={{ height: 'auto', overflow: ' scroll' }}
                                     >
                                         <div className="simplebar-content" style={{ padding: '0px' }}>
                                             {notificationsDropdown?.map((item, i) => (
