@@ -84,7 +84,7 @@ const ServiceBookings = () => {
     };
 
     const orderStatusBody = (row) => {
-        const currentStatus = row?.orderStatus || 'PENDING';
+        const currentStatus = row?.astrologerStatus || 'PENDING';
         return (
             <div className="space-y-1">
                 <span>{currentStatus}</span>
@@ -193,10 +193,25 @@ const ServiceBookings = () => {
             style: true, sortable: true
         },
         {
-            field: 'orderStatus',
-            header: 'Order Status',
-            body: orderStatusBody,
-            style: true, sortable: true
+            field: 'services',
+            header: 'Astrologer Status',
+            body: (row) => (
+                <div className="flex flex-col items-center space-y-2">
+                    {row?.services?.map((service, index) => {
+                        const status = service?.astrologerStatus?.toUpperCase();
+                        const statusColor = 
+                            status === 'ACCEPTED' ? 'text-green-600 bg-green-100' :
+                            status === 'PENDING' ? 'text-yellow-600 bg-yellow-100' :
+                            'text-red-600 bg-red-100';
+                        return (
+                            <span key={index} className={`px-4 py-2 rounded-full text-xs font-tbLex tracking-tight font-medium text-center ${statusColor}`}>
+                                {status || 'PENDING'}
+                            </span>
+                        );
+                    })}
+                </div>
+            ),
+            style: true, sortable: false
         },
         {
             field: 'createdAt',
