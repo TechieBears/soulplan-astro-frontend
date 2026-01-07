@@ -748,6 +748,12 @@ div[style*="position: absolute"][style*="z-index: 100000"][style*="pointer-event
     animation: gradient 15s ease infinite;
 }
 
+@media screen and (max-width: 768px) {
+    .imageback {
+        background-size: 100% 100%;
+    }
+}
+
 .spin-slow {
     animation: spin 15s linear infinite;
 }

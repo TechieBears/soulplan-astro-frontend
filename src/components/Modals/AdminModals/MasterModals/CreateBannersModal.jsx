@@ -157,7 +157,11 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                                 *
                               </span>
                               <span className="text-[11px] text-orange-500 ml-2">
-                                (Recommended size: 600px × 250px)
+                                {watch("type") === "website"
+                                  ? "(Recommended size: 1920px × 620px)"
+                                  : watch("type") === "app"
+                                    ? "(Recommended size: 1920px × 1080px)"
+                                    : "(Select Banner Type first)"}
                               </span>
                             </h4>
 
@@ -173,9 +177,11 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                               setValue={setValue}
                               control={control}
                               defaultValue={userData?.image}
-                              cropAspectRatio={600 / 250}
-                              cropHeight={250}
-                              cropWidth={600}
+                              cropAspectRatio={watch("type") === "website" ? 1920 / 620 : 1920 / 1080}
+                              cropHeight={watch("type") === "website" ? 310 : 360}
+                              cropWidth={watch("type") === "website" ? 960 : 640}
+                              outputWidth={watch("type") === "website" ? 1920 : 1920}
+                              outputHeight={watch("type") === "website" ? 620 : 1080}
                               shouldUploadToCloudinary={false}
                             />
                           </div>
