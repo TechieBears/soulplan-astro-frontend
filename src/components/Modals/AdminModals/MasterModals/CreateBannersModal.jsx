@@ -37,12 +37,15 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
         title: data?.title,
         description: data?.description,
         type: data?.type,
-        bannerFor: data?.type === "app" ? data?.bannerFor : "home",
         position: data?.position,
         startDate: data?.startDate,
         endDate: data?.endDate,
         image: data?.image
       };
+
+      if (data?.type === "app") {
+        updatedData.bannerFor = data?.bannerFor;
+      }
 
       if (edit) {
         await editBanner(userData?._id, updatedData).then((res) => {
@@ -100,7 +103,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
 
   useEffect(() => {
     if (watch("type") === "website") {
-      setValue("bannerFor", "home");
+      setValue("bannerFor", undefined);
     }
   }, [watch("type")]);
 
