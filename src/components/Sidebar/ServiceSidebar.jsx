@@ -75,7 +75,7 @@ const SidebarLayout = () => {
 
 const SideBar = ({ services, active, setActive }) => {
     return (
-        <aside className="w-full lg:w-1/4 space-y-2 pb-14 lg:pb-0 h-screen overflow-y-scroll scroll-hide">
+        <aside className="w-full lg:w-1/4 space-y-2 pb-14 lg:pb-0 lg:h-auto overflow-y-auto scroll-hide">
             <ul className="">
                 {services?.map((service) => (
                     <li key={service.name}>
