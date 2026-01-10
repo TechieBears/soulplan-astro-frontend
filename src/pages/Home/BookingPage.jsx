@@ -348,7 +348,7 @@ const BookingPage = () => {
                             <div className="space-y-5 ">
                                 <div className="">
                                     <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
-                                        Services Type
+                                        Services Type*
                                     </h4>
                                     <SelectTextInput
                                         label="Select Services Type"
