@@ -531,6 +531,18 @@ export const editService = async (id, data) => {
     }
 }
 
+export const changeFreeStatus = async (serviceId) => {
+    const url = `${environment.baseUrl}service/change-free-status?serviceId=${serviceId}`;
+    try {
+        const response = await axios.get(url)
+        return response.data
+    }
+    catch (err) {
+        console.log("==========error in changeFreeStatus api file", err);
+        return err?.response?.data
+    }
+}
+
 
 // ======================= Products Api ======================
 

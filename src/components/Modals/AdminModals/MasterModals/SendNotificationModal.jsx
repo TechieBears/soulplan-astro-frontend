@@ -9,7 +9,7 @@ import TextInput from '../../../TextInput/TextInput';
 import SelectTextInput from '../../../TextInput/SelectTextInput';
 import CustomTextArea from '../../../TextInput/CustomTextArea';
 import { TableTitle } from '../../../../helper/Helper';
-import ImageUploadInput from '../../../TextInput/ImageUploadInput';
+import ImageCropUpload from '../../../TextInput/ImageCropUpload';
 import MultiSelectTextInput from '../../../TextInput/MultiSelectTextInput';
 
 function SendNotificationModal({ setRefreshTrigger }) {
@@ -162,14 +162,13 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                         />
                                                     </div>
 
-                                                    {/* Image Field */}
                                                     <div className=''>
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
                                                             Notification Image
                                                         </h4>
-                                                        <ImageUploadInput
+                                                        <ImageCropUpload
                                                             label="Upload Notification Image"
                                                             multiple={false}
                                                             registerName="image"
@@ -178,6 +177,8 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                             register={register}
                                                             setValue={setValue}
                                                             control={control}
+                                                            cropAspectRatio={114 / 43}
+                                                            shouldUploadToCloudinary={false}
                                                         />
                                                     </div>
 

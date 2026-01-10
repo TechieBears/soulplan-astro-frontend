@@ -218,7 +218,7 @@ const PaymentSuccess = () => {
                             className="w-5 h-5 text-green-600"
                           />
                           <span className="text-sm">
-                            Mode: {service?.service?.serviceType}
+                            Mode: {service?.serviceType}
                           </span>
                         </p>
                         <p className="flex items-center gap-3">

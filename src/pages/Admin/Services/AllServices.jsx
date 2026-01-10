@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import Switch from "react-js-switch";
-import { editService, getServices } from '../../../api';
+import { editService, getServices, changeFreeStatus } from '../../../api';
 import Table from '../../../components/Table/Table'
 import SelectTextInput from '../../../components/TextInput/SelectTextInput'
 import TextInput from '../../../components/TextInput/TextInput'
@@ -64,6 +64,18 @@ const AllServices = () => {
             await editService(id, updatedData);
             setRefreshTrigger(prev => prev + 1);
             toast.success('Status updated');
+        }
+        catch (error) {
+            console.log('error', error)
+            toast.error('Update failed');
+        }
+    }
+
+    const handleFreeStatusChange = async (id) => {
+        try {
+            await changeFreeStatus(id);
+            setRefreshTrigger(prev => prev + 1);
+            toast.success('Service type updated');
         }
         catch (error) {
             console.log('error', error)
@@ -188,6 +200,18 @@ const AllServices = () => {
         <img loading="lazy" src={row?.image} alt="image" className='w-full h-full object-cover rounded bg-slate-100' />
     </div>
 
+    const isFreeBody = (row) => (
+        <div className="flex items-center justify-center">
+            <Switch
+                value={row?.isFree}
+                onChange={() => handleFreeStatusChange(row?._id)}
+                size={50}
+                backgroundColor={{ on: "#86d993", off: "#f59e0b" }}
+                borderColor={{ on: "#86d993", off: "#f59e0b" }}
+            />
+        </div>
+    );
+
     const actionBody = (row) => (
         <div className="flex items-center gap-2">
             <CreateServiceModal
@@ -246,6 +270,13 @@ const AllServices = () => {
             field: 'usdPrice',
             header: 'USD Price',
             body: usdPriceBody,
+            style: true,
+            sortable: true
+        },
+        {
+            field: 'isFree',
+            header: 'Is Free',
+            body: isFreeBody,
             style: true,
             sortable: true
         },
