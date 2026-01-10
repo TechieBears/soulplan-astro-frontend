@@ -99,7 +99,8 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                 sellingPrice: userData?.sellingPrice,
                 images: userData?.images || [],
                 mrpPrice: userData?.mrpPrice,
-                specification: userData?.specification || []
+                specification: userData?.specification || [],
+                hsnCode: userData?.hsnCode
             });
 
             if (userData?.category?._id) {
@@ -121,7 +122,8 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                 sellingPrice: '',
                 mrpPrice: '',
                 images: [],
-                specification: []
+                specification: [],
+                hsnCode: ''
             });
         }
     }, [edit, userData, reset, setValue, open]);
@@ -332,6 +334,21 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                             registerName="stock"
                                                             props={{ ...register('stock', { required: "Quantity is required", min: { value: 1, message: "Quantity must be at least 1" } }) }}
                                                             errors={errors.stock}
+                                                        />
+                                                    </div>
+                                                    <div className="">
+                                                        <h4
+                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                        >
+                                                            HSN Code
+                                                        </h4>
+                                                        <TextInput
+                                                            label="Enter HSN Code"
+                                                            placeholder="Enter HSN Code"
+                                                            type="text"
+                                                            registerName="hsnCode"
+                                                            props={{ ...register('hsnCode') }}
+                                                            errors={errors.hsnCode}
                                                         />
                                                     </div>
                                                     <div className="">
