@@ -45,8 +45,10 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                     ? data.serviceType
                     : typeof data.serviceType === 'string'
                         ? data.serviceType.split(',').map(s => s.trim())
-                        : [data.serviceType].filter(Boolean)
+                        : [data.serviceType].filter(Boolean),
+                hsnCode: data.hsn
             };
+            delete formData.hsn;
 
             if (edit) {
                 const res = await editService(userData?._id, formData);
@@ -96,6 +98,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                 durationInMinutes: userData?.durationInMinutes,
                 htmlContent: userData?.htmlContent,
                 serviceOrder: userData?.serviceOrder,
+                hsn: userData?.hsnCode,
                 ...userData
             });
             setValue('category', userData?.category?._id);
@@ -113,7 +116,8 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                 htmlContent: '',
                 image: '',
                 videoUrl: [],
-                serviceOrder: ''
+                serviceOrder: '',
+                hsn: ''
             });
         }
     }, [edit, userData, reset, setValue, open]);
@@ -354,6 +358,23 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                             })
                                                         }}
                                                         errors={errors.serviceOrder}
+                                                    />
+                                                </div>
+                                                <div className=''>
+                                                    <h4
+                                                        className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                    >
+                                                        HSN Code
+                                                    </h4>
+                                                    <TextInput
+                                                        label="Enter HSN Code"
+                                                        placeholder="Enter HSN Code"
+                                                        type="text"
+                                                        registerName="hsn"
+                                                        props={{
+                                                            ...register('hsn')
+                                                        }}
+                                                        errors={errors.hsn}
                                                     />
                                                 </div>
                                                 <div className=''>
