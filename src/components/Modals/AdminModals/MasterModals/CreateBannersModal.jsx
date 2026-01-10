@@ -180,7 +180,7 @@ function CreateBannersModal({ edit, userData, setRefreshTrigger }) {
                               setValue={setValue}
                               control={control}
                               defaultValue={userData?.image}
-                              cropAspectRatio={watch("type") === "website" ? 1920 / 620 : 1920 / 1080}
+                              cropAspectRatio={watch("type") === "website" ? 1920 / 620 : 114 / 43}
                               cropHeight={watch("type") === "website" ? 310 : 360}
                               cropWidth={watch("type") === "website" ? 960 : 640}
                               outputWidth={watch("type") === "website" ? 1920 : 1920}

@@ -441,7 +441,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         setValue={setValue}
                                                         control={control}
                                                         defaultValue={userData?.image}
-                                                        cropAspectRatio={1}
+                                                        cropAspectRatio={6 / 5}
                                                         cropWidth={500}
                                                         cropHeight={300}
                                                         shouldUploadToCloudinary={false}
