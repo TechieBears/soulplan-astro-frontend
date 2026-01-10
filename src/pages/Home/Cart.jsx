@@ -81,7 +81,7 @@ const CartPage = () => {
         </div>
 
         {/* Tabs: Products / Services */}
-        {/* <div className="mb-6">
+        <div className="mb-6">
           <div className="inline-flex rounded-lg overflow-hidden border border-slate-300 bg-white">
             <button
               type="button"
@@ -98,7 +98,7 @@ const CartPage = () => {
               Services
             </button>
           </div>
-        </div> */}
+        </div>
 
         {activeTab === "products" ? <ProductTab /> : <ServiceTab />}
       </div>

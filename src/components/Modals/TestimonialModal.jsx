@@ -1,5 +1,4 @@
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -114,37 +113,22 @@ function TestimonialModal() {
                 Share Your Experience
             </GradientButton>
 
-            <Transition appear show={open} as={Fragment}>
-                <Dialog as="div" className="relative z-[1000]" onClose={toggle}>
-                <Transition.Child
-                    as={Fragment}
-                    enter="ease-out duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                >
-                    <div className="fixed inset-0 backdrop-blur-[2.3px] bg-black/20" />
-                </Transition.Child>
-                <div className="fixed inset-0 overflow-y-auto scrollbars">
-                    <div className="flex min-h-full items-center justify-center p-4 text-center">
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0 scale-95"
-                            enterTo="opacity-100 scale-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100 scale-100"
-                            leaveTo="opacity-0 scale-95"
+            {open && (
+                <div className="fixed inset-0 z-[1000] overflow-y-auto scrollbars" onClick={toggle}>
+                    <div className="fixed inset-0 backdrop-blur-[2.3px] bg-black/20 transition-opacity duration-300" />
+                    <div className="flex min-h-full items-center justify-center p-4">
+                        <div 
+                            className="w-full max-w-2xl transform overflow-hidden rounded-lg bg-white text-left align-middle shadow-xl transition-all animate-in fade-in zoom-in-95 duration-300"
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-lg bg-white  text-left align-middle shadow-xl transition-all">
-                                <Dialog.Title as="h2" className="text-lg text-white w-full bg-linear-gradient font-tbLex leading-6 py-5 px-5 relative z-10">
+                            <div className="text-lg text-white w-full bg-linear-gradient font-tbLex leading-6 py-5 px-5 relative z-10">
+                                <h2>
                                     Share Your Experience
-                                    <button onClick={toggle} className="absolute right-5 top-5 text-white hover:text-slate-200">
-                                        <X size={30} />
-                                    </button>
-                                </Dialog.Title>
+                                </h2>
+                                <button onClick={toggle} className="absolute right-5 top-5 text-white hover:text-slate-200">
+                                    <X size={30} />
+                                </button>
+                            </div>
                                 <div className="bg-slate1">
                                     <form onSubmit={handleSubmit(formSubmit)} >
                                         <div className="bg-white px-4 pb-5 pt-5 sm:p-6 sm:pb-4">
@@ -250,13 +234,11 @@ function TestimonialModal() {
                                         </footer>
                                     </form>
                                 </div>
-                            </Dialog.Panel>
-                        </Transition.Child>
+                        </div>
                     </div>
                 </div>
-            </Dialog>
-        </Transition>
-    </>
+            )}
+        </>
     );
 }
 

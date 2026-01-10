@@ -14,6 +14,7 @@ import { addRating, getRatings } from "../../api";
 import toast from "react-hot-toast";
 import { Star } from "@phosphor-icons/react";
 import { PulseLoader } from "react-spinners";
+import { useCurrency } from "../../utils/useCurrency";
 
 const OrderViewModal = ({
   isOpen,
@@ -22,6 +23,7 @@ const OrderViewModal = ({
   orderType = "product",
 }) => {
   const [allReviews, setAllReviews] = useState([]);
+  const currencySymbol = useCurrency();
 
   if (!isOpen || !orderData) return null;
 
@@ -201,7 +203,7 @@ const OrderViewModal = ({
                             <div className="flex justify-between">
                               <span className="font-tbLex">Subtotal:</span>
                               <span className="font-tbPop">
-                                ₹{orderData.totalAmount?.toLocaleString()}
+                                {currencySymbol}{orderData.totalAmount?.toLocaleString()}
                               </span>
                             </div>
                             {/* {orderData.amount?.gst && (
@@ -213,7 +215,7 @@ const OrderViewModal = ({
                             <div className="flex justify-between font-semibold text-lg border-t pt-2">
                               <span className="font-tbLex">Total:</span>
                               <span className="font-tbPop">
-                                ₹{orderData.totalAmount?.toLocaleString()}
+                                {currencySymbol}{orderData.totalAmount?.toLocaleString()}
                               </span>
                             </div>
                             <div className="flex justify-between">
@@ -242,7 +244,7 @@ const OrderViewModal = ({
                             <div className="flex justify-between font-semibold text-lg">
                               <span className="font-tbLex">Total Amount:</span>
                               <span className="font-tbPop">
-                                ₹{orderData.totalAmount?.toLocaleString()}
+                                {currencySymbol}{orderData.totalAmount?.toLocaleString()}
                               </span>
                             </div>
                             <div className="flex justify-between">
@@ -282,6 +284,7 @@ const RenderProductView = ({ item, itemIndex, orderData }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [ratingsLoading, setRatingsLoading] = useState(false);
   const user = useSelector((state) => state.user.userDetails);
+  const currencySymbol = useCurrency();
 
   const { handleSubmit, reset, control } = useForm({
     defaultValues: { rating: 0, reviewText: "" },
@@ -403,13 +406,13 @@ const RenderProductView = ({ item, itemIndex, orderData }) => {
         {/* Price */}
         <div>
           <div className="text-xl lg:text-2xl font-semibold text-p font-tbPop">
-            ₹{product.sellingPrice?.toLocaleString()}
+            {currencySymbol}{product.sellingPrice?.toLocaleString()}
           </div>
           <div className="text-base lg:text-lg text-slate-500 line-through font-tbPop">
-            MRP ₹{product.mrpPrice?.toLocaleString()}
+            MRP {currencySymbol}{product.mrpPrice?.toLocaleString()}
           </div>
           <div className="text-sm text-green-600 font-tbPop">
-            Subtotal: ₹{product.subtotal?.toLocaleString()}
+            Subtotal: {currencySymbol}{product.subtotal?.toLocaleString()}
           </div>
         </div>
 
@@ -618,6 +621,7 @@ const RenderServiceView = ({ service, serviceIndex, orderData }) => {
   const [activeReview, setActiveReview] = useState(false);
   const [ratingsLoading, setRatingsLoading] = useState(false);
   const user = useSelector((state) => state.user.userDetails);
+  const currencySymbol = useCurrency();
 
   const { handleSubmit, reset, control } = useForm({
     defaultValues: { rating: 0, reviewText: "" },
@@ -756,7 +760,7 @@ const RenderServiceView = ({ service, serviceIndex, orderData }) => {
 
             <div className="flex items-center gap-4 font-tbPop">
               <span className="font-semibold">
-                Price: ₹{service.servicePrice?.toLocaleString()}
+                Price: {currencySymbol}{service.servicePrice?.toLocaleString()}
               </span>
             </div>
 
