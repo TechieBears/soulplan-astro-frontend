@@ -45,10 +45,8 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                     ? data.serviceType
                     : typeof data.serviceType === 'string'
                         ? data.serviceType.split(',').map(s => s.trim())
-                        : [data.serviceType].filter(Boolean),
-                hsnCode: data.hsn
+                        : [data.serviceType].filter(Boolean)
             };
-            delete formData.hsn;
 
             if (edit) {
                 const res = await editService(userData?._id, formData);
@@ -98,7 +96,8 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                 durationInMinutes: userData?.durationInMinutes,
                 htmlContent: userData?.htmlContent,
                 serviceOrder: userData?.serviceOrder,
-                hsn: userData?.hsnCode,
+                hsnCode: userData?.hsnCode,
+                gstNumber: userData?.gstNumber,
                 ...userData
             });
             setValue('category', userData?.category?._id);
@@ -117,7 +116,8 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                 image: '',
                 videoUrl: [],
                 serviceOrder: '',
-                hsn: ''
+                hsnCode: '',
+                gstNumber: ''
             });
         }
     }, [edit, userData, reset, setValue, open]);
@@ -345,7 +345,7 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        Service Position
+                                                        Service Position <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <TextInput
                                                         label="Enter Service Position"
@@ -354,7 +354,9 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                         registerName="serviceOrder"
                                                         props={{
                                                             ...register('serviceOrder', {
-                                                                valueAsNumber: true
+                                                                required: "Service Position is required",
+                                                                valueAsNumber: true,
+                                                                min: { value: 1, message: "Service Position must be at least 1" }
                                                             })
                                                         }}
                                                         errors={errors.serviceOrder}
@@ -364,17 +366,40 @@ function CreateServiceModal({ edit, userData, setRefreshTrigger }) {
                                                     <h4
                                                         className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                     >
-                                                        HSN Code
+                                                        HSN Code <span className="text-red-500 text-xs font-tbLex">*</span>
                                                     </h4>
                                                     <TextInput
                                                         label="Enter HSN Code"
                                                         placeholder="Enter HSN Code"
                                                         type="text"
-                                                        registerName="hsn"
+                                                        registerName="hsnCode"
                                                         props={{
-                                                            ...register('hsn')
+                                                            ...register('hsnCode', {
+                                                                required: "HSN Code is required"
+                                                            })
                                                         }}
-                                                        errors={errors.hsn}
+                                                        errors={errors.hsnCode}
+                                                    />
+                                                </div>
+                                                <div className=''>
+                                                    <h4
+                                                        className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                    >
+                                                        GST (in %) <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                    </h4>
+                                                    <TextInput
+                                                        label="Enter GST Percentage"
+                                                        placeholder="Enter GST Percentage"
+                                                        type="number"
+                                                        registerName="gstNumber"
+                                                        props={{
+                                                            ...register('gstNumber', {
+                                                                required: "GST is required",
+                                                                min: { value: 0, message: "GST must be at least 0" },
+                                                                max: { value: 100, message: "GST cannot exceed 100" }
+                                                            })
+                                                        }}
+                                                        errors={errors.gstNumber}
                                                     />
                                                 </div>
                                                 <div className=''>
