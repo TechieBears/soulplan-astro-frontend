@@ -151,6 +151,18 @@ function AllUserProfiles() {
         </div>
     );
 
+    const gstNumberBody = (row) => (
+        <div className="text-sm font-medium text-gray-700">
+            {row?.gstNumber || "----"}
+        </div>
+    );
+
+    const hsnCodeBody = (row) => (
+        <div className="text-sm font-medium text-gray-700">
+            {row?.hsnCode || "----"}
+        </div>
+    );
+
 
     const columns = [
         { field: "image", header: "Image", body: imageBodyTemp, style: true, sortable: true },
@@ -185,6 +197,8 @@ function AllUserProfiles() {
             ),
             style: true, sortable: true
         },
+        { field: 'gstNumber', header: 'GST Number', body: gstNumberBody, style: true, sortable: true },
+        { field: 'hsnCode', header: 'HSN Code', body: hsnCodeBody, style: true, sortable: true },
         {
             field: 'isActive',
             header: 'Status',

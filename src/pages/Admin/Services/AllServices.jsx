@@ -212,6 +212,18 @@ const AllServices = () => {
         </div>
     );
 
+    const gstNumberBody = (row) => (
+        <div className="text-sm font-medium text-gray-700">
+            {row?.gstNumber || "----"}
+        </div>
+    );
+
+    const hsnCodeBody = (row) => (
+        <div className="text-sm font-medium text-gray-700">
+            {row?.hsnCode || "----"}
+        </div>
+    );
+
     const actionBody = (row) => (
         <div className="flex items-center gap-2">
             <CreateServiceModal
@@ -284,6 +296,20 @@ const AllServices = () => {
             field: 'serviceOrder',
             header: 'Service Order',
             body: serviceOrderBody,
+            style: true,
+            sortable: true
+        },
+        {
+            field: 'gstNumber',
+            header: 'GST Number',
+            body: gstNumberBody,
+            style: true,
+            sortable: true
+        },
+        {
+            field: 'hsnCode',
+            header: 'HSN Code',
+            body: hsnCodeBody,
             style: true,
             sortable: true
         },
