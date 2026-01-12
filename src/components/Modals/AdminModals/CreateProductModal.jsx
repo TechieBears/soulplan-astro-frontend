@@ -100,7 +100,8 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                 images: userData?.images || [],
                 mrpPrice: userData?.mrpPrice,
                 specification: userData?.specification || [],
-                hsnCode: userData?.hsnCode
+                hsnCode: userData?.hsnCode,
+                gstNumber: userData?.gstNumber
             });
 
             if (userData?.category?._id) {
@@ -123,7 +124,8 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                 mrpPrice: '',
                 images: [],
                 specification: [],
-                hsnCode: ''
+                hsnCode: '',
+                gstNumber: ''
             });
         }
     }, [edit, userData, reset, setValue, open]);
@@ -349,6 +351,26 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                             registerName="hsnCode"
                                                             props={{ ...register('hsnCode') }}
                                                             errors={errors.hsnCode}
+                                                        />
+                                                    </div>
+                                                    <div className="">
+                                                        <h4
+                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                        >
+                                                            GST (in %)
+                                                        </h4>
+                                                        <TextInput
+                                                            label="Enter GST Percentage"
+                                                            placeholder="Enter GST Percentage"
+                                                            type="number"
+                                                            registerName="gstNumber"
+                                                            props={{
+                                                                ...register('gstNumber', {
+                                                                    min: { value: 0, message: "GST must be at least 0" },
+                                                                    max: { value: 100, message: "GST cannot exceed 100" }
+                                                                })
+                                                            }}
+                                                            errors={errors.gstNumber}
                                                         />
                                                     </div>
                                                     <div className="">
