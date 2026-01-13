@@ -21,7 +21,7 @@ const ZoomMeeting = () => {
             // Parse Zoom URL for SDK
             const parsed = parseZoomUrl(zoomUrl);
             if (parsed.isValid) {
-                setMeetingData(parsed);
+                setMeetingData({ ...parsed, userName });
             } else {
                 setError('Invalid Zoom meeting URL');
             }
@@ -76,7 +76,7 @@ const ZoomMeeting = () => {
     }
 
     return (
-        <div className="w-full min-h-screen py-8" style={{ overflow: 'visible' }}>
+        <div className="w-full min-h-screen flex items-center justify-center bg-white-900 p-0 md:p-4">
             <ZoomSDKEmbed
                 key={meetingData.meetingId}
                 meetingNumber={meetingData.meetingId}
