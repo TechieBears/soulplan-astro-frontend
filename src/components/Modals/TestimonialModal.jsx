@@ -41,7 +41,13 @@ function TestimonialModal() {
     }, [searchParams, setSearchParams]);
 
     useEffect(() => {
-        if (!city?.trim() || city.trim().length < 3) return;
+        if (!city?.trim()) {
+            setValue("state", "");
+            setValue("country", "");
+            return;
+        }
+
+        if (city.trim().length < 3) return;
 
         const timeoutId = setTimeout(async () => {
             try {
@@ -51,9 +57,14 @@ function TestimonialModal() {
                 if (postOffice) {
                     setValue("state", postOffice.State, { shouldValidate: true });
                     setValue("country", "India", { shouldValidate: true });
+                } else {
+                    setValue("state", "");
+                    setValue("country", "");
                 }
             } catch (err) {
                 console.error("City API error:", err);
+                setValue("state", "");
+                setValue("country", "");
             }
         }, 500);
 

@@ -37,11 +37,12 @@ export default function MultiSelectTextInput({ label, options, value, onChange, 
     const displaySelectedOptions = selectedOptions;
 
     return (
-        <div className=''>
+        <div className='relative'>
             <Autocomplete
                 multiple
                 options={allOptions}
                 disableCloseOnSelect
+                disablePortal
                 value={displaySelectedOptions}
                 onChange={handleChange}
                 getOptionLabel={(option) => option.label}
