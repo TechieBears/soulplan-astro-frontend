@@ -91,15 +91,15 @@ const RegisterPage = () => {
 
                 {/* Form */}
                 <form
-                    className="grid grid-cols-1 gap-6"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
                     onSubmit={handleSubmit(onSubmit)}
                 >
-                    {/* First Name */}
-                    <div className="col-span-1">
+                    {/* Title */}
+                    <div className="col-span-1 md:col-span-2">
                         <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">
                             Title <span className="text-red-500">*</span>
                         </h4>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex gap-2 overflow-x-auto">
                             {["Mr", "Mrs", "Miss", "Baby", "Master"].map((type) => (
                                 <Controller
                                     key={type}
@@ -112,7 +112,7 @@ const RegisterPage = () => {
                                         <button
                                             type="button"
                                             onClick={() => onChange(type)}
-                                            className={`px-5 font-tbLex py-3 rounded-md text-sm font-medium ${value === type
+                                            className={`px-4 md:px-5 font-tbLex py-3 rounded-md text-sm font-medium whitespace-nowrap ${value === type
                                                 ? "bg-linear-gradient text-white"
                                                 : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                                                 }`}
@@ -124,6 +124,8 @@ const RegisterPage = () => {
                             ))}
                         </div>
                     </div>
+
+                    {/* First Name */}
                     <div className="col-span-1">
                         <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
                             First Name <span className="text-red-500">*</span>
@@ -304,7 +306,7 @@ const RegisterPage = () => {
                     </div>
 
                     {/* Button */}
-                    <div className="mt-2">
+                    <div className="mt-2 col-span-1 md:col-span-2">
                         {loader ? (
                             <LoadBox className={formBtn3} />
                         ) : (
