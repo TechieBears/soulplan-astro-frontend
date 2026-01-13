@@ -327,7 +327,7 @@ const ProductsPage = () => {
 
         {/* Pagination */}
         {totalPages > 0 && (
-          <div className="flex justify-center lg:justify-start items-center space-x-2 my-8">
+          <div className="flex justify-center items-center space-x-2 my-8">
             {/* Previous Button */}
             <button
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
