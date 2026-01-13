@@ -20,7 +20,7 @@ const Star = ({ filled }) => (
 );
 
 const ProductCard = ({ product }) => {
-    const { _id, name, sellingPrice, mrpPrice, discountPercentage, images } = product;
+    const { _id, name, sellingPrice, mrpPrice, discountPercentage, images, avgRatings = 0 } = product;
     const navigate = useNavigate();
     const login = useSelector((state) => state.user.isLogged);
     const dispatch = useDispatch();
@@ -83,7 +83,7 @@ const ProductCard = ({ product }) => {
 
                         <div className="flex items-center gap-1 mb-2 sm:mb-3">
                             {[1, 2, 3, 4, 5].map((i) => (
-                                <Star key={i} filled={i <= 4} />
+                                <Star key={i} filled={i <= avgRatings} />
                             ))}
                         </div>
                     </div>
