@@ -19,6 +19,7 @@ import moment from "moment";
 import { formBtn3 } from "../../utils/CustomClass";
 import maskHand from "../../assets/services/maskHand.png";
 import moon from "../../assets/moon.png";
+import sun from "../../assets/helperImages/sun.png";
 import { useCurrency } from "../../utils/useCurrency";
 import { getYouTubeVideoId } from "../../utils/youtubeHelper";
 
@@ -195,6 +196,7 @@ const MainSection = ({ content }) => {
     return (
         <main className="flex-1 !my-0 relative">
             <img src={maskHand} alt="decoration" className="absolute -right-5 md:-right-10 lg:-right-16 xl:-right-20 top-[300px] w-20 sm:w-24 md:w-26 lg:w-28 h-auto object-contain pointer-events-none scale-x-[-1] z-0" />
+            <img src={sun} alt="sun decoration" className="absolute right-10 md:right-16 lg:right-20 xl:right-24 top-[620px] w-36 sm:w-40 md:w-44 lg:w-48 h-auto object-contain pointer-events-none z-0" />
             <div className="space-y-8 relative z-10">
                 <div className="flex flex-col md:flex-row gap-4 mb-6 md:items-stretch">
                     <div className="w-full md:w-[230px] lg:w-[280px] xl:w-[320px] flex-shrink-0">
@@ -229,8 +231,8 @@ const MainSection = ({ content }) => {
                                 <h4 className="text-slate-700 text-sm font-tbPop font-normal">Mode:</h4>
                                 <div className="flex flex-wrap gap-2">
                                     {content?.serviceType?.map((mode, index) => (
-                                        <span 
-                                            key={index} 
+                                        <span
+                                            key={index}
                                             className="px-3 py-1 text-xs font-tbPop font-medium capitalize bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 rounded-full"
                                         >
                                             {mode === 'online' ? 'Online' : mode === 'face_to_face' ? 'Face to Face' : mode}

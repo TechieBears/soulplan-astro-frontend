@@ -99,6 +99,8 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                 sellingPrice: userData?.sellingPrice,
                 images: userData?.images || [],
                 mrpPrice: userData?.mrpPrice,
+                usdSellingPrice: userData?.usdSellingPrice,
+                usdMrpPrice: userData?.usdMrpPrice,
                 specification: userData?.specification || [],
                 hsnCode: userData?.hsnCode,
                 gstNumber: userData?.gstNumber
@@ -122,6 +124,8 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                 stock: '',
                 sellingPrice: '',
                 mrpPrice: '',
+                usdSellingPrice: '',
+                usdMrpPrice: '',
                 images: [],
                 specification: [],
                 hsnCode: '',
@@ -285,20 +289,19 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                     </div>
 
                                                     <div className="">
-
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
-                                                            Product MRP Price <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                            Product MRP Price (INR) <span className="text-red-500 text-xs font-tbLex">*</span>
                                                         </h4>
                                                         <TextInput
-                                                            label="Enter Product MRP Price"
-                                                            placeholder="Enter Product MRP Price"
+                                                            label="Enter Product MRP Price (INR)"
+                                                            placeholder="Enter Product MRP Price (INR)"
                                                             type="number"
                                                             registerName="mrpPrice"
                                                             props={{
                                                                 ...register('mrpPrice', {
-                                                                    required: "MRP Price is required",
+                                                                    required: "MRP Price (INR) is required",
                                                                     min: {
                                                                         value: 1,
                                                                         message: "MRP Price must be at least 1"
@@ -312,15 +315,53 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
-                                                            Product Selling Price <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                            Product Selling Price (INR) <span className="text-red-500 text-xs font-tbLex">*</span>
                                                         </h4>
                                                         <TextInput
-                                                            label="Enter Product Selling Price"
-                                                            placeholder="Enter Product Selling Price"
+                                                            label="Enter Product Selling Price (INR)"
+                                                            placeholder="Enter Product Selling Price (INR)"
                                                             type="number"
                                                             registerName="sellingPrice"
-                                                            props={{ ...register('sellingPrice', { required: "Selling Price is required", min: { value: 1, message: "Selling Price must be at least 1" } }) }}
+                                                            props={{ ...register('sellingPrice', { required: "Selling Price (INR) is required", min: { value: 1, message: "Selling Price must be at least 1" } }) }}
                                                             errors={errors.sellingPrice}
+                                                        />
+                                                    </div>
+                                                    <div className="">
+                                                        <h4
+                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                        >
+                                                            Product MRP Price (USD) <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                        </h4>
+                                                        <TextInput
+                                                            label="Enter Product MRP Price (USD)"
+                                                            placeholder="Enter Product MRP Price (USD)"
+                                                            type="number"
+                                                            registerName="usdMrpPrice"
+                                                            props={{
+                                                                ...register('usdMrpPrice', {
+                                                                    required: "MRP Price (USD) is required",
+                                                                    min: {
+                                                                        value: 1,
+                                                                        message: "MRP Price must be at least 1"
+                                                                    }
+                                                                })
+                                                            }}
+                                                            errors={errors.usdMrpPrice}
+                                                        />
+                                                    </div>
+                                                    <div className="">
+                                                        <h4
+                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                        >
+                                                            Product Selling Price (USD) <span className="text-red-500 text-xs font-tbLex">*</span>
+                                                        </h4>
+                                                        <TextInput
+                                                            label="Enter Product Selling Price (USD)"
+                                                            placeholder="Enter Product Selling Price (USD)"
+                                                            type="number"
+                                                            registerName="usdSellingPrice"
+                                                            props={{ ...register('usdSellingPrice', { required: "Selling Price (USD) is required", min: { value: 1, message: "Selling Price must be at least 1" } }) }}
+                                                            errors={errors.usdSellingPrice}
                                                         />
                                                     </div>
                                                     <div className="">
