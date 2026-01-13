@@ -1,10 +1,17 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import playstore from "../assets/google-play-black.png";
 import phoneMockup from "../assets/phone-mockup.png";
 import GradientButton from "./Buttons/GradientButton";
 
 const AppDownloadBooking = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const handleBookSession = () => {
+        location.pathname === "/services" 
+            ? window.scrollTo({ top: 0, behavior: "smooth" }) 
+            : navigate("/services");
+    };
 
     return (
         <>
@@ -37,7 +44,7 @@ const AppDownloadBooking = () => {
                     <h2 className="text-base sm:text-lg md:text-[20px] uppercase bg-primary-gradient bg-clip-text text-transparent mb-3 md:mb-4">Discover Your Self</h2>
                     <p className="text-xl sm:text-2xl md:text-[32px] font-bold text-black mb-4 md:mb-6 leading-tight">Explore a complete range of spiritual <br className="hidden sm:block" /> and healing services.</p>
                     <div className="flex justify-center">
-                        <GradientButton className="btn !w-full sm:!w-64 !rounded-xs" onClick={() => navigate("/services")}>
+                        <GradientButton className="btn !w-full sm:!w-64 !rounded-xs" onClick={handleBookSession}>
                             Book Your Session
                         </GradientButton>
                     </div>
