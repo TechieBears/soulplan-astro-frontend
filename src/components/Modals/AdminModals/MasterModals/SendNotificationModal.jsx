@@ -24,22 +24,24 @@ function SendNotificationModal({ setRefreshTrigger }) {
         try {
             setLoader(true);
             const formData = new FormData();
-            
+
             formData.append('title', data?.title);
             formData.append('description', data?.description);
             formData.append('notificationType', data?.notificationType);
             formData.append('userType', data?.userType);
-            
+
             if (data?.redirectionUrl) formData.append('redirectionUrl', data?.redirectionUrl);
             if (data?.redirectId) formData.append('redirectId', data?.redirectId);
-            if (data?.scheduledAt) formData.append('scheduledAt', data?.scheduledAt);
+            const currentDateTime = new Date().toISOString();
+            formData.append('scheduledAt', currentDateTime);
+
             if (data?.expiryDate) formData.append('expiryDate', data?.expiryDate);
-            
+
             // Handle image file
             if (data?.image && data?.image[0]) {
                 formData.append('image', data?.image[0]);
             }
-            
+
             // Handle userIds array
             const userIds = data?.userType === 'specific-customer' ? (data.userIds || []) : [];
             formData.append('userIds', JSON.stringify(userIds));
@@ -194,7 +196,7 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                             registerName="notificationType"
                                                             options={[
                                                                 { value: 'in-app', label: 'In-App Notification' },
-                                                                { value: 'web', label: 'Web Notification' },
+                                                                { value: 'push', label: 'Push Notification' },
                                                                 { value: 'email', label: 'Email Notification' },
                                                                 { value: 'all', label: 'All Types' },
                                                             ]}
@@ -208,7 +210,7 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                     </div>
 
                                                     {/* Redirection URL Field */}
-                                                    <div className="">
+                                                    {/* <div className="">
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
@@ -222,10 +224,10 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                             props={{ ...register('redirectionUrl') }}
                                                             errors={errors.redirectionUrl}
                                                         />
-                                                    </div>
+                                                    </div> */}
 
                                                     {/* Redirect ID Field */}
-                                                    <div className="">
+                                                    {/* <div className="">
                                                         <h4
                                                             className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
                                                         >
@@ -239,7 +241,7 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                             props={{ ...register('redirectId') }}
                                                             errors={errors.redirectId}
                                                         />
-                                                    </div>
+                                                    </div> */}
 
                                                     {/* User Type Field */}
                                                     <div className="">
@@ -283,26 +285,6 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                             />
                                                         </div>
                                                     )}
-
-                                                    {/* Scheduled At Field */}
-                                                    <div className="">
-                                                        <h4
-                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
-                                                        >
-                                                            Scheduled At
-                                                        </h4>
-                                                        <TextInput
-                                                            label="Scheduled Date Time"
-                                                            placeholder=""
-                                                            type="datetime-local"
-                                                            registerName="scheduledAt"
-                                                            props={{
-                                                                ...register('scheduledAt'),
-                                                                min: new Date().toISOString().slice(0, 16)
-                                                            }}
-                                                            errors={errors.scheduledAt}
-                                                        />
-                                                    </div>
 
                                                     {/* Expiry Date Field */}
                                                     <div className="">
