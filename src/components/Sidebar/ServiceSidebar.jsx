@@ -215,11 +215,17 @@ const MainSection = ({ content }) => {
                             {content.subTitle}
                         </p>
                         <div className="space-y-3 py-3">
-                            <div className="flex items-center gap-2">
-                                <h4 className="text-slate-700 text-lg font-tbPop font-semibold">
-                                    Price: {currencySymbol} {currencyType === "INR" ? content.price : content.usdPrice}
-                                </h4>
-                            </div>
+                            {content.isFree ? (
+                                <div className="inline-block px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-lg font-tbPop font-bold rounded-lg shadow-md">
+                                    Free
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-2">
+                                    <h4 className="text-slate-700 text-lg font-tbPop font-semibold">
+                                        Price: {currencySymbol} {currencyType === "INR" ? content.price : content.usdPrice}
+                                    </h4>
+                                </div>
+                            )}
                             <div className="space-x-1.5 flex items-center">
                                 <ClockCountdown size={20} />
                                 <h4 className="text-slate-700 text-sm font-tbPop font-normal">
