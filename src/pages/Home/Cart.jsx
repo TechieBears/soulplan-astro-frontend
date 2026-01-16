@@ -728,7 +728,13 @@ const ServiceTab = () => {
       };
 
       const res = await createServiceOrder(payload);
-      if (res?.success && res?.razorpay) {
+      if (res?.success && res?.free) {
+        // Free service - skip Razorpay and navigate directly
+        toast.success("Order placed successfully!");
+        navigate("/payment-success", {
+          state: { type: "services", orderDetails: res?.order },
+        });
+      } else if (res?.success && res?.razorpay) {
         // Initialize Razorpay
         const options = {
           key: environment.razorpayKey,
