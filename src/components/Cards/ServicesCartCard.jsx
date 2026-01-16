@@ -71,13 +71,23 @@ const ServicesCartCard = ({ service, removeItem, isUpdating }) => {
                     <span>Mode: {service.serviceMode === 'online' ? 'Online' : 'Pandit Center'}</span>
                 </p>
 
-                <p className="flex items-center gap-3 mb-2 text-sm sm:text-base">
-                    <Icon
-                        icon={currencyIcon}
-                        className="w-5 h-5 sm:w-6 sm:h-6"
-                    />
-                    <span>Price: {currencySymbol}{service.totalPrice?.toLocaleString()}</span>
-                </p>
+                {service.isFree ? (
+                    <p className="flex items-center gap-3 mb-2 text-sm sm:text-base">
+                        <Icon
+                            icon={currencyIcon}
+                            className="w-5 h-5 sm:w-6 sm:h-6"
+                        />
+                        <span>Price: Free</span>
+                    </p>
+                ) : (
+                    <p className="flex items-center gap-3 mb-2 text-sm sm:text-base">
+                        <Icon
+                            icon={currencyIcon}
+                            className="w-5 h-5 sm:w-6 sm:h-6"
+                        />
+                        <span>Price: {currencySymbol}{service.totalPrice?.toLocaleString()}</span>
+                    </p>
+                )}
 
                 {service.link && (
                     <div className="flex items-center gap-3 mt-3 break-all">

@@ -235,7 +235,7 @@ const PaymentSuccess = () => {
                         <div className="text-sm">
                           <span className="text-gray-600">Price: </span>
                           <span className="font-semibold text-green-600">
-                            {currencySymbol}{service?.total || service?.service?.price}
+                            {service?.total === 0 ? "Free" : `${currencySymbol}${service?.total || service?.service?.price}`}
                           </span>
                         </div>
                         <div className="flex gap-4 text-xs">
