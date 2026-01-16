@@ -710,6 +710,7 @@ const ServiceTab = () => {
             lastName: item?.cust?.lastName || "",
             email: item?.cust?.email || "",
             phone: item?.cust?.phone || "",
+            reasonForBooking: item?.reasonForBooking || "",
           };
 
           // Add address or addressData based on what's available
