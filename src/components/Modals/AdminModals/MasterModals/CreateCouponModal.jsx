@@ -35,6 +35,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                 expiryDate: '',
                 redemptionPerUser: '',
                 totalRedemptions: '',
+                description: '',
                 services: [],
                 serviceCategories: [],
                 products: [],
@@ -73,6 +74,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                 expiryDate: data.expiryDate,
                 redemptionPerUser: Number(data.redemptionPerUser),
                 totalRedemptions: Number(data.totalRedemptions),
+                description: data.description || '',
                 applicableServices: data.services || [],
                 applicableServiceCategories: data.serviceCategories || [],
                 applicableProducts: data.products || [],
@@ -161,6 +163,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                 expiryDate: userData?.expiryDate?.split('T')[0] || '',
                 redemptionPerUser: userData?.redemptionPerUser || '',
                 totalRedemptions: userData?.totalRedemptions || '',
+                description: userData?.description || '',
                 services: userData?.applicableServices || [],
                 serviceCategories: userData?.applicableServiceCategories || [],
                 products: userData?.applicableProducts || [],
@@ -495,6 +498,15 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                             errors={errors.totalRedemptions}
                                                         />
                                                     </div>
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Description</h4>
+                                                    <textarea
+                                                        {...register('description')}
+                                                        placeholder="Enter coupon description (optional)"
+                                                        rows={3}
+                                                        className="w-full px-4 py-3 border border-[#E2E8F0] rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none bg-white resize-vertical"
+                                                    />
                                                 </div>
                                             </div>
 
