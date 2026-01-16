@@ -51,6 +51,7 @@ const BookingPage = () => {
             lastName: user?.lastName || "",
             mobileNo: user?.mobileNo || "",
             email: user?.email || "",
+            description: "",
         },
     });
     const [timeSlots, setTimeSlots] = useState([]);
@@ -98,6 +99,7 @@ const BookingPage = () => {
                 lastName: data?.lastName,
                 email: data?.email,
                 phone: data?.mobileNo,
+                reasonForBooking: data?.description || "",
             };
 
             // Add address or addressData based on booking type
@@ -668,6 +670,17 @@ const BookingPage = () => {
                                             errors={errors.mobileNo}
                                         />
                                     </div>
+                                </div>
+                                <div className="">
+                                    <h4 className="text-sm font-tbLex font-normal text-slate-800 pb-2.5">
+                                        Description
+                                    </h4>
+                                    <textarea
+                                        {...register("description")}
+                                        placeholder="Enter description or reason for booking (optional)"
+                                        rows={3}
+                                        className="w-full px-4 py-3 border border-[#E2E8F0] rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none bg-white resize-vertical"
+                                    />
                                 </div>
                                 <div className="w-full">
                                     <button

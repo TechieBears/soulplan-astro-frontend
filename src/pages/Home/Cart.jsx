@@ -39,7 +39,7 @@ import AddressChangeModal from "../../components/Modals/AddressChangeModal";
 const CartPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [activeTab, setActiveTab] = useState("services");
+  const [activeTab, setActiveTab] = useState(state?.type || "services");
 
   return (
     <div className="min-h-screen bg-[#EFF2FA]  pt-16 lg:pt-24 relative">
@@ -710,6 +710,7 @@ const ServiceTab = () => {
             lastName: item?.cust?.lastName || "",
             email: item?.cust?.email || "",
             phone: item?.cust?.phone || "",
+            reasonForBooking: item?.reasonForBooking || "",
           };
 
           // Add address or addressData based on what's available

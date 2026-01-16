@@ -243,138 +243,97 @@ export default function MyOrders() {
                                                 <Preloaders />
                                             </div>
                                         ) : productOrders?.length > 0 ? (
-                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                                {productOrders.map((order, orderIndex) => {
-                                                    return (
-                                                        <div
-                                                            key={`${order._id}-${orderIndex}`}
-                                                            className="group relative bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800
-                                                                     rounded-2xl p-6 cursor-pointer transition-all duration-500 transform hover:scale-[1.02]
-                                                                     hover:shadow-2xl hover:shadow-purple-500/25 cart-slide-up overflow-hidden
-                                                                     border border-purple-400/20 backdrop-blur-sm"
-                                                            onClick={() => openModal(order, "product")}
-                                                        >
-                                                            {/* Decorative background elements */}
-                                                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
-                                                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-400/20 to-transparent rounded-full translate-y-12 -translate-x-12"></div>
+                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[600px] overflow-y-auto">
+                                                {productOrders.map((order, orderIndex) => (
+                                                    <div
+                                                        key={`${order._id}-${orderIndex}`}
+                                                        className="group relative bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800
+                                                                 rounded-2xl p-6 cursor-pointer transition-all duration-500 transform hover:scale-[1.02]
+                                                                 hover:shadow-2xl hover:shadow-purple-500/25 cart-slide-up overflow-hidden
+                                                                 border border-purple-400/20 backdrop-blur-sm"
+                                                        onClick={() => openModal(order, "product")}
+                                                    >
+                                                        {/* Decorative background elements */}
+                                                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
+                                                        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-400/20 to-transparent rounded-full translate-y-12 -translate-x-12"></div>
 
-                                                            {/* Order ID and Date */}
-                                                            <div className="flex justify-between items-start mb-4 relative z-10">
-                                                                <div className="text-purple-200 text-xs font-medium">
-                                                                    Order #{order._id?.slice(-8).toUpperCase()}
+                                                        {/* Order Header */}
+                                                        <div className="relative z-10 mb-6">
+                                                            <div className="flex items-center gap-3 mb-2">
+                                                                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-xl flex items-center justify-center">
+                                                                    <Icon icon="ph:shopping-bag" className="w-6 h-6 text-white" />
                                                                 </div>
-                                                                <div className="text-purple-200 text-xs">
-                                                                    {new Date(order.createdAt).toLocaleDateString('en-IN', {
-                                                                        day: '2-digit',
-                                                                        month: 'short',
-                                                                        year: 'numeric'
-                                                                    })}
+                                                                <div>
+                                                                    <h3 className="font-bold text-white text-xl group-hover:text-purple-100 transition-colors duration-300">
+                                                                        {order.items.length > 1 ? `${order.items.length} Products Ordered` : order.items[0]?.product?.name}
+                                                                    </h3>
+                                                                    <div className="text-purple-200 text-sm">
+                                                                        Order #{order._id?.slice(-6).toUpperCase()}
+                                                                    </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
 
-                                                            <div className="flex flex-col sm:flex-row gap-4 relative z-10">
-                                                                {/* Product Image */}
-                                                                <div
-                                                                    className="sm:w-24 sm:h-24 w-full h-36 rounded-xl overflow-hidden flex-shrink-0
-                                                                              bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm border border-white/20
-                                                                              group-hover:shadow-lg group-hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer"
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        navigate(`/product/${order?.items[0]?.product?._id}`);
-                                                                    }}
-                                                                >
+                                                        {/* Products List */}
+                                                        <div className="space-y-3 mb-6 relative z-10">
+                                                            {order.items.map((item, idx) => (
+                                                                <div key={idx} className="bg-white/10 rounded-lg p-4 backdrop-blur-sm flex gap-3">
                                                                     <img
-                                                                        src={order?.items[0]?.product?.images?.[0] || product1}
-                                                                        alt={order?.items[0]?.product?.name || "Product"}
-                                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                                        src={item?.product?.images?.[0] || product1}
+                                                                        alt={item?.product?.name}
+                                                                        className="w-16 h-16 rounded-lg object-cover"
                                                                         loading="lazy"
                                                                     />
-                                                                </div>
-
-                                                                {/* Product Details */}
-                                                                <div className="flex-1 min-w-0">
-                                                                    <h3
-                                                                        className="font-bold text-white text-xl mb-2 group-hover:text-purple-100 transition-colors duration-300 cursor-pointer hover:underline"
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            navigate(`/product/${order?.items[0]?.product?._id}`);
-                                                                        }}
-                                                                    >
-                                                                        {order?.items[0]?.product?.name}
-                                                                    </h3>
-
-                                                                    <div className="flex items-center gap-3 mb-3">
-                                                                        <div className="text-2xl font-bold text-white">
-                                                                            {currencySymbol}{order?.items[0]?.product?.sellingPrice?.toLocaleString() || 0}
-                                                                        </div>
-                                                                        <div className="text-purple-200 text-sm line-through">
-                                                                            {currencySymbol}{order?.items[0]?.product?.mrpPrice?.toLocaleString() || 0}
-                                                                        </div>
-                                                                        <div className="bg-green-500/20 text-green-300 px-2 py-1 rounded-full text-xs font-medium">
-                                                                            {Math.round(((order?.items[0]?.product?.mrpPrice - order?.items[0]?.product?.sellingPrice) / order?.items[0]?.product?.mrpPrice) * 100)}% OFF
+                                                                    <div className="flex-1">
+                                                                        <h4 className="text-white font-medium mb-1">{item?.product?.name}</h4>
+                                                                        <div className="grid grid-cols-2 gap-2 text-sm">
+                                                                            <div className="text-purple-200">Qty: {item?.product?.quantity}</div>
+                                                                            <div className="text-purple-200">Price: {currencySymbol}{item?.product?.sellingPrice?.toLocaleString()}</div>
+                                                                            <div className="text-purple-200 col-span-2">Subtotal: {currencySymbol}{item?.product?.subtotal?.toLocaleString()}</div>
                                                                         </div>
                                                                     </div>
-
-                                                                    <div className="flex items-center justify-between mb-4">
-                                                                        <div className="flex items-center gap-2">
-                                                                            <Icon icon="ph:package" className="w-4 h-4 text-purple-300" />
-                                                                            <span className="text-purple-200 text-sm">Qty: {order?.items[0]?.product?.quantity || 1}</span>
-                                                                        </div>
-                                                                        <div className="text-purple-200 text-sm">
-                                                                            Subtotal: {currencySymbol}{order?.items[0]?.product?.subtotal?.toLocaleString() || 0}
-                                                                        </div>
-                                                                    </div>
-
-                                                                    {/* Status Badges */}
-                                                                    <div className="flex flex-wrap gap-2">
-                                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.orderStatus === 'PENDING'
-                                                                            ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-400/30'
-                                                                            : order.orderStatus === 'CONFIRMED'
-                                                                                ? 'bg-blue-500/20 text-blue-300 border border-blue-400/30'
-                                                                                : order.orderStatus === 'DELIVERED'
-                                                                                    ? 'bg-green-500/20 text-green-300 border border-green-400/30'
-                                                                                    : 'bg-red-500/20 text-red-300 border border-red-400/30'
-                                                                            }`}>
-                                                                            <Icon icon="ph:truck" className="w-3 h-3 inline mr-1" />
-                                                                            {order.orderStatus}
-                                                                        </span>
-                                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.paymentStatus === 'PAID'
-                                                                            ? 'bg-green-500/20 text-green-300 border border-green-400/30'
-                                                                            : 'bg-orange-500/20 text-orange-300 border border-orange-400/30'
-                                                                            }`}>
-                                                                            <Icon icon="ph:credit-card" className="w-3 h-3 inline mr-1" />
-                                                                            {order.paymentStatus}
-                                                                        </span>
-                                                                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-400/30">
-                                                                            <Icon icon="ph:wallet" className="w-3 h-3 inline mr-1" />
-                                                                            {order.paymentMethod}
-                                                                        </span>
-                                                                        {order?.items?.length > 1 && <div className="flex items-center gap-1">
-                                                                            <div className="size-6 bg-white text-black rounded-full text-center font-tbLex font-medium text-sm">
-                                                                                {order?.items?.length - 1}
-                                                                            </div>
-                                                                            <span className="text-white text-sm">+</span>
-                                                                        </div>}
-                                                                    </div>
                                                                 </div>
-                                                            </div>
-
-                                                            <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center relative z-10">
-                                                                <div className="text-purple-200 text-sm">
-                                                                    Total Amount (incl. GST)
-                                                                </div>
-                                                                <div className="text-white text-xl font-bold">
-                                                                    {currencySymbol}{order.totalAmount?.toLocaleString() || 0}
-                                                                </div>
-                                                            </div>
-
-                                                            {/* Hover effect overlay */}
-                                                            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-500/0 to-indigo-600/0
-                                                                          group-hover:from-purple-600/10 group-hover:via-purple-500/5 group-hover:to-indigo-600/10
-                                                                          transition-all duration-500 rounded-2xl"></div>
+                                                            ))}
                                                         </div>
-                                                    )
-                                                })}
+
+                                                        {/* Status Badges */}
+                                                        <div className="flex flex-wrap gap-2 mb-4 relative z-10">
+                                                            <span className={`px-3 py-1 rounded-full text-xs font-medium uppercase ${order.orderStatus === 'PENDING'
+                                                                ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-400/30'
+                                                                : order.orderStatus === 'CONFIRMED'
+                                                                    ? 'bg-blue-500/20 text-blue-300 border border-blue-400/30'
+                                                                    : order.orderStatus === 'DELIVERED'
+                                                                        ? 'bg-green-500/20 text-green-300 border border-green-400/30'
+                                                                        : 'bg-red-500/20 text-red-300 border border-red-400/30'
+                                                                }`}>
+                                                                <Icon icon="ph:truck" className="w-3 h-3 inline mr-1" />
+                                                                {order.orderStatus}
+                                                            </span>
+                                                            <span className={`px-3 py-1 rounded-full text-xs font-medium uppercase ${order.paymentStatus === 'PAID'
+                                                                ? 'bg-green-500/20 text-green-300 border border-green-400/30'
+                                                                : 'bg-orange-500/20 text-orange-300 border border-orange-400/30'
+                                                                }`}>
+                                                                <Icon icon="ph:credit-card" className="w-3 h-3 inline mr-1" />
+                                                                {order.paymentStatus}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Price Footer */}
+                                                        <div className="pt-4 border-t border-white/10 flex justify-between items-center relative z-10">
+                                                            <div className="text-purple-200 text-sm">
+                                                                Total Amount
+                                                            </div>
+                                                            <div className="text-white text-2xl font-bold">
+                                                                {currencySymbol}{order.finalAmount?.toLocaleString()}
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Hover effect overlay */}
+                                                        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-500/0 to-indigo-600/0
+                                                                      group-hover:from-purple-600/10 group-hover:via-purple-500/5 group-hover:to-indigo-600/10
+                                                                      transition-all duration-500 rounded-2xl"></div>
+                                                    </div>
+                                                ))}
                                             </div>
                                         ) : (
                                             <div className="text-center py-8 bg-slate1 flex flex-col items-center justify-center h-[450px] rounded-xl">
