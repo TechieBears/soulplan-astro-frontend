@@ -1,8 +1,9 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Edit } from 'iconsax-reactjs';
+import JoditEditor from 'jodit-react';
 import {
     addCoupon,
     editCoupon,
@@ -13,17 +14,17 @@ import {
     getProductSubCategoriesDropdown
 } from '../../../../api';
 import { formBtn1, tableBtn } from '../../../../utils/CustomClass';
+import { configTextEditor, TableTitle } from '../../../../helper/Helper';
 import LoadBox from '../../../Loader/LoadBox';
 import TextInput from '../../../TextInput/TextInput';
 import SelectTextInput from '../../../TextInput/SelectTextInput';
 import MultiSelectTextInput from '../../../TextInput/MultiSelectTextInput';
-import { TableTitle } from '../../../../helper/Helper';
 
 function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
     const [open, setOpen] = useState(false);
     const toggle = () => {
         setOpen(!open);
-       if (!edit) {
+        if (!edit) {
             reset({
                 couponName: '',
                 couponCode: '',
@@ -35,6 +36,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                 expiryDate: '',
                 redemptionPerUser: '',
                 totalRedemptions: '',
+                description: '',
                 services: [],
                 serviceCategories: [],
                 products: [],
@@ -45,6 +47,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
     };
     const [loader, setLoader] = useState(false);
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
+    const editorRef = useRef(null);
 
     const [services, setServices] = useState([]);
     const [serviceCategories, setServiceCategories] = useState([]);
@@ -73,6 +76,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                 expiryDate: data.expiryDate,
                 redemptionPerUser: Number(data.redemptionPerUser),
                 totalRedemptions: Number(data.totalRedemptions),
+                description: data.description || '',
                 applicableServices: data.services || [],
                 applicableServiceCategories: data.serviceCategories || [],
                 applicableProducts: data.products || [],
@@ -149,7 +153,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
 
 
     useEffect(() => {
-       if (edit && userData && open) {
+        if (edit && userData && open) {
             reset({
                 couponName: userData?.couponName || '',
                 couponCode: userData?.couponCode || '',
@@ -161,12 +165,14 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                 expiryDate: userData?.expiryDate?.split('T')[0] || '',
                 redemptionPerUser: userData?.redemptionPerUser || '',
                 totalRedemptions: userData?.totalRedemptions || '',
+                description: userData?.description || '',
                 services: userData?.applicableServices || [],
                 serviceCategories: userData?.applicableServiceCategories || [],
                 products: userData?.applicableProducts || [],
                 productCategories: userData?.applicableProductCategories || [],
                 productSubcategories: userData?.applicableProductSubcategories || []
-            })} 
+            })
+        }
     }, [edit, userData, open, reset]);
 
 
@@ -181,7 +187,14 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
             }
 
             <Transition appear show={open} as={Fragment}>
-                <Dialog as="div" className="relative z-[1000]" onClose={toggle}>
+                <Dialog as="div" className="relative z-[1000]" onClose={(value) => {
+                    const joditElements = document.querySelectorAll('.jodit-container, .jodit-toolbar, .jodit-workplace, .jodit-popup, .jodit-dialog');
+                    const clickedOnJodit = Array.from(joditElements).some(el => el.contains(document.activeElement) || el.contains(event?.target));
+
+                    if (!clickedOnJodit) {
+                        toggle();
+                    }
+                }}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -495,6 +508,28 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                             errors={errors.totalRedemptions}
                                                         />
                                                     </div>
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Description</h4>
+                                                    <Controller
+                                                        name="description"
+                                                        control={control}
+                                                        render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                                            <>
+                                                                <JoditEditor
+                                                                    ref={editorRef}
+                                                                    value={value || ''}
+                                                                    config={configTextEditor}
+                                                                    tabIndex={1}
+                                                                    onBlur={(newContent) => onChange(newContent)}
+                                                                    onChange={(newContent) => onChange(newContent)}
+                                                                />
+                                                                {error && (
+                                                                    <p className="text-red-500 text-sm mt-1">{error.message}</p>
+                                                                )}
+                                                            </>
+                                                        )}
+                                                    />
                                                 </div>
                                             </div>
 
