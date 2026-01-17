@@ -3,13 +3,13 @@ import Switch from "react-js-switch";
 import Table from '../../../components/Table/Table';
 import TableHeader from '../../../components/Table/TableHeader';
 import CreateBannersModal from '../../../components/Modals/AdminModals/MasterModals/CreateBannersModal';
-import { ArrowLeft2, ArrowRight2, Copy } from 'iconsax-reactjs';
+import { ArrowLeft2, ArrowRight2, Copy, Trash } from 'iconsax-reactjs';
 import usePagination from '../../../utils/customHooks/usePagination';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useMemo } from 'react';
 import { useState } from 'react';
-import { editBanner, getAllBanners } from '../../../api';
+import { editBanner, getAllBanners, deleteBanner } from '../../../api';
 import { formBtn1 } from '../../../utils/CustomClass';
 import { useForm } from 'react-hook-form';
 import TextInput from '../../../components/TextInput/TextInput';
@@ -22,6 +22,7 @@ const Banner = () => {
     const { register, handleSubmit, reset, watch } = useForm({ defaultValues: initialFilterState });
     const [filterCriteria, setFilterCriteria] = useState(initialFilterState);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const [deleteModal, setDeleteModal] = useState({ isOpen: false, bannerId: null });
     const combinedFilters = useMemo(() => ({
         ...filterCriteria,
         refresh: refreshTrigger
@@ -56,6 +57,11 @@ const Banner = () => {
     // ================= action of the table ===============
     const actionBodyTemplate = (row) => <div className="flex items-center gap-2">
         <CreateBannersModal edit={true} title='Edit Product Category' userData={row} setRefreshTrigger={setRefreshTrigger} refreshTrigger={refreshTrigger} />
+        <Trash 
+            size={20} 
+            className="cursor-pointer text-red-500 hover:text-red-700" 
+            onClick={() => setDeleteModal({ isOpen: true, bannerId: row?._id })}
+        />
     </div>
 
     const imageBodyTemp = (row) => <div className='w-52 h-24 rounded'>
@@ -74,6 +80,18 @@ const Banner = () => {
         catch (error) {
             console.log('error', error)
             toast.error('Update failed');
+        }
+    }
+
+    const handleDelete = async () => {
+        try {
+            await deleteBanner(deleteModal.bannerId);
+            setRefreshTrigger(prev => prev + 1);
+            toast.success('Banner deleted successfully');
+            setDeleteModal({ isOpen: false, bannerId: null });
+        } catch (error) {
+            console.log('error', error);
+            toast.error('Delete failed');
         }
     }
 
@@ -311,6 +329,35 @@ const Banner = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {deleteModal.isOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setDeleteModal({ isOpen: false, bannerId: null })} />
+                    <div className="relative bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Delete Banner</h3>
+                        <p className="text-sm text-gray-500 mb-4">
+                            Are you sure you want to permanently delete this banner? This action cannot be undone.
+                        </p>
+                        <div className="flex gap-3 justify-end">
+                            <button
+                                type="button"
+                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                                onClick={() => setDeleteModal({ isOpen: false, bannerId: null })}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
+                                onClick={handleDelete}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

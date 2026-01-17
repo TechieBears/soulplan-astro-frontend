@@ -867,7 +867,7 @@ export const editBanner = async (id, data) => {
 }
 
 export const deleteBanner = async (id) => {
-    const url = `${environment.baseUrl}banners/delete?id=${id}`;
+    const url = `${environment.baseUrl}banners/permanent-delete?id=${id}`;
     try {
         const response = await axios.delete(url)
         return response.data
@@ -1784,5 +1784,19 @@ export const getSingleCoupon = async (id) => {
     } catch (err) {
         console.error('Error fetching single coupon:', err);
         return err?.response?.data || { success: false, message: 'Failed to fetch coupon' };
+    }
+}
+export const getInvoiceDetails = async (params) => {
+    try {
+        const queryParams = new URLSearchParams();
+        if (params.serviceOrderId) queryParams.append('serviceOrderId', params.serviceOrderId);
+        if (params.productOrderId) queryParams.append('productOrderId', params.productOrderId);
+
+        const url = `${environment.baseUrl}invoice/get-details?${queryParams.toString()}`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err) {
+        console.error('Error fetching invoice details:', err);
+        return err?.response?.data || { success: false, message: 'Failed to fetch invoice details' };
     }
 }
