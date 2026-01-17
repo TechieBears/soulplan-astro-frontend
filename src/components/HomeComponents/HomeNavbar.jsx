@@ -47,6 +47,8 @@ const HomeNavbar = () => {
     const [walletBalance, setWalletBalance] = useState(0);
     const mobileMenuRef = useRef(null);
     const currencySymbol = useCurrency();
+    const trigger = useRef(null);
+    const dropdown = useRef(null);
 
     useEffect(() => {
         const handleScroll = () => {
