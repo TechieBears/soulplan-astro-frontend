@@ -9,7 +9,7 @@ import TextInput from '../../../TextInput/TextInput';
 import SelectTextInput from '../../../TextInput/SelectTextInput';
 import CustomTextArea from '../../../TextInput/CustomTextArea';
 import { TableTitle } from '../../../../helper/Helper';
-import ImageCropUpload from '../../../TextInput/ImageCropUpload';
+import ImageUploadInput from '../../../TextInput/ImageUploadInput';
 import MultiSelectTextInput from '../../../TextInput/MultiSelectTextInput';
 
 function SendNotificationModal({ setRefreshTrigger }) {
@@ -19,6 +19,7 @@ function SendNotificationModal({ setRefreshTrigger }) {
     const { register, handleSubmit, control, watch, reset, formState: { errors }, setValue } = useForm();
     const [customerUsersDropdown, setCustomerUsersDropdown] = useState([]);
     const userType = watch('userType');
+    const notificationTypeData = watch('notificationType');
 
     const formSubmit = async (data) => {
         try {
@@ -29,12 +30,10 @@ function SendNotificationModal({ setRefreshTrigger }) {
             formData.append('description', data?.description);
             formData.append('notificationType', data?.notificationType);
             formData.append('userType', data?.userType);
+            formData.append('scheduledAt', new Date().toISOString());
 
             if (data?.redirectionUrl) formData.append('redirectionUrl', data?.redirectionUrl);
             if (data?.redirectId) formData.append('redirectId', data?.redirectId);
-            const currentDateTime = new Date().toISOString();
-            formData.append('scheduledAt', currentDateTime);
-
             if (data?.expiryDate) formData.append('expiryDate', data?.expiryDate);
 
             // Handle image file
@@ -43,7 +42,7 @@ function SendNotificationModal({ setRefreshTrigger }) {
             }
 
             // Handle userIds array
-            const userIds = data?.userType === 'specific-customer' ? (data.userIds || []) : [];
+            const userIds = data?.userType === 'specific-customer' ? customerUsersDropdown?.map(item => item?.value) : [];
             formData.append('userIds', JSON.stringify(userIds));
 
             await addNotification(formData).then(res => {
@@ -64,6 +63,7 @@ function SendNotificationModal({ setRefreshTrigger }) {
             toast.error("Failed to add Notification");
         }
     }
+
 
     useEffect(() => {
         if (open && userType === 'specific-customer') {
@@ -164,25 +164,6 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                         />
                                                     </div>
 
-                                                    <div className=''>
-                                                        <h4
-                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
-                                                        >
-                                                            Notification Image
-                                                        </h4>
-                                                        <ImageCropUpload
-                                                            label="Upload Notification Image"
-                                                            multiple={false}
-                                                            registerName="image"
-                                                            errors={errors.image}
-                                                            {...register("image")}
-                                                            register={register}
-                                                            setValue={setValue}
-                                                            control={control}
-                                                            cropAspectRatio={114 / 43}
-                                                            shouldUploadToCloudinary={false}
-                                                        />
-                                                    </div>
 
                                                     {/* Notification Type Field */}
                                                     <div className="">
@@ -197,8 +178,8 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                             options={[
                                                                 { value: 'in-app', label: 'In-App Notification' },
                                                                 { value: 'push', label: 'Push Notification' },
-                                                                { value: 'email', label: 'Email Notification' },
-                                                                { value: 'all', label: 'All Types' },
+                                                                { value: 'both', label: 'Push & In-App Notifications' },
+                                                                // { value: 'email', label: 'Email Notification' },
                                                             ]}
                                                             placeholder="Select Notification Type"
                                                             props={{
@@ -208,40 +189,6 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                             errors={errors.notificationType}
                                                         />
                                                     </div>
-
-                                                    {/* Redirection URL Field */}
-                                                    {/* <div className="">
-                                                        <h4
-                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
-                                                        >
-                                                            Redirection URL
-                                                        </h4>
-                                                        <TextInput
-                                                            label="Enter Redirection URL"
-                                                            placeholder="https://yourapp.com/offers"
-                                                            type="url"
-                                                            registerName="redirectionUrl"
-                                                            props={{ ...register('redirectionUrl') }}
-                                                            errors={errors.redirectionUrl}
-                                                        />
-                                                    </div> */}
-
-                                                    {/* Redirect ID Field */}
-                                                    {/* <div className="">
-                                                        <h4
-                                                            className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
-                                                        >
-                                                            Redirect ID
-                                                        </h4>
-                                                        <TextInput
-                                                            label="Enter Redirect ID"
-                                                            placeholder="offer_123"
-                                                            type="text"
-                                                            registerName="redirectId"
-                                                            props={{ ...register('redirectId') }}
-                                                            errors={errors.redirectId}
-                                                        />
-                                                    </div> */}
 
                                                     {/* User Type Field */}
                                                     <div className="">
@@ -265,6 +212,26 @@ function SendNotificationModal({ setRefreshTrigger }) {
                                                             errors={errors.userType}
                                                         />
                                                     </div>
+                                                    {/* Image Field */}
+                                                    {(notificationTypeData == 'push' || notificationTypeData == 'both') && (
+                                                        <div >
+                                                            <h4
+                                                                className="text-sm font-tbLex font-normal text-slate-400 pb-2.5"
+                                                            >
+                                                                Notification Image
+                                                            </h4>
+                                                            <ImageUploadInput
+                                                                label="Upload Notification Image"
+                                                                multiple={false}
+                                                                registerName="image"
+                                                                errors={errors.image}
+                                                                {...register("image")}
+                                                                register={register}
+                                                                setValue={setValue}
+                                                                control={control}
+                                                            />
+                                                        </div>
+                                                    )}
 
                                                     {userType === 'specific-customer' && (
                                                         <div>
