@@ -120,6 +120,12 @@ function OffersCoupons() {
         </div>
     );
 
+    const couponSubtitleBody = (row) => (
+        <div className="text-sm text-gray-600">
+            {row?.subTitle || "---- -----"}
+        </div>
+    );
+
     const discountDetailsBody = (row) => {
         const discountIn = row?.discountIn || "percent";
         const discount = row?.discount || 0;
@@ -314,6 +320,13 @@ function OffersCoupons() {
             field: 'couponDetails',
             header: 'Coupon Details',
             body: couponDetailsBody,
+            style: true,
+            sortable: true
+        },
+        {
+            field: 'subTitle',
+            header: 'Coupon Subtitle',
+            body: couponSubtitleBody,
             style: true,
             sortable: true
         },

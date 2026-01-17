@@ -302,11 +302,10 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                             props={{
                                                                 ...register('mrpPrice', {
                                                                     required: "MRP Price (INR) is required",
-                                                                    min: {
-                                                                        value: 1,
-                                                                        message: "MRP Price must be at least 1"
-                                                                    }
-                                                                })
+                                                                    min: { value: 1, message: "MRP Price must be at least 1" },
+                                                                    max: { value: 10000, message: "MRP Price cannot exceed 10,000" }
+                                                                }),
+                                                                onInput: (e) => { if (e.target.value.length > 5) e.target.value = e.target.value.slice(0, 5); }
                                                             }}
                                                             errors={errors.mrpPrice}
                                                         />
@@ -322,7 +321,7 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                             placeholder="Enter Product Selling Price (INR)"
                                                             type="number"
                                                             registerName="sellingPrice"
-                                                            props={{ ...register('sellingPrice', { required: "Selling Price (INR) is required", min: { value: 1, message: "Selling Price must be at least 1" } }) }}
+                                                            props={{ ...register('sellingPrice', { required: "Selling Price (INR) is required", min: { value: 1, message: "Selling Price must be at least 1" }, max: { value: 10000, message: "Selling Price cannot exceed 10,000" } }), onInput: (e) => { if (e.target.value.length > 5) e.target.value = e.target.value.slice(0, 5); } }}
                                                             errors={errors.sellingPrice}
                                                         />
                                                     </div>
@@ -340,11 +339,10 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                             props={{
                                                                 ...register('usdMrpPrice', {
                                                                     required: "MRP Price (USD) is required",
-                                                                    min: {
-                                                                        value: 1,
-                                                                        message: "MRP Price must be at least 1"
-                                                                    }
-                                                                })
+                                                                    min: { value: 1, message: "MRP Price must be at least 1" },
+                                                                    max: { value: 10000, message: "MRP Price cannot exceed 10,000" }
+                                                                }),
+                                                                onInput: (e) => { if (e.target.value.length > 5) e.target.value = e.target.value.slice(0, 5); }
                                                             }}
                                                             errors={errors.usdMrpPrice}
                                                         />
@@ -360,7 +358,7 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                             placeholder="Enter Product Selling Price (USD)"
                                                             type="number"
                                                             registerName="usdSellingPrice"
-                                                            props={{ ...register('usdSellingPrice', { required: "Selling Price (USD) is required", min: { value: 1, message: "Selling Price must be at least 1" } }) }}
+                                                            props={{ ...register('usdSellingPrice', { required: "Selling Price (USD) is required", min: { value: 1, message: "Selling Price must be at least 1" }, max: { value: 10000, message: "Selling Price cannot exceed 10,000" } }), onInput: (e) => { if (e.target.value.length > 5) e.target.value = e.target.value.slice(0, 5); } }}
                                                             errors={errors.usdSellingPrice}
                                                         />
                                                     </div>
@@ -375,7 +373,7 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                             placeholder="Enter Product Quantity"
                                                             type="number"
                                                             registerName="stock"
-                                                            props={{ ...register('stock', { required: "Quantity is required", min: { value: 1, message: "Quantity must be at least 1" } }) }}
+                                                            props={{ ...register('stock', { required: "Quantity is required", min: { value: 1, message: "Quantity must be at least 1" } }), onInput: (e) => { if (e.target.value.length > 8) e.target.value = e.target.value.slice(0, 8); } }}
                                                             errors={errors.stock}
                                                         />
                                                     </div>
@@ -390,7 +388,7 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                             placeholder="Enter HSN Code"
                                                             type="text"
                                                             registerName="hsnCode"
-                                                            props={{ ...register('hsnCode') }}
+                                                            props={{ ...register('hsnCode', { maxLength: { value: 8, message: "HSN Code cannot exceed 8 characters" } }), maxLength: 8 }}
                                                             errors={errors.hsnCode}
                                                         />
                                                     </div>
@@ -409,7 +407,8 @@ function CreateProductModal({ edit, userData, setRefreshTrigger }) {
                                                                 ...register('gstNumber', {
                                                                     min: { value: 0, message: "GST must be at least 0" },
                                                                     max: { value: 100, message: "GST cannot exceed 100" }
-                                                                })
+                                                                }),
+                                                                onInput: (e) => { if (e.target.value > 100) e.target.value = 100; if (e.target.value.length > 3) e.target.value = e.target.value.slice(0, 3); }
                                                             }}
                                                             errors={errors.gstNumber}
                                                         />
