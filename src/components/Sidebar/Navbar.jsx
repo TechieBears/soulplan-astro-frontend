@@ -20,11 +20,6 @@ const Navbar = ({ mobileSidebar, setMobileSidebar, isActiveLink, setIsActiveLink
         <>
             <div className={`${mobileSidebar ? "left-[15rem]" : ""} ${isActiveLink ? "left-[5rem]" : "left-0 xl:left-[15rem]"}  duration-700 transition-all ease-in-out  pt-3.5 py-2 px-4 z-50 md:px-3 m-5 mx-7 rounded-xl bg-white mt-7`} >
                 <div className="md:px-2">
-                    <div className="hidden xl:block">
-                        <button onClick={() => { setIsActiveLink(!isActiveLink), console.log("ss") }} className=''>
-                            <HamburgerMenu size={27} variant="TwoTone" className={` duration-700 ease-in-out transition-all ${!isActiveLink ? "-rotate-180" : ""}`} />
-                        </button>
-                    </div>
                     <button className='relative xl:hidden  shadow-none ' onClick={() => { setMobileSidebar(!mobileSidebar), console.log("ff") }}>
                         {mobileSidebar ? <XMarkIcon className='w-8 h-8 text-gray-500' /> : <HamburgerMenu size={28} className='text-gray-500' />}
                     </button>
