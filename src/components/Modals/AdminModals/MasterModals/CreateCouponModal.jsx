@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Edit } from 'iconsax-reactjs';
@@ -10,8 +10,7 @@ import {
     getPublicServicesDropdown,
     getServiceCategoriesDropdown,
     getProductsDropdown,
-    getProductCategoriesDropdown,
-    getProductSubCategoriesDropdown
+    getProductCategoriesDropdown
 } from '../../../../api';
 import { formBtn1, tableBtn } from '../../../../utils/CustomClass';
 import { configTextEditor, TableTitle } from '../../../../helper/Helper';
@@ -20,6 +19,27 @@ import TextInput from '../../../TextInput/TextInput';
 import SelectTextInput from '../../../TextInput/SelectTextInput';
 import MultiSelectTextInput from '../../../TextInput/MultiSelectTextInput';
 
+const APPLICABLE_TO = {
+    ALL_PRODUCTS: 'all_products',
+    SINGLE_PRODUCT: 'single_product',
+    PRODUCT_CATEGORY: 'product_category',
+    ALL_SERVICES: 'all_services',
+    SINGLE_SERVICE: 'single_service',
+    SERVICE_CATEGORY: 'service_category'
+};
+
+const getApplicableOptions = (type) => {
+    return type === 'products' ? [
+        { value: APPLICABLE_TO.ALL_PRODUCTS, label: 'All Products' },
+        { value: APPLICABLE_TO.SINGLE_PRODUCT, label: 'Select Product' },
+        { value: APPLICABLE_TO.PRODUCT_CATEGORY, label: 'Select Category' }
+    ] : [
+        { value: APPLICABLE_TO.ALL_SERVICES, label: 'All Services' },
+        { value: APPLICABLE_TO.SINGLE_SERVICE, label: 'Service' },
+        { value: APPLICABLE_TO.SERVICE_CATEGORY, label: 'Service Category' }
+    ];
+};
+
 function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
     const [open, setOpen] = useState(false);
     const toggle = () => {
@@ -27,6 +47,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
         if (!edit) {
             reset({
                 couponName: '',
+                couponSubtitle: '',
                 couponCode: '',
                 couponType: '',
                 applicableType: '',
@@ -40,8 +61,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                 services: [],
                 serviceCategories: [],
                 products: [],
-                productCategories: [],
-                productSubcategories: []
+                productCategories: []
             });
         }
     };
@@ -54,12 +74,10 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
     const [allProducts, setAllProducts] = useState([]);
     const [products, setProducts] = useState([]);
     const [productCategories, setProductCategories] = useState([]);
-    const [productSubcategories, setProductSubcategories] = useState([]);
 
     const couponType = watch('couponType');
     const applicableType = watch('applicableType');
     const selectedProductCategories = watch('productCategories');
-    const selectedProductSubcategories = watch('productSubcategories');
 
     const formSubmit = async (data) => {
         try {
@@ -67,9 +85,10 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
 
             const formattedData = {
                 couponName: data.couponName,
+                couponSubtitle: data.couponSubtitle,
                 couponCode: data.couponCode,
                 couponType: data.couponType,
-                applicableType: data.applicableType || '',
+                applicableTo: data.applicableType,
                 discountIn: data.discountIn,
                 discount: Number(data.discount),
                 activationDate: data.activationDate,
@@ -77,11 +96,12 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                 redemptionPerUser: Number(data.redemptionPerUser),
                 totalRedemptions: Number(data.totalRedemptions),
                 description: data.description || '',
-                applicableServices: data.services || [],
-                applicableServiceCategories: data.serviceCategories || [],
-                applicableProducts: data.products || [],
-                applicableProductCategories: data.productCategories || [],
-                applicableProductSubcategories: data.productSubcategories || []
+                applyAllServices: data.applicableType === APPLICABLE_TO.ALL_SERVICES,
+                applicableServices: data.applicableType === APPLICABLE_TO.SINGLE_SERVICE ? (data.services || []) : [],
+                applicableServiceCategories: data.applicableType === APPLICABLE_TO.SERVICE_CATEGORY ? (data.serviceCategories || []) : [],
+                applyAllProducts: data.applicableType === APPLICABLE_TO.ALL_PRODUCTS,
+                applicableProducts: data.applicableType === APPLICABLE_TO.SINGLE_PRODUCT ? (data.products || []) : [],
+                applicableProductCategories: data.applicableType === APPLICABLE_TO.PRODUCT_CATEGORY ? (data.productCategories || []) : []
             };
 
             const apiCall = edit
@@ -115,12 +135,11 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
 
     const fetchDropdownData = async () => {
         try {
-            const [servicesRes, serviceCategoriesRes, productsRes, productCategoriesRes, productSubcategoriesRes] = await Promise.all([
+            const [servicesRes, serviceCategoriesRes, productsRes, productCategoriesRes] = await Promise.all([
                 getPublicServicesDropdown(),
                 getServiceCategoriesDropdown(),
                 getProductsDropdown(),
-                getProductCategoriesDropdown(),
-                getProductSubCategoriesDropdown()
+                getProductCategoriesDropdown()
             ]);
 
             if (servicesRes?.success && servicesRes?.data) {
@@ -140,12 +159,6 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
             if (productCategoriesRes?.success && productCategoriesRes?.data) {
                 setProductCategories(productCategoriesRes.data.map(item => ({ value: item._id, label: item.name })));
             }
-            if (productSubcategoriesRes?.success && productSubcategoriesRes?.data) {
-                setProductSubcategories(productSubcategoriesRes.data.map(item => ({
-                    value: item._id,
-                    label: item.name
-                })));
-            }
         } catch (error) {
             console.error('Error fetching dropdown data:', error);
         }
@@ -156,9 +169,10 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
         if (edit && userData && open) {
             reset({
                 couponName: userData?.couponName || '',
+                couponSubtitle: userData?.couponSubtitle || '',
                 couponCode: userData?.couponCode || '',
                 couponType: userData?.couponType || '',
-                applicableType: userData?.applicableType || '',
+                applicableType: userData?.applicableTo || '',
                 discountIn: userData?.discountIn || '',
                 discount: userData?.discount || '',
                 activationDate: userData?.activationDate?.split('T')[0] || '',
@@ -166,14 +180,34 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                 redemptionPerUser: userData?.redemptionPerUser || '',
                 totalRedemptions: userData?.totalRedemptions || '',
                 description: userData?.description || '',
-                services: userData?.applicableServices || [],
-                serviceCategories: userData?.applicableServiceCategories || [],
-                products: userData?.applicableProducts || [],
-                productCategories: userData?.applicableProductCategories || [],
-                productSubcategories: userData?.applicableProductSubcategories || []
-            })
+                services: userData?.applicableServices?.map(s => s._id || s) || [],
+                serviceCategories: userData?.applicableServiceCategories?.map(sc => sc._id || sc) || [],
+                products: userData?.applicableProducts?.map(p => p._id || p) || [],
+                productCategories: userData?.applicableProductCategories?.map(pc => pc._id || pc) || []
+            });
         }
     }, [edit, userData, open, reset]);
+
+    // Reset applicable fields when couponType changes (only in create mode)
+    useEffect(() => {
+        if (couponType && !edit) {
+            setValue('applicableType', '');
+            setValue('services', []);
+            setValue('serviceCategories', []);
+            setValue('products', []);
+            setValue('productCategories', []);
+        }
+    }, [couponType, setValue, edit]);
+
+    // Reset selection fields when applicableType changes (only in create mode)
+    useEffect(() => {
+        if (applicableType && !edit) {
+            setValue('services', []);
+            setValue('serviceCategories', []);
+            setValue('products', []);
+            setValue('productCategories', []);
+        }
+    }, [applicableType, setValue, edit]);
 
 
     return (
@@ -232,10 +266,33 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                         <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Coupon title <span className="text-red-500 text-xs font-tbLex">*</span></h4>
                                                         <TextInput
                                                             label="Enter Coupon Name"
-                                                            placeholder="🎉 Use code SAVE20 — Get 20% OFF!"
+                                                            placeholder="ex.Get Flat Rs. 100 off!"
                                                             registerName="couponName"
-                                                            props={{ ...register('couponName', { required: "Required" }) }}
+                                                            props={{
+                                                                ...register('couponName', {
+                                                                    required: "Coupon name is required",
+                                                                    minLength: { value: 3, message: "Coupon name must be at least 3 characters" },
+                                                                    maxLength: { value: 100, message: "Coupon name must not exceed 100 characters" }
+                                                                })
+                                                            }}
                                                             errors={errors.couponName}
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Coupon Subtitle <span className="text-red-500 text-xs font-tbLex">*</span></h4>
+                                                        <TextInput
+                                                            label="Enter Coupon Subtitle"
+                                                            placeholder="ex.Use code FLAT100 & get flat ₹100 off orders above ₹500"
+                                                            registerName="couponSubtitle"
+                                                            props={{
+                                                                ...register('couponSubtitle', {
+                                                                    required: "Coupon subtitle is required",
+                                                                    minLength: { value: 3, message: "Coupon subtitle must be at least 3 characters" },
+                                                                    maxLength: { value: 100, message: "Coupon subtitle must not exceed 100 characters" }
+                                                                })
+                                                            }}
+                                                            errors={errors.couponSubtitle}
                                                         />
                                                     </div>
 
@@ -247,7 +304,10 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                             registerName="couponCode"
                                                             props={{
                                                                 ...register('couponCode', {
-                                                                    required: "Required",
+                                                                    required: "Coupon code is required",
+                                                                    minLength: { value: 3, message: "Coupon code must be at least 3 characters" },
+                                                                    maxLength: { value: 30, message: "Coupon code must not exceed 30 characters" },
+                                                                    pattern: { value: /^[A-Z0-9]+$/, message: "Only uppercase letters and numbers allowed" },
                                                                     onChange: (e) => {
                                                                         e.target.value = e?.target?.value?.toUpperCase();
                                                                     }
@@ -268,7 +328,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                                 { value: 'services', label: 'Services' },
                                                             ]}
                                                             placeholder="Select Coupon Type"
-                                                            props={{ ...register('couponType', { required: true }) }}
+                                                            props={{ ...register('couponType', { required: "Coupon type is required" }) }}
                                                             errors={errors.couponType}
                                                             defaultValue={userData?.couponType}
                                                         />
@@ -280,26 +340,15 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                             <SelectTextInput
                                                                 label="Select Applicable Type"
                                                                 registerName="applicableType"
-                                                                options={
-                                                                    couponType === 'products'
-                                                                        ? [
-                                                                            { value: 'product', label: 'Select Product' },
-                                                                            { value: 'category', label: 'Select Category' },
-                                                                            { value: 'subcategory', label: 'Select Subcategory' },
-                                                                        ]
-                                                                        : [
-                                                                            { value: 'service', label: 'Service' },
-                                                                            { value: 'serviceCategory', label: 'Service Category' },
-                                                                        ]
-                                                                }
+                                                                options={getApplicableOptions(couponType)}
                                                                 placeholder="Select Applicable Type"
-                                                                props={{ ...register('applicableType', { required: true }) }}
+                                                                props={{ ...register('applicableType', { required: "Applicable type is required" }) }}
                                                                 errors={errors.applicableType}
                                                                 defaultValue={userData?.applicableType}
                                                             />
                                                         </div>
                                                     )}
-                                                    {couponType === 'services' && applicableType === 'service' && (
+                                                    {couponType === 'services' && applicableType === APPLICABLE_TO.SINGLE_SERVICE && (
                                                         <div>
                                                             <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Applicable Services</h4>
                                                             <Controller
@@ -319,7 +368,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                         </div>
                                                     )}
 
-                                                    {couponType === 'services' && applicableType === 'serviceCategory' && (
+                                                    {couponType === 'services' && applicableType === APPLICABLE_TO.SERVICE_CATEGORY && (
                                                         <div>
                                                             <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Applicable Service Categories</h4>
                                                             <Controller
@@ -339,7 +388,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                         </div>
                                                     )}
 
-                                                    {couponType === 'products' && applicableType === 'category' && (
+                                                    {couponType === 'products' && applicableType === APPLICABLE_TO.PRODUCT_CATEGORY && (
                                                         <div>
                                                             <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Applicable Product Categories</h4>
                                                             <Controller
@@ -359,27 +408,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                         </div>
                                                     )}
 
-                                                    {couponType === 'products' && applicableType === 'subcategory' && (
-                                                        <div>
-                                                            <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Applicable Product Subcategories</h4>
-                                                            <Controller
-                                                                name="productSubcategories"
-                                                                control={control}
-                                                                defaultValue={[]}
-                                                                render={({ field: { onChange, value } }) => (
-                                                                    <MultiSelectTextInput
-                                                                        label="Select Product Subcategories"
-                                                                        options={productSubcategories}
-                                                                        value={Array.isArray(value) ? value : []}
-                                                                        onChange={onChange}
-                                                                        errors={errors.productSubcategories}
-                                                                    />
-                                                                )}
-                                                            />
-                                                        </div>
-                                                    )}
-
-                                                    {couponType === 'products' && applicableType === 'product' && (
+                                                    {couponType === 'products' && applicableType === APPLICABLE_TO.SINGLE_PRODUCT && (
                                                         <div>
                                                             <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Applicable Products</h4>
                                                             <Controller
@@ -408,7 +437,7 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                                 { value: 'amount', label: 'Amount' },
                                                             ]}
                                                             placeholder="Select Discount Type"
-                                                            props={{ ...register('discountIn', { required: true }) }}
+                                                            props={{ ...register('discountIn', { required: "Discount type is required" }) }}
                                                             errors={errors.discountIn}
                                                             defaultValue={userData?.discountIn}
                                                         />
@@ -422,7 +451,23 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                             placeholder={`Enter Discount ${watch('discountIn') === 'percent' ? '%' : '₹'}`}
                                                             type="number"
                                                             registerName="discount"
-                                                            props={{ ...register('discount', { required: "Required", min: 0, max: watch('discountIn') === 'percent' ? 100 : 1000000 }) }}
+                                                            props={{
+                                                                ...register('discount', {
+                                                                    required: "Discount value is required",
+                                                                    min: { value: 0.01, message: "Discount must be greater than 0" },
+                                                                    validate: (value) => {
+                                                                        const discountIn = watch('discountIn');
+                                                                        if (discountIn === 'percent') {
+                                                                            if (value > 100) return "Discount cannot exceed 100%";
+                                                                            if (value <= 0) return "Discount must be greater than 0%";
+                                                                        } else if (discountIn === 'amount') {
+                                                                            if (value <= 0) return "Discount amount must be greater than 0";
+                                                                            if (value > 1000000) return "Discount amount is too high";
+                                                                        }
+                                                                        return true;
+                                                                    }
+                                                                })
+                                                            }}
                                                             errors={errors.discount}
                                                         />
                                                     </div>
@@ -435,13 +480,14 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                             registerName="activationDate"
                                                             props={{
                                                                 ...register('activationDate', {
-                                                                    required: "Required",
+                                                                    required: "Activation date is required",
                                                                     validate: (value) => {
+                                                                        if (!value) return "Activation date is required";
                                                                         const today = new Date();
                                                                         today.setHours(0, 0, 0, 0);
                                                                         const selectedDate = new Date(value);
                                                                         selectedDate.setHours(0, 0, 0, 0);
-                                                                        return selectedDate >= today || "Cannot select a past date";
+                                                                        return selectedDate >= today || "Activation date cannot be in the past";
                                                                     }
                                                                 })
                                                             }}
@@ -457,15 +503,17 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                             registerName="expiryDate"
                                                             props={{
                                                                 ...register('expiryDate', {
-                                                                    required: "Required",
+                                                                    required: "Expiry date is required",
                                                                     validate: (value) => {
+                                                                        if (!value) return "Expiry date is required";
+
                                                                         const today = new Date();
                                                                         today.setHours(0, 0, 0, 0);
                                                                         const selectedDate = new Date(value);
                                                                         selectedDate.setHours(0, 0, 0, 0);
 
                                                                         if (selectedDate < today) {
-                                                                            return "Cannot select a past date";
+                                                                            return "Expiry date cannot be in the past";
                                                                         }
 
                                                                         const activationDate = watch('activationDate');
@@ -492,7 +540,17 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                             placeholder="Enter Redemption Per User"
                                                             type="number"
                                                             registerName="redemptionPerUser"
-                                                            props={{ ...register('redemptionPerUser', { required: "Required" }) }}
+                                                            props={{
+                                                                ...register('redemptionPerUser', {
+                                                                    required: "Redemption per user is required",
+                                                                    min: { value: 1, message: "Must be at least 1" },
+                                                                    max: { value: 1000, message: "Cannot exceed 1000" },
+                                                                    validate: (value) => {
+                                                                        if (!Number.isInteger(Number(value))) return "Must be a whole number";
+                                                                        return true;
+                                                                    }
+                                                                })
+                                                            }}
                                                             errors={errors.redemptionPerUser}
                                                         />
                                                     </div>
@@ -504,31 +562,54 @@ function CreateCouponModal({ edit, userData, setRefreshTrigger }) {
                                                             placeholder="Enter Total Redemptions"
                                                             type="number"
                                                             registerName="totalRedemptions"
-                                                            props={{ ...register('totalRedemptions', { required: "Required" }) }}
+                                                            props={{
+                                                                ...register('totalRedemptions', {
+                                                                    required: "Total redemptions is required",
+                                                                    min: { value: 1, message: "Must be at least 1" },
+                                                                    max: { value: 100000, message: "Cannot exceed 100,000" },
+                                                                    validate: (value) => {
+                                                                        if (!Number.isInteger(Number(value))) return "Must be a whole number";
+                                                                        const redemptionPerUser = watch('redemptionPerUser');
+                                                                        if (redemptionPerUser && Number(value) < Number(redemptionPerUser)) {
+                                                                            return "Total redemptions must be greater than or equal to redemption per user";
+                                                                        }
+                                                                        return true;
+                                                                    }
+                                                                })
+                                                            }}
                                                             errors={errors.totalRedemptions}
                                                         />
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Description</h4>
+                                                    <h4 className="text-sm font-tbLex font-normal text-slate-400 pb-2.5">Terms and Conditions</h4>
                                                     <Controller
                                                         name="description"
                                                         control={control}
-                                                        render={({ field: { onChange, value }, fieldState: { error } }) => (
-                                                            <>
-                                                                <JoditEditor
-                                                                    ref={editorRef}
-                                                                    value={value || ''}
-                                                                    config={configTextEditor}
-                                                                    tabIndex={1}
-                                                                    onBlur={(newContent) => onChange(newContent)}
-                                                                    onChange={(newContent) => onChange(newContent)}
-                                                                />
-                                                                {error && (
-                                                                    <p className="text-red-500 text-sm mt-1">{error.message}</p>
-                                                                )}
-                                                            </>
-                                                        )}
+                                                        render={({ field: { onChange, value }, fieldState: { error } }) => {
+                                                            const editorConfig = useMemo(() => ({
+                                                                ...configTextEditor,
+                                                                placeholder: `Offer is valid only on select services/products
+Coupon code can be applied only once in 2 hrs on this services/products
+Other T&Cs may apply
+Offer valid till Nov 30, 2026 11:59 PM`
+                                                            }), []);
+
+                                                            return (
+                                                                <>
+                                                                    <JoditEditor
+                                                                        ref={editorRef}
+                                                                        value={value || ''}
+                                                                        config={editorConfig}
+                                                                        tabIndex={1}
+                                                                        onBlur={(newContent) => onChange(newContent)}
+                                                                    />
+                                                                    {error && (
+                                                                        <p className="text-red-500 text-sm mt-1">{error.message}</p>
+                                                                    )}
+                                                                </>
+                                                            );
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
