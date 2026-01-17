@@ -37,6 +37,7 @@ const HomeNavbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [card, setCard] = useState(true);
     const [openDropdown, setOpenDropdown] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const login = useSelector((state) => state.user.isLogged);
     const cartProductCount = useSelector((state) => state.cart.cartProductCount);
